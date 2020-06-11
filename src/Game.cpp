@@ -15,14 +15,15 @@
 */
 #include "Game.h"
 #include "Log.h"
+#include "Platform.h"
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <filesystem>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
 #include "nlohmann/json.hpp"
+#include "bgfx/bgfx.h"
 
-Game::Game() : mWidth(640), mHeight(480), mFullscreen(false), mWindow(nullptr)
+Game::Game() : mWidth(640), mHeight(480), mFullscreen(false)
 {
 }
 
@@ -31,6 +32,10 @@ Game::~Game()
 }
 
 bool Game::initialize()
+{
+}
+
+void Game::run()
 {
     if (std::filesystem::exists("settings.json"))
     {
@@ -42,13 +47,18 @@ bool Game::initialize()
         this->mHeight = settingsJSON["height"];
         this->mFullscreen = settingsJSON["fullscreen"];
     }
-    
-    return true;
+
+    if (!InitializePlatform(this->mWidth,this->mHeight, this->mFullscreen)) {
+        Logger.info("Error initializing platform");
+        return;
+    }
+
+    Logger.info("Game initialized");
+    RunPlatform(this);
+    FinalizePlatform();
 }
 
-void Game::run()
-{
-    this->initialize();
-    Logger.info("Hello World");
-    std::cin.get();
+void Game::update() {
+
+    // Game update routine
 }

@@ -51,6 +51,9 @@ include_directories(
     ${SDL2_INCLUDE_DIRS}
     ${GL_INCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}
+    ${BX_INCLUDE_DIRS}
+    ${BGFX_INCLUDE_DIRS}
+    ${BIMG_INCLUDE_DIRS}
 )
 
 # Specify build paths

@@ -24,21 +24,34 @@ void Log::info(const char *message)
 {
     if (this->mLevel >= Log::Info)
         *this->mStream << "[INFO][" << now() << "] " << message << std::endl;
-    ;
+}
+
+void Log::info(std::string message)
+{
+    this->info(message.c_str());
 }
 
 void Log::warn(const char *message)
 {
     if (this->mLevel >= Log::Warn)
         *this->mStream << "[WARN][" << now() << "] " << message << std::endl;
-    ;
+}
+
+void Log::warn(std::string message)
+{
+    this->warn(message.c_str());
 }
 
 void Log::error(const char *message)
 {
     if (this->mLevel >= Log::Error)
         *this->mStream << "[ERROR][" << now() << "] " << message << std::endl;
-};
+}
+
+void Log::error(std::string message)
+{
+    this->error(message.c_str());
+}
 
 ConsoleLog::ConsoleLog() : Log(&std::cout, Log::Info)
 {

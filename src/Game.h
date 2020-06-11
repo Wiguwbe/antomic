@@ -22,12 +22,10 @@ public:
     Game();
     ~Game();
     void run();
-private:
-    bool initialize();
+    void update();
 
 private:
     int mWidth;
     int mHeight;
     bool mFullscreen;
-    SDL_Window* mWindow;
 };

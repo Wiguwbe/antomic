@@ -15,6 +15,7 @@
 */
 #pragma once
 #include <fstream>
+#include <string>
 #include "Singleton.h"
 
 #ifdef NDEBUG
@@ -41,8 +42,11 @@ public:
 
     void setLevel(Level level);
     void info(const char *message);
+    void info(std::string message);
     void warn(const char *message);
+    void warn(std::string message);
     void error(const char *message);
+    void error(std::string message);
 
 private:
     std::ostream *mStream;

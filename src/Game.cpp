@@ -21,7 +21,6 @@
 #include <string>
 #include <filesystem>
 #include "nlohmann/json.hpp"
-#include "bgfx/bgfx.h"
 
 Game::Game() : mWidth(640), mHeight(480), mFullscreen(false)
 {

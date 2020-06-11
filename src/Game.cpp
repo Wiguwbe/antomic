@@ -31,10 +31,6 @@ Game::~Game()
 {
 }
 
-bool Game::initialize()
-{
-}
-
 void Game::run()
 {
     if (std::filesystem::exists("settings.json"))

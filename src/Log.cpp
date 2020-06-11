@@ -3,6 +3,8 @@
 #include <chrono>
 #include <string>
 
+using namespace game;
+
 static std::string now()
 {
     std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());

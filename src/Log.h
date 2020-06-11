@@ -24,50 +24,55 @@
 #define Logger ConsoleLog::getInstance()
 #endif
 
-/*
+namespace game
+{
+
+    /*
     Log to console
 */
-class Log
-{
-public:
-    enum Level
+    class Log
     {
-        Error = 0,
-        Warn,
-        Info
+    public:
+        enum Level
+        {
+            Error = 0,
+            Warn,
+            Info
+        };
+
+    public:
+        Log(std::ostream *stream, Level level);
+
+        void setLevel(Level level);
+        void info(const char *message);
+        void info(std::string message);
+        void warn(const char *message);
+        void warn(std::string message);
+        void error(const char *message);
+        void error(std::string message);
+
+    private:
+        std::ostream *mStream;
+        int mLevel;
     };
 
-public:
-    Log(std::ostream *stream, Level level);
-
-    void setLevel(Level level);
-    void info(const char *message);
-    void info(std::string message);
-    void warn(const char *message);
-    void warn(std::string message);
-    void error(const char *message);
-    void error(std::string message);
-
-private:
-    std::ostream *mStream;
-    int mLevel;
-};
-
-class ConsoleLog : public Log, public Singleton<ConsoleLog>
-{
-public:
-    ConsoleLog();
-};
-/*
+    class ConsoleLog : public Log, public Singleton<ConsoleLog>
+    {
+    public:
+        ConsoleLog();
+    };
+    /*
     Log to file
 */
-class FileLog : public Log, public Singleton<FileLog>
-{
+    class FileLog : public Log, public Singleton<FileLog>
+    {
 
-public:
-    FileLog();
-    ~FileLog();
+    public:
+        FileLog();
+        ~FileLog();
 
-public:
-    std::ofstream mFileStream;
-};
+    public:
+        std::ofstream mFileStream;
+    };
+
+} // namespace game

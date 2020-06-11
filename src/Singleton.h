@@ -1,17 +1,21 @@
 #pragma once
 
-template<class T> class Singleton
+namespace game
 {
-public:
-    static T& getInstance() 
+    template <class T>
+    class Singleton
     {
-        static T instance;
-        return instance;
+    public:
+        static T &getInstance()
+        {
+            static T instance;
+            return instance;
+        };
+
+    public:
+        Singleton(T const &) = delete;
+        void operator=(T const &) = delete;
+
+        Singleton(){};
     };
-
-public:
-    Singleton(T const&) = delete;
-    void operator=(T const&) = delete;
-
-    Singleton() {};
-};
+} // namespace game

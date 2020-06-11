@@ -14,18 +14,22 @@
    limitations under the License.
 */
 #pragma once
-#include <SDL2/SDL.h>
 
-class Game
+namespace game
 {
-public:
-    Game();
-    ~Game();
-    void run();
-    void update();
 
-private:
-    int mWidth;
-    int mHeight;
-    bool mFullscreen;
-};
+    class Game
+    {
+    public:
+        Game();
+        ~Game();
+        void run();
+        void update();
+
+    private:
+        int mWidth;
+        int mHeight;
+        bool mFullscreen;
+    };
+
+} // namespace Engine

@@ -12,11 +12,11 @@ will be changed in the future
 */
 static SDL_Window* sdlWindow;
 
-bool InitializePlatform(int width, int height, bool fullscreen) 
+bool platform::InitializePlatform(int width, int height, bool fullscreen) 
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        Logger.error("Error initializing video");
+        game::Logger.error("Error initializing video");
         return false;
     }
 
@@ -26,7 +26,7 @@ bool InitializePlatform(int width, int height, bool fullscreen)
 
     if (!sdlWindow)
     {
-        Logger.error("Error creating window");
+        game::Logger.error("Error creating window");
         SDL_Quit();
         return false;
     }
@@ -36,7 +36,7 @@ bool InitializePlatform(int width, int height, bool fullscreen)
 
     if (!SDL_GetWindowWMInfo(sdlWindow, &wmi))
     {
-        Logger.error("Error initializing renderer");
+        game::Logger.error("Error initializing renderer");
         SDL_DestroyWindow(sdlWindow);
         SDL_Quit();
         return false;
@@ -63,13 +63,13 @@ bool InitializePlatform(int width, int height, bool fullscreen)
     return true;
 }
 
-void FinalizePlatform() {
+void platform::FinalizePlatform() {
     bgfx::shutdown();
     SDL_DestroyWindow(sdlWindow);
     SDL_Quit();
 }
 
-void RunPlatform(Game* game) {
+void platform::RunPlatform(game::Game* game) {
     bool running = True;
     SDL_Event currentEvent;
     while (running)

@@ -22,6 +22,8 @@
 #include <filesystem>
 #include "nlohmann/json.hpp"
 
+using namespace game;
+
 Game::Game() : mWidth(640), mHeight(480), mFullscreen(false)
 {
 }
@@ -43,17 +45,19 @@ void Game::run()
         this->mFullscreen = settingsJSON["fullscreen"];
     }
 
-    if (!InitializePlatform(this->mWidth,this->mHeight, this->mFullscreen)) {
+    if (!platform::InitializePlatform(this->mWidth, this->mHeight, this->mFullscreen))
+    {
         Logger.info("Error initializing platform");
         return;
     }
 
     Logger.info("Game initialized");
-    RunPlatform(this);
-    FinalizePlatform();
+    platform::RunPlatform(this);
+    platform::FinalizePlatform();
 }
 
-void Game::update() {
+void Game::update()
+{
 
     // Game update routine
 }

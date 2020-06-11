@@ -17,10 +17,10 @@
 #include <fstream>
 #include "Singleton.h"
 
-#ifdef Debug
-#define Logger ConsoleLog::getInstance()
-#else
+#ifdef NDEBUG
 #define Logger FileLog::getInstance()
+#else
+#define Logger ConsoleLog::getInstance()
 #endif
 
 /*

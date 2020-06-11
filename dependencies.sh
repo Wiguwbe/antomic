@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Install dependecies
 sudo apt-get install libsdl2-2.0 libgl1-mesa-dev x11proto-core-dev libx11-dev
 
@@ -20,9 +20,4 @@ fi
 if [ ! -d json ]; then
     git clone git://github.com/nlohmann/json.git
 fi
-popd
-
-mkdir -p build
-pushd build
-    cmake -G "CodeLite - Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug ..
 popd

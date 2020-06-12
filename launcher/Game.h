@@ -14,12 +14,14 @@
    limitations under the License.
 */
 #pragma once
-#include "Application.h"
+#include "engine.h"
 
-class Game: public Application
-{
-public:
-    Game() : Application("Game") {};
-public:
-    void update();
-};
+namespace Launcher {
+    class Game: public Engine::Application
+    {
+    public:
+        Game() : Engine::Application("Game") {};
+    public:
+        void Update();
+    };
+}

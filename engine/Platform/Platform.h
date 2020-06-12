@@ -14,7 +14,7 @@
    limitations under the License.
 */
 #pragma once
-#include "Application.h"
+#include "../Core/Application.h"
 #include <cstdint>
 #include <string>
 
@@ -23,4 +23,4 @@
 
 bool initializePlatform(uint32_t width, uint32_t height, uint32_t flags, std::string name);
 void shutdownPlatform();
-bool processEvents(Application* app);
+bool processEvents(Engine::Application* app);

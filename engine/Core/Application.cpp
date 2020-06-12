@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "Platform.h"
+#include "../Platform/Platform.h"
 #include "Log.h"
 #include <iostream>
 #include <fstream>
@@ -9,7 +9,7 @@
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
 
-Application::Application(const char *name, uint32_t width, uint32_t height, bool fullscreen)
+Engine::Application::Application(const char *name, uint32_t width, uint32_t height, bool fullscreen)
 {
     mName = std::string(name);
     mWidth = width;
@@ -18,11 +18,11 @@ Application::Application(const char *name, uint32_t width, uint32_t height, bool
     mRunning = false;
 }
 
-Application::~Application()
+Engine::Application::~Application()
 {
 }
 
-bool Application::init()
+bool Engine::Application::Init()
 {
     if (std::filesystem::exists("settings.json"))
     {
@@ -37,7 +37,7 @@ bool Application::init()
 
     if (!initializePlatform(mWidth, mHeight, 0, mName))
     {
-        Logger.info("Error initializing platform");
+        Logger.Info("Error initializing platform");
         return false;
     }
 
@@ -55,21 +55,21 @@ bool Application::init()
                        0x000000, 1.0f, 0);
     bgfx::touch(0);
 
-    Logger.info("Game initialized");
+    Logger.Info("Game initialized");
     return true;
 }
 
-void Application::shutdown()
+void Engine::Application::Shutdown()
 {
     mRunning = false;
 }
 
-void Application::run()
+void Engine::Application::run()
 {
     if (mRunning)
         return;
 
-    if (!init())
+    if (!Init())
         return;
 
     mRunning = true;
@@ -77,7 +77,7 @@ void Application::run()
     while (mRunning)
     {
         processEvents(this);
-        this->update();
+        this->Update();
         bgfx::frame();
     }
 

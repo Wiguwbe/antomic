@@ -13,8 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Log.h"
-#include "Application.h"
+#include "../Core/Log.h"
+#include "../Core/Application.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include "bgfx/bgfx.h"
@@ -30,7 +30,7 @@ bool initializePlatform(uint32_t width, uint32_t height, uint32_t flags, std::st
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        Logger.error("Error initializing video");
+        Engine::Logger.Error("Error initializing video");
         return false;
     }
 
@@ -40,7 +40,7 @@ bool initializePlatform(uint32_t width, uint32_t height, uint32_t flags, std::st
 
     if (!sdlWindow)
     {
-        Logger.error("Error creating window");
+        Engine::Logger.Error("Error creating window");
         SDL_Quit();
         return false;
     }
@@ -50,7 +50,7 @@ bool initializePlatform(uint32_t width, uint32_t height, uint32_t flags, std::st
 
     if (!SDL_GetWindowWMInfo(sdlWindow, &wmi))
     {
-        Logger.error("Error initializing renderer");
+        Engine::Logger.Error("Error initializing renderer");
         SDL_DestroyWindow(sdlWindow);
         SDL_Quit();
         return false;
@@ -70,12 +70,12 @@ void shutdownPlatform()
     SDL_Quit();
 }
 
-void processEvents(Application* app)
+void processEvents(Engine::Application* app)
 {
     SDL_Event currentEvent;
 
     while(SDL_PollEvent(&currentEvent)) {
         if (currentEvent.type == SDL_QUIT)
-            app->shutdown();
+            app->Shutdown();
     }
 }

@@ -17,7 +17,7 @@
 
 int main()
 {
-    Game game;
+    Launcher::Game game;
     game.run();
     return 0;
 }

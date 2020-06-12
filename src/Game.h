@@ -14,22 +14,12 @@
    limitations under the License.
 */
 #pragma once
+#include "Application.h"
 
-namespace game
+class Game: public Application
 {
-
-    class Game
-    {
-    public:
-        Game();
-        ~Game();
-        void run();
-        void update();
-
-    private:
-        int mWidth;
-        int mHeight;
-        bool mFullscreen;
-    };
-
-} // namespace Engine
+public:
+    Game() : Application("Game") {};
+public:
+    bool update();
+};

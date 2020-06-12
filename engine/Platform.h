@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #pragma once
+#include "Application.h"
 #include <cstdint>
 #include <string>
 
@@ -21,5 +22,5 @@
 #define MOUSE_BUTTON_COUNT 4
 
 bool initializePlatform(uint32_t width, uint32_t height, uint32_t flags, std::string name);
-void shudownPlatform();
-bool processEvents();
+void shutdownPlatform();
+bool processEvents(Application* app);

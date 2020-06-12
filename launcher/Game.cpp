@@ -15,7 +15,6 @@
 */
 #include "Game.h"
 
-bool Game::update()
+void Game::update()
 {
-    return true;
 }

@@ -21,5 +21,5 @@ class Game: public Application
 public:
     Game() : Application("Game") {};
 public:
-    bool update();
+    void update();
 };

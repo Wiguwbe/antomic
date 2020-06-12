@@ -9,12 +9,13 @@ public:
     Application(const char *name) : Application(name, 640, 480, false){};
     Application(const char *name, uint32_t width, uint32_t height, bool fullscreen);
 
-    void run();
-
     virtual ~Application();
+
     virtual bool init();
     virtual void shutdown();
-    virtual bool update() = 0;
+    virtual void update() = 0;
+
+    void run();
 
 private:
     std::string mName;

@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #include "Log.h"
+#include "Application.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include "bgfx/bgfx.h"
@@ -63,20 +64,18 @@ bool initializePlatform(uint32_t width, uint32_t height, uint32_t flags, std::st
     return true;
 }
 
-void shudownPlatform()
+void shutdownPlatform()
 {
     SDL_DestroyWindow(sdlWindow);
     SDL_Quit();
 }
 
-bool processEvents()
+void processEvents(Application* app)
 {
     SDL_Event currentEvent;
 
-    if (SDL_PollEvent(&currentEvent)) {
+    while(SDL_PollEvent(&currentEvent)) {
         if (currentEvent.type == SDL_QUIT)
-            return false;
+            app->shutdown();
     }
-
-    return true;
 }

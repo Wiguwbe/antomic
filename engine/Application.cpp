@@ -61,8 +61,7 @@ bool Application::init()
 
 void Application::shutdown()
 {
-    bgfx::shutdown();
-    shudownPlatform();
+    mRunning = false;
 }
 
 void Application::run()
@@ -77,14 +76,11 @@ void Application::run()
 
     while (mRunning)
     {
-        if (!processEvents())
-            break;
-
-        if (!this->update())
-            break;
-
+        processEvents(this);
+        this->update();
         bgfx::frame();
     }
 
-    shutdown();
+    bgfx::shutdown();
+    shutdownPlatform();
 }

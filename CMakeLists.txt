@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(GameLaunch)
+project(Game)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -Wall -Werror -std=c++17")
 
@@ -43,10 +43,19 @@ if (UNIX)
     set(BGFX_LIBRARY "${BGFX_DIR}/.build/linux64_gcc/bin/libbgfx-shared-libRelease.so")
 endif(UNIX)
 
-FILE(GLOB_RECURSE SRCS "${PROJECT_SOURCE_DIR}/src/*.cpp")
-FILE(GLOB_RECURSE HDRS "${PROJECT_SOURCE_DIR}/src/*.h")
+# Specify build paths
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/dist")
 
-include_directories( 
+FILE(GLOB_RECURSE ENGINE_SRC "${PROJECT_SOURCE_DIR}/engine/*.cpp")
+FILE(GLOB_RECURSE ENGINE_HDR "${PROJECT_SOURCE_DIR}/engine/*.h")
+
+add_library("${PROJECT_NAME}Engine" ${ENGINE_HDR} ${ENGINE_SRC})
+target_include_directories( 
+    "${PROJECT_NAME}Engine"
+    PRIVATE
     ${JSON_INCLUDE_DIR}
     ${SDL2_INCLUDE_DIRS}
     ${GL_INCLUDE_DIRS}
@@ -55,27 +64,32 @@ include_directories(
     ${BGFX_INCLUDE_DIRS}
     ${BIMG_INCLUDE_DIRS}
 )
+target_link_libraries( 
+    "${PROJECT_NAME}Engine"
+    ${BGFX_LIBRARY}
+    ${SDL2_LIBRARIES} 
+    ${GL_LIBRARIES} 
+    ${X11_LIBRARIES}
+    nlohmann_json::nlohmann_json
+    ${CMAKE_THREAD_LIBS_INIT}                       
+)
 
-# Specify build paths
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
-set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/dist")
-
-add_executable(${PROJECT_NAME} ${HDRS} ${SRCS})
- 
-target_link_libraries(${PROJECT_NAME} 
-                        ${BGFX_LIBRARY}
-                        ${SDL2_LIBRARIES} 
-                        ${GL_LIBRARIES} 
-                        ${X11_LIBRARIES}
-                        nlohmann_json::nlohmann_json
-                        ${CMAKE_THREAD_LIBS_INIT}                       
-                    )
+FILE(GLOB_RECURSE LAUNCHER_SRC "${PROJECT_SOURCE_DIR}/launcher/*.cpp")
+FILE(GLOB_RECURSE LAUNCHER_HDR "${PROJECT_SOURCE_DIR}/launcher/*.h")
+add_executable("${PROJECT_NAME}Launcher" ${LAUNCHER_HDR} ${LAUNCHER_SRC})
+target_include_directories( 
+    "${PROJECT_NAME}Launcher"
+    PRIVATE
+    "${CMAKE_SOURCE_DIR}/engine"
+)
+target_link_libraries(
+    "${PROJECT_NAME}Launcher" 
+    "${PROJECT_NAME}Engine"
+)
 
 file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX})
  
-install(TARGETS ${PROJECT_NAME}
+install(TARGETS "${PROJECT_NAME}Engine"
     RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
     CONFIGURATIONS Debug Release
 )
@@ -89,7 +103,6 @@ install(FILES ${CMAKE_SOURCE_DIR}/settings.json
     DESTINATION ${CMAKE_INSTALL_PREFIX}
     CONFIGURATIONS Debug Release
 )
-
 
 if(UNIX)
     install(FILES ${BGFX_LIBRARY}

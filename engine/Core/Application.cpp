@@ -1,21 +1,30 @@
-#include "Application.h"
-#include "../Platform/Platform.h"
-#include "Log.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <filesystem>
-#include "nlohmann/json.hpp"
+/*
+   Copyright 2020 Alexandre Pires (c.alexandre.pires@gmail.com)
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+#include "Core/Application.h"
+#include "Core/Log.h"
+#include "Platform/Platform.h"
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
 
-Engine::Application::Application(const char *name, uint32_t width, uint32_t height, bool fullscreen)
+Engine::Application::Application(const char *name, uint32_t width, uint32_t height)
 {
-    mName = std::string(name);
-    mWidth = width;
-    mHeight = height;
-    mFullscreen = fullscreen;
-    mRunning = false;
+    m_Name = std::string(name);
+    m_Width = width;
+    m_Height = height;
+    m_Running = false;
 }
 
 Engine::Application::~Application()
@@ -30,12 +39,11 @@ bool Engine::Application::Init()
         nlohmann::json settingsJSON;
         settingsFile >> settingsJSON;
 
-        this->mWidth = settingsJSON["width"];
-        this->mHeight = settingsJSON["height"];
-        this->mFullscreen = settingsJSON["fullscreen"];
+        m_Width = settingsJSON["width"];
+        m_Height = settingsJSON["height"];
     }
 
-    if (!initializePlatform(mWidth, mHeight, 0, mName))
+    if (!CurrentPlatform.Init(m_Width, m_Height, 0, m_Name))
     {
         Logger.Info("Error initializing platform");
         return false;
@@ -43,13 +51,13 @@ bool Engine::Application::Init()
 
     bgfx::renderFrame();
     bgfx::init();
-    bgfx::reset(mWidth, mHeight, BGFX_RESET_VSYNC);
+    bgfx::reset(m_Width, m_Height, BGFX_RESET_VSYNC);
 
 #ifndef NDEBUG
     bgfx::setDebug(BGFX_DEBUG_TEXT /*| BGFX_DEBUG_STATS */);
 #endif
 
-    bgfx::setViewRect(0, 0, 0, uint16_t(mWidth), uint16_t(mHeight));
+    bgfx::setViewRect(0, 0, 0, uint16_t(m_Width), uint16_t(m_Height));
     bgfx::setViewClear(0,
                        BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
                        0x000000, 1.0f, 0);
@@ -61,26 +69,26 @@ bool Engine::Application::Init()
 
 void Engine::Application::Shutdown()
 {
-    mRunning = false;
+    m_Running = false;
 }
 
 void Engine::Application::run()
 {
-    if (mRunning)
+    if (m_Running)
         return;
 
     if (!Init())
         return;
 
-    mRunning = true;
+    m_Running = true;
 
-    while (mRunning)
+    while (m_Running)
     {
-        processEvents(this);
+        CurrentPlatform.ProcessEvents(this);
         this->Update();
         bgfx::frame();
     }
 
     bgfx::shutdown();
-    shutdownPlatform();
+    CurrentPlatform.Shutdown();
 }

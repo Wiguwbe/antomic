@@ -13,23 +13,32 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
-#include "Core/Application.h"
+#include "Core/Input.h"
 
-#define CurrentPlatform Platform::GetInstance()
+namespace Engine
+{
+    bool Input::IsKeyPressed(KeyCode key)
+    {
+        return false;
+    }
 
-namespace Engine {
+    bool Input::IsMouseButtonPressed(MouseCode button)
+    {
+        return false;
+    }
 
-    class Platform : public Singleton<Platform> {
-
-        public:
-            Platform();
-
-        public:
-            bool Init(uint32_t width, uint32_t height, uint32_t flags, std::string name);
-            void Shutdown();
-            void ProcessEvents(Application* app);
-    };
-
-}
+    std::pair<float, float> Input::GetMousePosition()
+    {
+        return std::pair<float, float>(0.0f, 0.0f);
+    }
+    
+    float Input::GetMouseX()
+    {
+        return 0.0f;
+    }
+    
+    float Input::GetMouseY()
+    {
+        return 0.0f;
+    }
+} // namespace Engine

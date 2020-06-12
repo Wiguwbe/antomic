@@ -14,22 +14,5 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
-#include "Core/Application.h"
+#include "nlohmann/json.hpp"
 
-#define CurrentPlatform Platform::GetInstance()
-
-namespace Engine {
-
-    class Platform : public Singleton<Platform> {
-
-        public:
-            Platform();
-
-        public:
-            bool Init(uint32_t width, uint32_t height, uint32_t flags, std::string name);
-            void Shutdown();
-            void ProcessEvents(Application* app);
-    };
-
-}

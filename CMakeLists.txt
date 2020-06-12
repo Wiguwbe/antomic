@@ -56,6 +56,7 @@ add_library("${PROJECT_NAME}Engine" ${ENGINE_HDR} ${ENGINE_SRC})
 target_include_directories( 
     "${PROJECT_NAME}Engine"
     PRIVATE
+    "${CMAKE_SOURCE_DIR}/engine"
     ${JSON_INCLUDE_DIR}
     ${SDL2_INCLUDE_DIRS}
     ${GL_INCLUDE_DIRS}

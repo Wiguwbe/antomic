@@ -14,9 +14,7 @@
    limitations under the License.
 */
 #pragma once
-#include <fstream>
-#include <string>
-#include "Singleton.h"
+#include "Core/Base.h"
 
 #ifdef NDEBUG
 #define Logger FileLog::GetInstance()
@@ -48,8 +46,8 @@ namespace Engine {
         void Error(std::string message);
 
     private:
-        std::ostream *mStream;
-        int mLevel;
+        std::ostream *m_Stream;
+        int m_Level;
     };
 
     class ConsoleLog : public Log, public Singleton<ConsoleLog>
@@ -68,6 +66,6 @@ namespace Engine {
         ~FileLog();
 
     public:
-        std::ofstream mFileStream;
+        std::ofstream m_FileStream;
     };
 }

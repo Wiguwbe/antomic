@@ -25,6 +25,8 @@ Engine::Application::Application(const char *name, uint32_t width, uint32_t heig
     m_Width = width;
     m_Height = height;
     m_Running = false;
+    m_Platform = Platform::Create();;
+    m_Platform->SetApplication(this);
 }
 
 Engine::Application::~Application()
@@ -33,6 +35,8 @@ Engine::Application::~Application()
 
 bool Engine::Application::Init()
 {
+    Log::Init();
+
     if (std::filesystem::exists("settings.json"))
     {
         std::ifstream settingsFile("settings.json");
@@ -43,9 +47,15 @@ bool Engine::Application::Init()
         m_Height = settingsJSON["height"];
     }
 
-    if (!CurrentPlatform.Init(m_Width, m_Height, 0, m_Name))
+    if (!m_Platform->Init())
     {
-        Logger.Info("Error initializing platform");
+        ENGINE_INFO("Error initializing platform");
+        return false;
+    }
+
+    if (!m_Platform->CreateWindow(m_Width, m_Height, 0, m_Name))
+    {
+        ENGINE_INFO("Error creating window: {0}, {1}", m_Width, m_Height);
         return false;
     }
 
@@ -63,7 +73,7 @@ bool Engine::Application::Init()
                        0x000000, 1.0f, 0);
     bgfx::touch(0);
 
-    Logger.Info("Game initialized");
+    ENGINE_INFO("Game initialized, window: {0}, {1}", m_Width, m_Height);
     return true;
 }
 
@@ -84,15 +94,20 @@ void Engine::Application::run()
 
     while (m_Running)
     {
-        CurrentPlatform.ProcessEvents(this);
+        m_Platform->ProcessWindowEvents();
         this->Update();
     }
 
     bgfx::shutdown();
-    CurrentPlatform.Shutdown();
+    m_Platform->DestroyWindow();
+    m_Platform->Shutdown();
 }
 
 void Engine::Application::Update()
 {
     bgfx::frame();
+}
+
+void Engine::Application::ToggleFullscreen(bool value) {
+    
 }

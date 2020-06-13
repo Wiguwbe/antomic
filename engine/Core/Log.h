@@ -15,57 +15,27 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 
-#ifdef ENGINE_DEBUG
-#define Logger FileLog::GetInstance()
-#else
-#define Logger ConsoleLog::GetInstance()
-#endif
-
-namespace Engine {
+namespace Engine
+{
 
     class Log
     {
     public:
-        enum Level
-        {
-            ErrorLevel = 0,
-            WarnLevel,
-            InfoLevel
-        };
-
-    public:
-        Log(std::ostream *stream, Level level);
-
-        void SetLevel(Level level);
-        void Info(const char *message);
-        void Info(std::string message);
-        void Warn(const char *message);
-        void Warn(std::string message);
-        void Error(const char *message);
-        void Error(std::string message);
+        static void Init();
+        static Ref<spdlog::logger> &GetLogger() { return s_Logger; }
 
     private:
-        std::ostream *m_Stream;
-        int m_Level;
+        static Ref<spdlog::logger> s_Logger;
     };
 
-    class ConsoleLog : public Log, public Singleton<ConsoleLog>
-    {
-    public:
-        ConsoleLog();
-    };
-    /*
-    Log to file
-    */
-    class FileLog : public Log, public Singleton<FileLog>
-    {
+} // namespace Engine
 
-    public:
-        FileLog();
-        ~FileLog();
-
-    public:
-        std::ofstream m_FileStream;
-    };
-}
+// log macros
+#define ENGINE_TRACE(...) ::Engine::Log::GetLogger()->trace(__VA_ARGS__)
+#define ENGINE_INFO(...) ::Engine::Log::GetLogger()->info(__VA_ARGS__)
+#define ENGINE_WARN(...) ::Engine::Log::GetLogger()->warn(__VA_ARGS__)
+#define ENGINE_ERROR(...) ::Engine::Log::GetLogger()->error(__VA_ARGS__)
+#define ENGINE_CRITICAL(...) ::Engine::Log::GetLogger()->critical(__VA_ARGS__)

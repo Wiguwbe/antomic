@@ -204,20 +204,26 @@ namespace Engine
 		int32_t m_axis[GamepadAxis::Count];
 	};
 
-	class Input : public Singleton<Input>
+	class Input
 	{
-	public:
-		
-		static const char* GetKeyName(Key::Enum key);
-		Input();
+	protected:
+		Input() = default;
 
 	public:
+		Input(const Input &) = delete;
+		Input &operator=(const Input &) = delete;
+
+		static Scope<Input> Create();
+
+	protected:
+	private:
+		static Scope<Input> s_Instance;
 	};
-	
+
 	inline std::ostream &
 	operator<<(std::ostream &os, Key::Enum key)
 	{
-		os << Input::GetKeyName(key);
+		os << key;
 		return os;
 	}
 

@@ -15,6 +15,7 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Platform/Platform.h"
 #include "Events/ApplicationEvent.h"
 
 namespace Engine
@@ -32,6 +33,8 @@ namespace Engine
         virtual bool Init();
         virtual void Shutdown();
         virtual void Update();
+        virtual void ToggleFullscreen(bool value);
+
 
         void run();
 
@@ -40,5 +43,6 @@ namespace Engine
         uint32_t m_Width;
         uint32_t m_Height;
         bool m_Running;
+        Scope<Platform> m_Platform;
     };
 }

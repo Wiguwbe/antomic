@@ -27,7 +27,7 @@ elseif (UNIX)
     pkg_check_modules(SDL2 sdl2)
 
     if (SDL2_FOUND)
-        add_definitions(-DENGINE_USE_SDL)
+        add_definitions(-DENGINE_SDL_PLATFORM)
     else(SDL2_FOUND)
         message(ERROR "We need SDL2 for the moment")
     endif(SDL2_FOUND)
@@ -53,6 +53,13 @@ set(JSON_INCLUDE_DIR "${JSON_DIR}/json/single_include")
 
 add_subdirectory(${JSON_DIR})
 
+#Logging Library setup
+set(LOG_DIR "${VENDOR_DIR}/spdlog")
+set(LOG_INCLUDE_DIR "${LOG_DIR}/include")
+
+add_subdirectory(${LOG_DIR})
+
+
 if (UNIX)
     set(BGFX_LIBRARY "${BGFX_DIR}/.build/linux64_gcc/bin/libbgfx-shared-libRelease.so")
 endif(UNIX)
@@ -71,6 +78,7 @@ target_include_directories(
     "${PROJECT_NAME}Engine"
     PRIVATE
     "${CMAKE_SOURCE_DIR}/engine"
+    ${LOG_INCLUDE_DIR}
     ${JSON_INCLUDE_DIR}
     ${SDL2_INCLUDE_DIRS}
     ${GL_INCLUDE_DIRS}
@@ -85,6 +93,7 @@ target_link_libraries(
     ${SDL2_LIBRARIES} 
     ${GL_LIBRARIES} 
     ${X11_LIBRARIES}
+    spdlog::spdlog
     nlohmann_json::nlohmann_json
     ${CMAKE_THREAD_LIBS_INIT}                       
 )

@@ -96,6 +96,7 @@ function level_3dparty_dependencies() {
         "git://github.com/bkaradzic/bimg.git"
         "git://github.com/bkaradzic/bgfx.git"
         "git://github.com/nlohmann/json.git"
+        "git://github.com/gabime/spdlog.git"
     )
 
     # Get external dependencies

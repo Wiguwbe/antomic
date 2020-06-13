@@ -14,67 +14,28 @@
    limitations under the License.
 */
 #include "Core/Log.h"
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/basic_file_sink.h>
 
-static std::string now()
-{
-    std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    std::string ts = std::ctime(&t);
-    ts.resize(ts.size() - 1);
-    return ts;
-}
+Engine::Ref<spdlog::logger> Engine::Log::s_Logger;
 
-Engine::Log::Log(std::ostream *stream, Level level) : m_Stream(stream), m_Level(level)
+void Engine::Log::Init()
 {
-}
 
-void Engine::Log::SetLevel(Level level)
-{
-    this->m_Level = level;
-}
+    std::vector<spdlog::sink_ptr> logSinks;
 
-void Engine::Log::Info(const char *message)
-{
-    if (this->m_Level >= Log::InfoLevel)
-        *this->m_Stream << "[INFO][" << now() << "] " << message << std::endl;
-}
+    // By default we have only a file logger
+    logSinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("engine.log", true));
+    logSinks[0]->set_pattern("[%T] [%l] %n: %v");
 
-void Engine::Log::Info(std::string message)
-{
-    this->Info(message.c_str());
-}
+#ifdef ENGINE_DEBUG
+    // For debugging purposes we attach a logger to the console
+    logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+    logSinks[1]->set_pattern("%^[%T] %n: %v%$");
+#endif
 
-void Engine::Log::Warn(const char *message)
-{
-    if (this->m_Level >= Log::WarnLevel)
-        *this->m_Stream << "[WARN][" << now() << "] " << message << std::endl;
-}
-
-void Engine::Log::Warn(std::string message)
-{
-    this->Warn(message.c_str());
-}
-
-void Engine::Log::Error(const char *message)
-{
-    if (this->m_Level >= Log::ErrorLevel)
-        *this->m_Stream << "[ERROR][" << now() << "] " << message << std::endl;
-}
-
-void Engine::Log::Error(std::string message)
-{
-    this->Error(message.c_str());
-}
-
-Engine::ConsoleLog::ConsoleLog() : Log(&std::cout, Log::InfoLevel)
-{
-}
-
-Engine::FileLog::FileLog() : Log(&m_FileStream, Log::InfoLevel)
-{
-    m_FileStream.open("game.log", std::ios::app );
-}
-
-Engine::FileLog::~FileLog()
-{
-    m_FileStream.close();
+    s_Logger = std::make_shared<spdlog::logger>("Engine", begin(logSinks), end(logSinks));
+    spdlog::register_logger(s_Logger);
+    s_Logger->set_level(spdlog::level::trace);
+    s_Logger->flush_on(spdlog::level::trace);
 }

@@ -13,16 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Core/Base.h"
-#include "Core/Log.h"
-#include "Core/Input.h"
+#include "Platform/Platform.h"
+
+#ifdef ENGINE_SDL_PLATFORM
+#include "Platform/SDL/PlatformSDL.h"
+#endif
 
 namespace Engine
 {
-	Scope<Input> Input::s_Instance = Input::Create();
-
-	Scope<Input> Input::Create()
-	{
-		return nullptr;
-	}
-} 
+    Scope<Platform> Platform::Create()
+    {
+#ifdef ENGINE_SDL_PLATFORM
+        return CreateScope<PlatformSDL>();
+#else
+        ENGINE_ASSERT(false, "Unknown platform!");
+        return nullptr;
+#endif
+    }
+} // namespace Engine

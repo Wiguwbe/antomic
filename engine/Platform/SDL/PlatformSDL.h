@@ -14,31 +14,27 @@
    limitations under the License.
 */
 #pragma once
+#include "Platform/Platform.h"
+#include <SDL2/SDL.h>
 
-#include "Core/Base.h"
-#include "Core/Input.h"
-#include "Events/Event.h"
+namespace Engine
+{
 
-namespace Engine {
+    class PlatformSDL : public Platform
+    {
+    public:
+        PlatformSDL();
+        virtual ~PlatformSDL();
 
-	struct WindowHandle  { uint16_t idx; };
+        virtual bool Init();
+        virtual void Shutdown();
+        virtual void ToggleFullscreen();
+        virtual void SetMouseLock(bool lock);
+        virtual bool CreateWindow(uint32_t width, uint32_t height, uint32_t flags, std::string name);
+        virtual void DestroyWindow();
+        virtual void ProcessWindowEvents();
 
-	inline bool isValid(WindowHandle _handle)  { return UINT16_MAX != _handle.idx; }
-
-	struct WindowState
-	{
-		WindowState()
-			: m_width(0)
-			, m_height(0)
-			, m_nwh(NULL)
-		{
-			m_handle.idx = UINT16_MAX;
-		}
-
-		WindowHandle m_handle;
-		uint32_t     m_width;
-		uint32_t     m_height;
-		MouseState   m_mouse;
-		void*        m_nwh;
-	};    
-}
+    private:
+        static SDL_Window *s_SDLWindow;
+    };
+} // namespace Engine

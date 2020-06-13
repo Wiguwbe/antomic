@@ -11,16 +11,24 @@ set(VERSION_MINOR 0)
 set(VERSION_RELEASE 1)
 set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_RELEASE}")
 
+
+find_package(Threads REQUIRED)
 if(WIN32)
     message(ERROR "Windows not supported yet")
+elseif (UNIX)
+    find_package(PkgConfig REQUIRED)
+
+    pkg_check_modules(SDL2 sdl2)
+
+    if (SDL2_FOUND)
+        add_definitions(-DENGINE_USE_SDL)
+    else(SDL2_FOUND)
+        message(ERROR "We need SDL2 for the moment")
+    endif(SDL2_FOUND)
+
+    pkg_check_modules(GL REQUIRED opengl)
+    pkg_check_modules(X11 REQUIRED x11)
 endif(WIN32)
-
-find_package(PkgConfig REQUIRED)
-find_package(Threads REQUIRED)
-
-pkg_check_modules(SDL2 REQUIRED sdl2)
-pkg_check_modules(GL REQUIRED opengl)
-pkg_check_modules(X11 REQUIRED x11)
 
 set(VENDOR_DIR "${CMAKE_SOURCE_DIR}/vendor")
 

@@ -13,6 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#ifdef ENGINE_USE_SDL
+
 #include "Core/Log.h"
 #include "Core/Application.h"
 #include "Platform/Platform.h"
@@ -81,3 +83,5 @@ void Engine::Platform::ProcessEvents(Application *app)
             app->Shutdown();
     }
 }
+
+#endif

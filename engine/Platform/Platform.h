@@ -15,10 +15,15 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Core/Log.h"
+#include "Profiling/Instrumentor.h"
 #include "Core/Application.h"
+#include "Core/Input.h"
 
 namespace Engine
 {
+    using EventHandler = std::function<void(Event&)>;
+
     class Platform
     {
 
@@ -28,17 +33,15 @@ namespace Engine
     public:
         static Scope<Platform> Create();
 
-        void SetApplication(Application *app) { m_App = app; }
         virtual bool Init() = 0;
         virtual void Shutdown() = 0;
         virtual void ToggleFullscreen() = 0;
         virtual void SetMouseLock(bool lock) = 0;
-        virtual bool CreateWindow(uint32_t width, uint32_t height, uint32_t flags, std::string name) = 0;
+        virtual bool CreateWindow(uint32_t width, uint32_t height, std::string name) = 0;
         virtual void DestroyWindow() = 0;
         virtual void ProcessWindowEvents() = 0;
+        virtual void SetEventHandler(const EventHandler& handler) = 0;
 
-    protected:
-        Application *m_App = nullptr;
     };
 
 } // namespace Engine

@@ -17,25 +17,28 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
-Engine::Ref<spdlog::logger> Engine::Log::s_Logger;
-
-void Engine::Log::Init()
+namespace Engine
 {
+    Ref<spdlog::logger> Log::s_Logger;
 
-    std::vector<spdlog::sink_ptr> logSinks;
+    void Log::Init()
+    {
 
-    // By default we have only a file logger
-    logSinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("engine.log", true));
-    logSinks[0]->set_pattern("[%T] [%l] %n: %v");
+        std::vector<spdlog::sink_ptr> logSinks;
+
+        // By default we have only a file logger
+        logSinks.emplace_back(std::make_shared<spdlog::sinks::basic_file_sink_mt>("engine.log", true));
+        logSinks[0]->set_pattern("[%T] [%l] %n: %v");
 
 #ifdef ENGINE_DEBUG
-    // For debugging purposes we attach a logger to the console
-    logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
-    logSinks[1]->set_pattern("%^[%T] %n: %v%$");
+        // For debugging purposes we attach a logger to the console
+        logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+        logSinks[1]->set_pattern("%^[%T] %n: %v%$");
 #endif
 
-    s_Logger = std::make_shared<spdlog::logger>("Engine", begin(logSinks), end(logSinks));
-    spdlog::register_logger(s_Logger);
-    s_Logger->set_level(spdlog::level::trace);
-    s_Logger->flush_on(spdlog::level::trace);
-}
+        s_Logger = std::make_shared<spdlog::logger>("Engine", begin(logSinks), end(logSinks));
+        spdlog::register_logger(s_Logger);
+        s_Logger->set_level(spdlog::level::trace);
+        s_Logger->flush_on(spdlog::level::trace);
+    }
+} // namespace Engine

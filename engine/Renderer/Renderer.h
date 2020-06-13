@@ -13,15 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#pragma once
 #include "Core/Base.h"
-#include "Core/Input.h"
+#include "Core/Log.h"
 
 namespace Engine
 {
-	Scope<Input> Input::s_Instance = Input::Create();
+    class Renderer
+    {
+        
+    public:
+        static void Init(uint32_t width, uint32_t height);
+        static void Shutdown();
+        static void OnWindowResize(uint32_t width, uint32_t height);
+        static void Render();
+    private:
+    };
 
-	Scope<Input> Input::Create()
-	{
-		return nullptr;
-	}
-} 
+} // namespace Engine

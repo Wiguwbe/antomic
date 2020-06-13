@@ -30,11 +30,16 @@ namespace Engine
         virtual void Shutdown();
         virtual void ToggleFullscreen();
         virtual void SetMouseLock(bool lock);
-        virtual bool CreateWindow(uint32_t width, uint32_t height, uint32_t flags, std::string name);
+        virtual bool CreateWindow(uint32_t width, uint32_t height, std::string name);
         virtual void DestroyWindow();
         virtual void ProcessWindowEvents();
+        virtual void SetEventHandler(const EventHandler &handler) { m_Handler = handler; }
 
     private:
         static SDL_Window *s_SDLWindow;
+        std::string m_Name;
+        uint32_t m_Width;
+        uint32_t m_Height;
+        EventHandler m_Handler;
     };
 } // namespace Engine

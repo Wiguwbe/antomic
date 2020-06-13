@@ -14,8 +14,9 @@
    limitations under the License.
 */
 #pragma once
-
 #include "Core/Base.h"
+#include "Core/Log.h"
+#include "Profiling/Instrumentor.h"
 
 namespace Engine
 {

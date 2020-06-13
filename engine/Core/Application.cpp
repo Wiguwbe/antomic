@@ -14,100 +14,98 @@
    limitations under the License.
 */
 #include "Core/Application.h"
-#include "Core/Log.h"
 #include "Platform/Platform.h"
-#include "bgfx/bgfx.h"
-#include "bgfx/platform.h"
+#include "Renderer/Renderer.h"
 
-Engine::Application::Application(const char *name, uint32_t width, uint32_t height)
+namespace Engine
 {
-    m_Name = std::string(name);
-    m_Width = width;
-    m_Height = height;
-    m_Running = false;
-    m_Platform = Platform::Create();;
-    m_Platform->SetApplication(this);
-}
+    Application *Application::s_Instance = nullptr;
 
-Engine::Application::~Application()
-{
-}
-
-bool Engine::Application::Init()
-{
-    Log::Init();
-
-    if (std::filesystem::exists("settings.json"))
+    Application::Application(const char *name, uint32_t width, uint32_t height)
     {
-        std::ifstream settingsFile("settings.json");
-        nlohmann::json settingsJSON;
-        settingsFile >> settingsJSON;
+        ENGINE_ASSERT(!s_Instance, "Application already running!");
+        Log::Init();
 
-        m_Width = settingsJSON["width"];
-        m_Height = settingsJSON["height"];
+        s_Instance = this;
+        m_Running = false;
+        m_Platform = Platform::Create();
+        m_Platform->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
+
+        auto _width = width;
+        auto _height = height;
+
+        if (std::filesystem::exists("settings.json"))
+        {
+            std::ifstream settingsFile("settings.json");
+            nlohmann::json settingsJSON;
+            settingsFile >> settingsJSON;
+
+            _width = settingsJSON["width"];
+            _height = settingsJSON["height"];
+        }
+
+        if (!m_Platform->Init())
+        {
+            ENGINE_INFO("Error initializing platform");
+            exit(1);
+        }
+
+        if (!m_Platform->CreateWindow(_width, _height, name))
+        {
+            ENGINE_INFO("Error creating window: {0}, {1}", _width, _height);
+            exit(1);
+        }
+
+        Renderer::Init(_width, _height);
     }
 
-    if (!m_Platform->Init())
+    Application::~Application()
     {
-        ENGINE_INFO("Error initializing platform");
-        return false;
     }
 
-    if (!m_Platform->CreateWindow(m_Width, m_Height, 0, m_Name))
+    void Application::Run()
     {
-        ENGINE_INFO("Error creating window: {0}, {1}", m_Width, m_Height);
-        return false;
+        if (m_Running)
+            return;
+
+        m_Running = true;
+
+        while (m_Running)
+        {
+            m_Platform->ProcessWindowEvents();
+            this->Update();
+            Renderer::Render();
+        }
+
+        Renderer::Shutdown();
+        m_Platform->DestroyWindow();
+        m_Platform->Shutdown();
     }
 
-    bgfx::renderFrame();
-    bgfx::init();
-    bgfx::reset(m_Width, m_Height, BGFX_RESET_VSYNC);
-
-#ifndef NDEBUG
-    bgfx::setDebug(BGFX_DEBUG_TEXT /*| BGFX_DEBUG_STATS */);
-#endif
-
-    bgfx::setViewRect(0, 0, 0, uint16_t(m_Width), uint16_t(m_Height));
-    bgfx::setViewClear(0,
-                       BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-                       0x000000, 1.0f, 0);
-    bgfx::touch(0);
-
-    ENGINE_INFO("Game initialized, window: {0}, {1}", m_Width, m_Height);
-    return true;
-}
-
-void Engine::Application::Shutdown()
-{
-    m_Running = false;
-}
-
-void Engine::Application::run()
-{
-    if (m_Running)
-        return;
-
-    if (!Init())
-        return;
-
-    m_Running = true;
-
-    while (m_Running)
+    void Application::Update()
     {
-        m_Platform->ProcessWindowEvents();
-        this->Update();
     }
 
-    bgfx::shutdown();
-    m_Platform->DestroyWindow();
-    m_Platform->Shutdown();
-}
+    void Application::ToggleFullscreen(bool value)
+    {
+    }
 
-void Engine::Application::Update()
-{
-    bgfx::frame();
-}
+    void Application::OnEvent(Event &event)
+    {
+        EventDispatcher dispatcher(event);
+        dispatcher.Dispatch<WindowCloseEvent>(ENGINE_BIND_EVENT_FN(Application::OnWindowClose));
+        dispatcher.Dispatch<WindowResizeEvent>(ENGINE_BIND_EVENT_FN(Application::OnWindowResize));
+    }
 
-void Engine::Application::ToggleFullscreen(bool value) {
-    
-}
+    bool Application::OnWindowClose(WindowCloseEvent &event)
+    {
+        m_Running = false;
+        return true;
+    }
+
+    bool Application::OnWindowResize(WindowResizeEvent &event)
+    {
+        Renderer::OnWindowResize(event.GetWidth(), event.GetHeight());
+        return true;
+    }
+} // namespace Engine

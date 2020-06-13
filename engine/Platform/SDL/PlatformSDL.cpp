@@ -15,9 +15,9 @@
 */
 #ifdef ENGINE_SDL_PLATFORM
 
-#include "Core/Log.h"
-#include "Core/Application.h"
 #include "Platform/SDL/PlatformSDL.h"
+#include "Events/WindowEvent.h"
+
 #include <SDL2/SDL_syswm.h>
 #include "bgfx/bgfx.h"
 #include "bgfx/platform.h"
@@ -50,11 +50,14 @@ namespace Engine
         SDL_Quit();
     }
 
-    bool PlatformSDL::CreateWindow(uint32_t width, uint32_t height, uint32_t flags, std::string name)
+    bool PlatformSDL::CreateWindow(uint32_t width, uint32_t height, std::string name)
     {
+        m_Width = width;
+        m_Height = height;
+
         s_SDLWindow = SDL_CreateWindow(
-            name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            width, height, SDL_WINDOW_SHOWN);
+            name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
         if (!s_SDLWindow)
         {
@@ -94,18 +97,36 @@ namespace Engine
 
         while (SDL_PollEvent(&currentEvent))
         {
-            if (currentEvent.type == SDL_QUIT)
-                m_App->Shutdown();
+            if (currentEvent.type == SDL_WINDOWEVENT)
+            {
+                switch (currentEvent.window.event)
+                {
+                case SDL_WINDOWEVENT_RESIZED:
+                {
+                    WindowResizeEvent event(currentEvent.window.data1, currentEvent.window.data2);
+                    m_Handler(event);
+                }
+                break;
+                case SDL_WINDOWEVENT_CLOSE:
+                {
+                    WindowCloseEvent event;
+                    m_Handler(event);
+                }
+                break;
+                default:
+                    break;
+                }
+                continue;
+            }
         }
     }
 
-    void PlatformSDL::ToggleFullscreen() {
-
+    void PlatformSDL::ToggleFullscreen()
+    {
     }
 
-    void PlatformSDL::SetMouseLock(bool lock) {
-
-        
+    void PlatformSDL::SetMouseLock(bool lock)
+    {
     }
 
 } // namespace Engine

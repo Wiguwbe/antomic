@@ -15,8 +15,11 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Core/Log.h"
+#include "Profiling/Instrumentor.h"
 #include "Platform/Platform.h"
 #include "Events/ApplicationEvent.h"
+#include "Events/WindowEvent.h"
 
 namespace Engine
 {
@@ -30,18 +33,17 @@ namespace Engine
 
         virtual ~Application();
 
-        virtual bool Init();
-        virtual void Shutdown();
+		void OnEvent(Event& event);
+        void ToggleFullscreen(bool value);
+        void Run();
+		bool OnWindowClose(WindowCloseEvent& event);
+		bool OnWindowResize(WindowResizeEvent& event);
+
         virtual void Update();
-        virtual void ToggleFullscreen(bool value);
 
-
-        void run();
-
+		static Application& Current() { return *s_Instance; }
     private:
-        std::string m_Name;
-        uint32_t m_Width;
-        uint32_t m_Height;
+		static Application* s_Instance;
         bool m_Running;
         Scope<Platform> m_Platform;
     };

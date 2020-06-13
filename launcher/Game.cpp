@@ -14,7 +14,3 @@
    limitations under the License.
 */
 #include "Game.h"
-
-void Launcher::Game::Update()
-{
-}

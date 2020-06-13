@@ -86,9 +86,13 @@ void Engine::Application::run()
     {
         CurrentPlatform.ProcessEvents(this);
         this->Update();
-        bgfx::frame();
     }
 
     bgfx::shutdown();
     CurrentPlatform.Shutdown();
+}
+
+void Engine::Application::Update()
+{
+    bgfx::frame();
 }

@@ -31,7 +31,7 @@ namespace Engine
 
         virtual bool Init();
         virtual void Shutdown();
-        virtual void Update() = 0;
+        virtual void Update();
 
         void run();
 

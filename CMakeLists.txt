@@ -16,6 +16,12 @@ find_package(Threads REQUIRED)
 if(WIN32)
     message(ERROR "Windows not supported yet")
 elseif (UNIX)
+
+    add_definitions(-DENGINE_PLATFORM_LINUX)
+    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+        add_definitions(-DENGINE_DEBUG)
+    endif()
+
     find_package(PkgConfig REQUIRED)
 
     pkg_check_modules(SDL2 sdl2)

@@ -21,7 +21,5 @@ namespace Launcher {
     {
     public:
         Game() : Engine::Application("Game") {};
-    public:
-        void Update();
     };
 }

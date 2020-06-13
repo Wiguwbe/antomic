@@ -16,7 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 
-#ifdef NDEBUG
+#ifdef ENGINE_DEBUG
 #define Logger FileLog::GetInstance()
 #else
 #define Logger ConsoleLog::GetInstance()

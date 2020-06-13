@@ -15,34 +15,30 @@
 */
 #pragma once
 
+#include "Core/Base.h"
+#include "Core/Input.h"
 #include "Events/Event.h"
 
-namespace Engine
-{
-	class AppTickEvent : public Event
+namespace Engine {
+
+	struct WindowHandle  { uint16_t idx; };
+
+	inline bool isValid(WindowHandle _handle)  { return UINT16_MAX != _handle.idx; }
+
+	struct WindowState
 	{
-	public:
-		AppTickEvent() = default;
+		WindowState()
+			: m_width(0)
+			, m_height(0)
+			, m_nwh(NULL)
+		{
+			m_handle.idx = UINT16_MAX;
+		}
 
-		EVENT_CLASS_TYPE(AppTick)
-		EVENT_CLASS_CATEGORY(EventCategoryApplication)
-	};
-
-	class AppUpdateEvent : public Event
-	{
-	public:
-		AppUpdateEvent() = default;
-
-		EVENT_CLASS_TYPE(AppUpdate)
-		EVENT_CLASS_CATEGORY(EventCategoryApplication)
-	};
-
-	class AppRenderEvent : public Event
-	{
-	public:
-		AppRenderEvent() = default;
-
-		EVENT_CLASS_TYPE(AppRender)
-		EVENT_CLASS_CATEGORY(EventCategoryApplication)
-	};
-} 
+		WindowHandle m_handle;
+		uint32_t     m_width;
+		uint32_t     m_height;
+		MouseState   m_mouse;
+		void*        m_nwh;
+	};    
+}

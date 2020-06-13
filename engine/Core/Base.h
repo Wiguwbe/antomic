@@ -14,8 +14,27 @@
    limitations under the License.
 */
 #pragma once
-#include "stdlib.h"
-#include "vendors.h"
+#include "enginepch.h"
+
+#ifdef ENGINE_DEBUG
+	#if defined(ENGINE_PLATFORM_WINDOWS)
+		#define ENGINE_DEBUGBREAK() __debugbreak()
+	#elif defined(ENGINE_PLATFORM_LINUX)
+		#include <signal.h>
+		#define ENGINE_DEBUGBREAK() raise(SIGTRAP)
+	#else
+		#error "Platform doesn't support debugbreak yet!"
+	#endif
+	#define ENGINE_ENABLE_ASSERTS
+#else
+	#define ENGINE_DEBUGBREAK()
+#endif
+
+#ifdef ENGINE_ENABLE_ASSERTS
+	#define ENGINE_ASSERT(x) { if(!(x)) { Logger.Error("Assertion Failed!"); ENGINE_DEBUGBREAK(); } }
+#else
+	#define ENGINE_ASSERT(x)
+#endif
 
 #define BIT(x) 1 << x
 

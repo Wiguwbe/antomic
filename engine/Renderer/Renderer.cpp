@@ -24,14 +24,8 @@ namespace Engine
     {
         bgfx::renderFrame();
         bgfx::init();
-        bgfx::touch(0);
-        bgfx::reset(width, height, BGFX_RESET_VSYNC);
-        bgfx::setViewRect(0, 0, 0, uint16_t(width), uint16_t(height));
-        bgfx::setViewClear(0,
-                           BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-                           0x000000, 1.0f, 0);
+        OnWindowResize(width, height);
     }
-
 
     void Renderer::Shutdown()
     {
@@ -44,12 +38,23 @@ namespace Engine
         bgfx::setViewRect(0, 0, 0, uint16_t(width), uint16_t(height));
         bgfx::setViewClear(0,
                            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-                           0x000000, 1.0f, 0);
+                           0x100000, 1.0f, 0);
     }
 
-    void Renderer::Render()
+    void Renderer::RenderFrame()
     {
+        bgfx::touch(0);
+        BeginScene();
+        EndScene();
         bgfx::frame();
+    }
+
+    void Renderer::BeginScene()
+    {
+    }
+
+    void Renderer::EndScene()
+    {
     }
 
 } // namespace Engine

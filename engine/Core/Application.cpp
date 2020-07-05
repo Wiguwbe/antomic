@@ -74,7 +74,7 @@ namespace Engine
         {
             m_Platform->ProcessWindowEvents();
             this->Update();
-            Renderer::Render();
+            Renderer::RenderFrame();
         }
 
         Renderer::Shutdown();

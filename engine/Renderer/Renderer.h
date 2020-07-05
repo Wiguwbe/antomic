@@ -26,7 +26,9 @@ namespace Engine
         static void Init(uint32_t width, uint32_t height);
         static void Shutdown();
         static void OnWindowResize(uint32_t width, uint32_t height);
-        static void Render();
+        static void RenderFrame();
+        static void BeginScene();
+        static void EndScene();
     private:
     };
 

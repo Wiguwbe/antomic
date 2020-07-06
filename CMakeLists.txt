@@ -38,6 +38,13 @@ endif(WIN32)
 
 set(VENDOR_DIR "${CMAKE_SOURCE_DIR}/vendor")
 
+# Unit Testing
+if(NOT DEFINED ENV{ENGINE_NO_TESTS})
+    set(GOOGLE_TEST_DIR "${VENDOR_DIR}/googletest")
+    add_subdirectory(${GOOGLE_TEST_DIR})
+endif() 
+
+
 # BGFX setup
 set(BX_DIR "${VENDOR_DIR}/bx")
 set(BGFX_DIR "${VENDOR_DIR}/bgfx")
@@ -110,6 +117,31 @@ target_link_libraries(
     "${PROJECT_NAME}Launcher" 
     "${PROJECT_NAME}Engine"
 )
+
+if(NOT DEFINED ENV{ENGINE_NO_TESTS})
+    file(GLOB_RECURSE TESTS_SRCS "${PROJECT_SOURCE_DIR}/tests/*.cpp")
+    file(GLOB_RECURSE TESTS_HDR "${PROJECT_SOURCE_DIR}/tests/*.h")
+
+    add_executable("${PROJECT_NAME}Tests" ${TESTS_SRCS} ${TESTS_HDR})
+
+    add_test(
+        NAME "${PROJECT_NAME}Tests" 
+        COMMAND "${PROJECT_NAME}Tests"
+    )
+
+    target_include_directories( 
+        "${PROJECT_NAME}Tests"
+        PRIVATE
+        "${CMAKE_SOURCE_DIR}/engine"
+    )
+
+    target_link_libraries(
+        "${PROJECT_NAME}Tests" 
+        PUBLIC 
+        "${PROJECT_NAME}Engine"
+        gtest
+    )
+endif()
 
 file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX})
  

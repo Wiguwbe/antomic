@@ -75,7 +75,7 @@ function level_build_dependencies() {
     esac
 
     # Is the installation command not empty? run it
-    [ ! -z ${INSTALL_PACKAGES_CMD} ] && { 
+    [ ! -z "${INSTALL_PACKAGES_CMD}" ] && { 
         # This will most probably happend when setting up the environment for the first time
         # therefore we exit here to make sure the user run the build script again
         # this happens because we might being only setting up the build environment for 
@@ -97,6 +97,7 @@ function level_3dparty_dependencies() {
         "git://github.com/bkaradzic/bgfx.git"
         "git://github.com/nlohmann/json.git"
         "git://github.com/gabime/spdlog.git"
+        "git://github.com/google/googletest.git"
     )
 
     # Get external dependencies

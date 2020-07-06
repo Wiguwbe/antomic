@@ -73,5 +73,7 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp"
-    }
+    },
+    "cppUnitTestFramework.executable": "bin/GameTests",
+    "cppUnitTestFramework.buildDirectory": "build"
 }

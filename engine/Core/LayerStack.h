@@ -13,4 +13,30 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "enginepch.h"
+#pragma once
+#include "Core/Base.h"
+#include "Events/Event.h"
+#include "Core/Layer.h"
+
+namespace Engine
+{
+    class LayerStack
+    {
+
+    public:
+        LayerStack();
+        ~LayerStack();
+
+        void Push(Ref<Layer> l);
+        void Pop();
+        void Remove(Ref<Layer> l);
+        void ForwardUpdate();
+        void ReverseUpdate();
+        void ForwardOnEvent(Event &e);
+        void ReverseOnEvent(Event &e);
+
+        inline int Count() const { return m_Layers.size(); }
+    protected:
+        std::vector<Ref<Layer>> m_Layers;
+    };
+} // namespace Engine

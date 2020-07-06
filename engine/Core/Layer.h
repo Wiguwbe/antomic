@@ -13,4 +13,27 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "enginepch.h"
+#pragma once
+#include "Core/Base.h"
+#include "Events/Event.h"
+
+namespace Engine
+{
+    class Layer
+    {
+
+    public:
+        Layer(const std::string &name = "layer");
+        virtual ~Layer();
+        
+        virtual void OnAttach() {}
+        virtual void OnDettach() {}
+        virtual void Update() {}
+        virtual void HandleEvent(Event &e) {}
+
+        inline const std::string &GetName() const { return m_Name; }
+
+    protected:
+        std::string m_Name;
+    };
+} // namespace Engine

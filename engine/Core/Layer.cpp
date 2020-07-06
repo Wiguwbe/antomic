@@ -13,4 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "enginepch.h"
+#include "Core/Layer.h"
+
+namespace Engine
+{
+    Layer::Layer(const std::string &name) : m_Name(name)
+    {
+    }
+
+    Layer::~Layer()
+    {
+    }
+
+} // namespace Engine

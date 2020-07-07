@@ -11,7 +11,6 @@ set(VERSION_MINOR 0)
 set(VERSION_RELEASE 1)
 set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_RELEASE}")
 
-
 find_package(Threads REQUIRED)
 if(WIN32)
     message(ERROR "Windows not supported yet")
@@ -36,14 +35,13 @@ elseif (UNIX)
     pkg_check_modules(X11 REQUIRED x11)
 endif(WIN32)
 
-set(VENDOR_DIR "${CMAKE_SOURCE_DIR}/vendor")
+set(VENDOR_DIR "${PROJECT_SOURCE_DIR}/vendor")
 
 # Unit Testing
 if(NOT DEFINED ENV{ENGINE_NO_TESTS})
     set(GOOGLE_TEST_DIR "${VENDOR_DIR}/googletest")
     add_subdirectory(${GOOGLE_TEST_DIR})
 endif() 
-
 
 # BGFX setup
 set(BX_DIR "${VENDOR_DIR}/bx")
@@ -66,16 +64,36 @@ set(LOG_INCLUDE_DIR "${LOG_DIR}/include")
 
 add_subdirectory(${LOG_DIR})
 
-
 if (UNIX)
     set(BGFX_LIBRARY "${BGFX_DIR}/.build/linux64_gcc/bin/libbgfx-shared-libRelease.so")
 endif(UNIX)
 
 # Specify build paths
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
-set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/dist")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
+set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/dist")
+
+#ImGui Library Setup
+set(IMGUI_DIR "${VENDOR_DIR}/imgui")
+FILE(GLOB IMGUI_SRC "${IMGUI_DIR}/*.cpp")
+FILE(GLOB IMGUI_HDR "${IMGUI_DIR}/*.h")
+
+FILE(GLOB IMGUI_STL_SRC "${IMGUI_DIR}/misc/cpp/*.cpp")
+FILE(GLOB IMGUI_STL_HDR "${IMGUI_DIR}/misc/cpp/*.h")
+
+add_library("imgui" ${IMGUI_SRC} ${IMGUI_HDR})
+add_library("imgui-stl" ${IMGUI_STL_SRC} ${IMGUI_STL_HDR})
+target_include_directories( 
+    "imgui-stl"
+    PRIVATE
+    "${IMGUI_DIR}"
+)
+target_link_libraries( 
+    "imgui-stl"
+    PRIVATE
+    "imgui" 
+)
 
 FILE(GLOB_RECURSE ENGINE_SRC "${PROJECT_SOURCE_DIR}/engine/*.cpp")
 FILE(GLOB_RECURSE ENGINE_HDR "${PROJECT_SOURCE_DIR}/engine/*.h")
@@ -84,7 +102,7 @@ add_library("${PROJECT_NAME}Engine" ${ENGINE_HDR} ${ENGINE_SRC})
 target_include_directories( 
     "${PROJECT_NAME}Engine"
     PRIVATE
-    "${CMAKE_SOURCE_DIR}/engine"
+    "${PROJECT_SOURCE_DIR}/engine"
     ${LOG_INCLUDE_DIR}
     ${JSON_INCLUDE_DIR}
     ${SDL2_INCLUDE_DIRS}
@@ -93,6 +111,7 @@ target_include_directories(
     ${BX_INCLUDE_DIRS}
     ${BGFX_INCLUDE_DIRS}
     ${BIMG_INCLUDE_DIRS}
+    ${IMGUI_DIR}
 )
 target_link_libraries( 
     "${PROJECT_NAME}Engine"
@@ -102,7 +121,8 @@ target_link_libraries(
     ${X11_LIBRARIES}
     spdlog::spdlog
     nlohmann_json::nlohmann_json
-    ${CMAKE_THREAD_LIBS_INIT}                       
+    ${CMAKE_THREAD_LIBS_INIT}    
+    "imgui"
 )
 
 FILE(GLOB_RECURSE LAUNCHER_SRC "${PROJECT_SOURCE_DIR}/launcher/*.cpp")
@@ -111,7 +131,7 @@ add_executable("${PROJECT_NAME}Launcher" ${LAUNCHER_HDR} ${LAUNCHER_SRC})
 target_include_directories( 
     "${PROJECT_NAME}Launcher"
     PRIVATE
-    "${CMAKE_SOURCE_DIR}/engine"
+    "${PROJECT_SOURCE_DIR}/engine"
 )
 target_link_libraries(
     "${PROJECT_NAME}Launcher" 
@@ -132,7 +152,7 @@ if(NOT DEFINED ENV{ENGINE_NO_TESTS})
     target_include_directories( 
         "${PROJECT_NAME}Tests"
         PRIVATE
-        "${CMAKE_SOURCE_DIR}/engine"
+        "${PROJECT_SOURCE_DIR}/engine"
     )
 
     target_link_libraries(
@@ -150,12 +170,12 @@ install(TARGETS "${PROJECT_NAME}Engine"
     CONFIGURATIONS Debug Release
 )
 
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/media
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/media
     DESTINATION ${CMAKE_INSTALL_PREFIX}
     CONFIGURATIONS Debug Release
 )
 
-install(FILES ${CMAKE_SOURCE_DIR}/settings.json
+install(FILES ${PROJECT_SOURCE_DIR}/settings.json
     DESTINATION ${CMAKE_INSTALL_PREFIX}
     CONFIGURATIONS Debug Release
 )

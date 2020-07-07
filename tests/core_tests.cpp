@@ -15,39 +15,133 @@
 */
 #include "gtest/gtest.h"
 #include "Core/Base.h"
+#include "Core/Log.h"
+#include "Events/Event.h"
+#include "Events/WindowEvent.h"
 #include "Core/Layer.h"
 #include "Core/LayerStack.h"
 
-TEST(EngineCoreTest, LayerTests) {
-    //arrange
-    //act
-    //assert
-    auto layer = Engine::CreateRef<Engine::Layer>("test_layer");
-    EXPECT_EQ (layer->GetName(),  "test_layer");
+static int testUpdate = 0;
+static int testEvent = -1;
 
+class TestLayer : public Engine::Layer
+{
+private:
+    /* data */
+public:
+    TestLayer() : Layer("test_layer"){};
+    ~TestLayer(){};
+
+    void HandleEvent(Engine::Event &e) override
+    {
+        e.SetHandled(true);
+    }
+
+    void Update() override
+    {
+        testUpdate = 1;
+    }
+};
+
+class NumLayer : public Engine::Layer
+{
+private:
+    /* data */
+public:
+    NumLayer(int i, bool handle) : Layer("num_layer")
+    {
+        m_Num = i;
+        m_Handle = handle;
+    };
+    ~NumLayer(){};
+
+    void HandleEvent(Engine::Event &e) override
+    {
+        if (m_Handle)
+        {
+            testEvent = m_Num;
+            e.SetHandled(true);
+        }
+    }
+
+    void Update() override
+    {
+        testUpdate = m_Num;
+    }
+
+protected:
+    bool m_Handle;
+    int m_Num;
+};
+
+TEST(EngineCoreTest, LayerTests)
+{
     auto stack = Engine::LayerStack();
 
-    stack.Push(layer);
-    EXPECT_EQ (stack.Count(), 1);
+    // A test layer
+    auto layer = Engine::CreateRef<TestLayer>();
+    EXPECT_EQ(layer->GetName(), "test_layer");
 
-    stack.Pop();
-    EXPECT_EQ (stack.Count(), 0);
+    // We must have a layer in the stack
+    stack.PushFront(layer);
+    EXPECT_EQ(stack.Count(), 1);
 
-    for ( auto i = 0; i < 10; i++ ) {
-        if ( i == 4 ) {
-            stack.Push(layer);
-            continue;
+    // The layer will handle the event
+    Engine::WindowCloseEvent e;
+    EXPECT_EQ(e.IsHandled(), false);
+    stack.OnEvent(e);
+    EXPECT_EQ(e.IsHandled(), true);
+
+    // The layer will run update
+    EXPECT_EQ(testUpdate, 0);
+    stack.Update();
+    EXPECT_EQ(testUpdate, 1);
+
+    // We will remove the layer, no layers left
+    stack.PopFront();
+    EXPECT_EQ(stack.Count(), 0);
+
+    // We will add 10 layers, layers 4 or 1 will handle the event
+    // Later we will remove layer #4, so we keep the reference to it
+    Engine::Ref<NumLayer> ref_layer = nullptr;
+    for (auto i = 0; i < 10; i++)
+    {
+        auto l = Engine::CreateRef<NumLayer>(i, i == 4 || i == 1);
+        if (i == 4)
+        {
+            ref_layer = l;
         }
-        auto l = Engine::CreateRef<Engine::Layer>();
-        stack.Push(l);
+        stack.PushFront(l);
     }
-    EXPECT_EQ (stack.Count(), 10);
 
-    stack.Remove(layer);
-    EXPECT_EQ (stack.Count(), 9);
+    // We must have 10 layers in the stack
+    EXPECT_EQ(stack.Count(), 10);
 
-    for ( auto i = 0; i < 9; i++ ) {
-        stack.Pop();
+    // On this test, layer #4 will handle the event, testEvent == 4
+    e.SetHandled(false);
+    EXPECT_EQ(testEvent, -1);
+    stack.OnEvent(e);
+    EXPECT_EQ(testEvent, 4);
+
+    // All events will update, so testUpdate will have the number 9
+    testUpdate = 0;
+    stack.Update();
+    EXPECT_EQ(testUpdate, 9);
+
+    // We remove the #4 layer and put it on the back
+    stack.Remove(ref_layer);
+    EXPECT_EQ(stack.Count(), 9);
+    stack.PushBack(ref_layer);
+
+    // Now #1 will handle the event
+    e.SetHandled(false);
+    stack.OnEvent(e);
+    EXPECT_EQ(testEvent, 1);
+
+    // We now remove all layers
+    for (auto i = 0; i < 10; i++)
+    {
+        stack.PopFront();
     }
-    EXPECT_EQ (stack.Count(), 0);
+    EXPECT_EQ(stack.Count(), 0);
 }

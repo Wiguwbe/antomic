@@ -13,27 +13,39 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
-#include "Events/Event.h"
+#include "Layers/GUILayer.h"
+#include "Core/Application.h"
+#include "imgui.h"
 
 namespace Engine
 {
-    class Layer
-    {
 
-    public:
-        Layer(const std::string &name = "layer");
-        virtual ~Layer();
-        
-        virtual void OnAttach() {}
-        virtual void OnDetach() {}
-        virtual void Update() {}
-        virtual void HandleEvent(Event &e) {}
+  GUILayer::GUILayer() : Layer("GUILayer")
+  {
+  }
 
-        inline const std::string &GetName() const { return m_Name; }
+  GUILayer::~GUILayer()
+  {
+  }
 
-    protected:
-        std::string m_Name;
-    };
+  void GUILayer::OnAttach()
+  {
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.BackendFlags |= ImGuiBackendFlags_::ImGuiBackendFlags_HasMouseCursors;
+    io.BackendFlags |= ImGuiBackendFlags_::ImGuiBackendFlags_HasSetMousePos;
+  }
+
+  void GUILayer::OnDetach()
+  {
+  }
+
+  void GUILayer::HandleEvent(Engine::Event &e)
+  {
+  }
+
+  void GUILayer::Update()
+  {
+
+  }
 } // namespace Engine

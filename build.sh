@@ -63,8 +63,12 @@ function level_build_dependencies() {
 
             MISSING_PACKAGES=()
             for PACKAGE in ${PACKAGES[@]}; do
-                dpkg --get-selections | grep -q ${PACKAGE} && MISSING_PACKAGES+=${PACKAGE}
+                dpkg --get-selections | grep -q ${PACKAGE} || MISSING_PACKAGES+=${PACKAGE}
             done
+
+            # This might not be ok, but for now if we only have this missing,
+            # since is a meta-package my be a false positive
+            [ "${MISSING_PACKAGES}" == "build-essentials" ] && MISSING_PACKAGES=()
 
             # If there are any packages to install compose the installation command
             [ ${#MISSING_PACKAGES[@]} -gt 0 ] && INSTALL_PACKAGES_CMD="sudo apt-get -y install ${MISSING_PACKAGE[@]}"
@@ -98,6 +102,7 @@ function level_3dparty_dependencies() {
         "git://github.com/nlohmann/json.git"
         "git://github.com/gabime/spdlog.git"
         "git://github.com/google/googletest.git"
+        "git://github.com/ocornut/imgui.git"
     )
 
     # Get external dependencies

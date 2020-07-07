@@ -27,16 +27,16 @@ namespace Engine
         LayerStack();
         ~LayerStack();
 
-        void Push(Ref<Layer> l);
-        void Pop();
+        void PushFront(Ref<Layer> l);
+        void PushBack(Ref<Layer> l);
+        void PopFront();
+        void PopBack();
         void Remove(Ref<Layer> l);
-        void ForwardUpdate();
-        void ReverseUpdate();
-        void ForwardOnEvent(Event &e);
-        void ReverseOnEvent(Event &e);
+        void Update();
+        void OnEvent(Event &e);
 
-        inline int Count() const { return m_Layers.size(); }
+        inline int Count() const { return m_Stack.size(); }
     protected:
-        std::vector<Ref<Layer>> m_Layers;
+        std::vector<Ref<Layer>> m_Stack;
     };
 } // namespace Engine

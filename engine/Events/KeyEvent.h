@@ -23,20 +23,20 @@ namespace Engine
     class KeyEvent : public Event
     {
     public:
-        KeyCode GetKeyCode() const { return m_KeyCode; }
+        Key::Enum GetKeyCode() const { return m_KeyCode; }
 
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
     protected:
-        KeyEvent(KeyCode keycode)
+        KeyEvent(Key::Enum keycode)
             : m_KeyCode(keycode) {}
 
-        KeyCode m_KeyCode;
+        Key::Enum m_KeyCode;
     };
 
     class KeyPressedEvent : public KeyEvent
     {
     public:
-        KeyPressedEvent(KeyCode keycode, int repeatCount)
+        KeyPressedEvent(Key::Enum keycode, int repeatCount)
             : KeyEvent(keycode), m_RepeatCount(repeatCount) {}
 
         int GetRepeatCount() const { return m_RepeatCount; }
@@ -56,7 +56,7 @@ namespace Engine
     class KeyReleasedEvent : public KeyEvent
     {
     public:
-        KeyReleasedEvent(KeyCode keycode)
+        KeyReleasedEvent(Key::Enum keycode)
             : KeyEvent(keycode) {}
 
         std::string ToString() const override
@@ -72,7 +72,7 @@ namespace Engine
     class KeyTypedEvent : public KeyEvent
     {
     public:
-        KeyTypedEvent(KeyCode keycode)
+        KeyTypedEvent(Key::Enum keycode)
             : KeyEvent(keycode) {}
 
         std::string ToString() const override

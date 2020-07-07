@@ -10,62 +10,61 @@ namespace Engine
     {
     }
 
-    void LayerStack::Push(Ref<Layer> l)
+    void LayerStack::PushBack(Ref<Layer> l)
     {
+        if (m_Stack.empty())
+        {
+            PushFront(l);
+            return;
+        }
+
         l->OnAttach();
-        m_Layers.push_back(l);
+        m_Stack.insert(m_Stack.begin(), l);
     }
 
-    void LayerStack::Pop()
+    void LayerStack::PushFront(Ref<Layer> l)
     {
-        if (m_Layers.empty())
+        l->OnAttach();
+        m_Stack.push_back(l);
+    }
+
+    void LayerStack::PopBack()
+    {
+        if (m_Stack.empty())
             return;
-        m_Layers.back()->OnDettach();
-        m_Layers.pop_back();
+        m_Stack.back()->OnDetach();
+        m_Stack.pop_back();
+    }
+
+    void LayerStack::PopFront()
+    {
+        if (m_Stack.empty())
+            return;
+        m_Stack.back()->OnDetach();
+        m_Stack.erase(m_Stack.begin());
     }
 
     void LayerStack::Remove(Ref<Layer> l)
     {
-        auto it = std::find(m_Layers.begin(), m_Layers.end(), l);
-        if (it != m_Layers.end())
+        auto it = std::find(m_Stack.begin(), m_Stack.end(), l);
+        if (it != m_Stack.end())
         {
-            (*it)->OnDettach();
-            m_Layers.erase(it);
+            (*it)->OnDetach();
+            m_Stack.erase(it);
         }
     }
 
-    void LayerStack::ForwardUpdate()
+    void LayerStack::Update()
     {
-        for (auto it = m_Layers.begin(); it != m_Layers.end(); ++it)
-        {
-
+        for (auto it = m_Stack.begin(); it != m_Stack.end(); ++it)
             (*it)->Update();
-        }
     }
 
-    void LayerStack::ReverseUpdate()
+    void LayerStack::OnEvent(Event &e)
     {
-        for (auto it = m_Layers.end(); it != m_Layers.begin(); --it)
+        for (auto it = m_Stack.end(); it != m_Stack.begin();)
         {
-            (*it)->Update();
-        }
-    }
-
-    void LayerStack::ForwardOnEvent(Event &e)
-    {
-        for (auto it = m_Layers.begin(); it != m_Layers.end(); ++it)
-        {
-            (*it)->HandleEvent(e);
-            if (e.IsHandled())
-                break;
-        }
-    }
-
-    void LayerStack::ReverseOnEvent(Event &e)
-    {
-        for (auto it = m_Layers.end(); it != m_Layers.begin(); --it)
-        {
-            (*it)->HandleEvent(e);
+            (*--it)->HandleEvent(e);
             if (e.IsHandled())
                 break;
         }

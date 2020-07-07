@@ -15,25 +15,23 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Events/Event.h"
+#include "Core/Layer.h"
 
 namespace Engine
 {
-    class Layer
+
+    class GUILayer : public Layer
     {
-
+    private:
     public:
-        Layer(const std::string &name = "layer");
-        virtual ~Layer();
-        
-        virtual void OnAttach() {}
-        virtual void OnDetach() {}
-        virtual void Update() {}
-        virtual void HandleEvent(Event &e) {}
+        GUILayer();
+        ~GUILayer();
 
-        inline const std::string &GetName() const { return m_Name; }
+        void OnAttach() override;
+        void OnDetach() override;
 
-    protected:
-        std::string m_Name;
+        void HandleEvent(Engine::Event &e) override;
+        void Update() override;
     };
+
 } // namespace Engine

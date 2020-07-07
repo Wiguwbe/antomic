@@ -57,6 +57,8 @@ namespace Engine
         }
 
         Renderer::Init(_width, _height);
+        m_Width = _width;
+        m_Height = height;
     }
 
     Application::~Application()
@@ -84,6 +86,7 @@ namespace Engine
 
     void Application::Update()
     {
+        m_stack.Update();
     }
 
     void Application::ToggleFullscreen(bool value)
@@ -95,6 +98,8 @@ namespace Engine
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<WindowCloseEvent>(ENGINE_BIND_EVENT_FN(Application::OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(ENGINE_BIND_EVENT_FN(Application::OnWindowResize));
+
+        m_stack.OnEvent(event);
     }
 
     bool Application::OnWindowClose(WindowCloseEvent &event)
@@ -106,6 +111,8 @@ namespace Engine
     bool Application::OnWindowResize(WindowResizeEvent &event)
     {
         Renderer::OnWindowResize(event.GetWidth(), event.GetHeight());
+        m_Width = event.GetWidth();
+        m_Height = event.GetHeight();
         return true;
     }
 } // namespace Engine

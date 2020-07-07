@@ -20,6 +20,7 @@
 #include "Platform/Platform.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/WindowEvent.h"
+#include "Core/LayerStack.h"
 
 namespace Engine
 {
@@ -38,6 +39,8 @@ namespace Engine
         void Run();
 		bool OnWindowClose(WindowCloseEvent& event);
 		bool OnWindowResize(WindowResizeEvent& event);
+        inline uint32_t CurrentWidth() const { return m_Width; }
+        inline uint32_t CurrentHeight() const { return m_Height; }
 
         virtual void Update();
 
@@ -46,5 +49,7 @@ namespace Engine
 		static Application* s_Instance;
         bool m_Running;
         Scope<Platform> m_Platform;
+        LayerStack m_stack;
+        uint32_t m_Width, m_Height;
     };
 }

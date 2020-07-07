@@ -67,20 +67,20 @@ namespace Engine
     class MouseButtonEvent : public Event
     {
     public:
-        inline MouseCode GetMouseButton() const { return m_Button; }
+        inline MouseButton::Enum GetMouseButton() const { return m_Button; }
 
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryMouseButton | EventCategoryInput)
     protected:
-        MouseButtonEvent(MouseCode button)
+        MouseButtonEvent(MouseButton::Enum button)
             : m_Button(button) {}
 
-        MouseCode m_Button;
+        MouseButton::Enum m_Button;
     };
 
     class MouseButtonPressedEvent : public MouseButtonEvent
     {
     public:
-        MouseButtonPressedEvent(MouseCode button)
+        MouseButtonPressedEvent(MouseButton::Enum button)
             : MouseButtonEvent(button) {}
 
         std::string ToString() const override
@@ -96,7 +96,7 @@ namespace Engine
     class MouseButtonReleasedEvent : public MouseButtonEvent
     {
     public:
-        MouseButtonReleasedEvent(MouseCode button)
+        MouseButtonReleasedEvent(MouseButton::Enum button)
             : MouseButtonEvent(button) {}
 
         std::string ToString() const override

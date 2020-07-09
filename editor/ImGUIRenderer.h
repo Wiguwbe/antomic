@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-# pragma once
+#pragma once
 #include "Core/Log.h"
 #include "imgui.h"
 
@@ -42,10 +42,3 @@ namespace Editor
         static bgfx::VertexLayout s_VertexLayout;
     };
 } // namespace Editor
-
-// void ImGui_Implbgfx_RenderDrawLists(ImDrawData *draw_data);
-// void ImGui_Implbgfx_NewFrame();
-
-// // Use if you want to reset your rendering device without losing ImGui state.
-// void ImGui_Implbgfx_InvalidateDeviceObjects();
-// bool ImGui_Implbgfx_CreateDeviceObjects();

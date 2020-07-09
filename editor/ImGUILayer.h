@@ -40,7 +40,7 @@ namespace Editor
         bool OnMouseReleased(Engine::MouseButtonReleasedEvent &event);
 
     private:
-        ImGuiContext* m_Context;
+        ImGuiContext *m_Context;
         bgfx::TextureHandle m_FontTexture;
     };
 } // namespace Editor

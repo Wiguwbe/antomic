@@ -14,26 +14,26 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
-#include "Events/Event.h"
+#include "engine.h"
 
-namespace Engine
+namespace Editor
 {
-    class Layer
+
+    class ImGUILayer : public Engine::Layer
     {
-
+    private:
     public:
-        Layer(const std::string &name = "layer");
-        virtual ~Layer();
-        
-        virtual void OnAttach() {}
-        virtual void OnDetach() {}
-        virtual void Update() {}
-        virtual void OnEvent(Event &e) {}
+        ImGUILayer();
+        ~ImGUILayer();
 
-        inline const std::string &GetName() const { return m_Name; }
+        void OnAttach() override;
+        void OnDetach() override;
 
-    protected:
-        std::string m_Name;
+        void OnEvent(Engine::Event &e) override;
+        void Update() override;
+
+        bool OnMouseMovedEvent(Engine::MouseMovedEvent &event);
+        bool OnMousePressed(Engine::MouseButtonPressedEvent &event);
+        bool OnMouseReleased(Engine::MouseButtonReleasedEvent &event);        
     };
 } // namespace Engine

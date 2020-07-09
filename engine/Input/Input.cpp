@@ -13,39 +13,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Layers/GUILayer.h"
-#include "Core/Application.h"
-#include "imgui.h"
+#include "Core/Base.h"
+#include "Input/Input.h"
+
+#ifdef ENGINE_SDL_PLATFORM
+#include "Input/SDL/InputSDL.h"
+#endif
 
 namespace Engine
 {
-
-  GUILayer::GUILayer() : Layer("GUILayer")
-  {
-  }
-
-  GUILayer::~GUILayer()
-  {
-  }
-
-  void GUILayer::OnAttach()
-  {
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    io.BackendFlags |= ImGuiBackendFlags_::ImGuiBackendFlags_HasMouseCursors;
-    io.BackendFlags |= ImGuiBackendFlags_::ImGuiBackendFlags_HasSetMousePos;
-  }
-
-  void GUILayer::OnDetach()
-  {
-  }
-
-  void GUILayer::HandleEvent(Engine::Event &e)
-  {
-  }
-
-  void GUILayer::Update()
-  {
-
-  }
-} // namespace Engine
+	Scope<Input> Input::Create()
+	{
+#ifdef ENGINE_SDL_PLATFORM
+        return CreateScope<InputSDL>();
+#else
+        ENGINE_ASSERT(false, "Unknown platform!");
+		return nullptr;
+#endif
+	}
+} 

@@ -14,3 +14,11 @@
    limitations under the License.
 */
 #include "Game.h"
+
+namespace Launcher
+{
+
+    Game::Game() : Engine::Application("Game")
+    {
+    }
+} // namespace Launcher

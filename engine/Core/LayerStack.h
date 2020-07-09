@@ -35,6 +35,7 @@ namespace Engine
         void Update();
         void OnEvent(Event &e);
 
+        inline int Empty() const { return m_Stack.empty(); }
         inline int Count() const { return m_Stack.size(); }
     protected:
         std::vector<Ref<Layer>> m_Stack;

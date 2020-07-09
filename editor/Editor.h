@@ -14,26 +14,12 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
-#include "Events/Event.h"
-
-namespace Engine
-{
-    class Layer
+#include "engine.h"
+#include "ImGUILayer.h"
+namespace Editor {
+    class Editor: public Engine::Application
     {
-
     public:
-        Layer(const std::string &name = "layer");
-        virtual ~Layer();
-        
-        virtual void OnAttach() {}
-        virtual void OnDetach() {}
-        virtual void Update() {}
-        virtual void OnEvent(Event &e) {}
-
-        inline const std::string &GetName() const { return m_Name; }
-
-    protected:
-        std::string m_Name;
+        Editor();
     };
-} // namespace Engine
+}

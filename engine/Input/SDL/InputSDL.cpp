@@ -13,15 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Core/Base.h"
-#include "Core/Input.h"
+#include "Input/SDL/InputSDL.h"
 
-namespace Engine
-{
-	Scope<Input> Input::s_Instance = Input::Create();
-
-	Scope<Input> Input::Create()
-	{
-		return nullptr;
-	}
-} 
+namespace Engine {
+    InputSDL::InputSDL(/* args */)
+    {
+    }
+    
+    InputSDL::~InputSDL()
+    {
+    }
+}

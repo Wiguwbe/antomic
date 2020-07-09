@@ -14,24 +14,16 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
-#include "Core/Layer.h"
+#include "Input/Input.h"
 
-namespace Engine
-{
+namespace Engine {
 
-    class GUILayer : public Layer
+    class InputSDL : public Input
     {
     private:
     public:
-        GUILayer();
-        ~GUILayer();
-
-        void OnAttach() override;
-        void OnDetach() override;
-
-        void HandleEvent(Engine::Event &e) override;
-        void Update() override;
+        InputSDL();
+        virtual ~InputSDL();
     };
-
-} // namespace Engine
+    
+}

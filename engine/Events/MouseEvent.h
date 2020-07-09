@@ -16,7 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 #include "Events/Event.h"
-#include "Core/Input.h"
+#include "Input/Input.h"
 
 namespace Engine
 {

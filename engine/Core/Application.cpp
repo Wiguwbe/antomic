@@ -30,6 +30,7 @@ namespace Engine
         m_Running = false;
         m_Platform = Platform::Create();
         m_Platform->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
+        m_Input = Input::Create();
 
         auto _width = width;
         auto _height = height;
@@ -79,6 +80,13 @@ namespace Engine
             Renderer::RenderFrame();
         }
 
+        // We clean the layer stack since some
+        // layers might need to clean some resources
+        while (!m_Stack.Empty())
+        {
+            m_Stack.PopFront();
+        }
+        
         Renderer::Shutdown();
         m_Platform->DestroyWindow();
         m_Platform->Shutdown();
@@ -86,7 +94,7 @@ namespace Engine
 
     void Application::Update()
     {
-        m_stack.Update();
+        m_Stack.Update();
     }
 
     void Application::ToggleFullscreen(bool value)
@@ -98,8 +106,7 @@ namespace Engine
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<WindowCloseEvent>(ENGINE_BIND_EVENT_FN(Application::OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(ENGINE_BIND_EVENT_FN(Application::OnWindowResize));
-
-        m_stack.OnEvent(event);
+        m_Stack.OnEvent(event);
     }
 
     bool Application::OnWindowClose(WindowCloseEvent &event)

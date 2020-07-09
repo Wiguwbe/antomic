@@ -16,7 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 #include "Events/Event.h"
-#include "Core/Input.h"
+#include "Input/Input.h"
 
 namespace Engine
 {
@@ -24,40 +24,42 @@ namespace Engine
     {
     public:
         Key::Enum GetKeyCode() const { return m_KeyCode; }
+        uint8_t GetKeyModifiers() const { return m_Modifiers; }
 
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
     protected:
-        KeyEvent(Key::Enum keycode)
-            : m_KeyCode(keycode) {}
+        KeyEvent(Key::Enum keycode, uint8_t modifiers)
+            : m_KeyCode(keycode), m_Modifiers(modifiers) {}
 
         Key::Enum m_KeyCode;
+        uint8_t m_Modifiers;
     };
 
     class KeyPressedEvent : public KeyEvent
     {
     public:
-        KeyPressedEvent(Key::Enum keycode, int repeatCount)
-            : KeyEvent(keycode), m_RepeatCount(repeatCount) {}
+        KeyPressedEvent(Key::Enum keycode, uint8_t modifiers, int repeat)
+            : KeyEvent(keycode, modifiers), m_Repeat(repeat) {}
 
-        int GetRepeatCount() const { return m_RepeatCount; }
+        int GetRepeatCount() const { return m_Repeat; }
 
         std::string ToString() const override
         {
             std::stringstream ss;
-            ss << "KeyPressedEvent: " << m_KeyCode << " (" << m_RepeatCount << " repeats)";
+            ss << "KeyPressedEvent: " << m_KeyCode << " ( repeat:" << m_Repeat << ")";
             return ss.str();
         }
 
         EVENT_CLASS_TYPE(KeyPressed)
     private:
-        int m_RepeatCount;
+        bool m_Repeat;
     };
 
     class KeyReleasedEvent : public KeyEvent
     {
     public:
-        KeyReleasedEvent(Key::Enum keycode)
-            : KeyEvent(keycode) {}
+        KeyReleasedEvent(Key::Enum keycode, uint8_t modifiers)
+            : KeyEvent(keycode, modifiers) {}
 
         std::string ToString() const override
         {
@@ -72,8 +74,8 @@ namespace Engine
     class KeyTypedEvent : public KeyEvent
     {
     public:
-        KeyTypedEvent(Key::Enum keycode)
-            : KeyEvent(keycode) {}
+        KeyTypedEvent(Key::Enum keycode, uint8_t modifiers)
+            : KeyEvent(keycode, modifiers) {}
 
         std::string ToString() const override
         {

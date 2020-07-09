@@ -111,7 +111,6 @@ target_include_directories(
     ${BX_INCLUDE_DIRS}
     ${BGFX_INCLUDE_DIRS}
     ${BIMG_INCLUDE_DIRS}
-    ${IMGUI_DIR}
 )
 target_link_libraries( 
     "${PROJECT_NAME}Engine"
@@ -122,7 +121,6 @@ target_link_libraries(
     spdlog::spdlog
     nlohmann_json::nlohmann_json
     ${CMAKE_THREAD_LIBS_INIT}    
-    "imgui"
 )
 
 FILE(GLOB_RECURSE LAUNCHER_SRC "${PROJECT_SOURCE_DIR}/launcher/*.cpp")
@@ -136,6 +134,23 @@ target_include_directories(
 target_link_libraries(
     "${PROJECT_NAME}Launcher" 
     "${PROJECT_NAME}Engine"
+)
+
+FILE(GLOB_RECURSE EDITOR_SRC "${PROJECT_SOURCE_DIR}/editor/*.cpp")
+FILE(GLOB_RECURSE EDITOR_HDR "${PROJECT_SOURCE_DIR}/editor/*.h")
+add_executable("${PROJECT_NAME}Editor" ${EDITOR_HDR} ${EDITOR_SRC})
+target_include_directories( 
+    "${PROJECT_NAME}Editor"
+    PRIVATE
+    "${PROJECT_SOURCE_DIR}/engine"
+    ${BX_INCLUDE_DIRS}
+    ${BGFX_INCLUDE_DIRS}
+   ${IMGUI_DIR}
+)
+target_link_libraries(
+    "${PROJECT_NAME}Editor" 
+    "${PROJECT_NAME}Engine"
+    "imgui"
 )
 
 if(NOT DEFINED ENV{ENGINE_NO_TESTS})

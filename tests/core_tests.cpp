@@ -32,7 +32,7 @@ public:
     TestLayer() : Layer("test_layer"){};
     ~TestLayer(){};
 
-    void HandleEvent(Engine::Event &e) override
+    void OnEvent(Engine::Event &e) override
     {
         e.SetHandled(true);
     }
@@ -55,7 +55,7 @@ public:
     };
     ~NumLayer(){};
 
-    void HandleEvent(Engine::Event &e) override
+    void OnEvent(Engine::Event &e) override
     {
         if (m_Handle)
         {

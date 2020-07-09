@@ -20,6 +20,6 @@ namespace Launcher {
     class Game: public Engine::Application
     {
     public:
-        Game() : Engine::Application("Game") {};
+        Game();
     };
 }

@@ -64,7 +64,7 @@ namespace Engine
     {
         for (auto it = m_Stack.end(); it != m_Stack.begin();)
         {
-            (*--it)->HandleEvent(e);
+            (*--it)->OnEvent(e);
             if (e.IsHandled())
                 break;
         }

@@ -14,11 +14,23 @@
    limitations under the License.
 */
 #include "Editor.h"
+#include "ImGUIRenderer.h"
 
 namespace Editor
 {
     Editor::Editor() : Engine::Application("Editor")
     {
+    }
+
+    void Editor::AfterRendererInit()
+    {
+        ImGUIRenderer::InitializeBgfx(255);
         m_Stack.PushFront(Engine::CreateRef<ImGUILayer>());
     }
+
+    void Editor::BeforeRendererShutdown()
+    {
+        ImGUIRenderer::ShudownBgfx();
+    }
+
 } // namespace Editor

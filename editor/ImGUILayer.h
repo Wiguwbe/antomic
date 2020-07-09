@@ -15,6 +15,8 @@
 */
 #pragma once
 #include "engine.h"
+#include "ImGUIRenderer.h"
+#include "imgui.h"
 
 namespace Editor
 {
@@ -31,9 +33,14 @@ namespace Editor
 
         void OnEvent(Engine::Event &e) override;
         void Update() override;
+        void Render() override;
 
         bool OnMouseMovedEvent(Engine::MouseMovedEvent &event);
         bool OnMousePressed(Engine::MouseButtonPressedEvent &event);
-        bool OnMouseReleased(Engine::MouseButtonReleasedEvent &event);        
+        bool OnMouseReleased(Engine::MouseButtonReleasedEvent &event);
+
+    private:
+        ImGuiContext* m_Context;
+        bgfx::TextureHandle m_FontTexture;
     };
-} // namespace Engine
+} // namespace Editor

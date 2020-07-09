@@ -134,7 +134,7 @@ namespace Engine
 {
     SDL_Window *PlatformSDL::s_SDLWindow = nullptr;
 
-    PlatformSDL::PlatformSDL()
+    PlatformSDL::PlatformSDL(): m_Handler(nullptr)
     {
     }
 

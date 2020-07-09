@@ -40,12 +40,17 @@ namespace Engine
         void OnEvent(Event &event);
         void ToggleFullscreen(bool value);
         void Run();
+        void Render();
         bool OnWindowClose(WindowCloseEvent &event);
         bool OnWindowResize(WindowResizeEvent &event);
         inline uint32_t CurrentWidth() const { return m_Width; }
         inline uint32_t CurrentHeight() const { return m_Height; }
 
         virtual void Update();
+        virtual void BeforeRendererInit() {}
+        virtual void AfterRendererInit() {}
+        virtual void BeforeRendererShutdown() {}
+        virtual void AfterRendererShutdown() {}
 
         static Application &Current() { return *s_Instance; }
 

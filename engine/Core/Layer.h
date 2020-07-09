@@ -29,11 +29,16 @@ namespace Engine
         virtual void OnAttach() {}
         virtual void OnDetach() {}
         virtual void Update() {}
+        virtual void Render() {}
         virtual void OnEvent(Event &e) {}
 
+        inline const void Disable() { m_Enabled=false; }
+        inline const void Enable() { m_Enabled=true; }
+        inline const bool &IsEnabled() const { return m_Enabled; }
         inline const std::string &GetName() const { return m_Name; }
 
     protected:
         std::string m_Name;
+        bool m_Enabled;
     };
 } // namespace Engine

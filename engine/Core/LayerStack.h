@@ -33,6 +33,7 @@ namespace Engine
         void PopBack();
         void Remove(Ref<Layer> l);
         void Update();
+        void Render();
         void OnEvent(Event &e);
 
         inline int Empty() const { return m_Stack.empty(); }

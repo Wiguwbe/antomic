@@ -17,12 +17,11 @@
 
 namespace Engine
 {
-    Layer::Layer(const std::string &name) : m_Name(name)
+    Layer::Layer(const std::string &name) : m_Name(name), m_Enabled(true)
     {
     }
 
     Layer::~Layer()
     {
     }
-
 } // namespace Engine

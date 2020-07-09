@@ -57,16 +57,30 @@ namespace Engine
     void LayerStack::Update()
     {
         for (auto it = m_Stack.begin(); it != m_Stack.end(); ++it)
-            (*it)->Update();
+        {
+            if ((*it)->IsEnabled())
+                (*it)->Update();
+        }
+    }
+
+    void LayerStack::Render()
+    {
+        for (auto it = m_Stack.begin(); it != m_Stack.end(); ++it)
+        {
+            if ((*it)->IsEnabled())
+                (*it)->Render();
+        }
     }
 
     void LayerStack::OnEvent(Event &e)
     {
-        for (auto it = m_Stack.end(); it != m_Stack.begin();)
+        for (auto it = m_Stack.rbegin(); it != m_Stack.rend(); ++it)
         {
-            (*--it)->OnEvent(e);
-            if (e.IsHandled())
-                break;
+            if ((*it)->IsEnabled()) {
+                (*it)->OnEvent(e);
+                if (e.IsHandled())
+                    return;
+            }
         }
     }
 

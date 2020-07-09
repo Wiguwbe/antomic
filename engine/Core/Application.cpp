@@ -57,9 +57,8 @@ namespace Engine
             exit(1);
         }
 
-        Renderer::Init(_width, _height);
         m_Width = _width;
-        m_Height = height;
+        m_Height = _height;
     }
 
     Application::~Application()
@@ -73,11 +72,15 @@ namespace Engine
 
         m_Running = true;
 
+        this->BeforeRendererInit();
+        Renderer::Init(m_Width, m_Height);
+        this->AfterRendererInit();
+
         while (m_Running)
         {
             m_Platform->ProcessWindowEvents();
             this->Update();
-            Renderer::RenderFrame();
+            this->Render();
         }
 
         // We clean the layer stack since some
@@ -87,9 +90,16 @@ namespace Engine
             m_Stack.PopFront();
         }
         
+        this->BeforeRendererShutdown();
         Renderer::Shutdown();
+        this->AfterRendererShutdown();
         m_Platform->DestroyWindow();
         m_Platform->Shutdown();
+    }
+
+    void Application::Render() {
+        m_Stack.Render();
+        Renderer::RenderFrame();
     }
 
     void Application::Update()

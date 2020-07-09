@@ -21,5 +21,7 @@ namespace Editor {
     {
     public:
         Editor();
+        void AfterRendererInit() override;
+        void BeforeRendererShutdown() override;
     };
 }

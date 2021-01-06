@@ -1,0 +1,7 @@
+git://github.com/bkaradzic/bx.git
+git://github.com/bkaradzic/bimg.git
+git://github.com/bkaradzic/bgfx.git
+git://github.com/nlohmann/json.git
+git://github.com/gabime/spdlog.git
+git://github.com/google/googletest.git
+git://github.com/ocornut/imgui.git

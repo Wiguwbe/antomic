@@ -17,6 +17,8 @@
 
 #ifdef ENGINE_SDL_PLATFORM
 #include "Platform/SDL/PlatformSDL.h"
+#elif ENGINE_PLATFORM_WINDOWS
+
 #endif
 
 namespace Engine
@@ -25,7 +27,9 @@ namespace Engine
     {
 #ifdef ENGINE_SDL_PLATFORM
         return CreateScope<PlatformSDL>();
-#else
+#elif ENGINE_PLATFORM_WINDOWS
+        return nullptr;
+#else ENGINE_SDL_PLATFORM
         ENGINE_ASSERT(false, "Unknown platform!");
         return nullptr;
 #endif

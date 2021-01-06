@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Game)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -Wall -Werror -std=c++17")
-
 project(${PROJECT_NAME} CXX C)
 
 set(VERSION_MAJOR 0)
@@ -11,15 +9,19 @@ set(VERSION_MINOR 0)
 set(VERSION_RELEASE 1)
 set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_RELEASE}")
 
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    add_definitions(-DENGINE_DEBUG)
+endif()
+
 find_package(Threads REQUIRED)
 if(WIN32)
-    message(ERROR "Windows not supported yet")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -Wall -std=c++17")
+    add_definitions(-DENGINE_PLATFORM_WINDOWS)
 elseif (UNIX)
 
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -Wall -Werror -std=c++17")
+    
     add_definitions(-DENGINE_PLATFORM_LINUX)
-    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-        add_definitions(-DENGINE_DEBUG)
-    endif()
 
     find_package(PkgConfig REQUIRED)
 

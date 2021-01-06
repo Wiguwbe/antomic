@@ -14,18 +14,17 @@
    limitations under the License.
 */
 #pragma once
-#ifdef ENGINE_SDL_PLATFORM
+#ifdef ENGINE_PLATFORM_WINDOWS
 #include "Platform/Platform.h"
-#include <SDL2/SDL.h>
 
 namespace Engine
 {
 
-    class PlatformSDL : public Platform
+    class PlatformWindows : public Platform
     {
     public:
-        PlatformSDL();
-        virtual ~PlatformSDL();
+        PlatformWindows();
+        virtual ~PlatformWindows();
 
         virtual bool Init();
         virtual void Shutdown();
@@ -34,14 +33,9 @@ namespace Engine
         virtual bool CreateWindow(uint32_t width, uint32_t height, std::string name);
         virtual void DestroyWindow();
         virtual void ProcessWindowEvents();
-        virtual void SetEventHandler(const EventHandler &handler) { m_Handler = handler; }
+        virtual void SetEventHandler(const EventHandler &handler) { }
 
     private:
-        static SDL_Window *s_SDLWindow;
-        std::string m_Name;
-        uint32_t m_Width;
-        uint32_t m_Height;
-        EventHandler m_Handler;
     };
 } // namespace Engine
 #endif

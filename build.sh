@@ -113,11 +113,6 @@ function level_3dparty_dependencies() {
         [ -d "vendor/${REPONAME%.git}" ] && continue
         git clone ${GIT} "vendor/${REPONAME%.git}"
     done
-
-    # we make sure bgfx is built
-    pushd vendor/bgfx
-    make linux-release64
-    popd
 }
 
 function level_cmake_generator() {
@@ -125,9 +120,10 @@ function level_cmake_generator() {
     # If we are enabled the BUILD_LEVEL_ONLY_FLAG and this is not
     # the level supposed to build, just skip it
     [ ${BUILD_LEVEL_ONLY} -eq 1 ] && [ ${BUILD_LEVEL} -ne 2 ] && return
+    printf "Generate CMake Project\n"
     CMAKE_CMD=$(command -v cmake)
     mkdir -p build
-    ${CMAKE_CMD} --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -H$(pwd) -B$(pwd)/build -G "${CMAKE_GEN}"
+    ${CMAKE_CMD} --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -H"$(pwd)" -B"$(pwd)/build" -G "${CMAKE_GEN}"
 }
 
 function level_build_engine() {

@@ -27,9 +27,7 @@ namespace Engine
     {
 #ifdef ENGINE_SDL_PLATFORM
         return CreateScope<PlatformSDL>();
-#elif ENGINE_PLATFORM_WINDOWS
-        return nullptr;
-#else ENGINE_SDL_PLATFORM
+#else
         ENGINE_ASSERT(false, "Unknown platform!");
         return nullptr;
 #endif

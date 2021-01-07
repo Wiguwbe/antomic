@@ -17,7 +17,7 @@ endif()
 find_package(Threads REQUIRED)
 
 
-    # Support both 32 and 64 bit builds
+# Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
     set(BUILD_ARCH "x64")
 else ()
@@ -26,29 +26,26 @@ endif ()
 
 
 if(WIN32)
+    # A hack for now
+    add_definitions(-DENGINE_DEBUG)
+
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -W4")
     add_definitions(-DENGINE_PLATFORM_WINDOWS)
     add_definitions(-DENGINE_SDL_PLATFORM)
-
     set(SDL2_INCLUDE_DIRS "${VENDOR_DIR}/SDL2-2.0.14/include")
     set(SDL2_LIBRARIES "${VENDOR_DIR}/SDL2-2.0.14/lib/${BUILD_ARCH}/SDL2.lib;${VENDOR_DIR}/SDL2-2.0.14/lib/${BUILD_ARCH}/SDL2main.lib")
     string(STRIP "${SDL2_LIBRARIES}" SDL2_LIBRARIES)    
 elseif (UNIX)
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -Wall -Werror")
-    
     add_definitions(-DENGINE_PLATFORM_LINUX)
-
     find_package(PkgConfig REQUIRED)
-
     pkg_check_modules(SDL2 sdl2)
-
     if (SDL2_FOUND)
         add_definitions(-DENGINE_SDL_PLATFORM)
     else(SDL2_FOUND)
         message(ERROR "We need SDL2 for the moment")
     endif(SDL2_FOUND)
-
     pkg_check_modules(GL REQUIRED opengl)
     pkg_check_modules(X11 REQUIRED x11)
 endif(WIN32)

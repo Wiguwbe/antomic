@@ -74,5 +74,7 @@ namespace Engine
     class Event;
     class EventListener;
 
+    using EventHandler = std::function<void(Event&)>;
+
 } // namespace Engine
 

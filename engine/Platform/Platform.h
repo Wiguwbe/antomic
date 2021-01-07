@@ -21,8 +21,6 @@
 
 namespace Engine
 {
-    using EventHandler = std::function<void(Event&)>;
-
     class Platform
     {
 

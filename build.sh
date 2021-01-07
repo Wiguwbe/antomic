@@ -13,6 +13,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 set +e
+printf "Antomic Engine project setup - Bash Version\n"
 
 # This BUILD_LEVEL is used to understand what we are setting up:
 # When you set a level number all the below levels will be installed also
@@ -33,9 +34,8 @@ set +e
 
 # Select generatior
 if [ $# -eq 0 ]; then
-    printf "Engine project setup\n"
     printf "Usage:\n"
-    printf "setup.sh <environment>\n"
+    printf "build.sh <environment>\n"
     printf "available environments:\n"
     printf "* Ninja\n"
     printf "* Kate\n"
@@ -48,6 +48,7 @@ function level_build_dependencies() {
     # If we are enabled the BUILD_LEVEL_ONLY_FLAG and this is not
     # the level supposed to build, just skip it
     [ ${BUILD_LEVEL_ONLY} -eq 1 ] && [ ${BUILD_LEVEL} -ne 0 ] && return
+    printf "Installing Build Dependencies\n"
 
     case "${DISTRO}" in 
         Ubuntu)
@@ -55,10 +56,11 @@ function level_build_dependencies() {
                 "build-essentials"
                 "cmake"
                 "cmake-extra"
-                "libsdl2-2.0"
+                "libsdl2-dev"
                 "libgl1-mesa-dev"
                 "x11proto-core-dev"
                 "libx11-dev"
+                "mesa-common-dev"
             )
 
             MISSING_PACKAGES=()
@@ -94,18 +96,15 @@ function level_3dparty_dependencies() {
     # If we are enabled the BUILD_LEVEL_ONLY_FLAG and this is not
     # the level supposed to build, just skip it
     [ ${BUILD_LEVEL_ONLY} -eq 1 ] && [ ${BUILD_LEVEL} -ne 1 ] && return
+    printf "Installing 3rd Party dependencies\n"
 
     VENDORS_GIT=(
-        "git://github.com/bkaradzic/bx.git"
-        "git://github.com/bkaradzic/bimg.git"
-        "git://github.com/bkaradzic/bgfx.git"
         "git://github.com/nlohmann/json.git"
         "git://github.com/gabime/spdlog.git"
-        "git://github.com/google/googletest.git"
         "git://github.com/ocornut/imgui.git"
     )
 
-    # Get external dependencies
+    # Create the vendor directory
     mkdir -p vendor
 
     # push all 3rd party repositories

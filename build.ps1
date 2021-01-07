@@ -115,7 +115,12 @@ function level_3dparty_dependencies {
         git clone $GIT vendor/$BASENAME
         Write-Host "$GIT"
     }
+    
+    # Get SDL from the oficial website
+    Invoke-WebRequest https://www.libsdl.org/release/SDL2-devel-2.0.14-VC.zip -OutFile $env:TEMP\SDL2-devel-2.0.14-VC.zip
+    Expand-Archive -LiteralPath "$env:TEMP\SDL2-devel-2.0.14-VC.zip" -DestinationPath ./vendor
 
+    # Build BGFX will be deprecated soon
     $Old_Path = $Env:Path 
     $Env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE"
     

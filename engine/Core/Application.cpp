@@ -51,7 +51,7 @@ namespace Engine
             exit(1);
         }
 
-        if (!m_Platform->CreateWindow(_width, _height, name))
+        if (!m_Platform->SetupWindow(_width, _height, name))
         {
             ENGINE_INFO("Error creating window: {0}, {1}", _width, _height);
             exit(1);

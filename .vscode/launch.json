@@ -5,7 +5,40 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Game",
+            "name": "(Windows) Game Launcher",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/Debug/GameLauncher.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false
+        },
+        {
+            "name": "(Windows) Game Editor",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/Debug/GameEditor.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false
+        },
+        {
+            "name": "(Windows) Game Tests",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/Debug/GameTests.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false
+        },
+        {
+            "name": "(Linux) Game Launcher",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/GameLauncher",
@@ -24,7 +57,7 @@
             ],
         },
         {
-            "name": "Debug Editor",
+            "name": "(Linux) Game Editor",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/GameEditor",
@@ -43,7 +76,7 @@
             ],
         },
         {
-            "name": "Debug Tests",
+            "name": "(Linux) Game Tests",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/GameTests",
@@ -60,7 +93,8 @@
                     "ignoreFailures": true
                 }
             ],
-        }
+        },
+
        
     ]
 }

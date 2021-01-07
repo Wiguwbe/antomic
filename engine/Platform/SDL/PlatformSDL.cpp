@@ -19,10 +19,11 @@
 #include "Events/WindowEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
+#ifdef ENGINE_PLATFORM_LINUX
 #include <SDL2/SDL_syswm.h>
-#include "bx/bx.h"
-#include "bgfx/bgfx.h"
-#include "bgfx/platform.h"
+#elif ENGINE_PLATFORM_WINDOWS
+#include "SDL_syswm.h"
+#endif
 
 static uint8_t translateKeyModifiers(uint16_t _sdl)
 {
@@ -97,7 +98,6 @@ static uint8_t s_translateKey[256];
 
 static void initTranslateKey(uint16_t _sdl, Engine::Key::Enum _key)
 {
-    BX_CHECK(_sdl < BX_COUNTOF(s_translateKey), "Out of bounds %d.", _sdl);
     s_translateKey[_sdl & 0xff] = (uint8_t)_key;
 }
 
@@ -158,7 +158,7 @@ namespace Engine
         SDL_Quit();
     }
 
-    bool PlatformSDL::CreateWindow(uint32_t width, uint32_t height, std::string name)
+    bool PlatformSDL::SetupWindow(uint32_t width, uint32_t height, std::string name)
     {
         m_Width = width;
         m_Height = height;
@@ -185,12 +185,7 @@ namespace Engine
             return false;
         }
 
-        bgfx::PlatformData pd;
-        pd.ndt = wmi.info.x11.display;
-        pd.nwh = (void *)(uintptr_t)wmi.info.x11.window;
-        bgfx::setPlatformData(pd);
-
-        bx::memSet(s_translateKey, 0, sizeof(s_translateKey));
+        std::memset(s_translateKey, 0, sizeof(s_translateKey));
         initTranslateKey(SDL_SCANCODE_ESCAPE, Key::Esc);
         initTranslateKey(SDL_SCANCODE_RETURN, Key::Return);
         initTranslateKey(SDL_SCANCODE_TAB, Key::Tab);

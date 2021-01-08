@@ -29,8 +29,9 @@ namespace Engine
         s_Instance = this;
         m_Running = false;
         m_Platform = Platform::Create();
-        m_Platform->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
         m_Input = Input::Create();
+        m_Platform->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
+        m_Input->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
 
         auto _width = width;
         auto _height = height;
@@ -51,9 +52,16 @@ namespace Engine
             exit(1);
         }
 
-        if (!m_Platform->CreateWindow(_width, _height, name))
+        if (!m_Platform->SetupWindow(_width, _height, name))
         {
             ENGINE_INFO("Error creating window: {0}, {1}", _width, _height);
+            exit(1);
+        }
+
+        if (!m_Input->SetupInput())
+        {
+            ENGINE_INFO("Error initializng input:");
+            m_Platform->Shutdown();
             exit(1);
         }
 
@@ -63,6 +71,7 @@ namespace Engine
 
     Application::~Application()
     {
+        this->m_Input = nullptr;
     }
 
     void Application::Run()
@@ -78,6 +87,7 @@ namespace Engine
 
         while (m_Running)
         {
+            m_Input->ProcessInputEvents();
             m_Platform->ProcessWindowEvents();
             this->Update();
             this->Render();

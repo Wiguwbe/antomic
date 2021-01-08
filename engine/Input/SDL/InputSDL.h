@@ -15,15 +15,27 @@
 */
 #pragma once
 #include "Input/Input.h"
+#ifdef ENGINE_PLATFORM_LINUX
+#include <SDL2/SDL.h>
+#elif ENGINE_PLATFORM_WINDOWS
+#include "SDL.h"
+#endif
 
-namespace Engine {
+namespace Engine
+{
 
     class InputSDL : public Input
     {
-    private:
     public:
         InputSDL();
         virtual ~InputSDL();
+
+        virtual bool SetupInput();
+        virtual void ProcessInputEvents();
+        virtual void SetEventHandler(const EventHandler &handler) { m_Handler = handler; }
+
+    protected:
+        EventHandler m_Handler;
     };
-    
-}
+
+} // namespace Engine

@@ -14,39 +14,25 @@
    limitations under the License.
 */
 #include "Renderer/Renderer.h"
-#include "bgfx/bgfx.h"
-#include "bgfx/platform.h"
 
 namespace Engine
 {
 
     void Renderer::Init(uint32_t width, uint32_t height)
     {
-        bgfx::renderFrame();
-        bgfx::init();
         OnWindowResize(width, height);
     }
 
     void Renderer::Shutdown()
     {
-        bgfx::shutdown();
     }
 
     void Renderer::OnWindowResize(uint32_t width, uint32_t height)
     {
-        bgfx::reset(width, height, BGFX_RESET_VSYNC);
-        bgfx::setViewRect(0, 0, 0, uint16_t(width), uint16_t(height));
-        bgfx::setViewClear(0,
-                           BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-                           0x100000, 1.0f, 0);
     }
 
     void Renderer::RenderFrame()
     {
-        bgfx::touch(0);
-        BeginScene();
-        EndScene();
-        bgfx::frame();
     }
 
     void Renderer::BeginScene()

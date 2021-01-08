@@ -14,8 +14,13 @@
    limitations under the License.
 */
 #pragma once
+#ifdef ENGINE_SDL_PLATFORM
 #include "Platform/Platform.h"
+#ifdef ENGINE_PLATFORM_LINUX
 #include <SDL2/SDL.h>
+#elif ENGINE_PLATFORM_WINDOWS
+#include "SDL.h"
+#endif
 
 namespace Engine
 {
@@ -30,7 +35,7 @@ namespace Engine
         virtual void Shutdown();
         virtual void ToggleFullscreen();
         virtual void SetMouseLock(bool lock);
-        virtual bool CreateWindow(uint32_t width, uint32_t height, std::string name);
+        virtual bool SetupWindow(uint32_t width, uint32_t height, std::string name);
         virtual void DestroyWindow();
         virtual void ProcessWindowEvents();
         virtual void SetEventHandler(const EventHandler &handler) { m_Handler = handler; }
@@ -43,3 +48,4 @@ namespace Engine
         EventHandler m_Handler;
     };
 } // namespace Engine
+#endif

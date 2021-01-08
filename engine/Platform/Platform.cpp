@@ -17,6 +17,8 @@
 
 #ifdef ENGINE_SDL_PLATFORM
 #include "Platform/SDL/PlatformSDL.h"
+#elif ENGINE_PLATFORM_WINDOWS
+
 #endif
 
 namespace Engine

@@ -98,11 +98,7 @@ function level_3dparty_dependencies() {
     [ ${BUILD_LEVEL_ONLY} -eq 1 ] && [ ${BUILD_LEVEL} -ne 1 ] && return
     printf "Installing 3rd Party dependencies\n"
 
-    VENDORS_GIT=(
-        "git://github.com/nlohmann/json.git"
-        "git://github.com/gabime/spdlog.git"
-        "git://github.com/ocornut/imgui.git"
-    )
+    VENDORS_GIT=$(cat dependencies.git)
 
     # Create the vendor directory
     mkdir -p vendor

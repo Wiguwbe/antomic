@@ -35,6 +35,9 @@ $BUILD_LEVEL_ONLY = if ($env:BUILD_LEVEL_ONLY) { $env:BUILD_LEVEL_ONLY } else { 
 # Set the BUILD_TYPE, by default we build Debug
 $BUILD_TYPE = if ($env:BUILD_TYPE) { $env:BUILD_TYPE } else { "Debug" };
 
+# MSYS2 Mingw Download URL
+$MSYS2_URL = "https://repo.msys2.org/distrib/x86_64/msys2-x86_64-20210228.exe";
+
 switch -Regex ($GENERATOR) {
     '^[Nn]inja$' { $CMAKE_GEN = "Ninja" }
     '^[Vv][Ss]2017$' { $CMAKE_GEN = "Visual Studio 15 2017" }
@@ -58,39 +61,52 @@ function level_build_dependencies {
         return
     }
     Write-Host "Installing Build Dependencies"
-
-    # Firt check if we have the tools we need
-    if (Get-Command winget.exe) {
-        Write-Host "Winget found!"
-    }
-    else {
-        Write-Host "To be able to install missing dependencies, please install winget.exe, for more information please visit https://docs.microsoft.com/en-us/windows/package-manager/winget/"
+    
+    Get-Command choco.exe -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
+    if ($NoCommandError) {
+        Write-Host "To be able to install missing dependencies, please install Chocolatey.exe, for more information please visit https://docs.chocolatey.org/en-us/choco/setup#install-with-powershellexe"
         exit 1
     }
+    Write-Host "Chocolatey found!"
 
-    if (Get-Command "C:\Program Files\CMake\bin\cmake.exe") {
-        Write-Host "CMake found!"
-    }
-    else {
-        Write-Host "CMake not found! Installing CMake..."
-        winget.exe install Kitware.CMake
-    }
-
-    if (Get-Command git.exe) {
-        Write-Host "Git found!"
-    }
-    else {
-        Write-Host "Git not found! Installing Git..."
-        winget.exe install Git.Git
+    Get-Command "C:\msys64\msys2.exe" -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
+    if ($NoCommandError) {
+        Write-Host "MSYS2 not found! Installing MSYS2..."
+        Invoke-WebRequest $MSYS2_URL -OutFile $env:TEMP\msys_setup.exe
+        Start-Process -FilePath $env:TEMP\msys_setup.exe
+        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu"
+        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Su"
     }
 
-    if (Get-Command "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.COM") {
-        Write-Host "Visual Studio 2017 found!"
+    Get-Command "C:\msys64\msys2.exe" -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
+    if ($NoCommandError) {
+        Write-Host "MSYS2 not found! Installing MSYS2..."
+        Invoke-WebRequest $MSYS2_URL -OutFile $env:TEMP\msys_setup.exe
+        Start-Process -FilePath $env:TEMP\msys_setup.exe
+        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu"
+        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Su"
     }
-    else { 
-        Write-Host "Visual Studio 2017 not found! Please install Visual Studio 2017 with windows 8.1 SDK before continuing..."
-        exit 0
+    Write-Host "MSYS2 Found!"
+
+    Get-Command "C:\msys64\mingw64\bin\g++" -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
+    if ($NoCommandError) {
+        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu", "--needed", "base-devel mingw-w64-x86_64-toolchain mingw-w64-SDL2"
+        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu", "mingw-w64-x86_64-SDL2", "mingw-w64-x86_64-cmake", "mingw-w64-x86_64-extra-cmake-modules","mingw-w64-x86_64-cninja", "mingw-w64-i686-mesa"
     }
+
+}
+
+function setup_env_vars {
+    $OLD_PATH = [System.Environment]::GetEnvironmentVariable("PATH")
+    [System.Environment]::SetEnvironmentVariable("PATH", "C:\msys64\mingw64\bin;" + $OLD_PATH)
+    [System.Environment]::SetEnvironmentVariable("MINGW_CHOST", "x86_64-w64-mingw32")
+    [System.Environment]::SetEnvironmentVariable("MINGW_PACKAGE_PREFIX", "mingw-w64-x86_64")
+    [System.Environment]::SetEnvironmentVariable("MINGW_PREFIX", "/mingw64")
+    [System.Environment]::SetEnvironmentVariable("MSYSCON", "mintty.exe")
+    [System.Environment]::SetEnvironmentVariable("MSYSTEM", "MINGW64")
+    [System.Environment]::SetEnvironmentVariable("MSYSTEM_CARCH", "x86_64")
+    [System.Environment]::SetEnvironmentVariable("MSYSTEM_CHOST", "x86_64-w64-mingw32")
+    [System.Environment]::SetEnvironmentVariable("MSYSTEM_PREFIX", "/mingw64")    
 }
 
 function level_3dparty_dependencies {
@@ -115,22 +131,10 @@ function level_3dparty_dependencies {
         git clone $GIT vendor/$BASENAME
         Write-Host "$GIT"
     }
-    
+
     # Get SDL from the oficial website
     Invoke-WebRequest https://www.libsdl.org/release/SDL2-devel-2.0.14-VC.zip -OutFile $env:TEMP\SDL2-devel-2.0.14-VC.zip
     Expand-Archive -LiteralPath "$env:TEMP\SDL2-devel-2.0.14-VC.zip" -DestinationPath ./vendor
-
-    # Build BGFX will be deprecated soon
-    $Old_Path = $Env:Path 
-    $Env:Path += ";C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE"
-    
-    # we make sure bgfx is built
-    Push-Location vendor/bgfx
-    ..\bx\tools\bin\windows\genie.exe --with-tools --with-combined-examples --with-shared-lib vs2017
-    devenv .build/projects/vs2017/bgfx.sln /Build "Debug|x64"
-    Pop-Location    
-
-    $Env:Path = $Old_Path
 }
 
 function level_cmake_generator {
@@ -148,12 +152,9 @@ function level_cmake_generator {
     } 
     
     mkdir -p build 2>&1 | Out-Null
-    $CURRENT_PATH=$(Get-Location)
+    $CURRENT_PATH = $(Get-Location)
 
-    $Old_Path = $Env:Path 
-    $Env:Path += ";C:\Program Files\CMake\bin"
     cmake --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -H"$CURRENT_PATH" -B"$CURRENT_PATH\build" -G "${CMAKE_GEN}"
-    $Env:Path = $Old_Path
 }
 
 function level_build_engine {
@@ -169,6 +170,8 @@ if ($BUILD_LEVEL -ge 0) {
 if ($BUILD_LEVEL -ge 1) {
     level_3dparty_dependencies
 }
+
+setup_env_vars
 
 # BUILD_LEVEL 1 - Run cmake generator
 if ($BUILD_LEVEL -ge 2) {

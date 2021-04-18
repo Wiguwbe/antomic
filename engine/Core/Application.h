@@ -24,6 +24,7 @@
 #include "Events/KeyEvent.h"
 #include "Core/LayerStack.h"
 #include "Input/Input.h"
+#include "Renderer/Renderer.h"
 
 namespace Engine
 {
@@ -63,5 +64,6 @@ namespace Engine
         bool m_Running;
         Scope<Platform> m_Platform;
         Scope<Input> m_Input;
+        Scope<Renderer> m_Renderer;
     };
 } // namespace Engine

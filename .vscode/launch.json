@@ -6,9 +6,9 @@
     "configurations": [
         {
             "name": "(Windows) Game Launcher",
-            "type": "cppvsdbg",
+            "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/Debug/GameLauncher.exe",
+            "program": "${workspaceFolder}/bin/GameLauncher.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -17,9 +17,9 @@
         },
         {
             "name": "(Windows) Game Editor",
-            "type": "cppvsdbg",
+            "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/Debug/GameEditor.exe",
+            "program": "${workspaceFolder}/bin/GameEditor.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -28,9 +28,9 @@
         },
         {
             "name": "(Windows) Game Tests",
-            "type": "cppvsdbg",
+            "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/Debug/GameTests.exe",
+            "program": "${workspaceFolder}/bin/GameTests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

@@ -13,34 +13,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#include "Core/Base.h"
 #include "Renderer/Renderer.h"
+
+#ifdef ENGINE_GL_RENDERER
+#include "Renderer/OpenGL/RendererGL.h"
+#endif
 
 namespace Engine
 {
-
-    void Renderer::Init(uint32_t width, uint32_t height)
-    {
-        OnWindowResize(width, height);
-    }
-
-    void Renderer::Shutdown()
-    {
-    }
-
-    void Renderer::OnWindowResize(uint32_t width, uint32_t height)
-    {
-    }
-
-    void Renderer::RenderFrame()
-    {
-    }
-
-    void Renderer::BeginScene()
-    {
-    }
-
-    void Renderer::EndScene()
-    {
-    }
-
-} // namespace Engine
+	Scope<Renderer> Renderer::Create()
+	{
+#ifdef ENGINE_GL_RENDERER
+        return CreateScope<RendererGL>();
+#else
+        ENGINE_ASSERT(false, "Unknown platform!");
+		return nullptr;
+#endif
+	}
+} 

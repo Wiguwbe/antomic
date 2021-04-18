@@ -30,6 +30,7 @@ namespace Engine
         m_Running = false;
         m_Platform = Platform::Create();
         m_Input = Input::Create();
+        m_Renderer = Renderer::Create();
         m_Platform->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
         m_Input->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
 
@@ -82,7 +83,7 @@ namespace Engine
         m_Running = true;
 
         this->BeforeRendererInit();
-        Renderer::Init(m_Width, m_Height);
+        this->m_Renderer->Init(m_Width, m_Height);
         this->AfterRendererInit();
 
         while (m_Running)
@@ -91,6 +92,7 @@ namespace Engine
             m_Platform->ProcessWindowEvents();
             this->Update();
             this->Render();
+            m_Platform->UpdateWindow();
         }
 
         // We clean the layer stack since some
@@ -101,7 +103,7 @@ namespace Engine
         }
         
         this->BeforeRendererShutdown();
-        Renderer::Shutdown();
+        this->m_Renderer->Shutdown();
         this->AfterRendererShutdown();
         m_Platform->DestroyWindow();
         m_Platform->Shutdown();
@@ -109,7 +111,7 @@ namespace Engine
 
     void Application::Render() {
         m_Stack.Render();
-        Renderer::RenderFrame();
+        this->m_Renderer->RenderFrame();
     }
 
     void Application::Update()
@@ -137,7 +139,7 @@ namespace Engine
 
     bool Application::OnWindowResize(WindowResizeEvent &event)
     {
-        Renderer::OnWindowResize(event.GetWidth(), event.GetHeight());
+        this->m_Renderer->OnWindowResize(event.GetWidth(), event.GetHeight());
         m_Width = event.GetWidth();
         m_Height = event.GetHeight();
         return true;

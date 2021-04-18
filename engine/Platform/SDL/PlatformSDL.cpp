@@ -25,6 +25,9 @@
 namespace Engine
 {
     SDL_Window *PlatformSDL::s_SDLWindow = nullptr;
+#ifdef ENGINE_GL_RENDERER
+    SDL_GLContext PlatformSDL::s_GLContext;
+#endif
 
     PlatformSDL::PlatformSDL() : m_Handler(nullptr)
     {
@@ -55,10 +58,15 @@ namespace Engine
         m_Width = width;
         m_Height = height;
 
+#ifdef ENGINE_GL_RENDERER
+        s_SDLWindow = SDL_CreateWindow(
+            name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+#else
         s_SDLWindow = SDL_CreateWindow(
             name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
             width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-
+#endif
         if (!s_SDLWindow)
         {
             ENGINE_TRACE("Error creating SDL window: {0},{1}", width, height);
@@ -66,12 +74,19 @@ namespace Engine
             return false;
         }
 
+#ifdef ENGINE_GL_RENDERER
+        s_GLContext = SDL_GL_CreateContext(s_SDLWindow);
+#endif
+
         SDL_SysWMinfo wmi;
         SDL_VERSION(&wmi.version);
 
         if (!SDL_GetWindowWMInfo(s_SDLWindow, &wmi))
         {
             ENGINE_TRACE("Error retrieving window information");
+#ifdef ENGINE_GL_RENDERER
+            SDL_GL_DeleteContext(s_GLContext);
+#endif
             SDL_DestroyWindow(s_SDLWindow);
             SDL_Quit();
             return false;
@@ -82,12 +97,23 @@ namespace Engine
 
     void PlatformSDL::DestroyWindow()
     {
+#ifdef ENGINE_GL_RENDERER
+        SDL_GL_DeleteContext(s_GLContext);
+#endif
         SDL_DestroyWindow(s_SDLWindow);
+    }
+
+    void PlatformSDL::UpdateWindow()
+    {
+#ifdef ENGINE_GL_RENDERER
+        SDL_GL_SwapWindow(s_SDLWindow);
+#endif
     }
 
     void PlatformSDL::ProcessWindowEvents()
     {
-        // On SDL everything is handled in the same loop
+        // On SDL everything is handled in the same loop, the main loop is
+        // implemented on the InputSDL module
     }
 
     void PlatformSDL::ToggleFullscreen()

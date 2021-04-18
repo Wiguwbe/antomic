@@ -13,26 +13,34 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
-#include "Core/Log.h"
+#include "Renderer/OpenGL/RendererGL.h"
 
 namespace Engine
 {
-    class Renderer
-    {
-        
-    public:
-        virtual void Init(uint32_t width, uint32_t height) = 0;
-        virtual void Shutdown() = 0;
-        virtual void OnWindowResize(uint32_t width, uint32_t height) = 0;
-        virtual void RenderFrame() = 0;
-        virtual void BeginScene() = 0;
-        virtual void EndScene() = 0;
-	public:
-		static Scope<Renderer> Create();
 
-    private:
-    };
+    void RendererGL::Init(uint32_t width, uint32_t height)
+    {
+        OnWindowResize(width, height);
+    }
+
+    void RendererGL::Shutdown()
+    {
+    }
+
+    void RendererGL::OnWindowResize(uint32_t width, uint32_t height)
+    {
+    }
+
+    void RendererGL::RenderFrame()
+    {
+    }
+
+    void RendererGL::BeginScene()
+    {
+    }
+
+    void RendererGL::EndScene()
+    {
+    }
 
 } // namespace Engine

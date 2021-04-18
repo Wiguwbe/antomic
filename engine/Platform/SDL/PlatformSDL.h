@@ -37,11 +37,15 @@ namespace Engine
         virtual void SetMouseLock(bool lock);
         virtual bool SetupWindow(uint32_t width, uint32_t height, std::string name);
         virtual void DestroyWindow();
+        virtual void UpdateWindow();
         virtual void ProcessWindowEvents();
         virtual void SetEventHandler(const EventHandler &handler) { m_Handler = handler; }
 
     private:
         static SDL_Window *s_SDLWindow;
+#ifdef ENGINE_GL_RENDERER
+        static SDL_GLContext s_GLContext;
+#endif
         std::string m_Name;
         uint32_t m_Width;
         uint32_t m_Height;

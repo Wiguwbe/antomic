@@ -41,6 +41,7 @@ else(SDL2_FOUND)
 endif(SDL2_FOUND)
 
 add_definitions(-DENGINE_GL_RENDERER)
+set("OpenGL_GL_PREFERENCE" "GLVND")
 find_package(OpenGL REQUIRED)
 
 if (UNIX)

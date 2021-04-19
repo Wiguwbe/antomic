@@ -53,28 +53,29 @@ function level_build_dependencies() {
     case "${DISTRO}" in 
         Ubuntu)
             PACKAGES=(
-                "build-essentials"
+                "build-essential"
                 "cmake"
-                "cmake-extra"
+                "cmake-extras"
                 "libsdl2-dev"
                 "libgl1-mesa-dev"
                 "x11proto-core-dev"
                 "libx11-dev"
                 "mesa-common-dev"
+                "ninja-build"
             )
 
-            MISSING_PACKAGES=()
+            MISSING_PACKAGES=""
             for PACKAGE in ${PACKAGES[@]}; do
-                dpkg --get-selections | grep -q ${PACKAGE} || MISSING_PACKAGES+=${PACKAGE}
+                dpkg --get-selections | grep -q ${PACKAGE} || MISSING_PACKAGES+="${PACKAGE} "
             done
 
             # This might not be ok, but for now if we only have this missing,
             # since is a meta-package my be a false positive
-            [ "${MISSING_PACKAGES}" == "build-essentials" ] && MISSING_PACKAGES=()
+            [ "${MISSING_PACKAGES}" == "build-essentials" ] && MISSING_PACKAGES=""
 
             # If there are any packages to install compose the installation command
-            [ ${#MISSING_PACKAGES[@]} -gt 0 ] && INSTALL_PACKAGES_CMD="sudo apt-get -y install ${MISSING_PACKAGE[@]}"
-        ;;
+            [ -z $MISSING_PACKAGES ] || INSTALL_PACKAGES_CMD="sudo apt update && sudo apt-get -y install ${MISSING_PACKAGES}"
+            ;;
         *)
             printf "Distro not supported yet (%s)\n" ${DISTRO}
             exit 0;;
@@ -118,6 +119,10 @@ function level_cmake_generator() {
     [ ${BUILD_LEVEL_ONLY} -eq 1 ] && [ ${BUILD_LEVEL} -ne 2 ] && return
     printf "Generate CMake Project\n"
     CMAKE_CMD=$(command -v cmake)
+    if [ -z $CMAKE_CMD ]; then
+        printf "CMake is missing, something is wrong!\n"
+        exit 1
+    fi
     mkdir -p build
     ${CMAKE_CMD} --no-warn-unused-cli -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=${BUILD_TYPE} -H"$(pwd)" -B"$(pwd)/build" -G "${CMAKE_GEN}"
 }

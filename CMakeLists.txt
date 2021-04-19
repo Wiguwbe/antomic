@@ -51,7 +51,7 @@ endif(UNIX)
 # Unit Testing
 if(NOT DEFINED ENV{ENGINE_NO_TESTS})
     # Download and unpack googletest at configure time
-    configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
+    configure_file(CMakeLists.googletest.in googletest-download/CMakeLists.txt)
     execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
     RESULT_VARIABLE result
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
@@ -85,32 +85,60 @@ if(NOT DEFINED ENV{ENGINE_NO_TESTS})
 endif() 
 
 #JSON Library setup
+configure_file(CMakeLists.json.in json-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/json-download )
+if(result)
+    message(FATAL_ERROR "CMake step for json failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/json-download )
+if(result)
+    message(FATAL_ERROR "Build step for json failed: ${result}")
+endif()
 set(JSON_BuildTests OFF CACHE INTERNAL "")
-set(JSON_DIR "${VENDOR_DIR}/json")
-set(JSON_INCLUDE_DIR "${JSON_DIR}/json/single_include")
-
+set(JSON_DIR "${CMAKE_CURRENT_BINARY_DIR}/json-src")
 add_subdirectory(${JSON_DIR})
 
 #Logging Library setup
-set(LOG_DIR "${VENDOR_DIR}/spdlog")
+configure_file(CMakeLists.spdlog.in spdlog-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/spdlog-download )
+if(result)
+    message(FATAL_ERROR "CMake step for spdlog failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/spdlog-download )
+if(result)
+    message(FATAL_ERROR "Build step for spdlog failed: ${result}")
+endif()
+set(LOG_DIR "${CMAKE_CURRENT_BINARY_DIR}/spdlog-src")
 set(LOG_INCLUDE_DIR "${LOG_DIR}/include")
-
 add_subdirectory(${LOG_DIR})
 
-# Specify build paths
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
-set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/dist")
-
 #ImGui Library Setup
-set(IMGUI_DIR "${VENDOR_DIR}/imgui")
+configure_file(CMakeLists.imgui.in imgui-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/imgui-download )
+if(result)
+    message(FATAL_ERROR "CMake step for imgui failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/imgui-download )
+if(result)
+    message(FATAL_ERROR "Build step for imgui failed: ${result}")
+endif()
+set(IMGUI_DIR "${CMAKE_CURRENT_BINARY_DIR}/imgui-src")
 FILE(GLOB IMGUI_SRC "${IMGUI_DIR}/*.cpp")
 FILE(GLOB IMGUI_HDR "${IMGUI_DIR}/*.h")
-
 FILE(GLOB IMGUI_STL_SRC "${IMGUI_DIR}/misc/cpp/*.cpp")
 FILE(GLOB IMGUI_STL_HDR "${IMGUI_DIR}/misc/cpp/*.h")
-
 add_library("imgui" ${IMGUI_SRC} ${IMGUI_HDR})
 add_library("imgui-stl" ${IMGUI_STL_SRC} ${IMGUI_STL_HDR})
 target_include_directories( 
@@ -124,6 +152,12 @@ target_link_libraries(
     "imgui" 
 )
 
+# Specify build paths
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
+set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/dist")
+
 FILE(GLOB_RECURSE ENGINE_SRC "${PROJECT_SOURCE_DIR}/engine/*.cpp")
 FILE(GLOB_RECURSE ENGINE_HDR "${PROJECT_SOURCE_DIR}/engine/*.h")
 
@@ -133,7 +167,6 @@ target_include_directories(
     PRIVATE
     "${PROJECT_SOURCE_DIR}/engine"
     ${LOG_INCLUDE_DIR}
-    ${JSON_INCLUDE_DIR}
     ${SDL2_INCLUDE_DIRS}
     ${GL_INCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}

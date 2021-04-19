@@ -18,13 +18,12 @@ printf "Antomic Engine project setup - Bash Version\n"
 # This BUILD_LEVEL is used to understand what we are setting up:
 # When you set a level number all the below levels will be installed also
 # BUILD_LEVEL 0 - We just install the build dependencies
-# BUILD_LEVEL 1 - We install 3rd party dependencies
-# BUILD_LEVEL 2 - Run cmake generator
-# BUILD_LEVEL 3 - Build the engine
+# BUILD_LEVEL 1 - Run cmake generator
+# BUILD_LEVEL 2 - Build the engine
 # By default we install build dependencies, 3rd party dependencies and run the
 # cmake generator
 # Set the BUILD_LEVEL to the level you want to run 
-[ -z ${BUILD_LEVEL} ] && BUILD_LEVEL=2
+[ -z ${BUILD_LEVEL} ] && BUILD_LEVEL=1
 
 # Set BUILD_LEVEL_ONLY flag to 1 to run only a specific BUILD_LEVEL 
 [ -z ${BUILD_LEVEL_ONLY} ] && BUILD_LEVEL_ONLY=0
@@ -90,26 +89,6 @@ function level_build_dependencies() {
         printf "There are missing packages, will install them now!\n"; 
         ${INSTALL_PACKAGES_CMD}; 
     }
-}
-
-function level_3dparty_dependencies() {
-    
-    # If we are enabled the BUILD_LEVEL_ONLY_FLAG and this is not
-    # the level supposed to build, just skip it
-    [ ${BUILD_LEVEL_ONLY} -eq 1 ] && [ ${BUILD_LEVEL} -ne 1 ] && return
-    printf "Installing 3rd Party dependencies\n"
-
-    VENDORS_GIT=$(cat dependencies.git)
-
-    # Create the vendor directory
-    mkdir -p vendor
-
-    # push all 3rd party repositories
-    for GIT in ${VENDORS_GIT[@]}; do
-        REPONAME=$(basename ${GIT})
-        [ -d "vendor/${REPONAME%.git}" ] && continue
-        git clone ${GIT} "vendor/${REPONAME%.git}"
-    done
 }
 
 function level_cmake_generator() {
@@ -179,14 +158,11 @@ fi
 # BUILD_LEVEL 0 - We just install the build dependencies
 [ ${BUILD_LEVEL} -ge 0 ] && level_build_dependencies
 
-# BUILD_LEVEL 1 - We install 3rd party dependencies
-[ ${BUILD_LEVEL} -ge 1 ] && level_3dparty_dependencies
-
 # BUILD_LEVEL 1 - Run cmake generator
-[ ${BUILD_LEVEL} -ge 2 ] && level_cmake_generator
+[ ${BUILD_LEVEL} -ge 1 ] && level_cmake_generator
 
 # BUILD_LEVEL 1 - Build the engine
-[ ${BUILD_LEVEL} -ge 3 ] && level_build_engine
+[ ${BUILD_LEVEL} -ge 2 ] && level_build_engine
 
 printf "All ok\n"
 exit 0

@@ -21,22 +21,18 @@ Write-Host "Antomic Engine project setup - Powershell Version";
 # This BUILD_LEVEL is used to understand what we are setting up:
 # When you set a level number all the below levels will be installed also
 # BUILD_LEVEL 0 - We just install the build dependencies
-# BUILD_LEVEL 1 - We install 3rd party dependencies
-# BUILD_LEVEL 2 - Run cmake generator
-# BUILD_LEVEL 3 - Build the engine
+# BUILD_LEVEL 1 - Run cmake generator
+# BUILD_LEVEL 2 - Build the engine
 # By default we install build dependencies, 3rd party dependencies and run the
 # cmake generator
 # Set the BUILD_LEVEL to the level you want to run 
-$BUILD_LEVEL = if ($env:BUILD_LEVEL) { $env:BUILD_LEVEL } else { 2 };
+$BUILD_LEVEL = if ($env:BUILD_LEVEL) { $env:BUILD_LEVEL } else { 1 };
 
 # Set BUILD_LEVEL_ONLY flag to 1 to run only a specific BUILD_LEVEL 
 $BUILD_LEVEL_ONLY = if ($env:BUILD_LEVEL_ONLY) { $env:BUILD_LEVEL_ONLY } else { 0 };
 
 # Set the BUILD_TYPE, by default we build Debug
 $BUILD_TYPE = if ($env:BUILD_TYPE) { $env:BUILD_TYPE } else { "Debug" };
-
-# MSYS2 Mingw Download URL
-$MSYS2_URL = "https://repo.msys2.org/distrib/x86_64/msys2-x86_64-20210228.exe";
 
 switch -Regex ($GENERATOR) {
     '^[Nn]inja$' { $CMAKE_GEN = "Ninja" }
@@ -71,29 +67,25 @@ function level_build_dependencies {
 
     Get-Command "C:\msys64\msys2.exe" -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
     if ($NoCommandError) {
-        Write-Host "MSYS2 not found! Installing MSYS2..."
-        Invoke-WebRequest $MSYS2_URL -OutFile $env:TEMP\msys_setup.exe
-        Start-Process -FilePath $env:TEMP\msys_setup.exe
-        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu"
-        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Su"
+        Write-Host "To be able to install missing dependencies, please install MSYS2, for more information please visit https://www.msys2.org/"
+        exit 1
     }
 
     Get-Command "C:\msys64\msys2.exe" -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
     if ($NoCommandError) {
         Write-Host "MSYS2 not found! Installing MSYS2..."
         Invoke-WebRequest $MSYS2_URL -OutFile $env:TEMP\msys_setup.exe
-        Start-Process -FilePath $env:TEMP\msys_setup.exe
-        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu"
-        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Su"
+        Start-Process -FilePath $env:TEMP\msys_setup.exe -Wait
+        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu" -Wait
+        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Su" -Wait
     }
     Write-Host "MSYS2 Found!"
 
     Get-Command "C:\msys64\mingw64\bin\g++" -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
     if ($NoCommandError) {
-        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu", "--needed", "base-devel mingw-w64-x86_64-toolchain mingw-w64-SDL2"
-        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu", "mingw-w64-x86_64-SDL2", "mingw-w64-x86_64-cmake", "mingw-w64-x86_64-extra-cmake-modules","mingw-w64-x86_64-cninja", "mingw-w64-i686-mesa"
+        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu", "--needed", "base-devel mingw-w64-x86_64-toolchain mingw-w64-SDL2" -Wait
+        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu", "mingw-w64-x86_64-SDL2", "mingw-w64-x86_64-cmake", "mingw-w64-x86_64-extra-cmake-modules","mingw-w64-x86_64-cninja", "mingw-w64-i686-mesa" -Wait
     }
-
 }
 
 function setup_env_vars {
@@ -107,34 +99,6 @@ function setup_env_vars {
     [System.Environment]::SetEnvironmentVariable("MSYSTEM_CARCH", "x86_64")
     [System.Environment]::SetEnvironmentVariable("MSYSTEM_CHOST", "x86_64-w64-mingw32")
     [System.Environment]::SetEnvironmentVariable("MSYSTEM_PREFIX", "/mingw64")    
-}
-
-function level_3dparty_dependencies {
-    # If we are enabled the BUILD_LEVEL_ONLY_FLAG and this is not
-    # the level supposed to build, just skip it    
-    if ( $BUILD_LEVEL_ONLY -eq 1 -And $BUILD_LEVEL -ne 1 ) {
-        return
-    }
-    Write-Host "Installing 3rd Party Dependencies"
-    $VENDORS_GIT = Get-Content .\dependencies.git
-
-    # Create the vendor directory
-    mkdir -p vendor 2>&1 | Out-Null
-
-    foreach ($GIT in $VENDORS_GIT) {
-        # We get the basename of the folder without the
-        # extension
-        $BASENAME = $GIT.split("/")[-1].split(".")[0]
-        if (Test-Path "vendor/$BASENAME") {
-            continue
-        }
-        git clone $GIT vendor/$BASENAME
-        Write-Host "$GIT"
-    }
-
-    # Get SDL from the oficial website
-    Invoke-WebRequest https://www.libsdl.org/release/SDL2-devel-2.0.14-VC.zip -OutFile $env:TEMP\SDL2-devel-2.0.14-VC.zip
-    Expand-Archive -LiteralPath "$env:TEMP\SDL2-devel-2.0.14-VC.zip" -DestinationPath ./vendor
 }
 
 function level_cmake_generator {
@@ -166,20 +130,15 @@ if ($BUILD_LEVEL -ge 0) {
     level_build_dependencies
 }
 
-# BUILD_LEVEL 1 - We install 3rd party dependencies
-if ($BUILD_LEVEL -ge 1) {
-    level_3dparty_dependencies
-}
-
 setup_env_vars
 
 # BUILD_LEVEL 1 - Run cmake generator
-if ($BUILD_LEVEL -ge 2) {
+if ($BUILD_LEVEL -ge 1) {
     level_cmake_generator
 }
 
 # BUILD_LEVEL 1 - Build the engine
-if ($BUILD_LEVEL -ge 3) {
+if ($BUILD_LEVEL -ge 2) {
     level_build_engine
 }
 

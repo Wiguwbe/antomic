@@ -32,7 +32,8 @@ elseif (UNIX)
     add_definitions(-DENGINE_PLATFORM_LINUX)
 endif(WIN32)
 
-find_package(SDL2 REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SDL2 sdl2)
 if (SDL2_FOUND)
     add_definitions(-DENGINE_SDL_PLATFORM)
 else(SDL2_FOUND)
@@ -40,7 +41,7 @@ else(SDL2_FOUND)
 endif(SDL2_FOUND)
 
 add_definitions(-DENGINE_GL_RENDERER)
-find_package(OPENGL REQUIRED)
+find_package(OpenGL REQUIRED)
 
 if (UNIX)
     pkg_check_modules(X11 REQUIRED x11)

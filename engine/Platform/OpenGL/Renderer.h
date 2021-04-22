@@ -16,7 +16,7 @@
 #pragma once
 #include "Renderer/Renderer.h"
 
-namespace Engine
+namespace Antomic
 {
     class OpenGLRenderer : public Renderer
     {
@@ -32,4 +32,4 @@ namespace Engine
     private:
     };
 
-} // namespace Engine
+} // namespace Antomic

@@ -17,7 +17,7 @@
 
 #include "Events/Event.h"
 
-namespace Engine
+namespace Antomic
 {
 	class AppTickEvent : public Event
 	{

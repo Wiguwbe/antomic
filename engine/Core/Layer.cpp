@@ -16,7 +16,7 @@
 #include "Core/Layer.h"
 #include "Events/Event.h"
 
-namespace Engine
+namespace Antomic
 {
     Layer::Layer(const std::string &name) : m_Name(name), m_Enabled(true)
     {
@@ -25,4 +25,4 @@ namespace Engine
     Layer::~Layer()
     {
     }
-} // namespace Engine
+} // namespace Antomic

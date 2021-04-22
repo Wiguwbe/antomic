@@ -16,7 +16,7 @@
 #include "Platform/OpenGL/Renderer.h"
 #include <glad/glad.h>
 
-namespace Engine
+namespace Antomic
 {
 
     void OpenGLRenderer::Init(uint32_t width, uint32_t height)
@@ -46,4 +46,4 @@ namespace Engine
     {
     }
 
-} // namespace Engine
+} // namespace Antomic

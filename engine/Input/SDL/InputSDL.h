@@ -21,7 +21,7 @@
 #include "SDL.h"
 #endif
 
-namespace Engine
+namespace Antomic
 {
 
     class InputSDL : public Input
@@ -38,4 +38,4 @@ namespace Engine
         EventHandler m_Handler;
     };
 
-} // namespace Engine
+} // namespace Antomic

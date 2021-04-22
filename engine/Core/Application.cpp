@@ -22,7 +22,7 @@
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
 
-namespace Engine
+namespace Antomic
 {
     Application *Application::s_Instance = nullptr;
 
@@ -149,4 +149,4 @@ namespace Engine
         m_Height = event.GetHeight();
         return true;
     }
-} // namespace Engine
+} // namespace Antomic

@@ -17,7 +17,7 @@
 #include "engine.h"
 
 namespace Editor {
-    class Editor: public Engine::Application
+    class Editor: public Antomic::Application
     {
     public:
         Editor();

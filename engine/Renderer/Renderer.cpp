@@ -20,7 +20,7 @@
 #include "Platform/OpenGL/Renderer.h"
 #endif
 
-namespace Engine
+namespace Antomic
 {
 	Scope<Renderer> Renderer::Create()
 	{

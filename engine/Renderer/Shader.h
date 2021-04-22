@@ -16,7 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 
-namespace Engine
+namespace Antomic
 {
     class Shader
     {
@@ -29,4 +29,4 @@ namespace Engine
         static Ref<Shader> CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc);
     };
 
-} // namespace Engine
+} // namespace Antomic

@@ -24,7 +24,7 @@
 static int testUpdate = 0;
 static int testEvent = -1;
 
-class TestLayer : public Engine::Layer
+class TestLayer : public Antomic::Layer
 {
 private:
     /* data */
@@ -32,7 +32,7 @@ public:
     TestLayer() : Layer("test_layer"){};
     ~TestLayer(){};
 
-    void OnEvent(Engine::Event &e) override
+    void OnEvent(Antomic::Event &e) override
     {
         e.SetHandled(true);
     }
@@ -43,7 +43,7 @@ public:
     }
 };
 
-class NumLayer : public Engine::Layer
+class NumLayer : public Antomic::Layer
 {
 private:
     /* data */
@@ -55,7 +55,7 @@ public:
     };
     ~NumLayer(){};
 
-    void OnEvent(Engine::Event &e) override
+    void OnEvent(Antomic::Event &e) override
     {
         if (m_Handle)
         {
@@ -76,10 +76,10 @@ protected:
 
 TEST(EngineCoreTest, LayerTests)
 {
-    auto stack = Engine::LayerStack();
+    auto stack = Antomic::LayerStack();
 
     // A test layer
-    auto layer = Engine::CreateRef<TestLayer>();
+    auto layer = Antomic::CreateRef<TestLayer>();
     EXPECT_EQ(layer->GetName(), "test_layer");
 
     // We must have a layer in the stack
@@ -87,7 +87,7 @@ TEST(EngineCoreTest, LayerTests)
     EXPECT_EQ(stack.Count(), 1);
 
     // The layer will handle the event
-    Engine::WindowCloseEvent e;
+    Antomic::WindowCloseEvent e;
     EXPECT_EQ(e.IsHandled(), false);
     stack.OnEvent(e);
     EXPECT_EQ(e.IsHandled(), true);
@@ -103,10 +103,10 @@ TEST(EngineCoreTest, LayerTests)
 
     // We will add 10 layers, layers 4 or 1 will handle the event
     // Later we will remove layer #4, so we keep the reference to it
-    Engine::Ref<NumLayer> ref_layer = nullptr;
+    Antomic::Ref<NumLayer> ref_layer = nullptr;
     for (auto i = 0; i < 10; i++)
     {
-        auto l = Engine::CreateRef<NumLayer>(i, i == 4 || i == 1);
+        auto l = Antomic::CreateRef<NumLayer>(i, i == 4 || i == 1);
         if (i == 4)
         {
             ref_layer = l;

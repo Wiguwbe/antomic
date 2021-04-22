@@ -16,7 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 
-namespace Engine
+namespace Antomic
 {
     class Platform
     {
@@ -39,4 +39,4 @@ namespace Engine
 
     };
 
-} // namespace Engine
+} // namespace Antomic

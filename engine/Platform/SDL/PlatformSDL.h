@@ -22,7 +22,7 @@
 #include "SDL.h"
 #endif
 
-namespace Engine
+namespace Antomic
 {
 
     class PlatformSDL : public Platform
@@ -51,5 +51,5 @@ namespace Engine
         uint32_t m_Height;
         EventHandler m_Handler;
     };
-} // namespace Engine
+} // namespace Antomic
 #endif

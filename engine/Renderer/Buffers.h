@@ -16,7 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 
-namespace Engine
+namespace Antomic
 {
     class IndexBuffer
     {        
@@ -38,4 +38,4 @@ namespace Engine
 		static Ref<VertexBuffer> CreateBuffer(float* data, uint32_t size);
     };
 
-} // namespace Engine
+} // namespace Antomic

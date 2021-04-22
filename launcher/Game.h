@@ -17,7 +17,7 @@
 #include "engine.h"
 
 namespace Launcher {
-    class Game: public Engine::Application
+    class Game: public Antomic::Application
     {
     public:
         Game();

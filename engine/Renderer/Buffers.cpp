@@ -20,7 +20,7 @@
 #include "Platform/OpenGL/Buffers.h"
 #endif
 
-namespace Engine
+namespace Antomic
 {
     Ref<IndexBuffer> IndexBuffer::CreateBuffer(uint32_t* data, uint32_t size)
 	{

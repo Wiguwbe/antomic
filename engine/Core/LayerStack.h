@@ -17,7 +17,7 @@
 #include "Core/Base.h"
 #include "Core/Layer.h"
 
-namespace Engine
+namespace Antomic
 {
     class LayerStack
     {
@@ -40,4 +40,4 @@ namespace Engine
     protected:
         std::vector<Ref<Layer>> m_Stack;
     };
-} // namespace Engine
+} // namespace Antomic

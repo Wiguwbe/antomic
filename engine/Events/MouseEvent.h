@@ -18,7 +18,7 @@
 #include "Events/Event.h"
 #include "Input/Input.h"
 
-namespace Engine
+namespace Antomic
 {
     class MouseMovedEvent : public Event
     {

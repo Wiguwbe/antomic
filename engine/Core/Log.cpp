@@ -17,7 +17,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
-namespace Engine
+namespace Antomic
 {
     Ref<spdlog::logger> Log::s_Logger;
 
@@ -36,9 +36,9 @@ namespace Engine
         logSinks[1]->set_pattern("%^[%T] %n: %v%$");
 #endif
 
-        s_Logger = std::make_shared<spdlog::logger>("Engine", begin(logSinks), end(logSinks));
+        s_Logger = std::make_shared<spdlog::logger>("Antomic", begin(logSinks), end(logSinks));
         spdlog::register_logger(s_Logger);
         s_Logger->set_level(spdlog::level::trace);
         s_Logger->flush_on(spdlog::level::trace);
     }
-} // namespace Engine
+} // namespace Antomic

@@ -18,7 +18,7 @@
 #include "Core/Log.h"
 #include "Profiling/Instrumentor.h"
 
-namespace Engine
+namespace Antomic
 {
     enum class EventType
     {
@@ -118,4 +118,4 @@ namespace Engine
     {
         return os << e.ToString();
     }
-} // namespace Engine
+} // namespace Antomic

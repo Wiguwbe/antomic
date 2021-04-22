@@ -27,7 +27,7 @@
 #include <glad/glad.h>
 #endif
 
-namespace Engine
+namespace Antomic
 {
     SDL_Window *PlatformSDL::s_SDLWindow = nullptr;
 #ifdef ENGINE_GL_RENDERER
@@ -146,6 +146,6 @@ namespace Engine
     {
     }
 
-} // namespace Engine
+} // namespace Antomic
 
 #endif

@@ -22,7 +22,7 @@
 
 #endif
 
-namespace Engine
+namespace Antomic
 {
     Scope<Platform> Platform::Create()
     {
@@ -33,4 +33,4 @@ namespace Engine
         return nullptr;
 #endif
     }
-} // namespace Engine
+} // namespace Antomic

@@ -17,7 +17,7 @@
 
 namespace Editor
 {
-    Editor::Editor() : Engine::Application("Editor")
+    Editor::Editor() : Antomic::Application("Editor")
     {
     }
 

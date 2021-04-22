@@ -17,7 +17,7 @@
 #include "Core/Log.h"
 #include <glad/glad.h>
 
-namespace Engine
+namespace Antomic
 {
     OpenGLShader::OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc)
     {
@@ -110,4 +110,4 @@ namespace Engine
         glUseProgram(0);
     }
 
-} // namespace Engine
+} // namespace Antomic

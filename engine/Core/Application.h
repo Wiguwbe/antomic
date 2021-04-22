@@ -20,7 +20,7 @@
 #include "Input/Input.h"
 #include "Renderer/Renderer.h"
 
-namespace Engine
+namespace Antomic
 {
     class Application
     {
@@ -60,4 +60,4 @@ namespace Engine
         Scope<Input> m_Input;
         Scope<Renderer> m_Renderer;
     };
-} // namespace Engine
+} // namespace Antomic

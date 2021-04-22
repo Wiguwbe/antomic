@@ -18,7 +18,7 @@
 namespace Launcher
 {
 
-    Game::Game() : Engine::Application("Game")
+    Game::Game() : Antomic::Application("Game")
     {
     }
 } // namespace Launcher

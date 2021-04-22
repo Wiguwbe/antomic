@@ -16,7 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 
-namespace Engine
+namespace Antomic
 {
     class Renderer
     {
@@ -31,4 +31,4 @@ namespace Engine
 		static Scope<Renderer> Create();
     };
 
-} // namespace Engine
+} // namespace Antomic

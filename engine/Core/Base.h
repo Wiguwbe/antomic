@@ -47,7 +47,7 @@
 
 #define ENGINE_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
-namespace Engine
+namespace Antomic
 {
     template <typename T>
     using Scope = std::unique_ptr<T>;
@@ -78,5 +78,5 @@ namespace Engine
 
     using EventHandler = std::function<void(Event&)>;
 
-} // namespace Engine
+} // namespace Antomic
 

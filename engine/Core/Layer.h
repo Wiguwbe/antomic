@@ -16,7 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 
-namespace Engine
+namespace Antomic
 {
     class Layer
     {
@@ -40,4 +40,4 @@ namespace Engine
         std::string m_Name;
         bool m_Enabled;
     };
-} // namespace Engine
+} // namespace Antomic

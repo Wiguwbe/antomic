@@ -26,14 +26,14 @@
 static uint8_t translateKeyModifiers(uint16_t _sdl)
 {
     uint8_t modifiers = 0;
-    modifiers |= _sdl & KMOD_LALT ? Engine::Modifier::LeftAlt : 0;
-    modifiers |= _sdl & KMOD_RALT ? Engine::Modifier::RightAlt : 0;
-    modifiers |= _sdl & KMOD_LCTRL ? Engine::Modifier::LeftCtrl : 0;
-    modifiers |= _sdl & KMOD_RCTRL ? Engine::Modifier::RightCtrl : 0;
-    modifiers |= _sdl & KMOD_LSHIFT ? Engine::Modifier::LeftShift : 0;
-    modifiers |= _sdl & KMOD_RSHIFT ? Engine::Modifier::RightShift : 0;
-    modifiers |= _sdl & KMOD_LGUI ? Engine::Modifier::LeftMeta : 0;
-    modifiers |= _sdl & KMOD_RGUI ? Engine::Modifier::RightMeta : 0;
+    modifiers |= _sdl & KMOD_LALT ? Antomic::Modifier::LeftAlt : 0;
+    modifiers |= _sdl & KMOD_RALT ? Antomic::Modifier::RightAlt : 0;
+    modifiers |= _sdl & KMOD_LCTRL ? Antomic::Modifier::LeftCtrl : 0;
+    modifiers |= _sdl & KMOD_RCTRL ? Antomic::Modifier::RightCtrl : 0;
+    modifiers |= _sdl & KMOD_LSHIFT ? Antomic::Modifier::LeftShift : 0;
+    modifiers |= _sdl & KMOD_RSHIFT ? Antomic::Modifier::RightShift : 0;
+    modifiers |= _sdl & KMOD_LGUI ? Antomic::Modifier::LeftMeta : 0;
+    modifiers |= _sdl & KMOD_RGUI ? Antomic::Modifier::RightMeta : 0;
     return modifiers;
 }
 
@@ -44,42 +44,42 @@ static uint8_t translateKeyModifierPress(uint16_t _key)
     {
     case SDL_SCANCODE_LALT:
     {
-        modifier = Engine::Modifier::LeftAlt;
+        modifier = Antomic::Modifier::LeftAlt;
     }
     break;
     case SDL_SCANCODE_RALT:
     {
-        modifier = Engine::Modifier::RightAlt;
+        modifier = Antomic::Modifier::RightAlt;
     }
     break;
     case SDL_SCANCODE_LCTRL:
     {
-        modifier = Engine::Modifier::LeftCtrl;
+        modifier = Antomic::Modifier::LeftCtrl;
     }
     break;
     case SDL_SCANCODE_RCTRL:
     {
-        modifier = Engine::Modifier::RightCtrl;
+        modifier = Antomic::Modifier::RightCtrl;
     }
     break;
     case SDL_SCANCODE_LSHIFT:
     {
-        modifier = Engine::Modifier::LeftShift;
+        modifier = Antomic::Modifier::LeftShift;
     }
     break;
     case SDL_SCANCODE_RSHIFT:
     {
-        modifier = Engine::Modifier::RightShift;
+        modifier = Antomic::Modifier::RightShift;
     }
     break;
     case SDL_SCANCODE_LGUI:
     {
-        modifier = Engine::Modifier::LeftMeta;
+        modifier = Antomic::Modifier::LeftMeta;
     }
     break;
     case SDL_SCANCODE_RGUI:
     {
-        modifier = Engine::Modifier::RightMeta;
+        modifier = Antomic::Modifier::RightMeta;
     }
     break;
     default:
@@ -94,41 +94,41 @@ static uint8_t translateKeyModifierPress(uint16_t _key)
 
 static uint8_t s_translateKey[256];
 
-static void initTranslateKey(uint16_t _sdl, Engine::Key::Enum _key)
+static void initTranslateKey(uint16_t _sdl, Antomic::Key::Enum _key)
 {
     s_translateKey[_sdl & 0xff] = (uint8_t)_key;
 }
 
-static Engine::Key::Enum translateKey(SDL_Scancode _sdl)
+static Antomic::Key::Enum translateKey(SDL_Scancode _sdl)
 {
-    return (Engine::Key::Enum)s_translateKey[_sdl & 0xff];
+    return (Antomic::Key::Enum)s_translateKey[_sdl & 0xff];
 }
 
 // static uint8_t s_translateGamepad[256];
 
-// static void initTranslateGamepad(uint8_t _sdl, Engine::Key::Enum _button)
+// static void initTranslateGamepad(uint8_t _sdl, Antomic::Key::Enum _button)
 // {
 //     s_translateGamepad[_sdl] = _button;
 // }
 
-// static Engine::Key::Enum translateGamepad(uint8_t _sdl)
+// static Antomic::Key::Enum translateGamepad(uint8_t _sdl)
 // {
-//     return Engine::Key::Enum(s_translateGamepad[_sdl]);
+//     return Antomic::Key::Enum(s_translateGamepad[_sdl]);
 // }
 
 // static uint8_t s_translateGamepadAxis[256];
 
-// static void initTranslateGamepadAxis(uint8_t _sdl, Engine::GamepadAxis::Enum _axis)
+// static void initTranslateGamepadAxis(uint8_t _sdl, Antomic::GamepadAxis::Enum _axis)
 // {
 //     s_translateGamepadAxis[_sdl] = uint8_t(_axis);
 // }
 
-// static Engine::GamepadAxis::Enum translateGamepadAxis(uint8_t _sdl)
+// static Antomic::GamepadAxis::Enum translateGamepadAxis(uint8_t _sdl)
 // {
-//     return Engine::GamepadAxis::Enum(s_translateGamepadAxis[_sdl]);
+//     return Antomic::GamepadAxis::Enum(s_translateGamepadAxis[_sdl]);
 // }
 
-namespace Engine
+namespace Antomic
 {
 
     InputSDL::InputSDL(/* args */) : m_Handler(nullptr)
@@ -342,4 +342,4 @@ namespace Engine
             }
         }
     }
-} // namespace Engine
+} // namespace Antomic

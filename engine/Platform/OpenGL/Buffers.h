@@ -16,7 +16,7 @@
 #pragma once
 #include "Renderer/Buffers.h"
 
-namespace Engine
+namespace Antomic
 {
     class OpenGLIndexBuffer : public IndexBuffer
     {
@@ -42,4 +42,4 @@ namespace Engine
         uint32_t mGLBufferId;
     };
 
-} // namespace Engine
+} // namespace Antomic

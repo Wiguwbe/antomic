@@ -20,7 +20,7 @@
 #include "Input/SDL/InputSDL.h"
 #endif
 
-namespace Engine
+namespace Antomic
 {
 	Scope<Input> Input::Create()
 	{

@@ -18,7 +18,7 @@
 #include "Events/Event.h"
 #include "Input/Input.h"
 
-namespace Engine
+namespace Antomic
 {
     class KeyEvent : public Event
     {
@@ -86,4 +86,4 @@ namespace Engine
 
         EVENT_CLASS_TYPE(KeyTyped)
     };
-} // namespace Engine
+} // namespace Antomic

@@ -20,7 +20,7 @@
 #include "Platform/OpenGL/Shader.h"
 #endif
 
-namespace Engine
+namespace Antomic
 {
     Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath)
     {

@@ -18,7 +18,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 
-namespace Engine
+namespace Antomic
 {
 
     class Log
@@ -31,11 +31,11 @@ namespace Engine
         static Ref<spdlog::logger> s_Logger;
     };
 
-} // namespace Engine
+} // namespace Antomic
 
 // log macros
-#define ENGINE_TRACE(...) ::Engine::Log::GetLogger()->trace(__VA_ARGS__)
-#define ENGINE_INFO(...) ::Engine::Log::GetLogger()->info(__VA_ARGS__)
-#define ENGINE_WARN(...) ::Engine::Log::GetLogger()->warn(__VA_ARGS__)
-#define ENGINE_ERROR(...) ::Engine::Log::GetLogger()->error(__VA_ARGS__)
-#define ENGINE_CRITICAL(...) ::Engine::Log::GetLogger()->critical(__VA_ARGS__)
+#define ENGINE_TRACE(...) ::Antomic::Log::GetLogger()->trace(__VA_ARGS__)
+#define ENGINE_INFO(...) ::Antomic::Log::GetLogger()->info(__VA_ARGS__)
+#define ENGINE_WARN(...) ::Antomic::Log::GetLogger()->warn(__VA_ARGS__)
+#define ENGINE_ERROR(...) ::Antomic::Log::GetLogger()->error(__VA_ARGS__)
+#define ENGINE_CRITICAL(...) ::Antomic::Log::GetLogger()->critical(__VA_ARGS__)

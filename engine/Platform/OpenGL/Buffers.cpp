@@ -15,7 +15,7 @@
 */
 #include "Platform/OpenGL/Buffers.h"
 
-namespace Engine
+namespace Antomic
 {
 
     OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t *data, uint32_t size)

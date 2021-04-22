@@ -16,7 +16,7 @@
 #include "Core/LayerStack.h"
 #include "Events/Event.h"
 
-namespace Engine
+namespace Antomic
 {
     LayerStack::LayerStack()
     {
@@ -100,4 +100,4 @@ namespace Engine
         }
     }
 
-} // namespace Engine
+} // namespace Antomic

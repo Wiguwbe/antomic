@@ -16,7 +16,7 @@
 #pragma once
 #include "Renderer/Shader.h"
 
-namespace Engine
+namespace Antomic
 {
     class OpenGLShader : public Shader
     {
@@ -30,4 +30,4 @@ namespace Engine
         uint32_t mGLProgramId = 0;
     };
 
-} // namespace Engine
+} // namespace Antomic

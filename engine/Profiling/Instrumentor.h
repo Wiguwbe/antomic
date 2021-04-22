@@ -17,7 +17,7 @@
 #include "Core/Base.h"
 #include "Core/Log.h"
 
-namespace Engine
+namespace Antomic
 {
 	using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;
 
@@ -202,7 +202,7 @@ namespace Engine
 			return result;
 		}
 	} // namespace InstrumentorUtils
-} // namespace Engine
+} // namespace Antomic
 
 #define ENGINE_PROFILE 0
 #if ENGINE_PROFILE

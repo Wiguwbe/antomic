@@ -17,7 +17,7 @@
 #include "Core/Base.h"
 #include "Core/Log.h"
 
-namespace Engine
+namespace Antomic
 {
 	struct MouseButton
 	{
@@ -222,4 +222,4 @@ namespace Engine
 	};
 
 
-} // namespace Engine
+} // namespace Antomic

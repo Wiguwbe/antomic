@@ -73,22 +73,34 @@ function level_build_dependencies() {
             [ "${MISSING_PACKAGES}" == "build-essentials" ] && MISSING_PACKAGES=""
 
             # If there are any packages to install compose the installation command
-            [ -z $MISSING_PACKAGES ] || INSTALL_PACKAGES_CMD="sudo apt update && sudo apt-get -y install ${MISSING_PACKAGES}"
+            if [ -z $MISSING_PACKAGES ]; then 
+                sudo apt update;
+                sudo apt-get -y install ${MISSING_PACKAGES};
+            fi
+            ;;
+        MINGW64)
+            PACKAGES=(
+                "mingw-w64-x86_64-toolchain"
+                "mingw-w64-x86_64-cmake"
+                "mingw-w64-x86_64-extra-cmake-modules"
+                "mingw-w64-x86_64-cninja"
+                "mingw-w64-x86_64-gdb"
+                "mingw-w64-x86_64-SDL2"
+                "mingw-w64-x86_64-glew"
+            )
+
+            MISSING_PACKAGES=""
+            for PACKAGE in ${PACKAGES[@]}; do
+                MISSING_PACKAGES+="${PACKAGE} "
+            done
+
+            pacman -S ${MISSING_PACKAGES};
             ;;
         *)
             printf "Distro not supported yet (%s)\n" ${DISTRO}
             exit 0;;
     esac
 
-    # Is the installation command not empty? run it
-    [ ! -z "${INSTALL_PACKAGES_CMD}" ] && { 
-        # This will most probably happend when setting up the environment for the first time
-        # therefore we exit here to make sure the user run the build script again
-        # this happens because we might being only setting up the build environment for 
-        # automation ( ie. Docker image )
-        printf "There are missing packages, will install them now!\n"; 
-        ${INSTALL_PACKAGES_CMD}; 
-    }
 }
 
 function level_cmake_generator() {
@@ -134,29 +146,34 @@ esac
 # Check if we are building on Linux or OSX
 OSUNAME="$(uname -s)"
 case "${OSUNAME}" in
-    Linux*)     
-        OS=Linux;;
+    Linux*)
+        OS="Linux"
+        unset INSTALL_PACKAGES_CMD
+        if [ -f /etc/os-release ]; then
+            # freedesktop.org and systemd
+            . /etc/os-release
+            DISTRO=$NAME
+        fi
+        ;;
     Darwin*)    
+        OS="OSX"
         printf "MacOS not supported yet."
         exit 0;;
+    MINGW64*)
+        OS="Windows"
+        DISTRO="MINGW64";;
     *)          
         printf "Unknown OS"
         exit 0;;
 esac
 
-# Check in what distro we are working
-if [ "${OS}" = "Linux" ]; then
- 
-    unset INSTALL_PACKAGES_CMD
-    if [ -f /etc/os-release ]; then
-        # freedesktop.org and systemd
-        . /etc/os-release
-        DISTRO=$NAME
-    fi
-fi
-
 # BUILD_LEVEL 0 - We just install the build dependencies
 [ ${BUILD_LEVEL} -ge 0 ] && level_build_dependencies
+
+if [ ${OS} == "Windows" ]; then 
+    printf "For windows we just install dependencies!\n"
+    exit 0
+fi
 
 # BUILD_LEVEL 1 - Run cmake generator
 [ ${BUILD_LEVEL} -ge 1 ] && level_cmake_generator

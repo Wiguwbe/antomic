@@ -34,6 +34,8 @@ $BUILD_LEVEL_ONLY = if ($env:BUILD_LEVEL_ONLY) { $env:BUILD_LEVEL_ONLY } else { 
 # Set the BUILD_TYPE, by default we build Debug
 $BUILD_TYPE = if ($env:BUILD_TYPE) { $env:BUILD_TYPE } else { "Debug" };
 
+$NINJA_URL = "https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-win.zip"
+
 switch -Regex ($GENERATOR) {
     '^[Nn]inja$' { $CMAKE_GEN = "Ninja" }
     '^[Vv][Ss]2017$' { $CMAKE_GEN = "Visual Studio 15 2017" }
@@ -51,46 +53,49 @@ switch -Regex ($GENERATOR) {
 
 function level_build_dependencies {
 
+
     # If we are enabled the BUILD_LEVEL_ONLY_FLAG and this is not
     # the level supposed to build, just skip it    
     if ( $BUILD_LEVEL_ONLY -eq 1 -And $BUILD_LEVEL -ne 0 ) {
         return
     }
     Write-Host "Installing Build Dependencies"
-    
-    Get-Command choco.exe -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
-    if ($NoCommandError) {
-        Write-Host "To be able to install missing dependencies, please install Chocolatey.exe, for more information please visit https://docs.chocolatey.org/en-us/choco/setup#install-with-powershellexe"
-        exit 1
-    }
-    Write-Host "Chocolatey found!"
 
-    Get-Command "C:\msys64\msys2.exe" -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
-    if ($NoCommandError) {
+    if (-not(Test-Path -Path "C:\msys64\Mingw64.exe" -PathType Leaf)) {
         Write-Host "To be able to install missing dependencies, please install MSYS2, for more information please visit https://www.msys2.org/"
         exit 1
     }
-
-    Get-Command "C:\msys64\msys2.exe" -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
-    if ($NoCommandError) {
-        Write-Host "MSYS2 not found! Installing MSYS2..."
-        Invoke-WebRequest $MSYS2_URL -OutFile $env:TEMP\msys_setup.exe
-        Start-Process -FilePath $env:TEMP\msys_setup.exe -Wait
-        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu" -Wait
-        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Su" -Wait
+    Write-Host "Mingw64 found!"
+    
+    if (-not(Test-Path -Path "C:\msys64\mingw64\bin\g++.exe" -PathType Leaf)) {
+        Write-Host "C++ compiler not found! Installing Compiler..."
+        Start-Process -FilePath "C:\msys64\Mingw64.exe" -ArgumentList "./build.sh",$GENERATOR -Wait
     }
-    Write-Host "MSYS2 Found!"
-
-    Get-Command "C:\msys64\mingw64\bin\g++" -ErrorAction SilentlyContinue -ErrorVariable NoCommandError
-    if ($NoCommandError) {
-        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu", "--needed", "base-devel mingw-w64-x86_64-toolchain mingw-w64-SDL2" -Wait
-        Start-Process -FilePath "C:\msys64\msys2.exe" -ArgumentList "pacman", "-Syu", "mingw-w64-x86_64-SDL2", "mingw-w64-x86_64-cmake", "mingw-w64-x86_64-extra-cmake-modules","mingw-w64-x86_64-cninja", "mingw-w64-i686-mesa" -Wait
-    }
+    
+    Write-Host "C++ compiler Found!"
 }
 
 function setup_env_vars {
-    $OLD_PATH = [System.Environment]::GetEnvironmentVariable("PATH")
-    [System.Environment]::SetEnvironmentVariable("PATH", "C:\msys64\mingw64\bin;" + $OLD_PATH)
+
+    $CURRENT_PATH = [System.Environment]::GetEnvironmentVariable("PATH")
+    $USER_PATH = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User)
+    
+    $REQUIRED_PATH="C:\msys64\mingw64\bin"
+    $CURRENT_PATH_FOUND = 0
+    $USER_PATH_FOUND = 0
+    foreach ($PATH_ITEM in $CURRENT_PATH.split(";")) {
+        if ($PATH_ITEM -eq $REQUIRED_PATH) { $CURRENT_PATH_FOUND = 1 }
+    }
+    foreach ($PATH_ITEM in $USER_PATH.split(";")) {
+        if ($PATH_ITEM -eq $REQUIRED_PATH) { $USER_PATH_FOUND = 1 }
+    }
+    if ($CURRENT_PATH_FOUND -eq 0) {
+        [System.Environment]::SetEnvironmentVariable("PATH", $REQUIRED_PATH + ";" + $CURRENT_PATH)
+    }
+    if ($USER_PATH_FOUND -eq 0) {
+        [System.Environment]::SetEnvironmentVariable("PATH", $REQUIRED_PATH + ";" + $USER_PATH, [System.EnvironmentVariableTarget]::User)
+    }
+
     [System.Environment]::SetEnvironmentVariable("MINGW_CHOST", "x86_64-w64-mingw32")
     [System.Environment]::SetEnvironmentVariable("MINGW_PACKAGE_PREFIX", "mingw-w64-x86_64")
     [System.Environment]::SetEnvironmentVariable("MINGW_PREFIX", "/mingw64")
@@ -99,6 +104,15 @@ function setup_env_vars {
     [System.Environment]::SetEnvironmentVariable("MSYSTEM_CARCH", "x86_64")
     [System.Environment]::SetEnvironmentVariable("MSYSTEM_CHOST", "x86_64-w64-mingw32")
     [System.Environment]::SetEnvironmentVariable("MSYSTEM_PREFIX", "/mingw64")    
+
+    [System.Environment]::SetEnvironmentVariable("MINGW_CHOST", "x86_64-w64-mingw32", [System.EnvironmentVariableTarget]::User)
+    [System.Environment]::SetEnvironmentVariable("MINGW_PACKAGE_PREFIX", "mingw-w64-x86_64", [System.EnvironmentVariableTarget]::User)
+    [System.Environment]::SetEnvironmentVariable("MINGW_PREFIX", "/mingw64", [System.EnvironmentVariableTarget]::User)
+    [System.Environment]::SetEnvironmentVariable("MSYSCON", "mintty.exe", [System.EnvironmentVariableTarget]::User)
+    [System.Environment]::SetEnvironmentVariable("MSYSTEM", "MINGW64", [System.EnvironmentVariableTarget]::User)
+    [System.Environment]::SetEnvironmentVariable("MSYSTEM_CARCH", "x86_64", [System.EnvironmentVariableTarget]::User)
+    [System.Environment]::SetEnvironmentVariable("MSYSTEM_CHOST", "x86_64-w64-mingw32", [System.EnvironmentVariableTarget]::User)
+    [System.Environment]::SetEnvironmentVariable("MSYSTEM_PREFIX", "/mingw64", [System.EnvironmentVariableTarget]::User)    
 }
 
 function level_cmake_generator {

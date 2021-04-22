@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(Windows) Game Launcher",
+            "name": "(Windows) Antomic Launcher",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/GameLauncher.exe",
+            "program": "${workspaceFolder}/bin/AntomicLauncher.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -16,10 +16,10 @@
             "externalConsole": false
         },
         {
-            "name": "(Windows) Game Editor",
+            "name": "(Windows) Antomic Editor",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/GameEditor.exe",
+            "program": "${workspaceFolder}/bin/AntomicEditor.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -27,10 +27,10 @@
             "externalConsole": false
         },
         {
-            "name": "(Windows) Game Tests",
+            "name": "(Windows) Antomic Tests",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/GameTests.exe",
+            "program": "${workspaceFolder}/bin/AntomicTests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -38,10 +38,10 @@
             "externalConsole": false
         },
         {
-            "name": "(Linux) Game Launcher",
+            "name": "(Linux) Antomic Launcher",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/GameLauncher",
+            "program": "${workspaceFolder}/bin/AntomicLauncher",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -57,10 +57,10 @@
             ],
         },
         {
-            "name": "(Linux) Game Editor",
+            "name": "(Linux) Antomic Editor",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/GameEditor",
+            "program": "${workspaceFolder}/bin/AntomicEditor",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -76,10 +76,10 @@
             ],
         },
         {
-            "name": "(Linux) Game Tests",
+            "name": "(Linux) Antomic Tests",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/GameTests",
+            "program": "${workspaceFolder}/bin/AntomicTests",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

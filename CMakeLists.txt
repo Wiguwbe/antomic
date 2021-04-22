@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Game)
+project(Antomic)
 
 project(${PROJECT_NAME} CXX C)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
 
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 0)
@@ -32,21 +34,15 @@ elseif (UNIX)
     add_definitions(-DENGINE_PLATFORM_LINUX)
 endif(WIN32)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(SDL2 sdl2)
-if (SDL2_FOUND)
-    add_definitions(-DENGINE_SDL_PLATFORM)
-else(SDL2_FOUND)
-    message(ERROR "We need SDL2 for the moment")
-endif(SDL2_FOUND)
+add_definitions(-DENGINE_SDL_PLATFORM)
+find_package(SDL2 REQUIRED)
 
 add_definitions(-DENGINE_GL_RENDERER)
-set("OpenGL_GL_PREFERENCE" "GLVND")
-find_package(OpenGL REQUIRED)
-
 if (UNIX)
+    set("OpenGL_GL_PREFERENCE" "GLVND")
     pkg_check_modules(X11 REQUIRED x11)
 endif(UNIX)
+find_package(OpenGL REQUIRED)
 
 # Unit Testing
 if(NOT DEFINED ENV{ENGINE_NO_TESTS})
@@ -152,6 +148,24 @@ target_link_libraries(
     "imgui" 
 )
 
+#Math Library setup
+configure_file(CMakeLists.glm.in glm-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/glm-download )
+if(result)
+    message(FATAL_ERROR "CMake step for glm failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/glm-download )
+if(result)
+    message(FATAL_ERROR "Build step for glm failed: ${result}")
+endif()
+set(GLM_DIR "${CMAKE_CURRENT_BINARY_DIR}/glm-src")
+set(GLM_INCLUDE_DIR "${GLM_DIR}/glm")
+add_subdirectory(${GLM_DIR})
+
 # Specify build paths
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
@@ -167,14 +181,13 @@ target_include_directories(
     PRIVATE
     "${PROJECT_SOURCE_DIR}/engine"
     ${LOG_INCLUDE_DIR}
-    ${SDL2_INCLUDE_DIRS}
-    ${GL_INCLUDE_DIRS}
+    ${OPENGL_INCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}
 )
 target_link_libraries( 
     "${PROJECT_NAME}Engine"
-    ${SDL2_LIBRARIES} 
-    ${GL_LIBRARIES} 
+    SDL2::Main
+    ${OPENGL_LIBRARIES} 
     ${X11_LIBRARIES}
     spdlog::spdlog
     nlohmann_json::nlohmann_json
@@ -192,6 +205,8 @@ target_include_directories(
 target_link_libraries(
     "${PROJECT_NAME}Launcher" 
     "${PROJECT_NAME}Engine"
+    "imgui"
+    ${OPENGL_LIBRARIES} 
 )
 
 FILE(GLOB_RECURSE EDITOR_SRC "${PROJECT_SOURCE_DIR}/editor/*.cpp")
@@ -201,12 +216,13 @@ target_include_directories(
     "${PROJECT_NAME}Editor"
     PRIVATE
     "${PROJECT_SOURCE_DIR}/engine"
-   ${IMGUI_DIR}
+    ${IMGUI_DIR}
 )
 target_link_libraries(
     "${PROJECT_NAME}Editor" 
     "${PROJECT_NAME}Engine"
     "imgui"
+    ${OPENGL_LIBRARIES} 
 )
 
 target_compile_features("${PROJECT_NAME}Launcher" PUBLIC cxx_std_17)

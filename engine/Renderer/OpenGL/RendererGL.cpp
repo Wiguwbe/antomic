@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #include "Renderer/OpenGL/RendererGL.h"
+#include <GL/gl.h>
 
 namespace Engine
 {
@@ -33,6 +34,8 @@ namespace Engine
 
     void RendererGL::RenderFrame()
     {
+        glClearColor(1,0,1,1);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     void RendererGL::BeginScene()

@@ -14,8 +14,13 @@
    limitations under the License.
 */
 #include "Core/Application.h"
+#include "Core/Log.h"
 #include "Platform/Platform.h"
 #include "Renderer/Renderer.h"
+#include "Events/ApplicationEvent.h"
+#include "Events/WindowEvent.h"
+#include "Events/MouseEvent.h"
+#include "Events/KeyEvent.h"
 
 namespace Engine
 {

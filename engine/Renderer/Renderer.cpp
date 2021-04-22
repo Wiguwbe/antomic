@@ -13,11 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Core/Base.h"
+#include "Core/Log.h"
 #include "Renderer/Renderer.h"
 
 #ifdef ENGINE_GL_RENDERER
-#include "Renderer/OpenGL/RendererGL.h"
+#include "Platform/OpenGL/Renderer.h"
 #endif
 
 namespace Engine
@@ -25,7 +25,7 @@ namespace Engine
 	Scope<Renderer> Renderer::Create()
 	{
 #ifdef ENGINE_GL_RENDERER
-        return CreateScope<RendererGL>();
+        return CreateScope<OpenGLRenderer>();
 #else
         ENGINE_ASSERT(false, "Unknown platform!");
 		return nullptr;

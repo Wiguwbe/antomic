@@ -14,30 +14,22 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
+#include "Renderer/Renderer.h"
 
 namespace Engine
 {
-    class Layer
+    class OpenGLRenderer : public Renderer
     {
-
-    public:
-        Layer(const std::string &name = "layer");
-        virtual ~Layer();
         
-        virtual void OnAttach() {}
-        virtual void OnDetach() {}
-        virtual void Update() {}
-        virtual void Render() {}
-        virtual void OnEvent(Event &e) {}
+    public:
+        virtual void Init(uint32_t width, uint32_t height);
+        virtual void Shutdown();
+        virtual void OnWindowResize(uint32_t width, uint32_t height);
+        virtual void RenderFrame();
+        virtual void BeginScene();
+        virtual void EndScene();
 
-        inline const void Disable() { m_Enabled=false; }
-        inline const void Enable() { m_Enabled=true; }
-        inline const bool &IsEnabled() const { return m_Enabled; }
-        inline const std::string &GetName() const { return m_Name; }
-
-    protected:
-        std::string m_Name;
-        bool m_Enabled;
+    private:
     };
+
 } // namespace Engine

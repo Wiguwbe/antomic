@@ -15,13 +15,7 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Core/Log.h"
-#include "Profiling/Instrumentor.h"
 #include "Platform/Platform.h"
-#include "Events/ApplicationEvent.h"
-#include "Events/WindowEvent.h"
-#include "Events/MouseEvent.h"
-#include "Events/KeyEvent.h"
 #include "Core/LayerStack.h"
 #include "Input/Input.h"
 #include "Renderer/Renderer.h"

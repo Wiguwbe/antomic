@@ -16,7 +16,6 @@
 #pragma once
 #include "Core/Base.h"
 #include "Core/Log.h"
-#include "Profiling/Instrumentor.h"
 
 namespace Engine
 {
@@ -27,6 +26,7 @@ namespace Engine
 			Left,
 			Middle,
 			Right,
+			None,
 
 			Count
 		};
@@ -175,35 +175,35 @@ namespace Engine
 		};
 	};
 
-	// struct MouseState
-	// {
-	// 	MouseState()
-	// 		: m_mx(0), m_my(0), m_mz(0)
-	// 	{
-	// 		for (uint32_t i = 0; i < MouseButton::Count; ++i)
-	// 		{
-	// 			m_buttons[i] = MouseButton::None;
-	// 		}
-	// 	}
+	struct MouseState
+	{
+		MouseState()
+			: m_mx(0), m_my(0), m_mz(0)
+		{
+			for (uint32_t i = 0; i < MouseButton::Count; ++i)
+			{
+				m_buttons[i] = MouseButton::None;
+			}
+		}
 
-	// 	int32_t m_mx;
-	// 	int32_t m_my;
-	// 	int32_t m_mz;
-	// 	uint8_t m_buttons[MouseButton::Count];
-	// };
+		int32_t m_mx;
+		int32_t m_my;
+		int32_t m_mz;
+		uint8_t m_buttons[MouseButton::Count];
+	};
 
-	// struct GamepadState
-	// {
-	// 	GamepadState()
-	// 	{
-	// 		for (uint32_t i = 0; i < GamepadAxis::Count; ++i)
-	// 		{
-	// 			m_axis[i] = 0;
-	// 		}
-	// 	}
+	struct GamepadState
+	{
+		GamepadState()
+		{
+			for (uint32_t i = 0; i < GamepadAxis::Count; ++i)
+			{
+				m_axis[i] = 0;
+			}
+		}
 
-	// 	int32_t m_axis[GamepadAxis::Count];
-	// };
+		int32_t m_axis[GamepadAxis::Count];
+	};
 
 	class Input
 	{

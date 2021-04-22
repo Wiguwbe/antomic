@@ -55,12 +55,13 @@ function level_build_dependencies() {
                 "build-essential"
                 "cmake"
                 "cmake-extras"
+                "ninja-build"
+                "libglew-dev"
                 "libsdl2-dev"
                 "libgl1-mesa-dev"
                 "x11proto-core-dev"
                 "libx11-dev"
                 "mesa-common-dev"
-                "ninja-build"
             )
 
             MISSING_PACKAGES=""

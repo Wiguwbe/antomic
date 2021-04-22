@@ -18,7 +18,6 @@ endif()
 
 find_package(Threads REQUIRED)
 
-
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
     set(BUILD_ARCH "x64")
@@ -34,9 +33,11 @@ elseif (UNIX)
     add_definitions(-DENGINE_PLATFORM_LINUX)
 endif(WIN32)
 
+# SDL 
 add_definitions(-DENGINE_SDL_PLATFORM)
 find_package(SDL2 REQUIRED)
 
+# OpenGL
 add_definitions(-DENGINE_GL_RENDERER)
 if (UNIX)
     set("OpenGL_GL_PREFERENCE" "GLVND")
@@ -166,6 +167,11 @@ set(GLM_DIR "${CMAKE_CURRENT_BINARY_DIR}/glm-src")
 set(GLM_INCLUDE_DIR "${GLM_DIR}/glm")
 add_subdirectory(${GLM_DIR})
 
+# glad
+set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad")
+add_library("glad" "${GLAD_DIR}/src/glad.c")
+target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
+
 # Specify build paths
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
@@ -183,11 +189,12 @@ target_include_directories(
     ${LOG_INCLUDE_DIR}
     ${OPENGL_INCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}
+    "${GLAD_DIR}/include"
 )
 target_link_libraries( 
     "${PROJECT_NAME}Engine"
     SDL2::Main
-    ${OPENGL_LIBRARIES} 
+    "glad"
     ${X11_LIBRARIES}
     spdlog::spdlog
     nlohmann_json::nlohmann_json

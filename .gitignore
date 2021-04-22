@@ -68,7 +68,6 @@ build
 media
 bin
 lib
-vendor
 *.log
 imgui.ini
 # End of https://www.toptal.com/developers/gitignore/api/cmake,visualstudiocode,c++

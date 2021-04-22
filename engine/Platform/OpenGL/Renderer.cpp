@@ -13,23 +13,37 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Renderer/Renderer.h"
+#include "Platform/OpenGL/Renderer.h"
+#include <glad/glad.h>
 
 namespace Engine
 {
-    class RendererGL : public Renderer
-    {
-        
-    public:
-        virtual void Init(uint32_t width, uint32_t height);
-        virtual void Shutdown();
-        virtual void OnWindowResize(uint32_t width, uint32_t height);
-        virtual void RenderFrame();
-        virtual void BeginScene();
-        virtual void EndScene();
 
-    private:
-    };
+    void OpenGLRenderer::Init(uint32_t width, uint32_t height)
+    {
+        OnWindowResize(width, height);
+    }
+
+    void OpenGLRenderer::Shutdown()
+    {
+    }
+
+    void OpenGLRenderer::OnWindowResize(uint32_t width, uint32_t height)
+    {
+    }
+
+    void OpenGLRenderer::RenderFrame()
+    {
+        glClearColor(1,0,1,1);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    void OpenGLRenderer::BeginScene()
+    {
+    }
+
+    void OpenGLRenderer::EndScene()
+    {
+    }
 
 } // namespace Engine

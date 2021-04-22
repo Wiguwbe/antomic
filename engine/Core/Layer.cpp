@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #include "Core/Layer.h"
+#include "Events/Event.h"
 
 namespace Engine
 {

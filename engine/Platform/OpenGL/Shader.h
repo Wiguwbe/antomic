@@ -13,37 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/OpenGL/RendererGL.h"
-#include <GL/gl.h>
+#pragma once
+#include "Renderer/Shader.h"
 
 namespace Engine
 {
-
-    void RendererGL::Init(uint32_t width, uint32_t height)
+    class OpenGLShader : public Shader
     {
-        OnWindowResize(width, height);
-    }
+    public:
+        OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc);
+        ~OpenGLShader();
+        virtual void Bind();
+        virtual void Unbind();
 
-    void RendererGL::Shutdown()
-    {
-    }
-
-    void RendererGL::OnWindowResize(uint32_t width, uint32_t height)
-    {
-    }
-
-    void RendererGL::RenderFrame()
-    {
-        glClearColor(1,0,1,1);
-        glClear(GL_COLOR_BUFFER_BIT);
-    }
-
-    void RendererGL::BeginScene()
-    {
-    }
-
-    void RendererGL::EndScene()
-    {
-    }
+    private:
+        uint32_t mGLProgramId = 0;
+    };
 
 } // namespace Engine

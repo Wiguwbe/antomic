@@ -18,26 +18,16 @@
 
 namespace Engine
 {
-    class Layer
+    class Shader
     {
-
     public:
-        Layer(const std::string &name = "layer");
-        virtual ~Layer();
-        
-        virtual void OnAttach() {}
-        virtual void OnDetach() {}
-        virtual void Update() {}
-        virtual void Render() {}
-        virtual void OnEvent(Event &e) {}
+        virtual void Bind() = 0;
+        virtual void Unbind() = 0;
+	public:
+		static Ref<Shader> CreateFromFile(const std::string& vertexSrcPath, const std::string& pixelSrcPath);
+		static Ref<Shader> CreateFromSource(const std::string& vertexSrc, const std::string& pixelSrc);
 
-        inline const void Disable() { m_Enabled=false; }
-        inline const void Enable() { m_Enabled=true; }
-        inline const bool &IsEnabled() const { return m_Enabled; }
-        inline const std::string &GetName() const { return m_Name; }
-
-    protected:
-        std::string m_Name;
-        bool m_Enabled;
+    private:
     };
+
 } // namespace Engine

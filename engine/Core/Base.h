@@ -73,6 +73,8 @@ namespace Engine
     class Log;
     class Event;
     class EventListener;
+    class WindowCloseEvent;
+    class WindowResizeEvent;
 
     using EventHandler = std::function<void(Event&)>;
 

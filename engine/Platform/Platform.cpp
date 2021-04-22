@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #include "Platform/Platform.h"
+#include "Core/Log.h"
 
 #ifdef ENGINE_SDL_PLATFORM
 #include "Platform/SDL/PlatformSDL.h"

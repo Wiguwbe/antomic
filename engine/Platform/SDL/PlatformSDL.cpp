@@ -16,10 +16,15 @@
 #ifdef ENGINE_SDL_PLATFORM
 
 #include "Platform/SDL/PlatformSDL.h"
+#include "Core/Log.h"
+
 #ifdef ENGINE_PLATFORM_LINUX
 #include <SDL2/SDL_syswm.h>
 #elif ENGINE_PLATFORM_WINDOWS
 #include "SDL_syswm.h"
+#endif
+#ifdef ENGINE_GL_RENDERER
+#include <glad/glad.h>
 #endif
 
 namespace Engine
@@ -41,7 +46,7 @@ namespace Engine
     {
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
-            ENGINE_TRACE("Error initializing SDL");
+            ENGINE_TRACE("PlatformSDL: Error initializing SDL");
             return false;
         }
 
@@ -69,13 +74,30 @@ namespace Engine
 #endif
         if (!s_SDLWindow)
         {
-            ENGINE_TRACE("Error creating SDL window: {0},{1}", width, height);
+            ENGINE_TRACE("PlatformSDL: Error creating SDL window: {0},{1}", width, height);
             SDL_Quit();
             return false;
         }
 
 #ifdef ENGINE_GL_RENDERER
         s_GLContext = SDL_GL_CreateContext(s_SDLWindow);
+        if (!s_GLContext) {
+            ENGINE_TRACE("PlatformSDL: Error creating OpenGL context");
+            SDL_DestroyWindow(s_SDLWindow);
+            SDL_Quit();
+            return false;
+        }
+
+        if (!gladLoadGL() )
+        {
+            ENGINE_TRACE("PlatformSDL: Error initializing Glad");
+            SDL_GL_DeleteContext(s_GLContext);
+            SDL_DestroyWindow(s_SDLWindow);
+            SDL_Quit();
+            return false;
+        }
+
+        ENGINE_INFO("PlatformSDL: Using OpenGL version {0}",glGetString(GL_VERSION));
 #endif
 
         SDL_SysWMinfo wmi;
@@ -83,7 +105,7 @@ namespace Engine
 
         if (!SDL_GetWindowWMInfo(s_SDLWindow, &wmi))
         {
-            ENGINE_TRACE("Error retrieving window information");
+            ENGINE_TRACE("PlatformSDL: Error retrieving window information");
 #ifdef ENGINE_GL_RENDERER
             SDL_GL_DeleteContext(s_GLContext);
 #endif

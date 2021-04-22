@@ -15,7 +15,6 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Events/Event.h"
 #include "Core/Layer.h"
 
 namespace Engine

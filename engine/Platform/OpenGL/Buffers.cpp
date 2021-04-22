@@ -14,40 +14,73 @@
    limitations under the License.
 */
 #include "Platform/OpenGL/Buffers.h"
+#include "glad/glad.h"
 
 namespace Antomic
 {
 
+    /* IndexBuffer Implementation */
+
     OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t *data, uint32_t size)
     {
+        glCreateBuffers(1, &mRendererId);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mRendererId);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     OpenGLIndexBuffer::~OpenGLIndexBuffer()
     {
+        glDeleteBuffers(1, &mRendererId);
     }
 
-    void OpenGLIndexBuffer::Bind()
+    void OpenGLIndexBuffer::Bind() const
     {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mRendererId);
     }
 
-    void OpenGLIndexBuffer::Unbind()
+    void OpenGLIndexBuffer::Unbind() const
     {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
+    void OpenGLIndexBuffer::Upload(uint32_t* data, uint32_t size) const 
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mRendererId);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    /* VertexBuffer Implementation */
+    
     OpenGLVertexBuffer::OpenGLVertexBuffer(float *data, uint32_t size)
     {
+        glCreateBuffers(1, &mRendererId);
+        glBindBuffer(GL_ARRAY_BUFFER, mRendererId);
+        glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     OpenGLVertexBuffer::~OpenGLVertexBuffer()
     {
+        glDeleteBuffers(1, &mRendererId);
     }
 
-    void OpenGLVertexBuffer::Bind()
+    void OpenGLVertexBuffer::Bind() const
     {
+        glBindBuffer(GL_ARRAY_BUFFER, mRendererId);
     }
 
-    void OpenGLVertexBuffer::Unbind()
+    void OpenGLVertexBuffer::Unbind() const
     {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    void OpenGLVertexBuffer::Upload(uint32_t* data, uint32_t size) const 
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, mRendererId);
+        glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
 }

@@ -21,5 +21,10 @@ namespace Launcher {
     {
     public:
         Game();
+        virtual void Render();
+    private:
+        Antomic::Ref<Antomic::VertexBuffer> mVertexBuffer;
+        Antomic::Ref<Antomic::IndexBuffer> mIndexBuffer;
+        Antomic::Ref<Antomic::Shader> mShader;
     };
 }

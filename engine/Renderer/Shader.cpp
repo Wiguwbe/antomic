@@ -22,7 +22,7 @@
 
 namespace Antomic
 {
-    Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath)
+    Ref<Shader> Shader::CreateFromFile(const char *vertexSrcPath, const char *pixelSrcPath)
     {
         std::string vertexSrc, pixelSrc;
 
@@ -41,10 +41,12 @@ namespace Antomic
         }
 
         std::ifstream vertexSrcFile(vertexSrcPath);
-        vertexSrcFile >> vertexSrc;
+        vertexSrc = std::string((std::istreambuf_iterator<char>(vertexSrcFile)),
+                                std::istreambuf_iterator<char>());
 
         std::ifstream pixelSrcFile(pixelSrcPath);
-        pixelSrcFile >> pixelSrc;
+        pixelSrc = std::string((std::istreambuf_iterator<char>(pixelSrcFile)),
+                                std::istreambuf_iterator<char>());
 
 #ifdef ENGINE_GL_RENDERER
         return CreateRef<OpenGLShader>(vertexSrc, pixelSrc);
@@ -54,7 +56,7 @@ namespace Antomic
 #endif
     }
 
-    Ref<Shader> CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc)
+    Ref<Shader> Shader::CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc)
     {
 #ifdef ENGINE_GL_RENDERER
         return CreateRef<OpenGLShader>(vertexSrc, pixelSrc);

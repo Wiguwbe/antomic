@@ -64,24 +64,24 @@ namespace Antomic
             return;
         }
 
-        mGLProgramId = glCreateProgram();
+        mRendererId = glCreateProgram();
 
-        glAttachShader(mGLProgramId, vertexShader);
-        glAttachShader(mGLProgramId, fragmentShader);
+        glAttachShader(mRendererId, vertexShader);
+        glAttachShader(mRendererId, fragmentShader);
 
-        glLinkProgram(mGLProgramId);
+        glLinkProgram(mRendererId);
 
         GLint isLinked = 0;
-        glGetProgramiv(mGLProgramId, GL_LINK_STATUS, (int *)&isLinked);
+        glGetProgramiv(mRendererId, GL_LINK_STATUS, (int *)&isLinked);
         if (isLinked == GL_FALSE)
         {
             GLint maxLength = 0;
-            glGetProgramiv(mGLProgramId, GL_INFO_LOG_LENGTH, &maxLength);
+            glGetProgramiv(mRendererId, GL_INFO_LOG_LENGTH, &maxLength);
 
             std::vector<GLchar> infoLog(maxLength);
-            glGetProgramInfoLog(mGLProgramId, maxLength, &maxLength, &infoLog[0]);
+            glGetProgramInfoLog(mRendererId, maxLength, &maxLength, &infoLog[0]);
 
-            glDeleteProgram(mGLProgramId);
+            glDeleteProgram(mRendererId);
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
 
@@ -91,21 +91,21 @@ namespace Antomic
         }
 
         // Always detach shaders after a successful link.
-        glDetachShader(mGLProgramId, vertexShader);
-        glDetachShader(mGLProgramId, fragmentShader);
+        glDetachShader(mRendererId, vertexShader);
+        glDetachShader(mRendererId, fragmentShader);
     }
 
     OpenGLShader::~OpenGLShader()
     {
-        glDeleteProgram(mGLProgramId);
+        glDeleteProgram(mRendererId);
     }
 
-    void OpenGLShader::Bind()
+    void OpenGLShader::Bind() const 
     {
-        glUseProgram(mGLProgramId);
+        glUseProgram(mRendererId);
     }
 
-    void OpenGLShader::Unbind()
+    void OpenGLShader::Unbind() const 
     {
         glUseProgram(0);
     }

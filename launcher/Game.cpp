@@ -20,5 +20,25 @@ namespace Launcher
 
     Game::Game() : Antomic::Application("Game")
     {
+        float vertices[3*3] = {
+           -0.5f,-0.5f, 0.0f,
+            0.5f,-0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f,
+        };
+
+        uint32_t indices[3] = { 0,1,2 };
+
+        mVertexBuffer = Antomic::VertexBuffer::Create(vertices,sizeof(vertices));
+        mIndexBuffer = Antomic::IndexBuffer::Create(indices,sizeof(indices));
+        mShader = Antomic::Shader::CreateFromFile("media/shaders/opengl/vs_demo_1.glsl","media/shaders/opengl/fs_demo_1.glsl");
     }
+
+    void Game::Render() {
+
+        Antomic::Application::Render();
+        mShader->Bind();
+        mVertexBuffer->Bind();
+        mIndexBuffer->Bind();
+    }
+
 } // namespace Launcher

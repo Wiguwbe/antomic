@@ -23,11 +23,12 @@ namespace Antomic
     public:
         OpenGLIndexBuffer(uint32_t *data, uint32_t size);
         ~OpenGLIndexBuffer();
-        virtual void Bind();
-        virtual void Unbind();
+        virtual void Bind() const;
+        virtual void Unbind() const;
+        virtual void Upload(uint32_t* data, uint32_t size) const;
 
     private:
-        uint32_t mGLBufferId;
+        uint32_t mRendererId;
     };
 
     class OpenGLVertexBuffer : public VertexBuffer
@@ -35,11 +36,12 @@ namespace Antomic
     public:
         OpenGLVertexBuffer(float *data, uint32_t size);
         ~OpenGLVertexBuffer();
-        virtual void Bind();
-        virtual void Unbind();
+        virtual void Bind() const;
+        virtual void Unbind() const;
+        virtual void Upload(uint32_t* data, uint32_t size) const;
 
     private:
-        uint32_t mGLBufferId;
+        uint32_t mRendererId;
     };
 
 } // namespace Antomic

@@ -22,7 +22,7 @@
 
 namespace Antomic
 {
-    Ref<IndexBuffer> IndexBuffer::CreateBuffer(uint32_t* data, uint32_t size)
+    Ref<IndexBuffer> IndexBuffer::Create(uint32_t* data, uint32_t size)
 	{
 #ifdef ENGINE_GL_RENDERER
         return CreateRef<OpenGLIndexBuffer>(data, size);
@@ -32,7 +32,7 @@ namespace Antomic
 #endif
 	}
 
-    Ref<VertexBuffer> VertexBuffer::CreateBuffer(float* data, uint32_t size)
+    Ref<VertexBuffer> VertexBuffer::Create(float* data, uint32_t size)
 	{
 #ifdef ENGINE_GL_RENDERER
         return CreateRef<OpenGLVertexBuffer>(data, size);

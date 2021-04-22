@@ -21,21 +21,23 @@ namespace Antomic
     class IndexBuffer
     {        
     public:
-        virtual void Bind() = 0;
-        virtual void Unbind() = 0;
+        virtual void Bind() const = 0;
+        virtual void Unbind() const = 0;
+        virtual void Upload(uint32_t* data, uint32_t size) const = 0;
 	public:
-		static Ref<IndexBuffer> CreateBuffer(uint32_t* data, uint32_t size);
+		static Ref<IndexBuffer> Create(uint32_t* data, uint32_t size);
     };
 
     class VertexBuffer
     {
         
     public:
-        virtual void Bind() = 0;
-        virtual void Unbind() = 0;
+        virtual void Bind() const = 0;
+        virtual void Unbind() const = 0;
+        virtual void Upload(uint32_t* data, uint32_t size) const = 0;
 
 	public:
-		static Ref<VertexBuffer> CreateBuffer(float* data, uint32_t size);
+		static Ref<VertexBuffer> Create(float* data, uint32_t size);
     };
 
 } // namespace Antomic

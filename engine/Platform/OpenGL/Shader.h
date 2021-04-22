@@ -23,11 +23,11 @@ namespace Antomic
     public:
         OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc);
         ~OpenGLShader();
-        virtual void Bind();
-        virtual void Unbind();
+        virtual void Bind() const;
+        virtual void Unbind() const;
 
     private:
-        uint32_t mGLProgramId = 0;
+        uint32_t mRendererId = 0;
     };
 
 } // namespace Antomic

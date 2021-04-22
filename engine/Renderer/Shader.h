@@ -21,11 +21,11 @@ namespace Antomic
     class Shader
     {
     public:
-        virtual void Bind() = 0;
-        virtual void Unbind() = 0;
+        virtual void Bind() const = 0;
+        virtual void Unbind() const = 0;
 
     public:
-        static Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath);
+        static Ref<Shader> CreateFromFile(const char* vertexSrcPath, const char* pixelSrcPath);
         static Ref<Shader> CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc);
     };
 

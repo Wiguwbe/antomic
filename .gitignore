@@ -65,7 +65,6 @@ _deps
 .codelite
 dist
 build
-media
 bin
 lib
 *.log

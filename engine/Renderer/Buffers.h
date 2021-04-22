@@ -18,15 +18,24 @@
 
 namespace Engine
 {
-    class Shader
+    class IndexBuffer
+    {        
+    public:
+        virtual void Bind() = 0;
+        virtual void Unbind() = 0;
+	public:
+		static Ref<IndexBuffer> CreateBuffer(uint32_t* data, uint32_t size);
+    };
+
+    class VertexBuffer
     {
+        
     public:
         virtual void Bind() = 0;
         virtual void Unbind() = 0;
 
-    public:
-        static Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath);
-        static Ref<Shader> CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc);
+	public:
+		static Ref<VertexBuffer> CreateBuffer(float* data, uint32_t size);
     };
 
 } // namespace Engine

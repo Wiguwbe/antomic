@@ -13,20 +13,41 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
+#include "Platform/OpenGL/Buffers.h"
 
 namespace Engine
 {
-    class Shader
+
+    OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t *data, uint32_t size)
     {
-    public:
-        virtual void Bind() = 0;
-        virtual void Unbind() = 0;
+    }
 
-    public:
-        static Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath);
-        static Ref<Shader> CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc);
-    };
+    OpenGLIndexBuffer::~OpenGLIndexBuffer()
+    {
+    }
 
-} // namespace Engine
+    void OpenGLIndexBuffer::Bind()
+    {
+    }
+
+    void OpenGLIndexBuffer::Unbind()
+    {
+    }
+
+    OpenGLVertexBuffer::OpenGLVertexBuffer(float *data, uint32_t size)
+    {
+    }
+
+    OpenGLVertexBuffer::~OpenGLVertexBuffer()
+    {
+    }
+
+    void OpenGLVertexBuffer::Bind()
+    {
+    }
+
+    void OpenGLVertexBuffer::Unbind()
+    {
+    }
+
+}

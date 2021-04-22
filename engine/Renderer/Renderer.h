@@ -20,7 +20,6 @@ namespace Engine
 {
     class Renderer
     {
-        
     public:
         virtual void Init(uint32_t width, uint32_t height) = 0;
         virtual void Shutdown() = 0;
@@ -30,8 +29,6 @@ namespace Engine
         virtual void EndScene() = 0;
 	public:
 		static Scope<Renderer> Create();
-
-    private:
     };
 
 } // namespace Engine

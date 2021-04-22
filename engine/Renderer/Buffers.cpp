@@ -13,20 +13,33 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
+#include "Core/Log.h"
+#include "Renderer/Buffers.h"
+
+#ifdef ENGINE_GL_RENDERER
+#include "Platform/OpenGL/Buffers.h"
+#endif
 
 namespace Engine
 {
-    class Shader
-    {
-    public:
-        virtual void Bind() = 0;
-        virtual void Unbind() = 0;
+    Ref<IndexBuffer> IndexBuffer::CreateBuffer(uint32_t* data, uint32_t size)
+	{
+#ifdef ENGINE_GL_RENDERER
+        return CreateRef<OpenGLIndexBuffer>(data, size);
+#else
+        ENGINE_ASSERT(false, "Unknown platform!");
+		return nullptr;
+#endif
+	}
 
-    public:
-        static Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath);
-        static Ref<Shader> CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc);
-    };
+    Ref<VertexBuffer> VertexBuffer::CreateBuffer(float* data, uint32_t size)
+	{
+#ifdef ENGINE_GL_RENDERER
+        return CreateRef<OpenGLVertexBuffer>(data, size);
+#else
+        ENGINE_ASSERT(false, "Unknown platform!");
+		return nullptr;
+#endif
+	}
 
-} // namespace Engine
+} 

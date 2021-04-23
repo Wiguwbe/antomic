@@ -1,0 +1,17 @@
+# GLM Library setup
+configure_file(3rdparty/CMakeLists.glm.in glm-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/glm-download )
+if(result)
+    message(FATAL_ERROR "CMake step for glm failed: ${result}")
+endif()
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+RESULT_VARIABLE result
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/glm-download )
+if(result)
+    message(FATAL_ERROR "Build step for glm failed: ${result}")
+endif()
+set(GLM_DIR "${CMAKE_CURRENT_BINARY_DIR}/glm-src")
+set(GLM_INCLUDE_DIR "${GLM_DIR}")
+add_subdirectory(${GLM_DIR})

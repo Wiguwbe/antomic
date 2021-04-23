@@ -15,35 +15,19 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Renderer/Buffers.h"
 
-namespace Antomic
-{
-    enum class ShaderDataType
-    {
-        Float,
-        Float2,
-        Float3,
-        Float4,
-        Mat3,
-        Mat4,
-        Int,
-        Int2,
-        Int3,
-        Int4,
-        Bool
-    };
+namespace Antomic {
 
-    uint32_t ShaderDataTypeSize(ShaderDataType t);
-
-    class Shader
+    class VertexArray
     {
     public:
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
+        virtual void AddVertexBuffer(const Ref<VertexBuffer> buffer) = 0;
+        virtual void SetIndexBuffer(const Ref<IndexBuffer> buffer) = 0;
 
     public:
-        static Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath);
-        static Ref<Shader> CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc);
+        static Ref<VertexArray> Create();
     };
-
-} // namespace Antomic
+}

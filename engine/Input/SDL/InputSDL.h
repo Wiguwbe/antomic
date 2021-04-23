@@ -30,9 +30,9 @@ namespace Antomic
         InputSDL();
         virtual ~InputSDL();
 
-        virtual bool SetupInput();
-        virtual void ProcessInputEvents();
-        virtual void SetEventHandler(const EventHandler &handler) { m_Handler = handler; }
+        virtual bool SetupInput() override;
+        virtual void ProcessInputEvents() override;
+        virtual void SetEventHandler(const EventHandler &handler) override { m_Handler = handler; }
 
     protected:
         EventHandler m_Handler;

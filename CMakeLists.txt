@@ -164,7 +164,7 @@ if(result)
     message(FATAL_ERROR "Build step for glm failed: ${result}")
 endif()
 set(GLM_DIR "${CMAKE_CURRENT_BINARY_DIR}/glm-src")
-set(GLM_INCLUDE_DIR "${GLM_DIR}/glm")
+set(GLM_INCLUDE_DIR "${GLM_DIR}")
 add_subdirectory(${GLM_DIR})
 
 # glad
@@ -190,6 +190,7 @@ target_include_directories(
     ${OPENGL_INCLUDE_DIRS}
     ${X11_INCLUDE_DIRS}
     "${GLAD_DIR}/include"
+    "${GLM_DIR}"
 )
 target_link_libraries( 
     "${PROJECT_NAME}Engine"
@@ -208,6 +209,7 @@ target_include_directories(
     "${PROJECT_NAME}Launcher"
     PRIVATE
     "${PROJECT_SOURCE_DIR}/engine"
+    "${GLM_DIR}"
 )
 target_link_libraries(
     "${PROJECT_NAME}Launcher" 
@@ -224,6 +226,7 @@ target_include_directories(
     PRIVATE
     "${PROJECT_SOURCE_DIR}/engine"
     ${IMGUI_DIR}
+    "${GLM_DIR}"
 )
 target_link_libraries(
     "${PROJECT_NAME}Editor" 

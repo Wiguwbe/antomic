@@ -13,47 +13,34 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/Renderer.h"
 #include "Core/Log.h"
+#include "Renderer/Buffers.h"
+#include "Renderer/RenderAPI.h"
+
+#ifdef ENGINE_GL_RENDERER
+#include "Platform/OpenGL/VertexArray.h"
+#endif
 
 namespace Antomic
 {
-
-    Renderer::Renderer(RenderPlatform platform) 
+    Ref<VertexArray> VertexArray::Create()
     {
-        mApi = RenderAPI::Create(platform);
+        switch (RenderAPI::CurrentAPI())
+        {
+        case RenderPlatform::OPENGL:
+#ifdef ENGINE_GL_RENDERER
+            return CreateRef<OpenGLVertexArray>();
+#else
+            ENGINE_ASSERT(false, "VertexArray: OpenGL not available!");
+            return nullptr;
+#endif
+            break;
+
+        default:
+            ENGINE_ASSERT(false, "VertexArray: No API available!");
+            return nullptr;
+            break;
+        }
     }
-
-    Renderer::~Renderer() 
-    {
-
-    }
-
-    void Renderer::Init(uint32_t width, uint32_t height)
-    {
-        OnWindowResize(width, height);
-    }
-
-    void Renderer::Shutdown()
-    {
-    }
-
-    void Renderer::OnWindowResize(uint32_t width, uint32_t height)
-    {
-    }
-
-    void Renderer::Flush()
-    {
-    }
-
-    void Renderer::BeginScene()
-    {
-        mApi->Clear(glm::vec4(0.4f,0.3f,0.0f,1.0f));
-    }
-
-    void Renderer::EndScene()
-    {
-    }
-
 
 }

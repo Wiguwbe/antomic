@@ -13,37 +13,31 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
+#include "Platform/OpenGL/RenderAPI.h"
+#include "glad/glad.h"
 
 namespace Antomic
 {
-    enum class ShaderDataType
+    OpenGLRenderAPI::OpenGLRenderAPI() 
     {
-        Float,
-        Float2,
-        Float3,
-        Float4,
-        Mat3,
-        Mat4,
-        Int,
-        Int2,
-        Int3,
-        Int4,
-        Bool
-    };
 
-    uint32_t ShaderDataTypeSize(ShaderDataType t);
+    }
 
-    class Shader
+    OpenGLRenderAPI::~OpenGLRenderAPI() 
     {
-    public:
-        virtual void Bind() const = 0;
-        virtual void Unbind() const = 0;
 
-    public:
-        static Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath);
-        static Ref<Shader> CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc);
-    };
+    }
+
+    void OpenGLRenderAPI::Clear(glm::vec4 color)
+    {
+        glClearColor(color.r,color.g,color.b,color.a);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray> vertexArray)
+    {
+
+    }
+
 
 } // namespace Antomic

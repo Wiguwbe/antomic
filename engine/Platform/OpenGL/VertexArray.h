@@ -13,37 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Platform/OpenGL/Renderer.h"
-#include <glad/glad.h>
+#pragma once
+#include "Core/Base.h"
+#include "Renderer/VertexArray.h"
 
-namespace Antomic
-{
+namespace Antomic {
 
-    void OpenGLRenderer::Init(uint32_t width, uint32_t height)
+    class OpenGLVertexArray : public VertexArray
     {
-        OnWindowResize(width, height);
-    }
-
-    void OpenGLRenderer::Shutdown()
-    {
-    }
-
-    void OpenGLRenderer::OnWindowResize(uint32_t width, uint32_t height)
-    {
-    }
-
-    void OpenGLRenderer::RenderFrame()
-    {
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-    }
-
-    void OpenGLRenderer::BeginScene()
-    {
-    }
-
-    void OpenGLRenderer::EndScene()
-    {
-    }
-
-} // namespace Antomic
+    public:
+        OpenGLVertexArray();
+        ~OpenGLVertexArray();
+        virtual void Bind() const override;
+        virtual void Unbind() const override;
+        virtual void AddVertexBuffer(const Ref<VertexBuffer> buffer) override;
+        virtual void SetIndexBuffer(const Ref<IndexBuffer> buffer) override;
+    private:
+        uint32_t mRendererId;
+        std::vector<Ref<VertexBuffer>> mVertextBuffers;
+        Ref<IndexBuffer> mIndexBuffer;
+    };
+}

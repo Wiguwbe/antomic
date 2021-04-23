@@ -15,9 +15,37 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Renderer/Shader.h"
 
 namespace Antomic
 {
+    struct BufferElement {
+        std::string Name;
+        ShaderDataType Type;
+        uint32_t Size;
+        uint32_t Offset;
+        bool Normalized;
+
+        BufferElement(ShaderDataType type, const std::string& name, bool normalized = false) 
+            : Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized) {}
+    };
+
+    class BufferLayout {
+        public:
+            BufferLayout(const std::initializer_list<BufferElement>& elements);
+            BufferLayout() {}
+            ~BufferLayout() {};
+
+            inline const std::vector<BufferElement>& Elements() const { return mElements; }
+            inline uint32_t Stride() const { return mStride; }
+        private:
+            void Update();
+
+        private:
+            std::vector<BufferElement> mElements;
+            uint32_t mStride = 0;
+    };
+
     class IndexBuffer
     {        
     public:
@@ -35,9 +63,12 @@ namespace Antomic
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
         virtual void Upload(uint32_t* data, uint32_t size) const = 0;
-
+        virtual const BufferLayout &Layout() const = 0;
+        virtual void SetLayout(const BufferLayout &layout) = 0;
 	public:
 		static Ref<VertexBuffer> Create(float* data, uint32_t size);
     };
+
+
 
 } // namespace Antomic

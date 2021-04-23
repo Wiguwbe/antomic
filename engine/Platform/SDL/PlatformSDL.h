@@ -31,15 +31,15 @@ namespace Antomic
         PlatformSDL();
         virtual ~PlatformSDL();
 
-        virtual bool Init();
-        virtual void Shutdown();
-        virtual void ToggleFullscreen();
-        virtual void SetMouseLock(bool lock);
-        virtual bool SetupWindow(uint32_t width, uint32_t height, std::string name);
-        virtual void DestroyWindow();
-        virtual void UpdateWindow();
-        virtual void ProcessWindowEvents();
-        virtual void SetEventHandler(const EventHandler &handler) { m_Handler = handler; }
+        virtual bool Init() override;
+        virtual void Shutdown()override;
+        virtual void ToggleFullscreen() override;
+        virtual void SetMouseLock(bool lock) override;
+        virtual bool SetupWindow(uint32_t width, uint32_t height, std::string name) override;
+        virtual void DestroyWindow() override;
+        virtual void UpdateWindow() override;
+        virtual void ProcessWindowEvents() override;
+        virtual void SetEventHandler(const EventHandler &handler) override { m_Handler = handler; } 
 
     private:
         static SDL_Window *s_SDLWindow;

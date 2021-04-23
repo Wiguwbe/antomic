@@ -15,6 +15,7 @@
 */
 #include "Core/Log.h"
 #include "Renderer/Shader.h"
+#include "Renderer/RenderAPI.h"
 
 #ifdef ENGINE_GL_RENDERER
 #include "Platform/OpenGL/Shader.h"
@@ -22,7 +23,39 @@
 
 namespace Antomic
 {
-    Ref<Shader> Shader::CreateFromFile(const char *vertexSrcPath, const char *pixelSrcPath)
+    uint32_t ShaderDataTypeSize(ShaderDataType t)
+    {
+        switch (t)
+        {
+        case ShaderDataType::Float:
+            return 4;
+        case ShaderDataType::Float2:
+            return 8;
+        case ShaderDataType::Float3:
+            return 12;
+        case ShaderDataType::Float4:
+            return 16;
+        case ShaderDataType::Mat3:
+            return 36;
+        case ShaderDataType::Mat4:
+            return 64;
+        case ShaderDataType::Int:
+            return 4;
+        case ShaderDataType::Int2:
+            return 8;
+        case ShaderDataType::Int3:
+            return 12;
+        case ShaderDataType::Int4:
+            return 16;
+        case ShaderDataType::Bool:
+            return 1;
+        }
+
+        ENGINE_ASSERT(false, "ShaderDataType: Unknown data tyepe")
+        return 0;
+    }
+
+    Ref<Shader> Shader::CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath)
     {
         std::string vertexSrc, pixelSrc;
 
@@ -46,24 +79,29 @@ namespace Antomic
 
         std::ifstream pixelSrcFile(pixelSrcPath);
         pixelSrc = std::string((std::istreambuf_iterator<char>(pixelSrcFile)),
-                                std::istreambuf_iterator<char>());
+                               std::istreambuf_iterator<char>());
 
-#ifdef ENGINE_GL_RENDERER
-        return CreateRef<OpenGLShader>(vertexSrc, pixelSrc);
-#else
-        ENGINE_ASSERT(false, "Unknown platform!");
-        return nullptr;
-#endif
+        return CreateFromSource(vertexSrc, pixelSrc);
     }
 
     Ref<Shader> Shader::CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc)
     {
+        switch (RenderAPI::CurrentAPI())
+        {
+        case RenderPlatform::OPENGL:
 #ifdef ENGINE_GL_RENDERER
-        return CreateRef<OpenGLShader>(vertexSrc, pixelSrc);
+            return CreateRef<OpenGLShader>(vertexSrc, pixelSrc);
 #else
-        ENGINE_ASSERT(false, "Unknown platform!");
-        return nullptr;
+            ENGINE_ASSERT(false, "Shader: OpenGL not available!");
+            return nullptr;
 #endif
+            break;
+
+        default:
+            ENGINE_ASSERT(false, "Shader: No API available!");
+            return nullptr;
+            break;
+        }
     }
 
 }

@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #include "Platform/OpenGL/Buffers.h"
+#include "Platform/OpenGL/Shader.h"
 #include "glad/glad.h"
 
 namespace Antomic
@@ -44,7 +45,7 @@ namespace Antomic
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    void OpenGLIndexBuffer::Upload(uint32_t* data, uint32_t size) const 
+    void OpenGLIndexBuffer::Upload(uint32_t *data, uint32_t size) const
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mRendererId);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
@@ -52,7 +53,7 @@ namespace Antomic
     }
 
     /* VertexBuffer Implementation */
-    
+
     OpenGLVertexBuffer::OpenGLVertexBuffer(float *data, uint32_t size)
     {
         glCreateBuffers(1, &mRendererId);
@@ -76,11 +77,16 @@ namespace Antomic
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    void OpenGLVertexBuffer::Upload(uint32_t* data, uint32_t size) const 
+    void OpenGLVertexBuffer::Upload(uint32_t *data, uint32_t size) const
     {
         glBindBuffer(GL_ARRAY_BUFFER, mRendererId);
         glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    void OpenGLVertexBuffer::SetLayout(const BufferLayout &layout)
+    {
+        mLayout = layout;
     }
 
 }

@@ -19,6 +19,62 @@
 
 namespace Antomic
 {
+    GLenum ShaderDataTypeGLEnum(ShaderDataType t)
+    {
+        switch (t)
+        {
+        case ShaderDataType::Float:
+        case ShaderDataType::Float2:
+        case ShaderDataType::Float3:
+        case ShaderDataType::Float4:
+        case ShaderDataType::Mat3:
+        case ShaderDataType::Mat4:
+            return GL_FLOAT;
+        case ShaderDataType::Int:
+        case ShaderDataType::Int2:
+        case ShaderDataType::Int3:
+        case ShaderDataType::Int4:
+            return GL_INT;
+        case ShaderDataType::Bool:
+            return GL_UNSIGNED_SHORT;
+        }
+
+        ENGINE_ASSERT(false, "ShaderDataTypeGLEnum: Unknown data type")
+        return GL_UNSIGNED_SHORT;
+    }
+
+    GLint ShaderDataTypeGLSize(ShaderDataType t)
+    {
+        switch (t)
+        {
+        case ShaderDataType::Float:
+            return 1;
+        case ShaderDataType::Float2:
+            return 2;
+        case ShaderDataType::Float3:
+            return 3;
+        case ShaderDataType::Float4:
+            return 4;
+        case ShaderDataType::Mat3:
+            return 9;
+        case ShaderDataType::Mat4:
+            return 16;
+        case ShaderDataType::Int:
+            return 1;
+        case ShaderDataType::Int2:
+            return 2;
+        case ShaderDataType::Int3:
+            return 3;
+        case ShaderDataType::Int4:
+            return 4;
+        case ShaderDataType::Bool:
+            return 1;
+        }
+
+        ENGINE_ASSERT(false, "ShaderDataTypeGLSize: Unknown data tyepe")
+        return GL_UNSIGNED_SHORT;
+    }
+
     OpenGLShader::OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc)
     {
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -100,12 +156,12 @@ namespace Antomic
         glDeleteProgram(mRendererId);
     }
 
-    void OpenGLShader::Bind() const 
+    void OpenGLShader::Bind() const
     {
         glUseProgram(mRendererId);
     }
 
-    void OpenGLShader::Unbind() const 
+    void OpenGLShader::Unbind() const
     {
         glUseProgram(0);
     }

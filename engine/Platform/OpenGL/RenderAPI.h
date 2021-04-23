@@ -14,36 +14,17 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
+#include "Renderer/RenderAPI.h"
 
 namespace Antomic
 {
-    enum class ShaderDataType
-    {
-        Float,
-        Float2,
-        Float3,
-        Float4,
-        Mat3,
-        Mat4,
-        Int,
-        Int2,
-        Int3,
-        Int4,
-        Bool
-    };
-
-    uint32_t ShaderDataTypeSize(ShaderDataType t);
-
-    class Shader
+    class OpenGLRenderAPI : public RenderAPI
     {
     public:
-        virtual void Bind() const = 0;
-        virtual void Unbind() const = 0;
-
-    public:
-        static Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath);
-        static Ref<Shader> CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc);
+        OpenGLRenderAPI();
+        ~OpenGLRenderAPI();
+        virtual void Clear(glm::vec4 color) override;
+        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) override;
     };
 
 } // namespace Antomic

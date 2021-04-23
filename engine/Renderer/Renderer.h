@@ -15,20 +15,26 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Renderer/RenderAPI.h"
 
 namespace Antomic
 {
     class Renderer
     {
     public:
-        virtual void Init(uint32_t width, uint32_t height) = 0;
-        virtual void Shutdown() = 0;
-        virtual void OnWindowResize(uint32_t width, uint32_t height) = 0;
-        virtual void RenderFrame() = 0;
-        virtual void BeginScene() = 0;
-        virtual void EndScene() = 0;
-	public:
-		static Scope<Renderer> Create();
-    };
+        Renderer(RenderPlatform platform = RenderPlatform::OPENGL);
+        ~Renderer();
+
+    public:
+        virtual void Init(uint32_t width, uint32_t height);
+        virtual void Shutdown();
+        virtual void OnWindowResize(uint32_t width, uint32_t height);
+        virtual void BeginScene();
+        virtual void EndScene();
+        virtual void Flush();
+
+    private:
+        Scope<RenderAPI> mApi;
+   };
 
 } // namespace Antomic

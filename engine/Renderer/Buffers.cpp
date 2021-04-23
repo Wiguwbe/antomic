@@ -15,6 +15,7 @@
 */
 #include "Core/Log.h"
 #include "Renderer/Buffers.h"
+#include "Renderer/RenderAPI.h"
 
 #ifdef ENGINE_GL_RENDERER
 #include "Platform/OpenGL/Buffers.h"
@@ -22,24 +23,62 @@
 
 namespace Antomic
 {
-    Ref<IndexBuffer> IndexBuffer::Create(uint32_t* data, uint32_t size)
-	{
-#ifdef ENGINE_GL_RENDERER
-        return CreateRef<OpenGLIndexBuffer>(data, size);
-#else
-        ENGINE_ASSERT(false, "Unknown platform!");
-		return nullptr;
-#endif
-	}
 
-    Ref<VertexBuffer> VertexBuffer::Create(float* data, uint32_t size)
-	{
-#ifdef ENGINE_GL_RENDERER
-        return CreateRef<OpenGLVertexBuffer>(data, size);
-#else
-        ENGINE_ASSERT(false, "Unknown platform!");
-		return nullptr;
-#endif
-	}
+    BufferLayout::BufferLayout(const std::initializer_list<BufferElement> &elements)
+        : mElements(elements)
+    {
+        Update();
+    };
 
-} 
+    void BufferLayout::Update()
+    {
+
+        mStride = 0;
+        for (auto &element : mElements)
+        {
+            element.Offset = mStride;
+            mStride += element.Size;
+        }
+    }
+
+    Ref<IndexBuffer> IndexBuffer::Create(uint32_t *data, uint32_t size)
+    {
+        switch (RenderAPI::CurrentAPI())
+        {
+        case RenderPlatform::OPENGL:
+#ifdef ENGINE_GL_RENDERER
+            return CreateRef<OpenGLIndexBuffer>(data, size);
+#else
+            ENGINE_ASSERT(false, "IndexBuffer: OpenGL not available!");
+            return nullptr;
+#endif
+            break;
+
+        default:
+            ENGINE_ASSERT(false, "IndexBuffer: No API available!");
+            return nullptr;
+            break;
+        }
+    }
+
+    Ref<VertexBuffer> VertexBuffer::Create(float *data, uint32_t size)
+    {
+        switch (RenderAPI::CurrentAPI())
+        {
+        case RenderPlatform::OPENGL:
+#ifdef ENGINE_GL_RENDERER
+            return CreateRef<OpenGLVertexBuffer>(data, size);
+#else
+            ENGINE_ASSERT(false, "VertexBuffer: OpenGL not available!");
+            return nullptr;
+#endif
+            break;
+
+        default:
+            ENGINE_ASSERT(false, "VertexBuffer: No API available!");
+            return nullptr;
+            break;
+        }
+    }
+
+}

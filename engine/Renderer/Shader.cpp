@@ -15,7 +15,7 @@
 */
 #include "Core/Log.h"
 #include "Renderer/Shader.h"
-#include "Renderer/RenderAPI.h"
+#include "Platform/RenderAPI.h"
 
 #ifdef ENGINE_GL_RENDERER
 #include "Platform/OpenGL/Shader.h"

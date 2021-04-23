@@ -15,6 +15,7 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Platform/RenderAPI.h"
 
 namespace Antomic
 {
@@ -31,12 +32,11 @@ namespace Antomic
         virtual void Shutdown() = 0;
         virtual void ToggleFullscreen() = 0;
         virtual void SetMouseLock(bool lock) = 0;
-        virtual bool SetupWindow(uint32_t width, uint32_t height, std::string name) = 0;
+        virtual bool SetupWindow(uint32_t width, uint32_t height, std::string name, RenderPlatform platform = RenderPlatform::OPENGL) = 0;
         virtual void DestroyWindow() = 0;
         virtual void UpdateWindow() = 0;
         virtual void ProcessWindowEvents() = 0;
-        virtual void SetEventHandler(const EventHandler& handler) = 0;
-
+        virtual void SetEventHandler(const EventHandler &handler) = 0;
     };
 
 } // namespace Antomic

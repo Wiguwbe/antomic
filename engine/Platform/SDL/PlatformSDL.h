@@ -35,7 +35,7 @@ namespace Antomic
         virtual void Shutdown()override;
         virtual void ToggleFullscreen() override;
         virtual void SetMouseLock(bool lock) override;
-        virtual bool SetupWindow(uint32_t width, uint32_t height, std::string name) override;
+        virtual bool SetupWindow(uint32_t width, uint32_t height, std::string name, RenderPlatform platform = RenderPlatform::OPENGL) override;
         virtual void DestroyWindow() override;
         virtual void UpdateWindow() override;
         virtual void ProcessWindowEvents() override;

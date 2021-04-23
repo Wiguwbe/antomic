@@ -58,47 +58,70 @@ namespace Antomic
         SDL_Quit();
     }
 
-    bool PlatformSDL::SetupWindow(uint32_t width, uint32_t height, std::string name)
+    bool PlatformSDL::SetupWindow(uint32_t width, uint32_t height, std::string name, RenderPlatform platform)
     {
         m_Width = width;
         m_Height = height;
 
-#ifdef ENGINE_GL_RENDERER
-        s_SDLWindow = SDL_CreateWindow(
-            name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
-#else
-        s_SDLWindow = SDL_CreateWindow(
-            name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-#endif
-        if (!s_SDLWindow)
+        switch (platform)
         {
+        case RenderPlatform::OPENGL:
+#ifdef ENGINE_GL_RENDERER
+
+            ENGINE_INFO("PlatformSDL: Creating window {0},{1} with OpenGL support", width, height);
+            s_SDLWindow = SDL_CreateWindow(
+                name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+
+            if (!s_SDLWindow)
+            {
+                ENGINE_TRACE("PlatformSDL: Error creating SDL window: {0},{1}", width, height);
+                SDL_Quit();
+                return false;
+            }
+
+            s_GLContext = SDL_GL_CreateContext(s_SDLWindow);
+            if (!s_GLContext)
+            {
+                ENGINE_TRACE("PlatformSDL: Error creating OpenGL context");
+                SDL_DestroyWindow(s_SDLWindow);
+                SDL_Quit();
+                return false;
+            }
+
+            if (!gladLoadGL())
+            {
+                ENGINE_TRACE("PlatformSDL: Error initializing Glad");
+                SDL_GL_DeleteContext(s_GLContext);
+                SDL_DestroyWindow(s_SDLWindow);
+                SDL_Quit();
+                return false;
+            }
+
+            ENGINE_INFO("PlatformSDL: Using OpenGL version {0}", glGetString(GL_VERSION));
+
+            break;
+
+#else
+            ENGINE_ASSERT(false, "Renderer: OpenGL not available!");
             ENGINE_TRACE("PlatformSDL: Error creating SDL window: {0},{1}", width, height);
             SDL_Quit();
-            return false;
-        }
-
-#ifdef ENGINE_GL_RENDERER
-        s_GLContext = SDL_GL_CreateContext(s_SDLWindow);
-        if (!s_GLContext) {
-            ENGINE_TRACE("PlatformSDL: Error creating OpenGL context");
-            SDL_DestroyWindow(s_SDLWindow);
-            SDL_Quit();
-            return false;
-        }
-
-        if (!gladLoadGL() )
-        {
-            ENGINE_TRACE("PlatformSDL: Error initializing Glad");
-            SDL_GL_DeleteContext(s_GLContext);
-            SDL_DestroyWindow(s_SDLWindow);
-            SDL_Quit();
-            return false;
-        }
-
-        ENGINE_INFO("PlatformSDL: Using OpenGL version {0}",glGetString(GL_VERSION));
+            break;
 #endif
+            break;
+        default:
+            ENGINE_INFO("PlatformSDL: Creating window {0},{1} with no Render API support", width, height);
+            s_SDLWindow = SDL_CreateWindow(
+                name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+            break;
+            if (!s_SDLWindow)
+            {
+                ENGINE_TRACE("PlatformSDL: Error creating SDL window: {0},{1}", width, height);
+                SDL_Quit();
+                return false;
+            }
+        }
 
         SDL_SysWMinfo wmi;
         SDL_VERSION(&wmi.version);

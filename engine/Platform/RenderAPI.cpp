@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/RenderAPI.h"
+#include "Platform/RenderAPI.h"
 #include "Core/Log.h"
 
 #ifdef ENGINE_GL_RENDERER

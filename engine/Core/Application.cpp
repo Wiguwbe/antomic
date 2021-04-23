@@ -87,9 +87,7 @@ namespace Antomic
 
         m_Running = true;
 
-        this->BeforeRendererInit();
         this->m_Renderer->Init(m_Width, m_Height);
-        this->AfterRendererInit();
 
         while (m_Running)
         {
@@ -110,9 +108,7 @@ namespace Antomic
             m_Stack.PopFront();
         }
 
-        this->BeforeRendererShutdown();
         this->m_Renderer->Shutdown();
-        this->AfterRendererShutdown();
         m_Platform->DestroyWindow();
         m_Platform->Shutdown();
     }

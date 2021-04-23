@@ -6,3 +6,5 @@
 #include "Core/Layer.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Buffers.h"
+#include "Renderer/VertexArray.h"
+#include "Renderer/RenderCommand.h"

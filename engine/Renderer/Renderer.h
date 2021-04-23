@@ -33,8 +33,11 @@ namespace Antomic
         virtual void EndScene();
         virtual void Flush();
 
+    public:
+        static const Scope<RendererAPI> &API() { return mApi; }
+
     private:
-        Scope<RendererAPI> mApi;
+        static Scope<RendererAPI> mApi;
    };
 
 } // namespace Antomic

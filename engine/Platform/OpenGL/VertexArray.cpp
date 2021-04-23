@@ -39,7 +39,7 @@ namespace Antomic
         glBindVertexArray(0);
     }
 
-    void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer> buffer)
+    void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer> &buffer)
     {
         glBindVertexArray(mRendererId);
         buffer->Bind();
@@ -57,7 +57,7 @@ namespace Antomic
         mVertextBuffers.push_back(buffer);
     }
     
-    void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer> buffer)
+    void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer> &buffer)
     {
         glBindVertexArray(mRendererId);
         buffer->Bind();

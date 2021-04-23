@@ -52,6 +52,7 @@ namespace Antomic
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
         virtual void Upload(uint32_t* data, uint32_t size) const = 0;
+        virtual uint32_t Count() const = 0;
 	public:
 		static Ref<IndexBuffer> Create(uint32_t* data, uint32_t size);
     };

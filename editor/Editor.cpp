@@ -21,12 +21,4 @@ namespace Editor
     {
     }
 
-    void Editor::AfterRendererInit()
-    {
-    }
-
-    void Editor::BeforeRendererShutdown()
-    {
-    }
-
 } // namespace Editor

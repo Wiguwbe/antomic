@@ -18,26 +18,24 @@
 
 namespace Antomic
 {
-    OpenGLRendererAPI::OpenGLRendererAPI() 
+    OpenGLRendererAPI::OpenGLRendererAPI()
     {
-
     }
 
-    OpenGLRendererAPI::~OpenGLRendererAPI() 
+    OpenGLRendererAPI::~OpenGLRendererAPI()
     {
-
     }
 
     void OpenGLRendererAPI::Clear(glm::vec4 color)
     {
-        glClearColor(color.r,color.g,color.b,color.a);
+        glClearColor(color.r, color.g, color.b, color.a);
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
     void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray> vertexArray)
     {
-
+        vertexArray->Bind();
+        glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->Count(), GL_UNSIGNED_INT, nullptr);
     }
-
 
 } // namespace Antomic

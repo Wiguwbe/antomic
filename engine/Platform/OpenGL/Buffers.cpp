@@ -28,6 +28,7 @@ namespace Antomic
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mRendererId);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        mCount = size / sizeof(uint32_t);
     }
 
     OpenGLIndexBuffer::~OpenGLIndexBuffer()

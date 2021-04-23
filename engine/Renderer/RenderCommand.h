@@ -14,16 +14,15 @@
    limitations under the License.
 */
 #pragma once
-#include "engine.h"
+#include "Core/Base.h"
+#include "Renderer/Renderer.h"
 
-namespace Launcher {
-    class Game: public Antomic::Application
+namespace Antomic
+{
+    class RenderCommand
     {
     public:
-        Game();
-        virtual void Render() override;
-    private:
-        Antomic::Ref<Antomic::VertexArray> mVertexArray;
-        Antomic::Ref<Antomic::Shader> mShader;
+        inline static void Clear(glm::vec4 color) { Renderer::API()->Clear(color); }
+        inline static void DrawIndexed(const Ref<VertexArray> vertexArray) { Renderer::API()->DrawIndexed(vertexArray); };
     };
 }

@@ -26,8 +26,11 @@ namespace Antomic {
         ~OpenGLVertexArray();
         virtual void Bind() const override;
         virtual void Unbind() const override;
-        virtual void AddVertexBuffer(const Ref<VertexBuffer> buffer) override;
-        virtual void SetIndexBuffer(const Ref<IndexBuffer> buffer) override;
+        virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) override;
+        virtual void SetIndexBuffer(const Ref<IndexBuffer> &buffer) override;
+        virtual const std::vector<Ref<VertexBuffer>> &GetVertexBuffers() const override { return mVertextBuffers; };
+        virtual const Ref<IndexBuffer> &GetIndexBuffer() const override { return mIndexBuffer; };
+        
     private:
         uint32_t mRendererId;
         std::vector<Ref<VertexBuffer>> mVertextBuffers;

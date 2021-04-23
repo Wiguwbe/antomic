@@ -18,9 +18,11 @@
 
 namespace Antomic
 {
+    Scope<RendererAPI> Renderer::mApi = nullptr;
 
     Renderer::Renderer(RenderAPI api) 
     {
+        ENGINE_ASSERT(!mApi, "Renderer: Render API already set!")
         mApi = RendererAPI::Create(api);
     }
 
@@ -48,7 +50,6 @@ namespace Antomic
 
     void Renderer::BeginScene()
     {
-        mApi->Clear(glm::vec4(0.4f,0.3f,0.0f,1.0f));
     }
 
     void Renderer::EndScene()

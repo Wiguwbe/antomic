@@ -26,9 +26,11 @@ namespace Antomic
         virtual void Bind() const override;
         virtual void Unbind() const override;
         virtual void Upload(uint32_t* data, uint32_t size) const override;
+        virtual uint32_t Count() const override { return mCount; };
 
     private:
         uint32_t mRendererId;
+        uint32_t mCount;
     };
 
     class OpenGLVertexBuffer : public VertexBuffer

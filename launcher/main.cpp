@@ -17,7 +17,7 @@
 
 int main()
 {
-    Launcher::Game game;
+    Antomic::Game game;
     game.Run();
     return 0;
 }

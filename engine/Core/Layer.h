@@ -27,7 +27,7 @@ namespace Antomic
         
         virtual void OnAttach() {}
         virtual void OnDetach() {}
-        virtual void Update() {}
+        virtual void Update(const TimeStep &time) {}
         virtual void Render() {}
         virtual void OnEvent(Event &e) {}
 

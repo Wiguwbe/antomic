@@ -70,12 +70,12 @@ namespace Antomic
         }
     }
 
-    void LayerStack::Update()
+    void LayerStack::Update(const TimeStep &time)
     {
         for (auto it = m_Stack.begin(); it != m_Stack.end(); ++it)
         {
             if ((*it)->IsEnabled())
-                (*it)->Update();
+                (*it)->Update(time);
         }
     }
 

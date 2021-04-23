@@ -16,14 +16,14 @@
 #pragma once
 #include "engine.h"
 
-namespace Launcher {
-    class Game: public Antomic::Application
+namespace Antomic {
+    class Game: public Application
     {
     public:
         Game();
         virtual void Render() override;
     private:
-        Antomic::Ref<Antomic::VertexArray> mVertexArray;
-        Antomic::Ref<Antomic::Shader> mShader;
+        Ref<VertexArray> mVertexArray;
+        Ref<Shader> mShader;
     };
 }

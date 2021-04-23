@@ -40,8 +40,8 @@ namespace Antomic
         inline uint32_t CurrentWidth() const { return m_Width; }
         inline uint32_t CurrentHeight() const { return m_Height; }
 
-        virtual void Update();
-        virtual void Render();
+        virtual void Update(const TimeStep &time) {};
+        virtual void Render() {};
 
         static Application &Current() { return *s_Instance; }
 
@@ -55,5 +55,6 @@ namespace Antomic
         Scope<Platform> m_Platform;
         Scope<Input> m_Input;
         Scope<Renderer> m_Renderer;
+        TimePoint m_LastRenderTime;
     };
 } // namespace Antomic

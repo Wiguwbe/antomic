@@ -15,14 +15,14 @@
 */
 #include "Game.h"
 
-namespace Launcher
+namespace Antomic
 {
 
-    Game::Game() : Antomic::Application("Game")
+    Game::Game() : Application("Game")
     {
 
-        mVertexArray = Antomic::VertexArray::Create();
-        mShader = Antomic::Shader::CreateFromFile("media/shaders/opengl/vs_demo_1.glsl", "media/shaders/opengl/fs_demo_1.glsl");
+        mVertexArray = VertexArray::Create();
+        mShader = Shader::CreateFromFile("media/shaders/opengl/vs_demo_1.glsl", "media/shaders/opengl/fs_demo_1.glsl");
 
         {
             float vertices[3 * 3] = {
@@ -38,12 +38,12 @@ namespace Launcher
             };
             uint32_t indices[3] = {0, 1, 2};
 
-            Antomic::BufferLayout layout = {
-                {Antomic::ShaderDataType::Float3, "a_Position"}};
+            BufferLayout layout = {
+                {ShaderDataType::Float3, "a_Position"}};
 
-            Antomic::Ref<Antomic::VertexBuffer> vertexBuffer = Antomic::VertexBuffer::Create(vertices, sizeof(vertices));
+            Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));
             vertexBuffer->SetLayout(layout);
-            Antomic::Ref<Antomic::IndexBuffer> indexBuffer = Antomic::IndexBuffer::Create(indices, sizeof(indices));
+            Ref<IndexBuffer> indexBuffer = IndexBuffer::Create(indices, sizeof(indices));
             mVertexArray->AddVertexBuffer(vertexBuffer);
             mVertexArray->SetIndexBuffer(indexBuffer);
         }
@@ -51,10 +51,12 @@ namespace Launcher
 
     void Game::Render()
     {
-        Antomic::Application::Render();
-        Antomic::RenderCommand::Clear({0.1f, 0.1f, 0.1f, 1.0f});
+        Application::Render();
+        RenderCommand::Clear({0.1f, 0.1f, 0.1f, 1.0f});
         mShader->Bind();
-        Antomic::RenderCommand::DrawIndexed(mVertexArray);
+        RenderCommand::DrawIndexed(mVertexArray);
     }
 
-} // namespace Launcher
+
+
+} // namespace Antomic

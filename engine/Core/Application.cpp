@@ -89,14 +89,20 @@ namespace Antomic
 
         this->m_Renderer->Init(m_Width, m_Height);
 
+        m_LastRenderTime = TimeClock::now();
         while (m_Running)
         {
+            auto currentTime = TimeClock::now();
+            TimeStep t = Duration(currentTime - m_LastRenderTime);
+            m_LastRenderTime = currentTime;
             m_Input->ProcessInputEvents();
             m_Platform->ProcessWindowEvents();
-            this->Update();
+            m_Stack.Update(t);
+            this->Update(t);
             m_Renderer->BeginScene();
-            this->Render();
             m_Renderer->EndScene();
+            this->Render();
+            m_Stack.Render();
             this->m_Renderer->Flush();
             m_Platform->UpdateWindow();
         }
@@ -111,16 +117,6 @@ namespace Antomic
         this->m_Renderer->Shutdown();
         m_Platform->DestroyWindow();
         m_Platform->Shutdown();
-    }
-
-    void Application::Render()
-    {
-        m_Stack.Render();
-    }
-
-    void Application::Update()
-    {
-        m_Stack.Update();
     }
 
     void Application::ToggleFullscreen(bool value)

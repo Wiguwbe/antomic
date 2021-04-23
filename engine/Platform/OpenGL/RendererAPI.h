@@ -14,31 +14,17 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
-#include "Renderer/Buffers.h"
-#include "Renderer/VertexArray.h"
-#include "glm/glm.hpp"
+#include "Platform/RendererAPI.h"
 
 namespace Antomic
 {
-    enum class RenderPlatform {
-
-        NONE = 0,
-        OPENGL = 1
-    };
-
-    class RenderAPI
+    class OpenGLRendererAPI : public RendererAPI
     {
     public:
-
-        virtual void Clear(glm::vec4 color) = 0;
-        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) = 0;
-
-	public:
-		static Scope<RenderAPI> Create(RenderPlatform platform = RenderPlatform::OPENGL);
-        static RenderPlatform CurrentAPI() { return sRenderPlatform; }
-    private:
-        static RenderPlatform sRenderPlatform;
+        OpenGLRendererAPI();
+        ~OpenGLRendererAPI();
+        virtual void Clear(glm::vec4 color) override;
+        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) override;
     };
 
 } // namespace Antomic

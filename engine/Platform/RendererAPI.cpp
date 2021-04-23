@@ -13,35 +13,35 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Platform/RenderAPI.h"
+#include "Platform/RendererAPI.h"
 #include "Core/Log.h"
 
 #ifdef ENGINE_GL_RENDERER
-#include "Platform/OpenGL/RenderAPI.h"
+#include "Platform/OpenGL/RendererAPI.h"
 #endif
 
 
 namespace Antomic {
-    RenderPlatform RenderAPI::sRenderPlatform = RenderPlatform::NONE;
+    RenderAPI RendererAPI::sRendererAPI = RenderAPI::NONE;
 
-	Scope<RenderAPI> RenderAPI::Create(RenderPlatform platform)
+	Scope<RendererAPI> RendererAPI::Create(RenderAPI platform)
 	{
         switch (platform)
         {
-        case RenderPlatform::OPENGL:
+        case RenderAPI::OPENGL:
 #ifdef ENGINE_GL_RENDERER
             ENGINE_INFO("Renderer: Using OpenGL renderer API");
-            sRenderPlatform = RenderPlatform::OPENGL;
-            return CreateScope<OpenGLRenderAPI>();
+            sRendererAPI = RenderAPI::OPENGL;
+            return CreateScope<OpenGLRendererAPI>();
 #else
             ENGINE_ASSERT(false, "Renderer: OpenGL not available!");
-            sRenderPlatform = RenderPlatform::NONE;
+            sRendererAPI = RenderAPI::NONE;
 		    return nullptr;
 #endif
             break;        
         default:
             ENGINE_ASSERT(false, "Renderer: API implemented yet!");
-            sRenderPlatform = RenderPlatform::NONE;
+            sRendererAPI = RenderAPI::NONE;
 		    return nullptr;
             break;
         }

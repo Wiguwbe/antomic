@@ -26,7 +26,7 @@ namespace Antomic
 {
     Application *Application::s_Instance = nullptr;
 
-    Application::Application(const char *name, uint32_t width, uint32_t height, RenderPlatform platform)
+    Application::Application(const char *name, uint32_t width, uint32_t height, RenderAPI platform)
     {
         ENGINE_ASSERT(!s_Instance, "Application already running!");
         Log::Init();

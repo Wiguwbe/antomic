@@ -15,7 +15,7 @@
 */
 #include "Core/Log.h"
 #include "Renderer/Shader.h"
-#include "Platform/RenderAPI.h"
+#include "Platform/RendererAPI.h"
 
 #ifdef ENGINE_GL_RENDERER
 #include "Platform/OpenGL/Shader.h"
@@ -86,9 +86,9 @@ namespace Antomic
 
     Ref<Shader> Shader::CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc)
     {
-        switch (RenderAPI::CurrentAPI())
+        switch (RendererAPI::API())
         {
-        case RenderPlatform::OPENGL:
+        case RenderAPI::OPENGL:
 #ifdef ENGINE_GL_RENDERER
             return CreateRef<OpenGLShader>(vertexSrc, pixelSrc);
 #else

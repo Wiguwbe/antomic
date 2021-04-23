@@ -13,18 +13,31 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Platform/RenderAPI.h"
+#include "Platform/OpenGL/RendererAPI.h"
+#include "glad/glad.h"
 
 namespace Antomic
 {
-    class OpenGLRenderAPI : public RenderAPI
+    OpenGLRendererAPI::OpenGLRendererAPI() 
     {
-    public:
-        OpenGLRenderAPI();
-        ~OpenGLRenderAPI();
-        virtual void Clear(glm::vec4 color) override;
-        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) override;
-    };
+
+    }
+
+    OpenGLRendererAPI::~OpenGLRendererAPI() 
+    {
+
+    }
+
+    void OpenGLRendererAPI::Clear(glm::vec4 color)
+    {
+        glClearColor(color.r,color.g,color.b,color.a);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray> vertexArray)
+    {
+
+    }
+
 
 } // namespace Antomic

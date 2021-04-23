@@ -15,14 +15,14 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Platform/RenderAPI.h"
+#include "Platform/RendererAPI.h"
 
 namespace Antomic
 {
     class Renderer
     {
     public:
-        Renderer(RenderPlatform platform = RenderPlatform::OPENGL);
+        Renderer(RenderAPI platform = RenderAPI::OPENGL);
         ~Renderer();
 
     public:
@@ -34,7 +34,7 @@ namespace Antomic
         virtual void Flush();
 
     private:
-        Scope<RenderAPI> mApi;
+        Scope<RendererAPI> mApi;
    };
 
 } // namespace Antomic

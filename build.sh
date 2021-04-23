@@ -51,6 +51,7 @@ function level_build_dependencies() {
 
     case "${DISTRO}" in 
         Ubuntu)
+            echo "System: Ubuntu - Gcc"
             PACKAGES=(
                 "build-essential"
                 "cmake"
@@ -79,7 +80,14 @@ function level_build_dependencies() {
                 sudo apt-get -y install ${MISSING_PACKAGES};
             fi
             ;;
+        Clear*)
+            echo "System: Clear Linux - Gcc"
+            # On Clear Linux for now we install games-dev bundle
+            # probably in the future we need to look back into this
+            sudo swupd bundle-add games-dev
+            ;;
         MINGW64)
+            echo "System: Windows - MingGW 54"
             PACKAGES=(
                 "mingw-w64-x86_64-toolchain"
                 "mingw-w64-x86_64-cmake"

@@ -1,5 +1,5 @@
 # GLM Library setup
-configure_file(CMakeLists.glm.in glm-download/CMakeLists.txt)
+configure_file(3rdparty/CMakeLists.glm.in glm-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
 RESULT_VARIABLE result
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/glm-download )

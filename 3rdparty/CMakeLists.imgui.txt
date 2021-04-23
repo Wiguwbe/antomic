@@ -1,5 +1,5 @@
 #ImGui Library Setup
-configure_file(CMakeLists.imgui.in imgui-download/CMakeLists.txt)
+configure_file(3rdparty/CMakeLists.imgui.in imgui-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
 RESULT_VARIABLE result
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/imgui-download )

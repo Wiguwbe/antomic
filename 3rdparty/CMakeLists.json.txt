@@ -1,5 +1,5 @@
 #JSON Library setup
-configure_file(CMakeLists.json.in json-download/CMakeLists.txt)
+configure_file(3rdparty/CMakeLists.json.in json-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
 RESULT_VARIABLE result
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/json-download )

@@ -59,23 +59,23 @@ endif()
 
 # JSON Library setup
 # https://github.com/nlohmann/json.git
-include("CMakeLists.json.txt")
+include(3rdparty/CMakeLists.json.txt)
 
 # Logging Library setup
 # https://github.com/gabime/spdlog.git
-include("CMakeLists.spdlog.txt")
+include(3rdparty/CMakeLists.spdlog.txt)
 
 # ImGui Library Setup
 # https://github.com/ocornut/imgui.git
-include("CMakeLists.imgui.txt")
+include(3rdparty/CMakeLists.imgui.txt)
 
 # GLM Library setup
 # https://github.com/g-truc/glm
-include("CMakeLists.glm.txt")
+include(3rdparty/CMakeLists.glm.txt)
 
 # GLAD Multi-Language GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
 # https://glad.dav1d.de/
-add_subdirectory(glad)
+add_subdirectory(3rdparty/glad)
 
 # Antomic Engine
 add_subdirectory(engine)
@@ -85,7 +85,7 @@ add_subdirectory(launcher)
 # Unit Testing
 # https://github.com/google/googletest.git
 if(NOT DEFINED ENV{ENGINE_NO_TESTS})
-    include("CMakeLists.google.txt")
+    include(3rdparty/CMakeLists.googletest.txt)
     add_subdirectory(tests)
 endif() 
 

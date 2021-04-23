@@ -35,7 +35,7 @@ namespace Antomic
         virtual void DrawIndexed(const Ref<VertexArray> vertexArray) = 0;
 
 	public:
-		static Scope<RendererAPI> Create(RenderAPI platform = RenderAPI::OPENGL);
+		static Scope<RendererAPI> Create(RenderAPI api = RenderAPI::OPENGL);
         static RenderAPI API() { return sRendererAPI; }
     private:
         static RenderAPI sRendererAPI;

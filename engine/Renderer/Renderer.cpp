@@ -19,9 +19,9 @@
 namespace Antomic
 {
 
-    Renderer::Renderer(RenderAPI platform) 
+    Renderer::Renderer(RenderAPI api) 
     {
-        mApi = RendererAPI::Create(platform);
+        mApi = RendererAPI::Create(api);
     }
 
     Renderer::~Renderer() 

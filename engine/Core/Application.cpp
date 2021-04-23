@@ -26,7 +26,7 @@ namespace Antomic
 {
     Application *Application::s_Instance = nullptr;
 
-    Application::Application(const char *name, uint32_t width, uint32_t height, RenderAPI platform)
+    Application::Application(const char *name, uint32_t width, uint32_t height, RenderAPI api)
     {
         ENGINE_ASSERT(!s_Instance, "Application already running!");
         Log::Init();
@@ -35,7 +35,7 @@ namespace Antomic
         m_Running = false;
         m_Platform = Platform::Create();
         m_Input = Input::Create();
-        m_Renderer = CreateScope<Renderer>(platform);
+        m_Renderer = CreateScope<Renderer>(api);
         m_Platform->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
         m_Input->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
 
@@ -54,11 +54,11 @@ namespace Antomic
 
         if (!m_Platform->Init())
         {
-            ENGINE_INFO("Error initializing platform");
+            ENGINE_INFO("Error initializing api");
             exit(1);
         }
 
-        if (!m_Platform->SetupWindow(_width, _height, name, platform))
+        if (!m_Platform->SetupWindow(_width, _height, name, api))
         {
             ENGINE_INFO("Error creating window: {0}, {1}", _width, _height);
             exit(1);

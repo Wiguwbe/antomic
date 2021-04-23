@@ -58,12 +58,12 @@ namespace Antomic
         SDL_Quit();
     }
 
-    bool PlatformSDL::SetupWindow(uint32_t width, uint32_t height, std::string name, RenderAPI platform)
+    bool PlatformSDL::SetupWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api)
     {
         m_Width = width;
         m_Height = height;
 
-        switch (platform)
+        switch (api)
         {
         case RenderAPI::OPENGL:
 #ifdef ENGINE_GL_RENDERER

@@ -24,9 +24,9 @@
 namespace Antomic {
     RenderAPI RendererAPI::sRendererAPI = RenderAPI::NONE;
 
-	Scope<RendererAPI> RendererAPI::Create(RenderAPI platform)
+	Scope<RendererAPI> RendererAPI::Create(RenderAPI api)
 	{
-        switch (platform)
+        switch (api)
         {
         case RenderAPI::OPENGL:
 #ifdef ENGINE_GL_RENDERER

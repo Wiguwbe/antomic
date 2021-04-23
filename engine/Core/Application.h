@@ -28,7 +28,7 @@ namespace Antomic
     public:
         Application() : Application("Application", 640, 480){};
         Application(const char *name) : Application(name, 640, 480){};
-        Application(const char *name, uint32_t width, uint32_t height, RenderAPI platform = RenderAPI::OPENGL);
+        Application(const char *name, uint32_t width, uint32_t height, RenderAPI api = RenderAPI::OPENGL);
 
         virtual ~Application();
 

@@ -22,7 +22,7 @@ namespace Antomic
     class Renderer
     {
     public:
-        Renderer(RenderAPI platform = RenderAPI::OPENGL);
+        Renderer(RenderAPI api = RenderAPI::OPENGL);
         ~Renderer();
 
     public:

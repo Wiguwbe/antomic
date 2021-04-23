@@ -32,7 +32,7 @@ namespace Antomic
         virtual void Shutdown() = 0;
         virtual void ToggleFullscreen() = 0;
         virtual void SetMouseLock(bool lock) = 0;
-        virtual bool SetupWindow(uint32_t width, uint32_t height, std::string name, RenderAPI platform = RenderAPI::OPENGL) = 0;
+        virtual bool SetupWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) = 0;
         virtual void DestroyWindow() = 0;
         virtual void UpdateWindow() = 0;
         virtual void ProcessWindowEvents() = 0;

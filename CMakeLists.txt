@@ -37,61 +37,55 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/dist")
 
+# POSIX Threads
+find_package(Threads REQUIRED)
+
+# SDL - Simple DirectMedia Layer
+# https://www.libsdl.org/
+if(NOT DEFINED ENV{ENGINE_NO_SDL})
+    add_definitions(-DENGINE_SDL_PLATFORM)
+    find_package(SDL2 REQUIRED)
+endif() 
+
+# OpenGL RenderAPI Support
+# https://www.opengl.org/
+if(NOT DEFINED ENV{ENGINE_NO_OPENGL})
+    add_definitions(-DENGINE_GL_RENDERER)
+    if (UNIX)
+        set("OpenGL_GL_PREFERENCE" "GLVND")
+    endif(UNIX)
+    find_package(OpenGL REQUIRED)
+endif() 
 
 # JSON Library setup
+# https://github.com/nlohmann/json.git
 include("CMakeLists.json.txt")
 
 # Logging Library setup
+# https://github.com/gabime/spdlog.git
 include("CMakeLists.spdlog.txt")
 
 # ImGui Library Setup
+# https://github.com/ocornut/imgui.git
 include("CMakeLists.imgui.txt")
 
-# Math Library setup
+# GLM Library setup
+# https://github.com/g-truc/glm
 include("CMakeLists.glm.txt")
 
-# Glad
+# GLAD Multi-Language GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
+# https://glad.dav1d.de/
 add_subdirectory(glad)
 
-# Antomic
+# Antomic Engine
 add_subdirectory(engine)
 add_subdirectory(editor)
 add_subdirectory(launcher)
 
 # Unit Testing
+# https://github.com/google/googletest.git
 if(NOT DEFINED ENV{ENGINE_NO_TESTS})
-    # Download and unpack googletest at configure time
-    configure_file(CMakeLists.googletest.in googletest-download/CMakeLists.txt)
-    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
-    RESULT_VARIABLE result
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-    if(result)
-        message(FATAL_ERROR "CMake step for googletest failed: ${result}")
-    endif()
-    execute_process(COMMAND ${CMAKE_COMMAND} --build .
-    RESULT_VARIABLE result
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
-    if(result)
-        message(FATAL_ERROR "Build step for googletest failed: ${result}")
-    endif()
-
-    # Prevent overriding the parent project's compiler/linker
-    # settings on Windows
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-    # Add googletest directly to our build. This defines
-    # the gtest and gtest_main targets.
-    add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-                    ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
-                    EXCLUDE_FROM_ALL)
-
-    # The gtest/gtest_main targets carry header search path
-    # dependencies automatically when using CMake 2.8.11 or
-    # later. Otherwise we have to add them here ourselves.
-    if (CMAKE_VERSION VERSION_LESS 2.8.11)
-        include_directories("${gtest_SOURCE_DIR}/include")
-    endif()
-
+    include("CMakeLists.google.txt")
     add_subdirectory(tests)
 endif() 
 

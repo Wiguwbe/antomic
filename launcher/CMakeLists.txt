@@ -1,6 +1,6 @@
 # Antomic Engine Launcher
-FILE(GLOB_RECURSE LAUNCHER_SRC "${PROJECT_SOURCE_DIR}/launcher/*.cpp")
-FILE(GLOB_RECURSE LAUNCHER_HDR "${PROJECT_SOURCE_DIR}/launcher/*.h")
+FILE(GLOB_RECURSE LAUNCHER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+FILE(GLOB_RECURSE LAUNCHER_HDR "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 add_executable("${PROJECT_NAME}Launcher" ${LAUNCHER_HDR} ${LAUNCHER_SRC})
 target_compile_features("${PROJECT_NAME}Launcher" PUBLIC cxx_std_17)
 target_include_directories( 

@@ -19,12 +19,16 @@
 #ifdef ENGINE_LINUX_SDL_PLATFORM
 #include "Platform/Linux/SDL/Window.h"
 #include "Platform/Linux/SDL/Input.h"
+#include "Platform/Linux/SDL/Utils.h"
 #endif
 
 namespace Antomic
 {
     LinuxPlatform::LinuxPlatform()
     {
+#ifdef ENGINE_CHRONO_SUPPORT
+        mPlatformStart = std::chrono::high_resolution_clock::now();
+#endif
     }
 
     LinuxPlatform::~LinuxPlatform()
@@ -48,6 +52,20 @@ namespace Antomic
 #else
         ENGINE_ASSERT(false, "LinuxPlatform: No input support!");
         return nullptr;
+#endif
+    }
+
+    uint32_t LinuxPlatform::GetTicks() const 
+    {
+#ifdef ENGINE_SDL_PLATFORM
+        return GetCurrentTime();
+#elif ENGINE_CHRONO_SUPPORT
+        auto now = std::chrono::high_resolution_clock::now();
+        auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now - mPlatformStart);
+        return milliseconds.count();
+#else
+    ENGINE_ASSERT(false, "LinuxPlatform: No time tick support!");
+    return nullptr;
 #endif
     }
 

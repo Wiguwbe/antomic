@@ -32,6 +32,9 @@ namespace Antomic
         // Window operations
         virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) = 0;
 		virtual Scope<Input> CreateInput() = 0;
+
+        // Time Operations
+        virtual uint32_t GetTicks() const = 0;
     };
 
 } // namespace Antomic

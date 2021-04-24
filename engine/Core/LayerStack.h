@@ -31,7 +31,7 @@ namespace Antomic
         void PopFront();
         void PopBack();
         void Remove(Ref<Layer> l);
-        void Update(const TimeStep& time);
+        void Update(const uint32_t& time);
         void Render();
         void OnEvent(Event &e);
 

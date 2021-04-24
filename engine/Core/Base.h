@@ -47,8 +47,6 @@
 
 #define ENGINE_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
-#define Duration(x) std::chrono::duration_cast<Antomic::TimeStep>(x)
-
 namespace Antomic
 {
     template <typename T>
@@ -68,11 +66,6 @@ namespace Antomic
     {
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
-
-    using TimePoint = std::chrono::high_resolution_clock::time_point;
-    using TimeClock = std::chrono::high_resolution_clock;
-    using TimeStep =  std::chrono::duration<float>;
-    
 
     class Application;
     class Platform;

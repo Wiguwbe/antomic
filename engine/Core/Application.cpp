@@ -95,21 +95,26 @@ namespace Antomic
 
         this->mRenderer->Init(mWidth, mHeight);
 
-        mLastRenderTime = TimeClock::now();
+        mLastRenderTime = mPlatform->GetTicks();
         while (mRunning)
         {
-            auto currentTime = TimeClock::now();
-            TimeStep t = Duration(currentTime - mLastRenderTime);
+            auto currentTime = mPlatform->GetTicks();
+            uint32_t t = currentTime - mLastRenderTime;
             mLastRenderTime = currentTime;
+            
             mInput->ProcessEvents();
             mWindow->ProcessEvents();
+            
+            
             mStack.Update(t);
             this->Update(t);
+            
             mRenderer->BeginScene();
             mRenderer->EndScene();
             this->Render();
-            mStack.Render();
+            mStack.Render();            
             this->mRenderer->Flush();
+            
             mWindow->Update();
         }
 

@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#ifdef ENGINE_PLATFORM_WINDOWS
 #pragma once
 #include "Platform/Platform.h"
 
@@ -25,7 +26,16 @@ namespace Antomic
         WindowsPlatform();
         virtual ~WindowsPlatform() override;
 
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) override;
+        // Windows Operations
+        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string title, RenderAPI api = RenderAPI::OPENGL) override;
 		virtual Scope<Input> CreateInput() override;
+
+        // Time Operations
+        virtual uint32_t GetTicks() const override;
+    private:
+#ifdef ENGINE_CHRONO_SUPPORT
+        std::chrono::time_point<std::chrono::high_resolution_clock> mPlatformStart;
+#endif
     };
 } // namespace Antomic
+#endif

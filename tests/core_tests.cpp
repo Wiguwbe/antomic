@@ -37,7 +37,7 @@ public:
         e.SetHandled(true);
     }
 
-    void Update(const Antomic::TimeStep& time) override
+    void Update(const uint32_t& time) override
     {
         testUpdate = 1;
     }
@@ -64,7 +64,7 @@ public:
         }
     }
 
-    void Update(const Antomic::TimeStep& time) override
+    void Update(const uint32_t& time) override
     {
         testUpdate = m_Num;
     }
@@ -76,7 +76,6 @@ protected:
 
 TEST(EngineCoreTest, LayerTests)
 {
-    Antomic::TimePoint now = Antomic::TimeClock::now();
     auto stack = Antomic::LayerStack();
 
     // A test layer
@@ -95,7 +94,7 @@ TEST(EngineCoreTest, LayerTests)
 
     // The layer will run update
     EXPECT_EQ(testUpdate, 0);
-    stack.Update(Duration(now-now));
+    stack.Update(0);
     EXPECT_EQ(testUpdate, 1);
 
     // We will remove the layer, no layers left
@@ -126,7 +125,7 @@ TEST(EngineCoreTest, LayerTests)
 
     // All events will update, so testUpdate will have the number 9
     testUpdate = 0;
-    stack.Update(Duration(now-now));
+    stack.Update(0);
     EXPECT_EQ(testUpdate, 9);
 
     // We remove the #4 layer and put it on the back

@@ -43,6 +43,7 @@ find_package(Threads REQUIRED)
 # SDL - Simple DirectMedia Layer
 # https://www.libsdl.org/
 if(NOT DEFINED ENV{ENGINE_NO_SDL})
+    set(SDL_SUPPORT true)
     find_package(SDL2 REQUIRED)
     add_definitions(-DENGINE_SDL_PLATFORM)
     if(WIN32)
@@ -50,7 +51,16 @@ if(NOT DEFINED ENV{ENGINE_NO_SDL})
     elseif(UNIX)
         add_definitions(-DENGINE_LINUX_SDL_PLATFORM)
     endif()
+else()
+    set(SDL_SUPPORT false)
 endif() 
+
+# std::chrono support
+# https://en.cppreference.com/w/cpp/header/chrono
+if(NOT DEFINED ENV{ENGINE_NO_CHRONO} AND NOT SDL_SUPPORT)
+    add_definitions(-DENGINE_CHRONO_SUPPORT)
+endif() 
+
 
 # OpenGL RenderAPI Support
 # https://www.opengl.org/

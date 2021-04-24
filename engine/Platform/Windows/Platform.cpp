@@ -19,13 +19,16 @@
 #ifdef ENGINE_WINDOWS_SDL_PLATFORM
 #include "Platform/Windows/SDL/Window.h"
 #include "Platform/Windows/SDL/Input.h"
+#include "Platform/Windows/SDL/Utils.h"
 #endif
 
 namespace Antomic
 {
     WindowsPlatform::WindowsPlatform() 
     {
-
+#ifdef ENGINE_CHRONO_SUPPORT
+        mPlatformStart = std::chrono::high_resolution_clock::now();
+#endif
     }
 
     WindowsPlatform::~WindowsPlatform()
@@ -53,6 +56,19 @@ namespace Antomic
 #endif
 	}
 
+    uint32_t WindowsPlatform::GetTicks() const 
+    {
+#ifdef ENGINE_SDL_PLATFORM
+        return GetCurrentTime();
+#elif ENGINE_CHRONO_SUPPORT
+        auto now = std::chrono::high_resolution_clock::now();
+        auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now - mPlatformStart);
+        return milliseconds.count();
+#else
+    ENGINE_ASSERT(false, "LinuxPlatform: No time tick support!");
+    return nullptr;
+#endif
+    }
 } // namespace Antomic
 
 #endif

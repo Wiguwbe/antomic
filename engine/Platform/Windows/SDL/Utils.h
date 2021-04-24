@@ -15,25 +15,11 @@
 */
 #ifdef ENGINE_WINDOWS_SDL_PLATFORM
 #pragma once
-#include "Platform/Input.h"
+#include "Core/Base.h"
 #include "SDL2/SDL.h"
 
-namespace Antomic
-{
+namespace Antomic {
 
-    class InputSDL : public Input
-    {
-    public:
-        InputSDL();
-        virtual ~InputSDL();
-
-        virtual bool SetupInput() override;
-        virtual void ProcessEvents() override;
-        virtual void SetEventHandler(const EventHandler &handler) override { m_Handler = handler; }
-
-    protected:
-        EventHandler m_Handler;
-    };
-
-} // namespace Antomic
+    inline uint32_t GetCurrentTime() { return SDL_GetTicks(); }
+}
 #endif

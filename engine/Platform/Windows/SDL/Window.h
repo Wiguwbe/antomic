@@ -13,6 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#ifdef ENGINE_WINDOWS_SDL_PLATFORM
 #pragma once
 #include "Platform/Window.h"
 #include "Platform/RendererAPI.h"
@@ -51,3 +52,4 @@ namespace Antomic
     };
 
 } // namespace Antomic
+#endif

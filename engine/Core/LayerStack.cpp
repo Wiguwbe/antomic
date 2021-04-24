@@ -70,7 +70,7 @@ namespace Antomic
         }
     }
 
-    void LayerStack::Update(const TimeStep &time)
+    void LayerStack::Update(const uint32_t &time)
     {
         for (auto it = m_Stack.begin(); it != m_Stack.end(); ++it)
         {

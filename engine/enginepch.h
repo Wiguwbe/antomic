@@ -33,7 +33,10 @@
 #include <unordered_set>
 
 #include <filesystem>
+
+#ifdef ENGINE_CHRONO_SUPPORT
 #include <chrono>
+#endif
 
 #include <algorithm>
 #include <chrono>

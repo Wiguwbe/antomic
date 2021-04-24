@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ENGINE_WINDOWS_SDL_PLATFORM
+#ifdef ANTOMIC_WINDOWS_SDL_PLATFORM
 #include "Platform/Windows/SDL/Input.h"
 #include "Events/WindowEvent.h"
 #include "Events/MouseEvent.h"
@@ -309,8 +309,8 @@ namespace Antomic
                 uint8_t modifiers = translateKeyModifiers(kev.keysym.mod);
                 Key::Enum key = translateKey(kev.keysym.scancode);
 
-#if ENGINE_DEBUG
-                ENGINE_INFO("SDL scancode {0}, key {1}, name {2}, key name {3}", kev.keysym.scancode, key, SDL_GetScancodeName(kev.keysym.scancode), SDL_GetKeyName(kev.keysym.scancode));
+#if ANTOMIC_DEBUG
+                ANTOMIC_INFO("SDL scancode {0}, key {1}, name {2}, key name {3}", kev.keysym.scancode, key, SDL_GetScancodeName(kev.keysym.scancode), SDL_GetKeyName(kev.keysym.scancode));
 #endif
 
                 /// If you only press (e.g.) 'shift' and nothing else, then key == 'shift', modifier == 0.

@@ -12,7 +12,7 @@ set(VERSION_RELEASE 1)
 set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_RELEASE}")
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-    add_definitions(-DENGINE_DEBUG)
+    add_definitions(-DANTOMIC_DEBUG)
 endif()
 
 # Support both 32 and 64 bit builds
@@ -26,9 +26,9 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 
 # Platform specific configuration
 if(WIN32)
-    add_definitions(-DENGINE_PLATFORM_WINDOWS)
+    add_definitions(-DANTOMIC_PLATFORM_WINDOWS)
 elseif (UNIX)
-    add_definitions(-DENGINE_PLATFORM_LINUX)
+    add_definitions(-DANTOMIC_PLATFORM_LINUX)
 endif(WIN32)
 
 # Specify build paths
@@ -42,14 +42,14 @@ find_package(Threads REQUIRED)
 
 # SDL - Simple DirectMedia Layer
 # https://www.libsdl.org/
-if(NOT DEFINED ENV{ENGINE_NO_SDL})
+if(NOT DEFINED ENV{ANTOMIC_NO_SDL})
     set(SDL_SUPPORT true)
     find_package(SDL2 REQUIRED)
-    add_definitions(-DENGINE_SDL_PLATFORM)
+    add_definitions(-DANTOMIC_SDL_PLATFORM)
     if(WIN32)
-        add_definitions(-DENGINE_WINDOWS_SDL_PLATFORM)
+        add_definitions(-DANTOMIC_WINDOWS_SDL_PLATFORM)
     elseif(UNIX)
-        add_definitions(-DENGINE_LINUX_SDL_PLATFORM)
+        add_definitions(-DANTOMIC_LINUX_SDL_PLATFORM)
     endif()
 else()
     set(SDL_SUPPORT false)
@@ -57,15 +57,15 @@ endif()
 
 # std::chrono support
 # https://en.cppreference.com/w/cpp/header/chrono
-if(NOT DEFINED ENV{ENGINE_NO_CHRONO} AND NOT SDL_SUPPORT)
-    add_definitions(-DENGINE_CHRONO_SUPPORT)
+if(NOT DEFINED ENV{ANTOMIC_NO_CHRONO} AND NOT SDL_SUPPORT)
+    add_definitions(-DANTOMIC_CHRONO_SUPPORT)
 endif() 
 
 
 # OpenGL RenderAPI Support
 # https://www.opengl.org/
-if(NOT DEFINED ENV{ENGINE_NO_OPENGL})
-    add_definitions(-DENGINE_GL_RENDERER)
+if(NOT DEFINED ENV{ANTOMIC_NO_OPENGL})
+    add_definitions(-DANTOMIC_GL_RENDERER)
     if (UNIX)
         set("OpenGL_GL_PREFERENCE" "GLVND")
     endif(UNIX)
@@ -99,7 +99,7 @@ add_subdirectory(launcher)
 
 # Unit Testing
 # https://github.com/google/googletest.git
-if(NOT DEFINED ENV{ENGINE_NO_TESTS})
+if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
     include(3rdparty/CMakeLists.googletest.txt)
     add_subdirectory(tests)
 endif() 

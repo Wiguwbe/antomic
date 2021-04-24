@@ -16,36 +16,36 @@
 #pragma once
 #include "enginepch.h"
 
-#ifdef ENGINE_DEBUG
-#if defined(ENGINE_PLATFORM_WINDOWS)
-#define ENGINE_DEBUGBREAK() __debugbreak()
-#elif defined(ENGINE_PLATFORM_LINUX)
+#ifdef ANTOMIC_DEBUG
+#if defined(ANTOMIC_PLATFORM_WINDOWS)
+#define ANTOMIC_DEBUGBREAK() __debugbreak()
+#elif defined(ANTOMIC_PLATFORM_LINUX)
 #include <signal.h>
-#define ENGINE_DEBUGBREAK() raise(SIGTRAP)
+#define ANTOMIC_DEBUGBREAK() raise(SIGTRAP)
 #else
 #error "Platform doesn't support debugbreak yet!"
 #endif
-#define ENGINE_ENABLE_ASSERTS
+#define ANTOMIC_ENABLE_ASSERTS
 #else
-#define ENGINE_DEBUGBREAK()
+#define ANTOMIC_DEBUGBREAK()
 #endif
 
-#ifdef ENGINE_ENABLE_ASSERTS
-#define ENGINE_ASSERT(x, ...)                                   \
+#ifdef ANTOMIC_ENABLE_ASSERTS
+#define ANTOMIC_ASSERT(x, ...)                                   \
     {                                                           \
         if (!(x))                                               \
         {                                                       \
-            ENGINE_TRACE("Assertion Failed: {0}", __VA_ARGS__); \
-            ENGINE_DEBUGBREAK();                                \
+            ANTOMIC_TRACE("Assertion Failed: {0}", __VA_ARGS__); \
+            ANTOMIC_DEBUGBREAK();                                \
         }                                                       \
     }
 #else
-#define ENGINE_ASSERT(x, y, ...)
+#define ANTOMIC_ASSERT(x, y, ...)
 #endif
 
 #define BIT(x) 1 << x
 
-#define ENGINE_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+#define ANTOMIC_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
 namespace Antomic
 {

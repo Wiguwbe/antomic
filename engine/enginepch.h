@@ -34,7 +34,7 @@
 
 #include <filesystem>
 
-#ifdef ENGINE_CHRONO_SUPPORT
+#ifdef ANTOMIC_CHRONO_SUPPORT
 #include <chrono>
 #endif
 

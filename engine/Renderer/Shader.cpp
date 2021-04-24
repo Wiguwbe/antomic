@@ -17,7 +17,7 @@
 #include "Renderer/Shader.h"
 #include "Platform/RendererAPI.h"
 #include "Platform/NullRenderer/Shader.h"
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
 #include "Platform/OpenGL/Shader.h"
 #endif
 
@@ -51,7 +51,7 @@ namespace Antomic
             return 1;
         }
 
-        ENGINE_ASSERT(false, "ShaderDataType: Unknown data type")
+        ANTOMIC_ASSERT(false, "ShaderDataType: Unknown data type")
         return 0;
     }
 
@@ -61,15 +61,15 @@ namespace Antomic
 
         if (!std::filesystem::exists(vertexSrcPath))
         {
-            ENGINE_ERROR("Shader: Could not find vertex shader file {0}", vertexSrcPath);
-            ENGINE_ASSERT(false, "Vertex shader file not found!");
+            ANTOMIC_ERROR("Shader: Could not find vertex shader file {0}", vertexSrcPath);
+            ANTOMIC_ASSERT(false, "Vertex shader file not found!");
             return nullptr;
         }
 
         if (!std::filesystem::exists(pixelSrcPath))
         {
-            ENGINE_ERROR("Shader: Could not find pixel shader file {0}", pixelSrcPath);
-            ENGINE_ASSERT(false, "Pixel shader file not found!");
+            ANTOMIC_ERROR("Shader: Could not find pixel shader file {0}", pixelSrcPath);
+            ANTOMIC_ASSERT(false, "Pixel shader file not found!");
             return nullptr;
         }
 
@@ -88,7 +88,7 @@ namespace Antomic
     {
         switch (RendererAPI::API())
         {
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
         case RenderAPI::OPENGL:
             return CreateRef<OpenGLShader>(vertexSrc, pixelSrc);
 #endif

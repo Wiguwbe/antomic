@@ -17,7 +17,7 @@
 #include "Renderer/Buffers.h"
 #include "Platform/RendererAPI.h"
 #include "Platform/NullRenderer/VertexArray.h"
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
 #include "Platform/OpenGL/VertexArray.h"
 #endif
 
@@ -27,7 +27,7 @@ namespace Antomic
     {
         switch (RendererAPI::API())
         {
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
         case RenderAPI::OPENGL:
             return CreateRef<OpenGLVertexArray>();
 #endif

@@ -39,7 +39,7 @@ namespace Antomic
             return GL_UNSIGNED_SHORT;
         }
 
-        ENGINE_ASSERT(false, "ShaderDataTypeGLEnum: Unknown data type")
+        ANTOMIC_ASSERT(false, "ShaderDataTypeGLEnum: Unknown data type")
         return GL_UNSIGNED_SHORT;
     }
 
@@ -71,7 +71,7 @@ namespace Antomic
             return 1;
         }
 
-        ENGINE_ASSERT(false, "ShaderDataTypeGLSize: Unknown data type")
+        ANTOMIC_ASSERT(false, "ShaderDataTypeGLSize: Unknown data type")
         return GL_UNSIGNED_SHORT;
     }
 
@@ -93,8 +93,8 @@ namespace Antomic
             glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
 
             glDeleteShader(vertexShader);
-            ENGINE_ERROR("{0}", infoLog.data());
-            ENGINE_ASSERT(false, "Vertex shader compilation error!");
+            ANTOMIC_ERROR("{0}", infoLog.data());
+            ANTOMIC_ASSERT(false, "Vertex shader compilation error!");
             return;
         }
 
@@ -115,8 +115,8 @@ namespace Antomic
             glDeleteShader(fragmentShader);
             glDeleteShader(vertexShader);
 
-            ENGINE_ERROR("{0}", infoLog.data());
-            ENGINE_ASSERT(false, "Fragment shader compilation error!");
+            ANTOMIC_ERROR("{0}", infoLog.data());
+            ANTOMIC_ASSERT(false, "Fragment shader compilation error!");
             return;
         }
 
@@ -141,8 +141,8 @@ namespace Antomic
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
 
-            ENGINE_ERROR("{0}", infoLog.data());
-            ENGINE_ASSERT(false, "Shader Program link  error!");
+            ANTOMIC_ERROR("{0}", infoLog.data());
+            ANTOMIC_ASSERT(false, "Shader Program link  error!");
             return;
         }
 

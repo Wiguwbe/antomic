@@ -34,8 +34,8 @@ namespace Antomic
 } // namespace Antomic
 
 // log macros
-#define ENGINE_TRACE(...) ::Antomic::Log::GetLogger()->trace(__VA_ARGS__)
-#define ENGINE_INFO(...) ::Antomic::Log::GetLogger()->info(__VA_ARGS__)
-#define ENGINE_WARN(...) ::Antomic::Log::GetLogger()->warn(__VA_ARGS__)
-#define ENGINE_ERROR(...) ::Antomic::Log::GetLogger()->error(__VA_ARGS__)
-#define ENGINE_CRITICAL(...) ::Antomic::Log::GetLogger()->critical(__VA_ARGS__)
+#define ANTOMIC_TRACE(...) ::Antomic::Log::GetLogger()->trace(__VA_ARGS__)
+#define ANTOMIC_INFO(...) ::Antomic::Log::GetLogger()->info(__VA_ARGS__)
+#define ANTOMIC_WARN(...) ::Antomic::Log::GetLogger()->warn(__VA_ARGS__)
+#define ANTOMIC_ERROR(...) ::Antomic::Log::GetLogger()->error(__VA_ARGS__)
+#define ANTOMIC_CRITICAL(...) ::Antomic::Log::GetLogger()->critical(__VA_ARGS__)

@@ -74,7 +74,7 @@ protected:
     int m_Num;
 };
 
-TEST(EngineCoreTest, LayerTests)
+TEST(AntomicCoreTest, LayerTests)
 {
     auto stack = Antomic::LayerStack();
 

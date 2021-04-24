@@ -22,7 +22,7 @@ namespace Antomic
 
     Renderer::Renderer(RenderAPI api) 
     {
-        ENGINE_ASSERT(!mApi, "Renderer: Render API already set!")
+        ANTOMIC_ASSERT(!mApi, "Renderer: Render API already set!")
         mApi = RendererAPI::Create(api);
     }
 

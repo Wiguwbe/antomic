@@ -16,7 +16,7 @@
 #include "Platform/RendererAPI.h"
 #include "Core/Log.h"
 #include "Platform/NullRenderer/RendererAPI.h"
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
 #include "Platform/OpenGL/RendererAPI.h"
 #endif
 
@@ -44,7 +44,7 @@ namespace Antomic
             return "OpenGL";
         }
 
-        ENGINE_ASSERT(false, "RenderAPI: Unknown api")
+        ANTOMIC_ASSERT(false, "RenderAPI: Unknown api")
         return 0;
     }
 
@@ -52,14 +52,14 @@ namespace Antomic
     {
         switch (api)
         {
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
         case RenderAPI::OPENGL:
-            ENGINE_INFO("Renderer: Using OpenGL renderer API");
+            ANTOMIC_INFO("Renderer: Using OpenGL renderer API");
             sRendererAPI = RenderAPI::OPENGL;
             return CreateScope<OpenGLRendererAPI>();
 #endif
         default:
-            ENGINE_INFO("Renderer: Using Null renderer API!");
+            ANTOMIC_INFO("Renderer: Using Null renderer API!");
             sRendererAPI = RenderAPI::NONE;
             return CreateScope<NullRendererAPI>();
         }

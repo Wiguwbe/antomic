@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ENGINE_LINUX_SDL_PLATFORM
+#ifdef ANTOMIC_LINUX_SDL_PLATFORM
 #pragma once
 #include "Core/Base.h"
 #include "SDL2/SDL.h"

@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ENGINE_PLATFORM_WINDOWS
+#ifdef ANTOMIC_PLATFORM_WINDOWS
 #pragma once
 #include "Platform/Platform.h"
 
@@ -33,7 +33,7 @@ namespace Antomic
         // Time Operations
         virtual uint32_t GetTicks() const override;
     private:
-#ifdef ENGINE_CHRONO_SUPPORT
+#ifdef ANTOMIC_CHRONO_SUPPORT
         std::chrono::time_point<std::chrono::high_resolution_clock> mPlatformStart;
 #endif
     };

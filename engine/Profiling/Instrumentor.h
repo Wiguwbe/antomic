@@ -59,7 +59,7 @@ namespace Antomic
 				// profiling output.
 				if (Log::GetLogger()) // Edge case: BeginSession() might be before Log::Init()
 				{
-					ENGINE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_CurrentSession->Name);
+					ANTOMIC_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_CurrentSession->Name);
 				}
 				InternalEndSession();
 			}
@@ -74,7 +74,7 @@ namespace Antomic
 			{
 				if (Log::GetLogger()) // Edge case: BeginSession() might be before Log::Init()
 				{
-					ENGINE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
+					ANTOMIC_ERROR("Instrumentor could not open results file '{0}'.", filepath);
 				}
 			}
 		}
@@ -204,38 +204,38 @@ namespace Antomic
 	} // namespace InstrumentorUtils
 } // namespace Antomic
 
-#define ENGINE_PROFILE 0
-#if ENGINE_PROFILE
+#define ANTOMIC_PROFILE 0
+#if ANTOMIC_PROFILE
 // Resolve which function signature macro will be used. Note that this only
 // is resolved when the (pre)compiler starts, so the syntax highlighting
 // could mark the wrong one in your editor!
 #if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
-#define ENGINE_FUNC_SIG __PRETTY_FUNCTION__
+#define ANTOMIC_FUNC_SIG __PRETTY_FUNCTION__
 #elif defined(__DMC__) && (__DMC__ >= 0x810)
-#define ENGINE_FUNC_SIG __PRETTY_FUNCTION__
+#define ANTOMIC_FUNC_SIG __PRETTY_FUNCTION__
 #elif (defined(__FUNCSIG__) || (_MSC_VER))
-#define ENGINE_FUNC_SIG __FUNCSIG__
+#define ANTOMIC_FUNC_SIG __FUNCSIG__
 #elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)) || (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
-#define ENGINE_FUNC_SIG __FUNCTION__
+#define ANTOMIC_FUNC_SIG __FUNCTION__
 #elif defined(__BORLANDC__) && (__BORLANDC__ >= 0x550)
-#define ENGINE_FUNC_SIG __FUNC__
+#define ANTOMIC_FUNC_SIG __FUNC__
 #elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901)
-#define ENGINE_FUNC_SIG __func__
+#define ANTOMIC_FUNC_SIG __func__
 #elif defined(__cplusplus) && (__cplusplus >= 201103)
-#define ENGINE_FUNC_SIG __func__
+#define ANTOMIC_FUNC_SIG __func__
 #else
-#define ENGINE_FUNC_SIG "ENGINE_FUNC_SIG unknown!"
+#define ANTOMIC_FUNC_SIG "ANTOMIC_FUNC_SIG unknown!"
 #endif
 
-#define ENGINE_PROFILE_BEGIN_SESSION(name, filepath) ::Hazel::Instrumentor::Get().BeginSession(name, filepath)
-#define ENGINE_PROFILE_END_SESSION() ::Hazel::Instrumentor::Get().EndSession()
-#define ENGINE_PROFILE_SCOPE(name)                                                                    \
+#define ANTOMIC_PROFILE_BEGIN_SESSION(name, filepath) ::Hazel::Instrumentor::Get().BeginSession(name, filepath)
+#define ANTOMIC_PROFILE_END_SESSION() ::Hazel::Instrumentor::Get().EndSession()
+#define ANTOMIC_PROFILE_SCOPE(name)                                                                    \
 	constexpr auto fixedName = ::Hazel::InstrumentorUtils::CleanupOutputString(name, "__cdecl "); \
 	::Hazel::InstrumentationTimer timer##__LINE__(fixedName.Data)
-#define ENGINE_PROFILE_FUNCTION() ENGINE_PROFILE_SCOPE(ENGINE_FUNC_SIG)
+#define ANTOMIC_PROFILE_FUNCTION() ANTOMIC_PROFILE_SCOPE(ANTOMIC_FUNC_SIG)
 #else
-#define ENGINE_PROFILE_BEGIN_SESSION(name, filepath)
-#define ENGINE_PROFILE_END_SESSION()
-#define ENGINE_PROFILE_SCOPE(name)
-#define ENGINE_PROFILE_FUNCTION()
+#define ANTOMIC_PROFILE_BEGIN_SESSION(name, filepath)
+#define ANTOMIC_PROFILE_END_SESSION()
+#define ANTOMIC_PROFILE_SCOPE(name)
+#define ANTOMIC_PROFILE_FUNCTION()
 #endif

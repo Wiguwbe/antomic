@@ -13,12 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ENGINE_WINDOWS_SDL_PLATFORM
+#ifdef ANTOMIC_WINDOWS_SDL_PLATFORM
 #include "Platform/Windows/SDL/Window.h"
 #include "Platform/RendererAPI.h"
 #include "Core/Log.h"
 #include "SDL2/SDL_syswm.h"
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
 #include <glad/glad.h>
 #endif
 
@@ -27,34 +27,34 @@ namespace Antomic
     SDLWindow::SDLWindow(uint32_t width, uint32_t height, std::string title, RenderAPI api)
     {
         mSDLWindow = nullptr;
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
         mGLContext = nullptr;
 #endif
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
-            ENGINE_TRACE("SDLWindow: Error initializing SDL");
+            ANTOMIC_TRACE("SDLWindow: Error initializing SDL");
         }
 
         switch (api)
         {
         case RenderAPI::OPENGL:
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
 
-            ENGINE_INFO("SDLWindow: Creating window {0},{1} with OpenGL support", width, height);
+            ANTOMIC_INFO("SDLWindow: Creating window {0},{1} with OpenGL support", width, height);
             mSDLWindow = SDL_CreateWindow(
                 title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                 width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
             if (!mSDLWindow)
             {
-                ENGINE_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
+                ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
                 SDL_Quit();
             }
 
             mGLContext = SDL_GL_CreateContext(mSDLWindow);
             if (!mGLContext)
             {
-                ENGINE_TRACE("SDLWindow: Error creating OpenGL context");
+                ANTOMIC_TRACE("SDLWindow: Error creating OpenGL context");
                 SDL_DestroyWindow(mSDLWindow);
                 mSDLWindow = nullptr;
                 SDL_Quit();
@@ -62,7 +62,7 @@ namespace Antomic
 
             if (!gladLoadGL())
             {
-                ENGINE_TRACE("SDLWindow: Error initializing Glad");
+                ANTOMIC_TRACE("SDLWindow: Error initializing Glad");
                 SDL_GL_DeleteContext(mGLContext);
                 SDL_DestroyWindow(mSDLWindow);
                 mGLContext = nullptr;
@@ -70,26 +70,26 @@ namespace Antomic
                 SDL_Quit();
             }
 
-            ENGINE_INFO("SDLWindow: Using OpenGL version {0}", glGetString(GL_VERSION));
+            ANTOMIC_INFO("SDLWindow: Using OpenGL version {0}", glGetString(GL_VERSION));
 
             break;
 
 #else
-            ENGINE_ASSERT(false, "Renderer: OpenGL not available!");
-            ENGINE_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
+            ANTOMIC_ASSERT(false, "Renderer: OpenGL not available!");
+            ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
             SDL_Quit();
             break;
 #endif
             break;
         default:
-            ENGINE_INFO("SDLWindow: Creating window {0},{1} with no Render API support", width, height);
+            ANTOMIC_INFO("SDLWindow: Creating window {0},{1} with no Render API support", width, height);
             mSDLWindow = SDL_CreateWindow(
                 title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                 width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
             break;
             if (!mSDLWindow)
             {
-                ENGINE_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
+                ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
                 SDL_Quit();
             }
         }
@@ -99,8 +99,8 @@ namespace Antomic
 
         if (!SDL_GetWindowWMInfo(mSDLWindow, &wmi))
         {
-            ENGINE_TRACE("SDLWindow: Error retrieving window information");
-#ifdef ENGINE_GL_RENDERER
+            ANTOMIC_TRACE("SDLWindow: Error retrieving window information");
+#ifdef ANTOMIC_GL_RENDERER
             SDL_GL_DeleteContext(mGLContext);
             mGLContext = nullptr;
 #endif
@@ -116,7 +116,7 @@ namespace Antomic
 
     SDLWindow::~SDLWindow()
     {
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
         if (mGLContext)
         {
             SDL_GL_DeleteContext(mGLContext);
@@ -140,7 +140,7 @@ namespace Antomic
 
     void SDLWindow::Update()
     {
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
         SDL_GL_SwapWindow(mSDLWindow);
 #endif
     }

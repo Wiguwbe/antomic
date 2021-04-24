@@ -16,9 +16,9 @@
 #include "Platform/Platform.h"
 #include "Core/Log.h"
 
-#ifdef ENGINE_PLATFORM_WINDOWS
+#ifdef ANTOMIC_PLATFORM_WINDOWS
 #include "Platform/Windows/Platform.h"
-#elif ENGINE_PLATFORM_LINUX
+#elif ANTOMIC_PLATFORM_LINUX
 #include "Platform/Linux/Platform.h"
 #endif
 
@@ -26,12 +26,12 @@ namespace Antomic
 {
     Scope<Platform> Platform::Create()
     {
-#ifdef ENGINE_PLATFORM_WINDOWS
+#ifdef ANTOMIC_PLATFORM_WINDOWS
         return CreateScope<WindowsPlatform>();
-#elif ENGINE_PLATFORM_LINUX
+#elif ANTOMIC_PLATFORM_LINUX
         return CreateScope<LinuxPlatform>();
 #else
-        ENGINE_ASSERT(false, "Platform: Platform not supported!");
+        ANTOMIC_ASSERT(false, "Platform: Platform not supported!");
         return nullptr;
 #endif
     }

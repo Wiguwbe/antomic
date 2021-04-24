@@ -1,7 +1,7 @@
 # Antomic Engine Library
-FILE(GLOB_RECURSE ENGINE_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
-FILE(GLOB_RECURSE ENGINE_HDR "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-add_library("${PROJECT_NAME}Engine" ${ENGINE_HDR} ${ENGINE_SRC})
+FILE(GLOB_RECURSE ANTOMIC_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+FILE(GLOB_RECURSE ANTOMIC_HDR "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+add_library("${PROJECT_NAME}Engine" ${ANTOMIC_HDR} ${ANTOMIC_SRC})
 target_compile_features("${PROJECT_NAME}Engine" PUBLIC cxx_std_17)
 target_include_directories( 
     "${PROJECT_NAME}Engine"

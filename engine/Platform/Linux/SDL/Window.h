@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ENGINE_LINUX_SDL_PLATFORM
+#ifdef ANTOMIC_LINUX_SDL_PLATFORM
 #pragma once
 #include "Platform/Window.h"
 #include "Platform/RendererAPI.h"
@@ -42,7 +42,7 @@ namespace Antomic
 
     private:
         SDL_Window *mSDLWindow;
-#ifdef ENGINE_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
         SDL_GLContext mGLContext;
 #endif
         std::string mTitle;

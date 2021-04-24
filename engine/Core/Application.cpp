@@ -28,13 +28,13 @@ namespace Antomic
 
     Application::Application(const std::string &title, uint32_t width, uint32_t height, RenderAPI api)
     {
-        ENGINE_ASSERT(!sInstance, "Application: Application already running!");
+        ANTOMIC_ASSERT(!sInstance, "Application: Application already running!");
         Log::Init();
 
         sInstance = this;
         mRunning = false;
         mPlatform = Platform::Create();
-        ENGINE_ASSERT(mPlatform, "Application: Platform not initialized!");
+        ANTOMIC_ASSERT(mPlatform, "Application: Platform not initialized!");
 
         auto _width = width;
         auto _height = height;
@@ -53,27 +53,27 @@ namespace Antomic
         }
 
         mWindow = mPlatform->CreateWindow(_width, _height, title, _api);
-        ENGINE_ASSERT(mWindow, "Application: Window not created!");
-        mWindow->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
+        ANTOMIC_ASSERT(mWindow, "Application: Window not created!");
+        mWindow->SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
         if (!mWindow->IsValid())
         {
-            ENGINE_INFO("Error creating window: {0}, {1}", _width, _height);
+            ANTOMIC_INFO("Error creating window: {0}, {1}", _width, _height);
             exit(1);
         }
 
         mRenderer = CreateScope<Renderer>(_api);
         if (!mRenderer)
         {
-            ENGINE_INFO("Error creating rendering API: {0}", RenderAPIToStr(_api));
+            ANTOMIC_INFO("Error creating rendering API: {0}", RenderAPIToStr(_api));
             exit(1);
         }
 
         mInput = mPlatform->CreateInput();
-        mInput->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
+        mInput->SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
 
         if (!mInput->SetupInput())
         {
-            ENGINE_INFO("Error initializng input:");
+            ANTOMIC_INFO("Error initializng input:");
             exit(1);
         }
 
@@ -135,8 +135,8 @@ namespace Antomic
     void Application::OnEvent(Event &event)
     {
         EventDispatcher dispatcher(event);
-        dispatcher.Dispatch<WindowCloseEvent>(ENGINE_BIND_EVENT_FN(Application::OnWindowClose));
-        dispatcher.Dispatch<WindowResizeEvent>(ENGINE_BIND_EVENT_FN(Application::OnWindowResize));
+        dispatcher.Dispatch<WindowCloseEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowClose));
+        dispatcher.Dispatch<WindowResizeEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowResize));
         mStack.OnEvent(event);
     }
 

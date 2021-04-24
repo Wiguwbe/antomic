@@ -14,7 +14,7 @@
    limitations under the License.
 */
 #ifdef ENGINE_PLATFORM_LINUX
-#include "Platform/Windows/Platform.h"
+#include "Platform/Linux/Platform.h"
 #include "Core/Log.h"
 #ifdef ENGINE_LINUX_SDL_PLATFORM
 #include "Platform/Linux/SDL/Window.h"
@@ -23,35 +23,33 @@
 
 namespace Antomic
 {
-    LinuxPlatform::LinuxPlatform() 
+    LinuxPlatform::LinuxPlatform()
     {
-
     }
 
     LinuxPlatform::~LinuxPlatform()
     {
-
     }
 
-    Scope<Window> LinuxPlatform::CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api) 
+    Scope<Window> LinuxPlatform::CreateWindow(uint32_t width, uint32_t height, std::string title, RenderAPI api)
     {
 #ifdef ENGINE_SDL_PLATFORM
-        return CreateScope<SDLWindow>(width,height,name,api);
+        return CreateScope<SDLWindow>(width, height, title, api);
 #else
         ENGINE_ASSERT(false, "LinuxPlatform: No window support!");
         return nullptr;
-#endif            
+#endif
     }
 
-	Scope<Input> LinuxPlatform::CreateInput()
-	{
+    Scope<Input> LinuxPlatform::CreateInput()
+    {
 #ifdef ENGINE_SDL_PLATFORM
         return CreateScope<InputSDL>();
 #else
         ENGINE_ASSERT(false, "LinuxPlatform: No input support!");
-		return nullptr;
+        return nullptr;
 #endif
-	}
+    }
 
 } // namespace Antomic
 

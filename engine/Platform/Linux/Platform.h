@@ -25,7 +25,7 @@ namespace Antomic
         LinuxPlatform();
         virtual ~LinuxPlatform() override;
 
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) override;
+        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string title, RenderAPI api = RenderAPI::OPENGL) override;
 		virtual Scope<Input> CreateInput() override;
     };
 } // namespace Antomic

@@ -16,6 +16,7 @@
 #ifdef ENGINE_LINUX_SDL_PLATFORM
 #pragma once
 #include "Platform/Window.h"
+#include "Platform/RendererAPI.h"
 #include "SDL2/SDL.h"
 
 namespace Antomic

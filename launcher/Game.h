@@ -15,6 +15,7 @@
 */
 #pragma once
 #include "engine.h"
+#include "glm/glm.hpp"
 
 namespace Antomic {
     class Game: public Application
@@ -22,8 +23,14 @@ namespace Antomic {
     public:
         Game();
         virtual void Render() override;
+        virtual void Update(const uint32_t &time) override;
+        virtual bool OnKeyPressed(KeyPressedEvent &event) override;
+        virtual bool OnKeyReleased(KeyReleasedEvent &event) override;
     private:
         Ref<VertexArray> mVertexArray;
         Ref<Shader> mShader;
+        glm::vec3 mCamera;
+        glm::vec3 mDirection;
+        glm::vec3 mLookAt;
     };
 }

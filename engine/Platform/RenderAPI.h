@@ -21,8 +21,8 @@
 
 namespace Antomic
 {
-    enum class RenderAPIDialect {
-
+    enum class RenderAPIDialect
+    {
         NONE = 0,
         OPENGL = 1
     };
@@ -33,12 +33,16 @@ namespace Antomic
     class RenderAPI
     {
     public:
+        ~RenderAPI() = default;
 
-        virtual void Clear(glm::vec4 color) = 0;
+    public:
+        virtual void SetViewport(const uint32_t &x, const uint32_t &y, uint32_t const &width, uint32_t const &height) = 0;
+        virtual void SetClearColor(glm::vec4 color) = 0;
+        virtual void Clear() = 0;
         virtual void DrawIndexed(const Ref<VertexArray> vertexArray) = 0;
 
-	public:
-		static Scope<RenderAPI> Create(RenderAPIDialect api = RenderAPIDialect::OPENGL);
+    public:
+        static Scope<RenderAPI> Create(RenderAPIDialect api = RenderAPIDialect::OPENGL);
     };
 
 } // namespace Antomic

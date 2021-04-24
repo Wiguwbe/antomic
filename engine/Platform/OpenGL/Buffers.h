@@ -23,9 +23,11 @@ namespace Antomic
     public:
         OpenGLIndexBuffer(uint32_t *data, uint32_t size);
         ~OpenGLIndexBuffer();
+
+    public:
         virtual void Bind() const override;
         virtual void Unbind() const override;
-        virtual void Upload(uint32_t* data, uint32_t size) const override;
+        virtual void Upload(uint32_t *data, uint32_t size) const override;
         virtual uint32_t Count() const override { return mCount; };
 
     private:
@@ -38,9 +40,11 @@ namespace Antomic
     public:
         OpenGLVertexBuffer(float *data, uint32_t size);
         ~OpenGLVertexBuffer();
+
+    public:
         virtual void Bind() const override;
         virtual void Unbind() const override;
-        virtual void Upload(uint32_t* data, uint32_t size) const override;
+        virtual void Upload(uint32_t *data, uint32_t size) const override;
         virtual const BufferLayout &Layout() const { return mLayout; };
         virtual void SetLayout(const BufferLayout &layout) override;
 

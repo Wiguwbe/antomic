@@ -21,11 +21,13 @@ namespace Antomic
     class NullIndexBuffer : public IndexBuffer
     {
     public:
-        NullIndexBuffer(uint32_t *data, uint32_t size);
-        ~NullIndexBuffer();
-        virtual void Bind() const override;
-        virtual void Unbind() const override;
-        virtual void Upload(uint32_t* data, uint32_t size) const override;
+        NullIndexBuffer(uint32_t *data, uint32_t size) : mCount(size / sizeof(uint32_t)) {}
+        ~NullIndexBuffer() {}
+
+    public:
+        virtual void Bind() const override {}
+        virtual void Unbind() const override {}
+        virtual void Upload(uint32_t* data, uint32_t size) const override {}
         virtual uint32_t Count() const override { return mCount; };
 
     private:
@@ -36,13 +38,15 @@ namespace Antomic
     class NullVertexBuffer : public VertexBuffer
     {
     public:
-        NullVertexBuffer(float *data, uint32_t size);
-        ~NullVertexBuffer();
-        virtual void Bind() const override;
-        virtual void Unbind() const override;
-        virtual void Upload(uint32_t* data, uint32_t size) const override;
-        virtual const BufferLayout &Layout() const { return mLayout; };
-        virtual void SetLayout(const BufferLayout &layout) override;
+        NullVertexBuffer(float *data, uint32_t size) {}
+        ~NullVertexBuffer() {}
+
+    public:
+        virtual void Bind() const override {}
+        virtual void Unbind() const override {}
+        virtual void Upload(uint32_t* data, uint32_t size) const override {}
+        virtual const BufferLayout &Layout() const { return mLayout; }
+        virtual void SetLayout(const BufferLayout &layout) override { mLayout = layout; }
 
     private:
         uint32_t mRendererId;

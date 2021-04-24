@@ -23,8 +23,11 @@ namespace Antomic
     public:
         OpenGLRenderAPI();
         ~OpenGLRenderAPI();
-        virtual void Clear(glm::vec4 color) override;
+
+    public:
+        virtual void SetViewport(const uint32_t &x, const uint32_t &y, uint32_t const &width, uint32_t const &height) override;
+        virtual void SetClearColor(glm::vec4 color) override;
+        virtual void Clear() override;
         virtual void DrawIndexed(const Ref<VertexArray> vertexArray) override;
     };
-
 } // namespace Antomic

@@ -24,6 +24,8 @@ namespace Antomic {
     public:
         OpenGLVertexArray();
         ~OpenGLVertexArray();
+
+    public:
         virtual void Bind() const override;
         virtual void Unbind() const override;
         virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) override;

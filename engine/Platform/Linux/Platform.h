@@ -19,19 +19,20 @@
 
 namespace Antomic
 {
-
     class LinuxPlatform : public Platform
     {
     public:
         LinuxPlatform();
         virtual ~LinuxPlatform() override;
 
+    public:
         // Windows Operations
         virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api = RenderAPIDialect::OPENGL) override;
-		virtual Scope<Input> CreateInput() override;
+        virtual Scope<Input> CreateInput() override;
 
         // Time Operations
         virtual uint32_t GetTicks() const override;
+
     private:
 #ifdef ANTOMIC_CHRONO_SUPPORT
         std::chrono::time_point<std::chrono::high_resolution_clock> mPlatformStart;

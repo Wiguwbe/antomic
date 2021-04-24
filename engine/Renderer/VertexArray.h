@@ -22,6 +22,10 @@ namespace Antomic {
     class VertexArray
     {
     public:
+        ~VertexArray() = default;
+
+    public:
+
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
         virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) = 0;

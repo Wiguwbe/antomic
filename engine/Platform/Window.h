@@ -20,14 +20,13 @@ namespace Antomic
 {
     class Window
     {
-
     public:
         virtual ~Window() = default;
 
     public:
         virtual uint32_t GetWidth() const = 0;
         virtual uint32_t GetHeight() const = 0;
-        virtual const std::string &GetTitle() const= 0;
+        virtual const std::string &GetTitle() const = 0;
         virtual void SetTitle(const std::string &title) = 0;
         virtual bool IsValid() const = 0;
         virtual void SetEventHandler(const EventHandler &handler) = 0;

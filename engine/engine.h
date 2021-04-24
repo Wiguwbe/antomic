@@ -8,3 +8,6 @@
 #include "Renderer/Buffers.h"
 #include "Renderer/VertexArray.h"
 #include "Renderer/RenderCommand.h"
+#include "Platform/Input.h"
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"

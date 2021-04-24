@@ -19,7 +19,6 @@
 #include "SDL2/SDL.h"
 
 namespace Antomic {
-
     inline uint32_t GetCurrentTime() { return SDL_GetTicks(); }
 }
 #endif

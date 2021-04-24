@@ -26,9 +26,18 @@ namespace Antomic
     {
     }
 
-    void OpenGLRenderAPI::Clear(glm::vec4 color)
+    void OpenGLRenderAPI::SetViewport(const uint32_t &x, const uint32_t &y, uint32_t const &width, uint32_t const &height)
+    {
+        glViewport(x, y, width, height);
+    }
+
+    void OpenGLRenderAPI::SetClearColor(glm::vec4 color)
     {
         glClearColor(color.r, color.g, color.b, color.a);
+    }
+
+    void OpenGLRenderAPI::Clear()
+    {
         glClear(GL_COLOR_BUFFER_BIT);
     }
 

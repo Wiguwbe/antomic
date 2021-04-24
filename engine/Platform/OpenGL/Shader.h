@@ -16,6 +16,7 @@
 #pragma once
 #include "Renderer/Shader.h"
 #include "glad/glad.h"
+#include "glm/glm.hpp"
 
 namespace Antomic
 {
@@ -27,8 +28,19 @@ namespace Antomic
     public:
         OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc);
         ~OpenGLShader();
+
+    public:
+        // Bind/Unbind commands
         virtual void Bind() const override;
         virtual void Unbind() const override;
+
+        // Uniform Commands
+        virtual void SetUniformValue(const std::string& name, float value) override;
+        virtual void SetUniformValue(const std::string& name, const glm::vec2 &value) override;
+        virtual void SetUniformValue(const std::string& name, const glm::vec3 &value) override;
+        virtual void SetUniformValue(const std::string& name, const glm::vec4 &value) override;
+        virtual void SetUniformValue(const std::string& name, const glm::mat3 &value) override;
+        virtual void SetUniformValue(const std::string& name, const glm::mat4 &value) override;
 
     private:
         uint32_t mRendererId = 0;

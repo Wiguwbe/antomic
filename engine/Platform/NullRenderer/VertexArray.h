@@ -22,12 +22,14 @@ namespace Antomic {
     class NullVertexArray : public VertexArray
     {
     public:
-        NullVertexArray();
-        ~NullVertexArray();
-        virtual void Bind() const override;
-        virtual void Unbind() const override;
-        virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) override;
-        virtual void SetIndexBuffer(const Ref<IndexBuffer> &buffer) override;
+        NullVertexArray() {}
+        ~NullVertexArray() {}
+    
+    public:
+        virtual void Bind() const override {}
+        virtual void Unbind() const override {}
+        virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) override { mVertextBuffers.push_back(buffer); }
+        virtual void SetIndexBuffer(const Ref<IndexBuffer> &buffer) override { mIndexBuffer = buffer; }
         virtual const std::vector<Ref<VertexBuffer>> &GetVertexBuffers() const override { return mVertextBuffers; };
         virtual const Ref<IndexBuffer> &GetIndexBuffer() const override { return mIndexBuffer; };
         
@@ -35,4 +37,5 @@ namespace Antomic {
         std::vector<Ref<VertexBuffer>> mVertextBuffers;
         Ref<IndexBuffer> mIndexBuffer;
     };
+
 }

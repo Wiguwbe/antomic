@@ -14,13 +14,16 @@
    limitations under the License.
 */
 #include "Game.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
 {
 
     Game::Game() : Application("Game")
     {
-
+        mDirection = {0, 0, 0};
+        mCamera = {0, 0, 3};
+        mLookAt = {0, 0, 0};
         mVertexArray = VertexArray::Create();
 
         mShader = Shader::CreateFromFile("media/shaders/opengl/vs_demo_1.glsl", "media/shaders/opengl/fs_demo_1.glsl");
@@ -52,9 +55,76 @@ namespace Antomic
 
     void Game::Render()
     {
-        RenderCommand::Clear({0.1f, 0.1f, 0.1f, 1.0f});
+        glm::mat4 m_proj = glm::perspective(glm::radians(45.0f), (float)GetWidth() / (float)GetHeight(), 0.1f, 100.0f);
+
+        // Camera matrix
+        glm::mat4 m_view = glm::lookAt(
+            mCamera,            // Camera is at (4,3,3), in World Space
+            mLookAt, // and looks at the origin
+            glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+        );
+
+        glm::mat4 m_model = glm::mat4(1.0f);
+        glm::mat4 m_mvp = m_proj * m_view * m_model;
+
+        RenderCommand::SetViewport(0, 0, GetWidth(), GetHeight());
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
+        RenderCommand::Clear();
+        mShader->SetUniformValue("m_proj", m_proj);
+        mShader->SetUniformValue("m_view", m_view);
+        mShader->SetUniformValue("m_model", m_model);
+        mShader->SetUniformValue("m_mvp", m_mvp);
         mShader->Bind();
         RenderCommand::DrawIndexed(mVertexArray);
+    }
+
+    void Game::Update(const uint32_t &timestep)
+    {
+        mCamera += (((float)timestep / 1000.f) * mDirection);
+        mLookAt += (((float)timestep / 1000.f) * mDirection);
+    }
+
+    bool Game::OnKeyPressed(KeyPressedEvent &event)
+    {
+
+        switch (event.GetKeyCode())
+        {
+        case Key::Enum::KeyW:
+            mDirection.y = 1;
+            break;
+        case Key::Enum::KeyS:
+            mDirection.y = -1;
+            break;
+        case Key::Enum::KeyA:
+            mDirection.x = -1;
+            break;
+        case Key::Enum::KeyD:
+            mDirection.x = 1;
+            break;
+        default:
+            break;
+        }
+
+        return true;
+    }
+
+    bool Game::OnKeyReleased(KeyReleasedEvent &event)
+    {
+        switch (event.GetKeyCode())
+        {
+        case Key::Enum::KeyW:
+        case Key::Enum::KeyS:
+            mDirection.y = 0;
+            break;
+        case Key::Enum::KeyA:
+        case Key::Enum::KeyD:
+            mDirection.x = 0;
+            break;
+        default:
+            break;
+        }
+
+        return true;
     }
 
 } // namespace Antomic

@@ -16,6 +16,7 @@
 #include "Platform/OpenGL/Shader.h"
 #include "Core/Log.h"
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Antomic
 {
@@ -163,6 +164,72 @@ namespace Antomic
 
     void OpenGLShader::Unbind() const
     {
+        glUseProgram(0);
+    }
+
+    void OpenGLShader::SetUniformValue(const std::string &name, float value)
+    {
+        glUseProgram(mRendererId);
+        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+        if (loc != -1)
+        {
+            glUniform1f(loc, value);
+        }
+        glUseProgram(0);
+    }
+
+    void OpenGLShader::SetUniformValue(const std::string &name, const glm::vec2 &value)
+    {
+        glUseProgram(mRendererId);
+        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+        if (loc != -1)
+        {
+            glUniform2f(loc, value.x, value.y);
+        }
+        glUseProgram(0);
+    }
+
+    void OpenGLShader::SetUniformValue(const std::string &name, const glm::vec3 &value)
+    {
+        glUseProgram(mRendererId);
+        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+        if (loc != -1)
+        {
+            glUniform3f(loc, value.x, value.y, value.z);
+        }
+        glUseProgram(0);
+    }
+
+    void OpenGLShader::SetUniformValue(const std::string &name, const glm::vec4 &value)
+    {
+        glUseProgram(mRendererId);
+        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+        if (loc != -1)
+        {
+            glUniform4f(loc, value.x, value.y, value.z, value.w);
+        }
+        glUseProgram(0);
+    }
+
+    void OpenGLShader::SetUniformValue(const std::string &name, const glm::mat3 &value)
+    {
+        glUseProgram(mRendererId);
+        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+        if (loc != -1)
+        {
+            glUniformMatrix3fv(loc, 1, GL_FALSE, glm::value_ptr(value));
+        }
+        glUseProgram(0);
+    }
+
+    void OpenGLShader::SetUniformValue(const std::string &name, const glm::mat4 &value)
+    {
+        glUseProgram(mRendererId);
+        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+        if (loc != -1)
+        {
+            glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(value));
+        }
         glUseProgram(0);
     }
 

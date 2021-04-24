@@ -24,7 +24,6 @@
 
 namespace Antomic
 {
-
     Scope<RenderAPI> Platform::mRenderAPI = nullptr;
     RenderAPIDialect Platform::mRenderAPIDialect = RenderAPIDialect::NONE;
 

@@ -20,13 +20,13 @@
 
 namespace Antomic
 {
-
     class InputSDL : public Input
     {
     public:
         InputSDL();
         virtual ~InputSDL();
 
+    public:
         virtual bool SetupInput() override;
         virtual void ProcessEvents() override;
         virtual void SetEventHandler(const EventHandler &handler) override { m_Handler = handler; }

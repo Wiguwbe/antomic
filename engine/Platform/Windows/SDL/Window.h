@@ -23,7 +23,6 @@ namespace Antomic
 {
     class SDLWindow : public Window
     {
-
     public:
         SDLWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api);
         virtual ~SDLWindow() override;

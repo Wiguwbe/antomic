@@ -239,6 +239,7 @@ namespace Antomic
                 case SDL_WINDOWEVENT_RESIZED:
                 {
                     WindowResizeEvent event(currentEvent.window.data1, currentEvent.window.data2);
+                    ANTOMIC_INFO("Windows:Input:Sdl: Window resized {0}x{1}", currentEvent.window.data1, currentEvent.window.data2);
                     m_Handler(event);
                 }
                 break;

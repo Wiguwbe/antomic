@@ -51,7 +51,7 @@ namespace Antomic
 
         mPlatform = Platform::CreatePlatform(_api);
         ANTOMIC_ASSERT(mPlatform, "Application: Platform not initialized!");
-        if (!mPlatform) 
+        if (!mPlatform)
         {
             ANTOMIC_INFO("Error creating initializing platform");
             exit(1);
@@ -97,16 +97,16 @@ namespace Antomic
             auto currentTime = mPlatform->GetTicks();
             uint32_t t = currentTime - mLastRenderTime;
             mLastRenderTime = currentTime;
-            
+
             mInput->ProcessEvents();
             mWindow->ProcessEvents();
-            
+
             mStack.Update(t);
             this->Update(t);
-            
+
             this->Render();
-            mStack.Render();            
-            
+            mStack.Render();
+
             mWindow->Update();
         }
 
@@ -125,9 +125,23 @@ namespace Antomic
     void Application::OnEvent(Event &event)
     {
         EventDispatcher dispatcher(event);
+
+        // Dispatch Windows Events
         dispatcher.Dispatch<WindowCloseEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowResize));
+
+        // Dispatch Events to the stack first
         mStack.OnEvent(event);
+
+        // Dispatch key events to be handled by the application
+        dispatcher.Dispatch<KeyPressedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnKeyPressed));
+        dispatcher.Dispatch<KeyReleasedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnKeyReleased));
+
+        // Dispatch mouse events to be handled by the application
+        dispatcher.Dispatch<MouseMovedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnMouseMoved));
+        dispatcher.Dispatch<MouseScrolledEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnMouseScrolled));
+        dispatcher.Dispatch<MouseButtonPressedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnMouseButtonPressed));
+        dispatcher.Dispatch<MouseButtonReleasedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnMouseButtonReleased));
     }
 
     bool Application::OnWindowClose(WindowCloseEvent &event)
@@ -140,6 +154,7 @@ namespace Antomic
     {
         mWidth = event.GetWidth();
         mHeight = event.GetHeight();
+        ANTOMIC_INFO("Application: Window resized {0}x{1}", mWidth, mHeight);
         return true;
     }
 } // namespace Antomic

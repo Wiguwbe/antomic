@@ -15,6 +15,7 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "glm/glm.hpp"
 
 namespace Antomic
 {
@@ -38,8 +39,20 @@ namespace Antomic
     class Shader
     {
     public:
+        ~Shader() = default;
+
+    public:
+        // Bind/Unbind commands
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
+
+        // Uniform Commands
+        virtual void SetUniformValue(const std::string& name, float value) = 0;
+        virtual void SetUniformValue(const std::string& name, const glm::vec2 &value) = 0;
+        virtual void SetUniformValue(const std::string& name, const glm::vec3 &value) = 0;
+        virtual void SetUniformValue(const std::string& name, const glm::vec4 &value) = 0;
+        virtual void SetUniformValue(const std::string& name, const glm::mat3 &value) = 0;
+        virtual void SetUniformValue(const std::string& name, const glm::mat4 &value) = 0;
 
     public:
         static Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath);

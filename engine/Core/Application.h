@@ -28,20 +28,40 @@ namespace Antomic
         Application() : Application("Application", 640, 480){};
         Application(const std::string &title) : Application(title, 640, 480){};
         Application(const std::string &title, uint32_t width, uint32_t height, RenderAPIDialect api = RenderAPIDialect::OPENGL);
-
         virtual ~Application();
 
-        void OnEvent(Event &event);
+    public:
+
+        // Control Operations
         void ToggleFullscreen(bool value);
         void Run();
-        bool OnWindowClose(WindowCloseEvent &event);
-        bool OnWindowResize(WindowResizeEvent &event);
-        inline uint32_t CurrentWidth() const { return mWidth; }
-        inline uint32_t CurrentHeight() const { return mHeight; }
 
+        // Windows attributes
+        inline uint32_t GetWidth() const { return mWidth; }
+        inline uint32_t GetHeight() const { return mHeight; }
+
+        // Events
+        void OnEvent(Event &event);
+
+        // Windows Events
+        virtual bool OnWindowClose(WindowCloseEvent &event);
+        virtual bool OnWindowResize(WindowResizeEvent &event);
+        
+        // Keys Events
+        virtual bool OnKeyPressed(KeyPressedEvent &event) { return false; }
+        virtual bool OnKeyReleased(KeyReleasedEvent &event) { return false; }
+        
+        // Mouse Events
+        virtual bool OnMouseMoved(MouseMovedEvent &event) { return false; }
+        virtual bool OnMouseScrolled(MouseScrolledEvent &event) { return false; }
+        virtual bool OnMouseButtonPressed(MouseButtonPressedEvent &event) { return false; }
+        virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent &event) { return false; }
+
+        // Render & Update
         virtual void Update(const uint32_t &time) {};
         virtual void Render() {};
 
+    public:
         static Application &Current() { return *sInstance; }
 
     protected:

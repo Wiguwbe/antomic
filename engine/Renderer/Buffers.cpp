@@ -16,7 +16,7 @@
 #include "Core/Log.h"
 #include "Renderer/Buffers.h"
 #include "Platform/RendererAPI.h"
-
+#include "Platform/NullRenderer/Buffers.h"
 #ifdef ENGINE_GL_RENDERER
 #include "Platform/OpenGL/Buffers.h"
 #endif
@@ -45,19 +45,12 @@ namespace Antomic
     {
         switch (RendererAPI::API())
         {
-        case RenderAPI::OPENGL:
 #ifdef ENGINE_GL_RENDERER
+        case RenderAPI::OPENGL:
             return CreateRef<OpenGLIndexBuffer>(data, size);
-#else
-            ENGINE_ASSERT(false, "IndexBuffer: OpenGL not available!");
-            return nullptr;
 #endif
-            break;
-
         default:
-            ENGINE_ASSERT(false, "IndexBuffer: No API available!");
-            return nullptr;
-            break;
+            return CreateRef<NullIndexBuffer>(data, size);
         }
     }
 
@@ -65,19 +58,12 @@ namespace Antomic
     {
         switch (RendererAPI::API())
         {
-        case RenderAPI::OPENGL:
 #ifdef ENGINE_GL_RENDERER
+        case RenderAPI::OPENGL:
             return CreateRef<OpenGLVertexBuffer>(data, size);
-#else
-            ENGINE_ASSERT(false, "VertexBuffer: OpenGL not available!");
-            return nullptr;
 #endif
-            break;
-
         default:
-            ENGINE_ASSERT(false, "VertexBuffer: No API available!");
-            return nullptr;
-            break;
+            return CreateRef<NullVertexBuffer>(data, size);
         }
     }
 

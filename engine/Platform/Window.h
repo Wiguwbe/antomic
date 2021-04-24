@@ -14,24 +14,27 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
-#include "Platform/RendererAPI.h"
-#include "Platform/Window.h"
+#include "Core\Base.h"
 
 namespace Antomic
 {
-    class Platform
+    class Window
     {
 
     public:
-        virtual ~Platform() = default;
+        virtual ~Window() = default;
 
     public:
-        static Scope<Platform> Create();
-
-        // Window operations
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) = 0;
-		virtual Scope<Input> CreateInput() = 0;
+        virtual uint32_t GetWidth() const = 0;
+        virtual uint32_t GetHeight() const = 0;
+        virtual const std::string &GetTitle() const= 0;
+        virtual void SetTitle(const std::string &title) = 0;
+        virtual bool IsValid() const = 0;
+        virtual void SetEventHandler(const EventHandler &handler) = 0;
+        virtual void Update() = 0;
+        virtual void ProcessEvents() = 0;
+        virtual void ToggleFullscreen() = 0;
+        virtual void SetMouseLock(bool lock) = 0;
     };
 
 } // namespace Antomic

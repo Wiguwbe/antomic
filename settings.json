@@ -1,5 +1,6 @@
 {
     "width" : 800,
     "height": 600,
-    "fullscreen": false
+    "fullscreen": false,
+    "api": "opengl"
 }

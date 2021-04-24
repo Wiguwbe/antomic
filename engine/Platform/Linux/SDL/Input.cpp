@@ -13,15 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Input/SDL/InputSDL.h"
+#ifdef ENGINE_LINUX_SDL_PLATFORM
+#include "Platform/Linux/SDL/Input.h"
 #include "Events/WindowEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
-#ifdef ENGINE_PLATFORM_LINUX
-#include <SDL2/SDL_syswm.h>
-#elif ENGINE_PLATFORM_WINDOWS
-#include "SDL_syswm.h"
-#endif
+#include "SDL2/SDL_syswm.h"
 
 static uint8_t translateKeyModifiers(uint16_t _sdl)
 {
@@ -229,7 +226,7 @@ namespace Antomic
         return true;
     }
 
-    void InputSDL::ProcessInputEvents()
+    void InputSDL::ProcessEvents()
     {
         SDL_Event currentEvent;
         while (SDL_PollEvent(&currentEvent))
@@ -343,3 +340,4 @@ namespace Antomic
         }
     }
 } // namespace Antomic
+#endif

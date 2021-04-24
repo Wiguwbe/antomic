@@ -14,24 +14,18 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
-#include "Platform/RendererAPI.h"
-#include "Platform/Window.h"
-
+#include "Renderer/Shader.h"
+#
 namespace Antomic
 {
-    class Platform
+    class NullShader : public Shader
     {
-
     public:
-        virtual ~Platform() = default;
-
-    public:
-        static Scope<Platform> Create();
-
-        // Window operations
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) = 0;
-		virtual Scope<Input> CreateInput() = 0;
+        NullShader(const std::string &vertexSrc, const std::string &fragmentSrc);
+        ~NullShader();
+        virtual void Bind() const override;
+        virtual void Unbind() const override;
+    private:
     };
 
 } // namespace Antomic

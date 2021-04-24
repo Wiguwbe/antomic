@@ -13,25 +13,34 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
-#include "Platform/RendererAPI.h"
-#include "Platform/Window.h"
+#include "Platform/NullRenderer/VertexArray.h"
 
 namespace Antomic
 {
-    class Platform
+    NullVertexArray::NullVertexArray()
     {
+    }
 
-    public:
-        virtual ~Platform() = default;
+    NullVertexArray::~NullVertexArray()
+    {
+    }
 
-    public:
-        static Scope<Platform> Create();
+    void NullVertexArray::Bind() const
+    {
+    }
 
-        // Window operations
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) = 0;
-		virtual Scope<Input> CreateInput() = 0;
-    };
+    void NullVertexArray::Unbind() const
+    {
+    }
 
-} // namespace Antomic
+    void NullVertexArray::AddVertexBuffer(const Ref<VertexBuffer> &buffer)
+    {
+        mVertextBuffers.push_back(buffer);
+    }
+    
+    void NullVertexArray::SetIndexBuffer(const Ref<IndexBuffer> &buffer)
+    {
+        mIndexBuffer = buffer;
+    }
+
+}

@@ -22,6 +22,7 @@ namespace Antomic
     {
 
         mVertexArray = VertexArray::Create();
+
         mShader = Shader::CreateFromFile("media/shaders/opengl/vs_demo_1.glsl", "media/shaders/opengl/fs_demo_1.glsl");
 
         {
@@ -51,12 +52,9 @@ namespace Antomic
 
     void Game::Render()
     {
-        Application::Render();
         RenderCommand::Clear({0.1f, 0.1f, 0.1f, 1.0f});
         mShader->Bind();
         RenderCommand::DrawIndexed(mVertexArray);
     }
-
-
 
 } // namespace Antomic

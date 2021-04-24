@@ -14,28 +14,18 @@
    limitations under the License.
 */
 #pragma once
-#include "Input/Input.h"
-#ifdef ENGINE_PLATFORM_LINUX
-#include <SDL2/SDL.h>
-#elif ENGINE_PLATFORM_WINDOWS
-#include "SDL.h"
-#endif
+#include "Platform/Platform.h"
 
 namespace Antomic
 {
 
-    class InputSDL : public Input
+    class WindowsPlatform : public Platform
     {
     public:
-        InputSDL();
-        virtual ~InputSDL();
+        WindowsPlatform();
+        virtual ~WindowsPlatform() override;
 
-        virtual bool SetupInput() override;
-        virtual void ProcessInputEvents() override;
-        virtual void SetEventHandler(const EventHandler &handler) override { m_Handler = handler; }
-
-    protected:
-        EventHandler m_Handler;
+        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) override;
+		virtual Scope<Input> CreateInput() override;
     };
-
 } // namespace Antomic

@@ -16,7 +16,7 @@
 #include "Core/Log.h"
 #include "Renderer/Shader.h"
 #include "Platform/RendererAPI.h"
-
+#include "Platform/NullRenderer/Shader.h"
 #ifdef ENGINE_GL_RENDERER
 #include "Platform/OpenGL/Shader.h"
 #endif
@@ -51,7 +51,7 @@ namespace Antomic
             return 1;
         }
 
-        ENGINE_ASSERT(false, "ShaderDataType: Unknown data tyepe")
+        ENGINE_ASSERT(false, "ShaderDataType: Unknown data type")
         return 0;
     }
 
@@ -88,19 +88,12 @@ namespace Antomic
     {
         switch (RendererAPI::API())
         {
-        case RenderAPI::OPENGL:
 #ifdef ENGINE_GL_RENDERER
+        case RenderAPI::OPENGL:
             return CreateRef<OpenGLShader>(vertexSrc, pixelSrc);
-#else
-            ENGINE_ASSERT(false, "Shader: OpenGL not available!");
-            return nullptr;
 #endif
-            break;
-
         default:
-            ENGINE_ASSERT(false, "Shader: No API available!");
-            return nullptr;
-            break;
+            return CreateRef<NullShader>(vertexSrc, pixelSrc);;
         }
     }
 

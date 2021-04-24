@@ -24,23 +24,21 @@
 
 namespace Antomic
 {
-    Application *Application::s_Instance = nullptr;
+    Application *Application::sInstance = nullptr;
 
-    Application::Application(const char *name, uint32_t width, uint32_t height, RenderAPI api)
+    Application::Application(const std::string &title, uint32_t width, uint32_t height, RenderAPI api)
     {
-        ENGINE_ASSERT(!s_Instance, "Application already running!");
+        ENGINE_ASSERT(!sInstance, "Application: Application already running!");
         Log::Init();
 
-        s_Instance = this;
-        m_Running = false;
-        m_Platform = Platform::Create();
-        m_Input = Input::Create();
-        m_Renderer = CreateScope<Renderer>(api);
-        m_Platform->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
-        m_Input->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
+        sInstance = this;
+        mRunning = false;
+        mPlatform = Platform::Create();
+        ENGINE_ASSERT(mPlatform, "Application: Platform not initialized!");
 
         auto _width = width;
         auto _height = height;
+        auto _api = api;
 
         if (std::filesystem::exists("settings.json"))
         {
@@ -50,73 +48,79 @@ namespace Antomic
 
             _width = settingsJSON["width"];
             _height = settingsJSON["height"];
+            std::string api_str = settingsJSON["api"];
+            _api = RenderAPIFromStr(api_str);
         }
 
-        if (!m_Platform->Init())
-        {
-            ENGINE_INFO("Error initializing api");
-            exit(1);
-        }
-
-        if (!m_Platform->SetupWindow(_width, _height, name, api))
+        mWindow = mPlatform->CreateWindow(_width, _height, title, _api);
+        ENGINE_ASSERT(mWindow, "Application: Window not created!");
+        mWindow->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
+        if (!mWindow->IsValid())
         {
             ENGINE_INFO("Error creating window: {0}, {1}", _width, _height);
             exit(1);
         }
 
-        if (!m_Input->SetupInput())
+        mRenderer = CreateScope<Renderer>(_api);
+        if (!mRenderer)
         {
-            ENGINE_INFO("Error initializng input:");
-            m_Platform->Shutdown();
+            ENGINE_INFO("Error creating rendering API: {0}", RenderAPIToStr(_api));
             exit(1);
         }
 
-        m_Width = _width;
-        m_Height = _height;
+        mInput = mPlatform->CreateInput();
+        mInput->SetEventHandler(ENGINE_BIND_EVENT_FN(Application::OnEvent));
+
+        if (!mInput->SetupInput())
+        {
+            ENGINE_INFO("Error initializng input:");
+            exit(1);
+        }
+
+        mWidth = _width;
+        mHeight = _height;
     }
 
     Application::~Application()
     {
-        this->m_Input = nullptr;
+        this->mInput = nullptr;
     }
 
     void Application::Run()
     {
-        if (m_Running)
+        if (mRunning)
             return;
 
-        m_Running = true;
+        mRunning = true;
 
-        this->m_Renderer->Init(m_Width, m_Height);
+        this->mRenderer->Init(mWidth, mHeight);
 
-        m_LastRenderTime = TimeClock::now();
-        while (m_Running)
+        mLastRenderTime = TimeClock::now();
+        while (mRunning)
         {
             auto currentTime = TimeClock::now();
-            TimeStep t = Duration(currentTime - m_LastRenderTime);
-            m_LastRenderTime = currentTime;
-            m_Input->ProcessInputEvents();
-            m_Platform->ProcessWindowEvents();
-            m_Stack.Update(t);
+            TimeStep t = Duration(currentTime - mLastRenderTime);
+            mLastRenderTime = currentTime;
+            mInput->ProcessEvents();
+            mWindow->ProcessEvents();
+            mStack.Update(t);
             this->Update(t);
-            m_Renderer->BeginScene();
-            m_Renderer->EndScene();
+            mRenderer->BeginScene();
+            mRenderer->EndScene();
             this->Render();
-            m_Stack.Render();
-            this->m_Renderer->Flush();
-            m_Platform->UpdateWindow();
+            mStack.Render();
+            this->mRenderer->Flush();
+            mWindow->Update();
         }
 
         // We clean the layer stack since some
         // layers might need to clean some resources
-        while (!m_Stack.Empty())
+        while (!mStack.Empty())
         {
-            m_Stack.PopFront();
+            mStack.PopFront();
         }
 
-        this->m_Renderer->Shutdown();
-        m_Platform->DestroyWindow();
-        m_Platform->Shutdown();
+        this->mRenderer->Shutdown();
     }
 
     void Application::ToggleFullscreen(bool value)
@@ -128,20 +132,20 @@ namespace Antomic
         EventDispatcher dispatcher(event);
         dispatcher.Dispatch<WindowCloseEvent>(ENGINE_BIND_EVENT_FN(Application::OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(ENGINE_BIND_EVENT_FN(Application::OnWindowResize));
-        m_Stack.OnEvent(event);
+        mStack.OnEvent(event);
     }
 
     bool Application::OnWindowClose(WindowCloseEvent &event)
     {
-        m_Running = false;
+        mRunning = false;
         return true;
     }
 
     bool Application::OnWindowResize(WindowResizeEvent &event)
     {
-        this->m_Renderer->OnWindowResize(event.GetWidth(), event.GetHeight());
-        m_Width = event.GetWidth();
-        m_Height = event.GetHeight();
+        this->mRenderer->OnWindowResize(event.GetWidth(), event.GetHeight());
+        mWidth = event.GetWidth();
+        mHeight = event.GetHeight();
         return true;
     }
 } // namespace Antomic

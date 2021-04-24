@@ -17,7 +17,7 @@
 #include "Core/Base.h"
 #include "Platform/Platform.h"
 #include "Core/LayerStack.h"
-#include "Input/Input.h"
+#include "Platform/Input.h"
 #include "Renderer/Renderer.h"
 
 namespace Antomic
@@ -27,8 +27,8 @@ namespace Antomic
 
     public:
         Application() : Application("Application", 640, 480){};
-        Application(const char *name) : Application(name, 640, 480){};
-        Application(const char *name, uint32_t width, uint32_t height, RenderAPI api = RenderAPI::OPENGL);
+        Application(const std::string &title) : Application(title, 640, 480){};
+        Application(const std::string &title, uint32_t width, uint32_t height, RenderAPI api = RenderAPI::OPENGL);
 
         virtual ~Application();
 
@@ -37,24 +37,25 @@ namespace Antomic
         void Run();
         bool OnWindowClose(WindowCloseEvent &event);
         bool OnWindowResize(WindowResizeEvent &event);
-        inline uint32_t CurrentWidth() const { return m_Width; }
-        inline uint32_t CurrentHeight() const { return m_Height; }
+        inline uint32_t CurrentWidth() const { return mWidth; }
+        inline uint32_t CurrentHeight() const { return mHeight; }
 
         virtual void Update(const TimeStep &time) {};
         virtual void Render() {};
 
-        static Application &Current() { return *s_Instance; }
+        static Application &Current() { return *sInstance; }
 
     protected:
-        LayerStack m_Stack;
-        uint32_t m_Width, m_Height;
+        LayerStack mStack;
+        uint32_t mWidth, mHeight;
 
     private:
-        static Application *s_Instance;
-        bool m_Running;
-        Scope<Platform> m_Platform;
-        Scope<Input> m_Input;
-        Scope<Renderer> m_Renderer;
-        TimePoint m_LastRenderTime;
+        static Application *sInstance;
+        bool mRunning;
+        Scope<Platform> mPlatform;
+        Scope<Window> mWindow;
+        Scope<Input> mInput;
+        Scope<Renderer> mRenderer;
+        TimePoint mLastRenderTime;
     };
 } // namespace Antomic

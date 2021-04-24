@@ -14,24 +14,24 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
-#include "Platform/RendererAPI.h"
-#include "Platform/Window.h"
+#include "Platform/Input.h"
+#include "SDL2/SDL.h"
 
 namespace Antomic
 {
-    class Platform
+
+    class InputSDL : public Input
     {
-
     public:
-        virtual ~Platform() = default;
+        InputSDL();
+        virtual ~InputSDL();
 
-    public:
-        static Scope<Platform> Create();
+        virtual bool SetupInput() override;
+        virtual void ProcessEvents() override;
+        virtual void SetEventHandler(const EventHandler &handler) override { m_Handler = handler; }
 
-        // Window operations
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) = 0;
-		virtual Scope<Input> CreateInput() = 0;
+    protected:
+        EventHandler m_Handler;
     };
 
 } // namespace Antomic

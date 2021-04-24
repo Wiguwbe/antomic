@@ -15,33 +15,24 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Renderer/Buffers.h"
 #include "Renderer/VertexArray.h"
-#include "glm/glm.hpp"
 
-namespace Antomic
-{
-    enum class RenderAPI {
+namespace Antomic {
 
-        NONE = 0,
-        OPENGL = 1
-    };
-
-    RenderAPI RenderAPIFromStr(const std::string &api);
-    std::string const RenderAPIToStr(RenderAPI api);
-
-    class RendererAPI
+    class NullVertexArray : public VertexArray
     {
     public:
-
-        virtual void Clear(glm::vec4 color) = 0;
-        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) = 0;
-
-	public:
-		static Scope<RendererAPI> Create(RenderAPI api = RenderAPI::OPENGL);
-        static RenderAPI API() { return sRendererAPI; }
+        NullVertexArray();
+        ~NullVertexArray();
+        virtual void Bind() const override;
+        virtual void Unbind() const override;
+        virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) override;
+        virtual void SetIndexBuffer(const Ref<IndexBuffer> &buffer) override;
+        virtual const std::vector<Ref<VertexBuffer>> &GetVertexBuffers() const override { return mVertextBuffers; };
+        virtual const Ref<IndexBuffer> &GetIndexBuffer() const override { return mIndexBuffer; };
+        
     private:
-        static RenderAPI sRendererAPI;
+        std::vector<Ref<VertexBuffer>> mVertextBuffers;
+        Ref<IndexBuffer> mIndexBuffer;
     };
-
-} // namespace Antomic
+}

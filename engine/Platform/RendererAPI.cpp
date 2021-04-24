@@ -15,36 +15,54 @@
 */
 #include "Platform/RendererAPI.h"
 #include "Core/Log.h"
-
+#include "Platform/NullRenderer/RendererAPI.h"
 #ifdef ENGINE_GL_RENDERER
 #include "Platform/OpenGL/RendererAPI.h"
 #endif
 
-
-namespace Antomic {
+namespace Antomic
+{
     RenderAPI RendererAPI::sRendererAPI = RenderAPI::NONE;
 
-	Scope<RendererAPI> RendererAPI::Create(RenderAPI api)
-	{
+    RenderAPI RenderAPIFromStr(const std::string &api)
+    {
+
+        if (api.compare("opengl") == 0)
+            return RenderAPI::OPENGL;
+
+        return RenderAPI::NONE;
+    }
+
+    std::string const RenderAPIToStr(RenderAPI api)
+    {
+
         switch (api)
         {
+        case RenderAPI::NONE:
+            return "Null API";
         case RenderAPI::OPENGL:
+            return "OpenGL";
+        }
+
+        ENGINE_ASSERT(false, "RenderAPI: Unknown api")
+        return 0;
+    }
+
+    Scope<RendererAPI> RendererAPI::Create(RenderAPI api)
+    {
+        switch (api)
+        {
 #ifdef ENGINE_GL_RENDERER
+        case RenderAPI::OPENGL:
             ENGINE_INFO("Renderer: Using OpenGL renderer API");
             sRendererAPI = RenderAPI::OPENGL;
             return CreateScope<OpenGLRendererAPI>();
-#else
-            ENGINE_ASSERT(false, "Renderer: OpenGL not available!");
-            sRendererAPI = RenderAPI::NONE;
-		    return nullptr;
 #endif
-            break;        
         default:
-            ENGINE_ASSERT(false, "Renderer: API implemented yet!");
+            ENGINE_INFO("Renderer: Using Null renderer API!");
             sRendererAPI = RenderAPI::NONE;
-		    return nullptr;
-            break;
+            return CreateScope<NullRendererAPI>();
         }
-	}
+    }
 
 }

@@ -13,25 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
-#include "Platform/RendererAPI.h"
-#include "Platform/Window.h"
+#include "Platform/NullRenderer/Shader.h"
 
 namespace Antomic
 {
-    class Platform
+    NullShader::NullShader(const std::string &vertexSrc, const std::string &fragmentSrc)
     {
+    }
 
-    public:
-        virtual ~Platform() = default;
+    NullShader::~NullShader()
+    {
+    }
 
-    public:
-        static Scope<Platform> Create();
+    void NullShader::Bind() const
+    {
+    }
 
-        // Window operations
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) = 0;
-		virtual Scope<Input> CreateInput() = 0;
-    };
+    void NullShader::Unbind() const
+    {
+    }
 
 } // namespace Antomic

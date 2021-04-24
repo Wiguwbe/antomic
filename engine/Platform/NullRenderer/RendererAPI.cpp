@@ -13,22 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Core/Base.h"
-#include "Input/Input.h"
-
-#ifdef ENGINE_SDL_PLATFORM
-#include "Input/SDL/InputSDL.h"
-#endif
+#include "Platform/NullRenderer/RendererAPI.h"
 
 namespace Antomic
 {
-	Scope<Input> Input::Create()
-	{
-#ifdef ENGINE_SDL_PLATFORM
-        return CreateScope<InputSDL>();
-#else
-        ENGINE_ASSERT(false, "Unknown platform!");
-		return nullptr;
-#endif
-	}
-} 
+    NullRendererAPI::NullRendererAPI()
+    {
+    }
+
+    NullRendererAPI::~NullRendererAPI()
+    {
+    }
+
+    void NullRendererAPI::Clear(glm::vec4 color)
+    {
+    }
+
+    void NullRendererAPI::DrawIndexed(const Ref<VertexArray> vertexArray)
+    {
+    }
+
+} // namespace Antomic

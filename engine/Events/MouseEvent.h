@@ -16,7 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 #include "Events/Event.h"
-#include "Input/Input.h"
+#include "Platform/Input.h"
 
 namespace Antomic
 {

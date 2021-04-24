@@ -71,7 +71,7 @@ namespace Antomic
             return 1;
         }
 
-        ENGINE_ASSERT(false, "ShaderDataTypeGLSize: Unknown data tyepe")
+        ENGINE_ASSERT(false, "ShaderDataTypeGLSize: Unknown data type")
         return GL_UNSIGNED_SHORT;
     }
 

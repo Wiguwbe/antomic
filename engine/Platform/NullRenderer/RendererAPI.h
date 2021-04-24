@@ -14,24 +14,17 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
 #include "Platform/RendererAPI.h"
-#include "Platform/Window.h"
 
 namespace Antomic
 {
-    class Platform
+    class NullRendererAPI : public RendererAPI
     {
-
     public:
-        virtual ~Platform() = default;
-
-    public:
-        static Scope<Platform> Create();
-
-        // Window operations
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) = 0;
-		virtual Scope<Input> CreateInput() = 0;
+        NullRendererAPI();
+        ~NullRendererAPI();
+        virtual void Clear(glm::vec4 color) override;
+        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) override;
     };
 
 } // namespace Antomic

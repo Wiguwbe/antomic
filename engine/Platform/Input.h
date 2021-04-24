@@ -212,11 +212,8 @@ namespace Antomic
 
 	public:
 		virtual bool SetupInput() = 0;
-		virtual void ProcessInputEvents() = 0;
+		virtual void ProcessEvents() = 0;
         virtual void SetEventHandler(const EventHandler& handler) = 0;
-
-	public:
-		static Scope<Input> Create();
 
 	protected:
 	};

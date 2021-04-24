@@ -13,26 +13,46 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Platform/Platform.h"
-#include "Core/Log.h"
-
 #ifdef ENGINE_PLATFORM_WINDOWS
 #include "Platform/Windows/Platform.h"
-#elif ENGINE_PLATFORM_LINUX
-#include "Platform/Linux/Platform.h"
+#include "Core/Log.h"
+#ifdef ENGINE_WINDOWS_SDL_PLATFORM
+#include "Platform/Windows/SDL/Window.h"
+#include "Platform/Windows/SDL/Input.h"
 #endif
 
 namespace Antomic
 {
-    Scope<Platform> Platform::Create()
+    WindowsPlatform::WindowsPlatform() 
     {
-#ifdef ENGINE_PLATFORM_WINDOWS
-        return CreateScope<WindowsPlatform>();
-#elif ENGINE_PLATFORM_LINUX
-        return CreateScope<LinuxPlatform>();
-#else
-        ENGINE_ASSERT(false, "Platform: Platform not supported!");
-        return nullptr;
-#endif
+
     }
+
+    WindowsPlatform::~WindowsPlatform()
+    {
+
+    }
+
+    Scope<Window> WindowsPlatform::CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api) 
+    {
+#ifdef ENGINE_SDL_PLATFORM
+        return CreateScope<SDLWindow>(width,height,name,api);
+#else
+        ENGINE_ASSERT(false, "WindowsPlatform: No window support!");
+        return nullptr;
+#endif            
+    }
+
+	Scope<Input> WindowsPlatform::CreateInput()
+	{
+#ifdef ENGINE_SDL_PLATFORM
+        return CreateScope<InputSDL>();
+#else
+        ENGINE_ASSERT(false, "WindowsPlatform: No input support!");
+		return nullptr;
+#endif
+	}
+
 } // namespace Antomic
+
+#endif

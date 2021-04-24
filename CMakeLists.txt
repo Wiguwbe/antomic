@@ -43,8 +43,13 @@ find_package(Threads REQUIRED)
 # SDL - Simple DirectMedia Layer
 # https://www.libsdl.org/
 if(NOT DEFINED ENV{ENGINE_NO_SDL})
-    add_definitions(-DENGINE_SDL_PLATFORM)
     find_package(SDL2 REQUIRED)
+    add_definitions(-DENGINE_SDL_PLATFORM)
+    if(WIN32)
+        add_definitions(-DENGINE_WINDOWS_SDL_PLATFORM)
+    elseif(UNIX)
+        add_definitions(-DENGINE_LINUX_SDL_PLATFORM)
+    endif()
 endif() 
 
 # OpenGL RenderAPI Support

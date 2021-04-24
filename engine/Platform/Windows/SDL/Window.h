@@ -16,7 +16,7 @@
 #ifdef ANTOMIC_WINDOWS_SDL_PLATFORM
 #pragma once
 #include "Platform/Window.h"
-#include "Platform/RendererAPI.h"
+#include "Platform/RenderAPI.h"
 #include "SDL2/SDL.h"
 
 namespace Antomic
@@ -25,7 +25,7 @@ namespace Antomic
     {
 
     public:
-        SDLWindow(uint32_t width, uint32_t height, std::string title, RenderAPI api);
+        SDLWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api);
         virtual ~SDLWindow() override;
 
     public:

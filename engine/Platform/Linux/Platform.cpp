@@ -35,7 +35,7 @@ namespace Antomic
     {
     }
 
-    Scope<Window> LinuxPlatform::CreateWindow(uint32_t width, uint32_t height, std::string title, RenderAPI api)
+    Scope<Window> LinuxPlatform::CreateWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api)
     {
 #ifdef ANTOMIC_SDL_PLATFORM
         return CreateScope<SDLWindow>(width, height, title, api);

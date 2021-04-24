@@ -13,18 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Platform/RendererAPI.h"
+#include "Platform/NullRenderer/RenderAPI.h"
 
 namespace Antomic
 {
-    class NullRendererAPI : public RendererAPI
+    NullRenderAPI::NullRenderAPI()
     {
-    public:
-        NullRendererAPI();
-        ~NullRendererAPI();
-        virtual void Clear(glm::vec4 color) override;
-        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) override;
-    };
+    }
+
+    NullRenderAPI::~NullRenderAPI()
+    {
+    }
+
+    void NullRenderAPI::Clear(glm::vec4 color)
+    {
+    }
+
+    void NullRenderAPI::DrawIndexed(const Ref<VertexArray> vertexArray)
+    {
+    }
 
 } // namespace Antomic

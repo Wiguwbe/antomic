@@ -15,7 +15,7 @@
 */
 #include "Core/Log.h"
 #include "Renderer/Buffers.h"
-#include "Platform/RendererAPI.h"
+#include "Platform/RenderAPI.h"
 #include "Platform/NullRenderer/VertexArray.h"
 #include "Platform/Platform.h"
 #ifdef ANTOMIC_GL_RENDERER
@@ -29,7 +29,7 @@ namespace Antomic
         switch (Platform::GetRenderAPIDialect())
         {
 #ifdef ANTOMIC_GL_RENDERER
-        case RenderAPI::OPENGL:
+        case RenderAPIDialect::OPENGL:
             return CreateRef<OpenGLVertexArray>();
 #endif
         default:

@@ -14,17 +14,31 @@
    limitations under the License.
 */
 #pragma once
-#include "Platform/RendererAPI.h"
+#include "Core/Base.h"
+#include "Renderer/Buffers.h"
+#include "Renderer/VertexArray.h"
+#include "glm/glm.hpp"
 
 namespace Antomic
 {
-    class OpenGLRendererAPI : public RendererAPI
+    enum class RenderAPIDialect {
+
+        NONE = 0,
+        OPENGL = 1
+    };
+
+    RenderAPIDialect RenderAPIFromStr(const std::string &api);
+    std::string const RenderAPIToStr(RenderAPIDialect api);
+
+    class RenderAPI
     {
     public:
-        OpenGLRendererAPI();
-        ~OpenGLRendererAPI();
-        virtual void Clear(glm::vec4 color) override;
-        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) override;
+
+        virtual void Clear(glm::vec4 color) = 0;
+        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) = 0;
+
+	public:
+		static Scope<RenderAPI> Create(RenderAPIDialect api = RenderAPIDialect::OPENGL);
     };
 
 } // namespace Antomic

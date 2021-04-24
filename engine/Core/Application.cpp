@@ -25,7 +25,7 @@ namespace Antomic
 {
     Application *Application::sInstance = nullptr;
 
-    Application::Application(const std::string &title, uint32_t width, uint32_t height, RenderAPI api)
+    Application::Application(const std::string &title, uint32_t width, uint32_t height, RenderAPIDialect api)
     {
         ANTOMIC_ASSERT(!sInstance, "Application: Application already running!");
         Log::Init();
@@ -51,6 +51,11 @@ namespace Antomic
 
         mPlatform = Platform::CreatePlatform(_api);
         ANTOMIC_ASSERT(mPlatform, "Application: Platform not initialized!");
+        if (!mPlatform) 
+        {
+            ANTOMIC_INFO("Error creating initializing platform");
+            exit(1);
+        }
 
         mWindow = mPlatform->CreateWindow(_width, _height, title, _api);
         ANTOMIC_ASSERT(mWindow, "Application: Window not created!");

@@ -13,51 +13,49 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Platform/RendererAPI.h"
+#include "Platform/RenderAPI.h"
 #include "Core/Log.h"
-#include "Platform/NullRenderer/RendererAPI.h"
+#include "Platform/NullRenderer/RenderAPI.h"
 #ifdef ANTOMIC_GL_RENDERER
-#include "Platform/OpenGL/RendererAPI.h"
+#include "Platform/OpenGL/RenderAPI.h"
 #endif
 
 namespace Antomic
 {
-    RenderAPI RenderAPIFromStr(const std::string &api)
+    RenderAPIDialect RenderAPIFromStr(const std::string &api)
     {
-
         if (api.compare("opengl") == 0)
-            return RenderAPI::OPENGL;
+            return RenderAPIDialect::OPENGL;
 
-        return RenderAPI::NONE;
+        return RenderAPIDialect::NONE;
     }
 
-    std::string const RenderAPIToStr(RenderAPI api)
+    std::string const RenderAPIToStr(RenderAPIDialect api)
     {
-
         switch (api)
         {
-        case RenderAPI::NONE:
+        case RenderAPIDialect::NONE:
             return "Null API";
-        case RenderAPI::OPENGL:
+        case RenderAPIDialect::OPENGL:
             return "OpenGL";
         }
 
-        ANTOMIC_ASSERT(false, "RenderAPI: Unknown api")
+        ANTOMIC_ASSERT(false, "RenderAPIDialect: Unknown api")
         return 0;
     }
 
-    Scope<RendererAPI> RendererAPI::Create(RenderAPI api)
+    Scope<RenderAPI> RenderAPI::Create(RenderAPIDialect api)
     {
         switch (api)
         {
 #ifdef ANTOMIC_GL_RENDERER
-        case RenderAPI::OPENGL:
+        case RenderAPIDialect::OPENGL:
             ANTOMIC_INFO("Renderer: Using OpenGL renderer API");
-            return CreateScope<OpenGLRendererAPI>();
+            return CreateScope<OpenGLRenderAPI>();
 #endif
         default:
             ANTOMIC_INFO("Renderer: Using Null renderer API!");
-            return CreateScope<NullRendererAPI>();
+            return CreateScope<NullRenderAPI>();
         }
     }
 

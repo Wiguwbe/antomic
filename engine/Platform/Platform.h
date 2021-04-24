@@ -15,7 +15,7 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Platform/RendererAPI.h"
+#include "Platform/RenderAPI.h"
 #include "Platform/Window.h"
 
 namespace Antomic
@@ -28,20 +28,20 @@ namespace Antomic
 
     public:
         // Window operations
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api = RenderAPI::OPENGL) = 0;
+        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPIDialect api = RenderAPIDialect::OPENGL) = 0;
 		virtual Scope<Input> CreateInput() = 0;
 
         // Time Operations
         virtual uint32_t GetTicks() const = 0;
 
     public:
-        static Scope<Platform> CreatePlatform(RenderAPI api = RenderAPI::OPENGL);
-        inline static const Scope<RendererAPI> &GetRendererAPI() { return mRendererAPI; }
-        inline static RenderAPI GetRenderAPIDialect() { return mRenderAPI; }
+        static Scope<Platform> CreatePlatform(RenderAPIDialect api = RenderAPIDialect::OPENGL);
+        inline static const Scope<RenderAPI> &GetRenderAPI() { return mRenderAPI; }
+        inline static RenderAPIDialect GetRenderAPIDialect() { return mRenderAPIDialect; }
 
     private:
-        static RenderAPI mRenderAPI;
-        static Scope<RendererAPI> mRendererAPI;
+        static RenderAPIDialect mRenderAPIDialect;
+        static Scope<RenderAPI> mRenderAPI;
     };
 
 } // namespace Antomic

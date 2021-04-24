@@ -36,7 +36,7 @@ namespace Antomic
 
     }
 
-    Scope<Window> WindowsPlatform::CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPI api) 
+    Scope<Window> WindowsPlatform::CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPIDialect api) 
     {
 #ifdef ANTOMIC_SDL_PLATFORM
         return CreateScope<SDLWindow>(width,height,name,api);

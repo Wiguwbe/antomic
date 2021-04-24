@@ -15,7 +15,7 @@
 */
 #ifdef ANTOMIC_WINDOWS_SDL_PLATFORM
 #include "Platform/Windows/SDL/Window.h"
-#include "Platform/RendererAPI.h"
+#include "Platform/RenderAPI.h"
 #include "Core/Log.h"
 #include "SDL2/SDL_syswm.h"
 #ifdef ANTOMIC_GL_RENDERER
@@ -24,7 +24,7 @@
 
 namespace Antomic
 {
-    SDLWindow::SDLWindow(uint32_t width, uint32_t height, std::string title, RenderAPI api)
+    SDLWindow::SDLWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api)
     {
         mSDLWindow = nullptr;
 #ifdef ANTOMIC_GL_RENDERER
@@ -37,7 +37,7 @@ namespace Antomic
 
         switch (api)
         {
-        case RenderAPI::OPENGL:
+        case RenderAPIDialect::OPENGL:
 #ifdef ANTOMIC_GL_RENDERER
 
             ANTOMIC_INFO("SDLWindow: Creating window {0},{1} with OpenGL support", width, height);

@@ -15,14 +15,14 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Renderer/Renderer.h"
+#include "Platform/Platform.h"
 
 namespace Antomic
 {
     class RenderCommand
     {
     public:
-        inline static void Clear(glm::vec4 color) { Renderer::API()->Clear(color); }
-        inline static void DrawIndexed(const Ref<VertexArray> vertexArray) { Renderer::API()->DrawIndexed(vertexArray); };
+        inline static void Clear(glm::vec4 color) { Platform::GetRendererAPI()->Clear(color); }
+        inline static void DrawIndexed(const Ref<VertexArray> vertexArray) { Platform::GetRendererAPI()->DrawIndexed(vertexArray); };
     };
 }

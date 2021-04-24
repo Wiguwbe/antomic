@@ -39,9 +39,6 @@ namespace Antomic
 
 	public:
 		static Scope<RendererAPI> Create(RenderAPI api = RenderAPI::OPENGL);
-        static RenderAPI API() { return sRendererAPI; }
-    private:
-        static RenderAPI sRendererAPI;
     };
 
 } // namespace Antomic

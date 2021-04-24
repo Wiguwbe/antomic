@@ -22,8 +22,6 @@
 
 namespace Antomic
 {
-    RenderAPI RendererAPI::sRendererAPI = RenderAPI::NONE;
-
     RenderAPI RenderAPIFromStr(const std::string &api)
     {
 
@@ -55,12 +53,10 @@ namespace Antomic
 #ifdef ANTOMIC_GL_RENDERER
         case RenderAPI::OPENGL:
             ANTOMIC_INFO("Renderer: Using OpenGL renderer API");
-            sRendererAPI = RenderAPI::OPENGL;
             return CreateScope<OpenGLRendererAPI>();
 #endif
         default:
             ANTOMIC_INFO("Renderer: Using Null renderer API!");
-            sRendererAPI = RenderAPI::NONE;
             return CreateScope<NullRendererAPI>();
         }
     }

@@ -17,6 +17,7 @@
 #include "Renderer/Shader.h"
 #include "Platform/RendererAPI.h"
 #include "Platform/NullRenderer/Shader.h"
+#include "Platform/Platform.h"
 #ifdef ANTOMIC_GL_RENDERER
 #include "Platform/OpenGL/Shader.h"
 #endif
@@ -86,7 +87,7 @@ namespace Antomic
 
     Ref<Shader> Shader::CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc)
     {
-        switch (RendererAPI::API())
+        switch (Platform::GetRenderAPIDialect())
         {
 #ifdef ANTOMIC_GL_RENDERER
         case RenderAPI::OPENGL:

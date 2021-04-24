@@ -15,7 +15,7 @@
 */
 #include "Platform/Platform.h"
 #include "Core/Log.h"
-
+#include "Platform/RendererAPI.h"
 #ifdef ANTOMIC_PLATFORM_WINDOWS
 #include "Platform/Windows/Platform.h"
 #elif ANTOMIC_PLATFORM_LINUX
@@ -24,8 +24,15 @@
 
 namespace Antomic
 {
-    Scope<Platform> Platform::Create()
+
+    Scope<RendererAPI> Platform::mRendererAPI = nullptr;
+    RenderAPI Platform::mRenderAPI = RenderAPI::NONE;
+
+    Scope<Platform> Platform::CreatePlatform(RenderAPI api)
     {
+        ANTOMIC_ASSERT(!mRendererAPI, "Renderer: Render API already set!")
+        mRendererAPI = RendererAPI::Create(api);
+        mRenderAPI = RenderAPI::OPENGL;
 #ifdef ANTOMIC_PLATFORM_WINDOWS
         return CreateScope<WindowsPlatform>();
 #elif ANTOMIC_PLATFORM_LINUX

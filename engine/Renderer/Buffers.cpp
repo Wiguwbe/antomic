@@ -17,6 +17,7 @@
 #include "Renderer/Buffers.h"
 #include "Platform/RendererAPI.h"
 #include "Platform/NullRenderer/Buffers.h"
+#include "Platform/Platform.h"
 #ifdef ANTOMIC_GL_RENDERER
 #include "Platform/OpenGL/Buffers.h"
 #endif
@@ -43,7 +44,7 @@ namespace Antomic
 
     Ref<IndexBuffer> IndexBuffer::Create(uint32_t *data, uint32_t size)
     {
-        switch (RendererAPI::API())
+        switch (Platform::GetRenderAPIDialect())
         {
 #ifdef ANTOMIC_GL_RENDERER
         case RenderAPI::OPENGL:
@@ -56,7 +57,7 @@ namespace Antomic
 
     Ref<VertexBuffer> VertexBuffer::Create(float *data, uint32_t size)
     {
-        switch (RendererAPI::API())
+        switch (Platform::GetRenderAPIDialect())
         {
 #ifdef ANTOMIC_GL_RENDERER
         case RenderAPI::OPENGL:

@@ -16,7 +16,6 @@
 #include "Core/Application.h"
 #include "Core/Log.h"
 #include "Platform/Platform.h"
-#include "Renderer/Renderer.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/WindowEvent.h"
 #include "Events/MouseEvent.h"
@@ -33,8 +32,6 @@ namespace Antomic
 
         sInstance = this;
         mRunning = false;
-        mPlatform = Platform::Create();
-        ANTOMIC_ASSERT(mPlatform, "Application: Platform not initialized!");
 
         auto _width = width;
         auto _height = height;
@@ -52,19 +49,15 @@ namespace Antomic
             _api = RenderAPIFromStr(api_str);
         }
 
+        mPlatform = Platform::CreatePlatform(_api);
+        ANTOMIC_ASSERT(mPlatform, "Application: Platform not initialized!");
+
         mWindow = mPlatform->CreateWindow(_width, _height, title, _api);
         ANTOMIC_ASSERT(mWindow, "Application: Window not created!");
         mWindow->SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
         if (!mWindow->IsValid())
         {
             ANTOMIC_INFO("Error creating window: {0}, {1}", _width, _height);
-            exit(1);
-        }
-
-        mRenderer = CreateScope<Renderer>(_api);
-        if (!mRenderer)
-        {
-            ANTOMIC_INFO("Error creating rendering API: {0}", RenderAPIToStr(_api));
             exit(1);
         }
 
@@ -93,8 +86,6 @@ namespace Antomic
 
         mRunning = true;
 
-        this->mRenderer->Init(mWidth, mHeight);
-
         mLastRenderTime = mPlatform->GetTicks();
         while (mRunning)
         {
@@ -105,15 +96,11 @@ namespace Antomic
             mInput->ProcessEvents();
             mWindow->ProcessEvents();
             
-            
             mStack.Update(t);
             this->Update(t);
             
-            mRenderer->BeginScene();
-            mRenderer->EndScene();
             this->Render();
             mStack.Render();            
-            this->mRenderer->Flush();
             
             mWindow->Update();
         }
@@ -124,8 +111,6 @@ namespace Antomic
         {
             mStack.PopFront();
         }
-
-        this->mRenderer->Shutdown();
     }
 
     void Application::ToggleFullscreen(bool value)
@@ -148,7 +133,6 @@ namespace Antomic
 
     bool Application::OnWindowResize(WindowResizeEvent &event)
     {
-        this->mRenderer->OnWindowResize(event.GetWidth(), event.GetHeight());
         mWidth = event.GetWidth();
         mHeight = event.GetHeight();
         return true;

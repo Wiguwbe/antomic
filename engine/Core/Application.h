@@ -18,7 +18,6 @@
 #include "Platform/Platform.h"
 #include "Core/LayerStack.h"
 #include "Platform/Input.h"
-#include "Renderer/Renderer.h"
 
 namespace Antomic
 {
@@ -55,7 +54,6 @@ namespace Antomic
         Scope<Platform> mPlatform;
         Scope<Window> mWindow;
         Scope<Input> mInput;
-        Scope<Renderer> mRenderer;
         uint32_t mLastRenderTime;
     };
 } // namespace Antomic

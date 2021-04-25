@@ -16,10 +16,10 @@
 #ifdef ANTOMIC_PLATFORM_LINUX
 #include "Platform/Linux/Platform.h"
 #include "Core/Log.h"
-#ifdef ANTOMIC_LINUX_SDL_PLATFORM
-#include "Platform/Linux/SDL/Window.h"
-#include "Platform/Linux/SDL/Input.h"
-#include "Platform/Linux/SDL/Utils.h"
+#ifdef ANTOMIC_SDL_PLATFORM
+#include "Platform/SDL/Window.h"
+#include "Platform/SDL/Input.h"
+#include "Platform/SDL/Utils.h"
 #endif
 
 namespace Antomic

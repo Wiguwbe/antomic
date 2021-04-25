@@ -17,6 +17,7 @@
 #include "Core/Base.h"
 #include "Platform/RenderAPI.h"
 #include "Platform/Window.h"
+#include "Platform/Input.h"
 
 namespace Antomic
 {
@@ -26,22 +27,54 @@ namespace Antomic
     public:
         virtual ~Platform() = default;
 
-    public:
+    protected:
         // Window operations
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPIDialect api = RenderAPIDialect::OPENGL) = 0;
+        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api = RenderAPIDialect::OPENGL) = 0;
 		virtual Scope<Input> CreateInput() = 0;
 
         // Time Operations
         virtual uint32_t GetTicks() const = 0;
 
     public:
-        static Scope<Platform> CreatePlatform(RenderAPIDialect api = RenderAPIDialect::OPENGL);
-        inline static const Scope<RenderAPI> &GetRenderAPI() { return mRenderAPI; }
-        inline static RenderAPIDialect GetRenderAPIDialect() { return mRenderAPIDialect; }
+        static bool SetupPlatform(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api = RenderAPIDialect::OPENGL);
+        
+        // Render API
+        inline static const Scope<RenderAPI> &GetRenderAPI() { return sRenderAPI; }
+        inline static RenderAPIDialect GetRenderAPIDialect() { return sRenderAPIDialect; }
 
+        // Input Operations & Handling
+        inline static const Scope<Input> &GetInput() { return sInput; }
+
+        // Window Operations & Handling
+        inline static const Scope<Window> &GetWindow() { return sWindow; }
+        inline static void UpdateWindow() { sWindow->Update(); }
+        inline static uint32_t GetWindowWidth() { return sWindow->GetWidth(); }
+        inline static uint32_t GetWindowHeight() { return sWindow->GetHeight(); }
+        inline static const std::string &GetWindowTitle() { return sWindow->GetTitle(); }
+        inline static void SetWindowTitle(const std::string& title) { sWindow->SetTitle(title); }
+        
+        // Events Handling
+        inline static void SetEventHandler(const EventHandler& handler)
+        {
+            sInput->SetEventHandler(handler);
+            sWindow->SetEventHandler(handler);
+        }
+        
+        inline static void ProcessEvents() 
+        { 
+            sInput->ProcessEvents();
+            sWindow->ProcessEvents(); 
+        }
+        
+        // Time Operations 
+        inline static uint32_t GetCurrentTick() { return sPlatform->GetTicks(); }
+    
     private:
-        static RenderAPIDialect mRenderAPIDialect;
-        static Scope<RenderAPI> mRenderAPI;
+        static Scope<Platform> sPlatform;
+        static RenderAPIDialect sRenderAPIDialect;
+        static Scope<RenderAPI> sRenderAPI;
+        static Scope<Window> sWindow;
+        static Scope<Input> sInput;
     };
 
 } // namespace Antomic

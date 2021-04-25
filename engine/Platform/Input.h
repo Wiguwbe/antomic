@@ -211,7 +211,6 @@ namespace Antomic
 		Input() = default;
 
 	public:
-		virtual bool SetupInput() = 0;
 		virtual void ProcessEvents() = 0;
         virtual void SetEventHandler(const EventHandler& handler) = 0;
 

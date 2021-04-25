@@ -13,14 +13,13 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ANTOMIC_LINUX_SDL_PLATFORM
+#ifdef ANTOMIC_SDL_PLATFORM
 #pragma once
 #include "Platform/Input.h"
 #include "SDL2/SDL.h"
 
 namespace Antomic
 {
-
     class InputSDL : public Input
     {
     public:
@@ -28,7 +27,6 @@ namespace Antomic
         virtual ~InputSDL();
 
     public:
-        virtual bool SetupInput() override;
         virtual void ProcessEvents() override;
         virtual void SetEventHandler(const EventHandler &handler) override { mHandler = handler; }
 

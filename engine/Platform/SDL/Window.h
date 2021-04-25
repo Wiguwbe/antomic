@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ANTOMIC_WINDOWS_SDL_PLATFORM
+#ifdef ANTOMIC_SDL_PLATFORM
 #pragma once
 #include "Platform/Window.h"
 #include "Platform/RenderAPI.h"

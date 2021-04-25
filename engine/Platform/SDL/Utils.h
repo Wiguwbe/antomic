@@ -13,27 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ANTOMIC_WINDOWS_SDL_PLATFORM
+#ifdef ANTOMIC_SDL_PLATFORM
 #pragma once
-#include "Platform/Input.h"
+#include "Core/Base.h"
 #include "SDL2/SDL.h"
 
-namespace Antomic
-{
-    class InputSDL : public Input
-    {
-    public:
-        InputSDL();
-        virtual ~InputSDL();
-
-    public:
-        virtual bool SetupInput() override;
-        virtual void ProcessEvents() override;
-        virtual void SetEventHandler(const EventHandler &handler) override { mHandler = handler; }
-
-    protected:
-        EventHandler mHandler;
-    };
-
-} // namespace Antomic
+namespace Antomic {
+    inline uint32_t GetCurrentTime() { return SDL_GetTicks(); }
+}
 #endif

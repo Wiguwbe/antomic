@@ -17,9 +17,9 @@
 #include "Platform/Windows/Platform.h"
 #include "Core/Log.h"
 #ifdef ANTOMIC_WINDOWS_SDL_PLATFORM
-#include "Platform/Windows/SDL/Window.h"
-#include "Platform/Windows/SDL/Input.h"
-#include "Platform/Windows/SDL/Utils.h"
+#include "Platform/SDL/Window.h"
+#include "Platform/SDL/Input.h"
+#include "Platform/SDL/Utils.h"
 #endif
 
 namespace Antomic

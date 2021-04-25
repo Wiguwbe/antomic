@@ -31,49 +31,44 @@ namespace Antomic
         virtual ~Application();
 
     public:
-
         // Control Operations
         void ToggleFullscreen(bool value);
         void Run();
 
         // Windows attributes
-        inline uint32_t GetWidth() const { return mWidth; }
-        inline uint32_t GetHeight() const { return mHeight; }
+        inline uint32_t GetWidth() const { return Platform::GetWindowWidth(); }
+        inline uint32_t GetHeight() const { return Platform::GetWindowHeight(); }
 
         // Events
         void OnEvent(Event &event);
 
         // Windows Events
         virtual bool OnWindowClose(WindowCloseEvent &event);
-        virtual bool OnWindowResize(WindowResizeEvent &event);
-        
+        virtual bool OnWindowResize(WindowResizeEvent &event) { return true; }
+
         // Keys Events
-        virtual bool OnKeyPressed(KeyPressedEvent &event) { return false; }
-        virtual bool OnKeyReleased(KeyReleasedEvent &event) { return false; }
-        
+        virtual bool OnKeyPressed(KeyPressedEvent &event) { return true; }
+        virtual bool OnKeyReleased(KeyReleasedEvent &event) { return true; }
+
         // Mouse Events
-        virtual bool OnMouseMoved(MouseMovedEvent &event) { return false; }
-        virtual bool OnMouseScrolled(MouseScrolledEvent &event) { return false; }
-        virtual bool OnMouseButtonPressed(MouseButtonPressedEvent &event) { return false; }
-        virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent &event) { return false; }
+        virtual bool OnMouseMoved(MouseMovedEvent &event) { return true; }
+        virtual bool OnMouseScrolled(MouseScrolledEvent &event) { return true; }
+        virtual bool OnMouseButtonPressed(MouseButtonPressedEvent &event) { return true; }
+        virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent &event) { return true; }
 
         // Render & Update
-        virtual void Update(const uint32_t &time) {};
-        virtual void Render() {};
+        virtual void Update(const uint32_t &time){};
+        virtual void Render(){};
 
     public:
         static Application &Current() { return *sInstance; }
 
     protected:
         LayerStack mStack;
-        uint32_t mWidth, mHeight;
 
     private:
         static Application *sInstance;
         bool mRunning;
-        Scope<Platform> mPlatform;
-        Scope<Window> mWindow;
-        Scope<Input> mInput;
         uint32_t mLastRenderTime;
     };
 } // namespace Antomic

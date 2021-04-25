@@ -13,8 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ANTOMIC_WINDOWS_SDL_PLATFORM
-#include "Platform/Windows/SDL/Input.h"
+#ifdef ANTOMIC_SDL_PLATFORM
+#include "Platform/SDL/Input.h"
 #include "Events/WindowEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
@@ -130,14 +130,6 @@ namespace Antomic
 
     InputSDL::InputSDL(/* args */) : mHandler(nullptr)
     {
-    }
-
-    InputSDL::~InputSDL()
-    {
-    }
-
-    bool InputSDL::SetupInput()
-    {
         std::memset(stranslateKey, 0, sizeof(stranslateKey));
         initTranslateKey(SDL_SCANCODE_ESCAPE, Key::Esc);
         initTranslateKey(SDL_SCANCODE_RETURN, Key::Return);
@@ -222,8 +214,10 @@ namespace Antomic
         initTranslateKey(SDL_SCANCODE_X, Key::KeyX);
         initTranslateKey(SDL_SCANCODE_Y, Key::KeyY);
         initTranslateKey(SDL_SCANCODE_Z, Key::KeyZ);
+    }
 
-        return true;
+    InputSDL::~InputSDL()
+    {
     }
 
     void InputSDL::ProcessEvents()
@@ -239,7 +233,6 @@ namespace Antomic
                 case SDL_WINDOWEVENT_RESIZED:
                 {
                     WindowResizeEvent event(currentEvent.window.data1, currentEvent.window.data2);
-                    ANTOMIC_INFO("Windows:Input:Sdl: Window resized {0}x{1}", currentEvent.window.data1, currentEvent.window.data2);
                     mHandler(event);
                 }
                 break;

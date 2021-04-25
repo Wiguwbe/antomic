@@ -13,8 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ANTOMIC_WINDOWS_SDL_PLATFORM
-#include "Platform/Windows/SDL/Window.h"
+#ifdef ANTOMIC_SDL_PLATFORM
+#include "Platform/SDL/Window.h"
 #include "Platform/RenderAPI.h"
 #include "Core/Log.h"
 #include "SDL2/SDL_syswm.h"
@@ -149,6 +149,7 @@ namespace Antomic
     {
         // On SDL everything is handled in the same loop, the main loop is
         // implemented on the InputSDL module
+        SDL_GetWindowSize(mSDLWindow, (int *)&mWidth, (int *)&mHeight);
     }
 
     void SDLWindow::ToggleFullscreen()

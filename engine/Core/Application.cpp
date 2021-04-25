@@ -49,39 +49,17 @@ namespace Antomic
             _api = RenderAPIFromStr(api_str);
         }
 
-        mPlatform = Platform::CreatePlatform(_api);
-        ANTOMIC_ASSERT(mPlatform, "Application: Platform not initialized!");
-        if (!mPlatform)
+        if (!Platform::SetupPlatform(_width, _height, title, _api))
         {
             ANTOMIC_INFO("Error creating initializing platform");
             exit(1);
         }
-
-        mWindow = mPlatform->CreateWindow(_width, _height, title, _api);
-        ANTOMIC_ASSERT(mWindow, "Application: Window not created!");
-        mWindow->SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
-        if (!mWindow->IsValid())
-        {
-            ANTOMIC_INFO("Error creating window: {0}, {1}", _width, _height);
-            exit(1);
-        }
-
-        mInput = mPlatform->CreateInput();
-        mInput->SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
-
-        if (!mInput->SetupInput())
-        {
-            ANTOMIC_INFO("Error initializng input:");
-            exit(1);
-        }
-
-        mWidth = _width;
-        mHeight = _height;
+        
+        Platform::SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
     }
 
     Application::~Application()
     {
-        this->mInput = nullptr;
     }
 
     void Application::Run()
@@ -91,15 +69,14 @@ namespace Antomic
 
         mRunning = true;
 
-        mLastRenderTime = mPlatform->GetTicks();
+        mLastRenderTime = Platform::GetCurrentTick();
         while (mRunning)
         {
-            auto currentTime = mPlatform->GetTicks();
+            auto currentTime = Platform::GetCurrentTick();
             uint32_t t = currentTime - mLastRenderTime;
             mLastRenderTime = currentTime;
 
-            mInput->ProcessEvents();
-            mWindow->ProcessEvents();
+            Platform::ProcessEvents();
 
             mStack.Update(t);
             this->Update(t);
@@ -107,7 +84,7 @@ namespace Antomic
             this->Render();
             mStack.Render();
 
-            mWindow->Update();
+            Platform::UpdateWindow();
         }
 
         // We clean the layer stack since some
@@ -150,11 +127,4 @@ namespace Antomic
         return true;
     }
 
-    bool Application::OnWindowResize(WindowResizeEvent &event)
-    {
-        mWidth = event.GetWidth();
-        mHeight = event.GetHeight();
-        ANTOMIC_INFO("Application: Window resized {0}x{1}", mWidth, mHeight);
-        return true;
-    }
 } // namespace Antomic

@@ -24,22 +24,74 @@
 
 namespace Antomic
 {
-    Scope<RenderAPI> Platform::mRenderAPI = nullptr;
-    RenderAPIDialect Platform::mRenderAPIDialect = RenderAPIDialect::NONE;
+    Scope<RenderAPI> Platform::sRenderAPI = nullptr;
+    RenderAPIDialect Platform::sRenderAPIDialect = RenderAPIDialect::NONE;
+    Scope<Platform> Platform::sPlatform = nullptr;
+    Scope<Window> Platform::sWindow = nullptr;
+    Scope<Input> Platform::sInput = nullptr;
 
-    Scope<Platform> Platform::CreatePlatform(RenderAPIDialect api)
+    bool Platform::SetupPlatform(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api)
     {
 #ifdef ANTOMIC_PLATFORM_WINDOWS
-        Scope<Platform> platform = CreateScope<WindowsPlatform>();
+
+        ANTOMIC_ASSERT(!sPlatform, "Platform: Platform already created!");
+
+        sPlatform = CreateScope<WindowsPlatform>();
+        ANTOMIC_ASSERT(!sRenderAPI, "Platform: Render API already set!")
+
+        sRenderAPI = RenderAPI::Create(api);
+        sRenderAPIDialect = RenderAPIDialect::OPENGL;
+
+        sWindow = sPlatform->CreateWindow(width, height, title, api);
+        if (!sWindow)
+        {
+            ANTOMIC_INFO("Platform: Unable to create window!");
+            return false;
+        }
+
+        sInput = sPlatform->CreateInput();
+        if (!sInput)
+        {
+            ANTOMIC_INFO("Platform: Unable to setup input!");
+            return false;
+        }
+
+        return true;
+
 #elif ANTOMIC_PLATFORM_LINUX
-        Scope<Platform> platform = CreateScope<LinuxPlatform>();
+
+        ANTOMIC_ASSERT(!sPlatform, "Platform: Platform already created!");
+
+        sPlatform = CreateScope<LinuxPlatform>();
+
+        sRenderAPI = RenderAPI::Create(api);
+        sRenderAPIDialect = RenderAPIDialect::OPENGL;
+
+        sWindow = sPlatform->CreateWindow(width, height, title, api);
+        if (!sWindow)
+        {
+            ANTOMIC_INFO("Platform: Unable to create window!");
+            return false;
+        }
+
+        sInput = sPlatform->CreateInput();
+        if (!sInput)
+        {
+            ANTOMIC_INFO("Platform: Unable to setup input!");
+            return false;
+        }
+
+        return true;
+
 #else
         ANTOMIC_ASSERT(false, "Platform: Platform not supported!");
-        return nullptr;
+     
+        sPlatform = nullptr;
+        sRenderAPI = nullptr;
+        sWindow = nullptr;
+        sInput = nullptr;
+        
+        return false;
 #endif
-        ANTOMIC_ASSERT(!mRenderAPI, "Platform: Render API already set!")
-        mRenderAPI = RenderAPI::Create(api);
-        mRenderAPIDialect = RenderAPIDialect::OPENGL;
-        return platform;
     }
 } // namespace Antomic

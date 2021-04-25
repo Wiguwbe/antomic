@@ -48,30 +48,30 @@ class NumLayer : public Antomic::Layer
 private:
     /* data */
 public:
-    NumLayer(int i, bool handle) : Layer("num_layer")
+    NumLayer(int i, bool handle) : Layer("numlayer")
     {
-        m_Num = i;
-        m_Handle = handle;
+        mNum = i;
+        mHandle = handle;
     };
     ~NumLayer(){};
 
     void OnEvent(Antomic::Event &e) override
     {
-        if (m_Handle)
+        if (mHandle)
         {
-            testEvent = m_Num;
+            testEvent = mNum;
             e.SetHandled(true);
         }
     }
 
     void Update(const uint32_t& time) override
     {
-        testUpdate = m_Num;
+        testUpdate = mNum;
     }
 
 protected:
-    bool m_Handle;
-    int m_Num;
+    bool mHandle;
+    int mNum;
 };
 
 TEST(AntomicCoreTest, LayerTests)

@@ -31,13 +31,13 @@ namespace Antomic
         virtual void Render() {}
         virtual void OnEvent(Event &e) {}
 
-        inline const void Disable() { m_Enabled=false; }
-        inline const void Enable() { m_Enabled=true; }
-        inline const bool &IsEnabled() const { return m_Enabled; }
-        inline const std::string &GetName() const { return m_Name; }
+        inline const void Disable() { mEnabled=false; }
+        inline const void Enable() { mEnabled=true; }
+        inline const bool &IsEnabled() const { return mEnabled; }
+        inline const std::string &GetName() const { return mName; }
 
     protected:
-        std::string m_Name;
-        bool m_Enabled;
+        std::string mName;
+        bool mEnabled;
     };
 } // namespace Antomic

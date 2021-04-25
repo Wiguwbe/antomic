@@ -89,46 +89,46 @@ static uint8_t translateKeyModifierPress(uint16_t _key)
     return modifier;
 }
 
-static uint8_t s_translateKey[256];
+static uint8_t stranslateKey[256];
 
 static void initTranslateKey(uint16_t _sdl, Antomic::Key::Enum _key)
 {
-    s_translateKey[_sdl & 0xff] = (uint8_t)_key;
+    stranslateKey[_sdl & 0xff] = (uint8_t)_key;
 }
 
 static Antomic::Key::Enum translateKey(SDL_Scancode _sdl)
 {
-    return (Antomic::Key::Enum)s_translateKey[_sdl & 0xff];
+    return (Antomic::Key::Enum)stranslateKey[_sdl & 0xff];
 }
 
-// static uint8_t s_translateGamepad[256];
+// static uint8_t stranslateGamepad[256];
 
 // static void initTranslateGamepad(uint8_t _sdl, Antomic::Key::Enum _button)
 // {
-//     s_translateGamepad[_sdl] = _button;
+//     stranslateGamepad[_sdl] = _button;
 // }
 
 // static Antomic::Key::Enum translateGamepad(uint8_t _sdl)
 // {
-//     return Antomic::Key::Enum(s_translateGamepad[_sdl]);
+//     return Antomic::Key::Enum(stranslateGamepad[_sdl]);
 // }
 
-// static uint8_t s_translateGamepadAxis[256];
+// static uint8_t stranslateGamepadAxis[256];
 
 // static void initTranslateGamepadAxis(uint8_t _sdl, Antomic::GamepadAxis::Enum _axis)
 // {
-//     s_translateGamepadAxis[_sdl] = uint8_t(_axis);
+//     stranslateGamepadAxis[_sdl] = uint8_t(_axis);
 // }
 
 // static Antomic::GamepadAxis::Enum translateGamepadAxis(uint8_t _sdl)
 // {
-//     return Antomic::GamepadAxis::Enum(s_translateGamepadAxis[_sdl]);
+//     return Antomic::GamepadAxis::Enum(stranslateGamepadAxis[_sdl]);
 // }
 
 namespace Antomic
 {
 
-    InputSDL::InputSDL(/* args */) : m_Handler(nullptr)
+    InputSDL::InputSDL(/* args */) : mHandler(nullptr)
     {
     }
 
@@ -138,7 +138,7 @@ namespace Antomic
 
     bool InputSDL::SetupInput()
     {
-        std::memset(s_translateKey, 0, sizeof(s_translateKey));
+        std::memset(stranslateKey, 0, sizeof(stranslateKey));
         initTranslateKey(SDL_SCANCODE_ESCAPE, Key::Esc);
         initTranslateKey(SDL_SCANCODE_RETURN, Key::Return);
         initTranslateKey(SDL_SCANCODE_TAB, Key::Tab);
@@ -239,13 +239,13 @@ namespace Antomic
                 case SDL_WINDOWEVENT_RESIZED:
                 {
                     WindowResizeEvent event(currentEvent.window.data1, currentEvent.window.data2);
-                    m_Handler(event);
+                    mHandler(event);
                 }
                 break;
                 case SDL_WINDOWEVENT_CLOSE:
                 {
                     WindowCloseEvent event;
-                    m_Handler(event);
+                    mHandler(event);
                 }
                 break;
                 default:
@@ -256,7 +256,7 @@ namespace Antomic
             {
                 const SDL_MouseMotionEvent &mev = currentEvent.motion;
                 MouseMovedEvent event(mev.x, mev.y);
-                m_Handler(event);
+                mHandler(event);
             }
             break;
             case SDL_MOUSEBUTTONDOWN:
@@ -284,13 +284,13 @@ namespace Antomic
                 case SDL_PRESSED:
                 {
                     MouseButtonPressedEvent event(button);
-                    m_Handler(event);
+                    mHandler(event);
                 }
                 break;
                 case SDL_RELEASED:
                 {
                     MouseButtonReleasedEvent event(button);
-                    m_Handler(event);
+                    mHandler(event);
                 }
                 break;
                 }
@@ -300,7 +300,7 @@ namespace Antomic
             {
                 const SDL_MouseWheelEvent &mev = currentEvent.wheel;
                 MouseScrolledEvent event(mev.x, mev.y);
-                m_Handler(event);
+                mHandler(event);
             }
             break;
             case SDL_KEYDOWN:
@@ -321,7 +321,7 @@ namespace Antomic
                 }
 
                 KeyPressedEvent event(key, modifiers, kev.repeat);
-                m_Handler(event);
+                mHandler(event);
             }
             break;
 
@@ -331,7 +331,7 @@ namespace Antomic
                 uint8_t modifiers = translateKeyModifiers(kev.keysym.mod);
                 Key::Enum key = translateKey(kev.keysym.scancode);
                 KeyReleasedEvent event(key, modifiers);
-                m_Handler(event);
+                mHandler(event);
             }
             break;
             default:

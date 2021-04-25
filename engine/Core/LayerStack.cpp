@@ -28,51 +28,51 @@ namespace Antomic
 
     void LayerStack::PushBack(Ref<Layer> l)
     {
-        if (m_Stack.empty())
+        if (mStack.empty())
         {
             PushFront(l);
             return;
         }
 
         l->OnAttach();
-        m_Stack.insert(m_Stack.begin(), l);
+        mStack.insert(mStack.begin(), l);
     }
 
     void LayerStack::PushFront(Ref<Layer> l)
     {
         l->OnAttach();
-        m_Stack.push_back(l);
+        mStack.push_back(l);
     }
 
     void LayerStack::PopBack()
     {
-        if (m_Stack.empty())
+        if (mStack.empty())
             return;
-        m_Stack.back()->OnDetach();
-        m_Stack.pop_back();
+        mStack.back()->OnDetach();
+        mStack.pop_back();
     }
 
     void LayerStack::PopFront()
     {
-        if (m_Stack.empty())
+        if (mStack.empty())
             return;
-        m_Stack.back()->OnDetach();
-        m_Stack.erase(m_Stack.begin());
+        mStack.back()->OnDetach();
+        mStack.erase(mStack.begin());
     }
 
     void LayerStack::Remove(Ref<Layer> l)
     {
-        auto it = std::find(m_Stack.begin(), m_Stack.end(), l);
-        if (it != m_Stack.end())
+        auto it = std::find(mStack.begin(), mStack.end(), l);
+        if (it != mStack.end())
         {
             (*it)->OnDetach();
-            m_Stack.erase(it);
+            mStack.erase(it);
         }
     }
 
     void LayerStack::Update(const uint32_t &time)
     {
-        for (auto it = m_Stack.begin(); it != m_Stack.end(); ++it)
+        for (auto it = mStack.begin(); it != mStack.end(); ++it)
         {
             if ((*it)->IsEnabled())
                 (*it)->Update(time);
@@ -81,7 +81,7 @@ namespace Antomic
 
     void LayerStack::Render()
     {
-        for (auto it = m_Stack.begin(); it != m_Stack.end(); ++it)
+        for (auto it = mStack.begin(); it != mStack.end(); ++it)
         {
             if ((*it)->IsEnabled())
                 (*it)->Render();
@@ -90,7 +90,7 @@ namespace Antomic
 
     void LayerStack::OnEvent(Event &e)
     {
-        for (auto it = m_Stack.rbegin(); it != m_Stack.rend(); ++it)
+        for (auto it = mStack.rbegin(); it != mStack.rend(); ++it)
         {
             if ((*it)->IsEnabled()) {
                 (*it)->OnEvent(e);

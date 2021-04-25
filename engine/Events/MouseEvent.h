@@ -24,32 +24,32 @@ namespace Antomic
     {
     public:
         MouseMovedEvent(float x, float y)
-            : m_MouseX(x), m_MouseY(y) {}
+            : mMouseX(x), mMouseY(y) {}
 
-        float GetX() const { return m_MouseX; }
-        float GetY() const { return m_MouseY; }
+        float GetX() const { return mMouseX; }
+        float GetY() const { return mMouseY; }
 
         std::string ToString() const override
         {
             std::stringstream ss;
-            ss << "MouseMovedEvent: " << m_MouseX << ", " << m_MouseY;
+            ss << "MouseMovedEvent: " << mMouseX << ", " << mMouseY;
             return ss.str();
         }
 
         EVENT_CLASS_TYPE(MouseMoved)
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     private:
-        float m_MouseX, m_MouseY;
+        float mMouseX, mMouseY;
     };
 
     class MouseScrolledEvent : public Event
     {
     public:
         MouseScrolledEvent(float xOffset, float yOffset)
-            : m_XOffset(xOffset), m_YOffset(yOffset) {}
+            : mXOffset(xOffset), mYOffset(yOffset) {}
 
-        float GetXOffset() const { return m_XOffset; }
-        float GetYOffset() const { return m_YOffset; }
+        float GetXOffset() const { return mXOffset; }
+        float GetYOffset() const { return mYOffset; }
 
         std::string ToString() const override
         {
@@ -61,20 +61,20 @@ namespace Antomic
         EVENT_CLASS_TYPE(MouseScrolled)
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     private:
-        float m_XOffset, m_YOffset;
+        float mXOffset, mYOffset;
     };
 
     class MouseButtonEvent : public Event
     {
     public:
-        inline MouseButton::Enum GetMouseButton() const { return m_Button; }
+        inline MouseButton::Enum GetMouseButton() const { return mButton; }
 
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryMouseButton | EventCategoryInput)
     protected:
         MouseButtonEvent(MouseButton::Enum button)
-            : m_Button(button) {}
+            : mButton(button) {}
 
-        MouseButton::Enum m_Button;
+        MouseButton::Enum mButton;
     };
 
     class MouseButtonPressedEvent : public MouseButtonEvent
@@ -86,7 +86,7 @@ namespace Antomic
         std::string ToString() const override
         {
             std::stringstream ss;
-            ss << "MouseButtonPressedEvent: " << m_Button;
+            ss << "MouseButtonPressedEvent: " << mButton;
             return ss.str();
         }
 
@@ -102,7 +102,7 @@ namespace Antomic
         std::string ToString() const override
         {
             std::stringstream ss;
-            ss << "MouseButtonReleasedEvent: " << m_Button;
+            ss << "MouseButtonReleasedEvent: " << mButton;
             return ss.str();
         }
 

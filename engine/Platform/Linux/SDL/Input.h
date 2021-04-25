@@ -30,10 +30,10 @@ namespace Antomic
     public:
         virtual bool SetupInput() override;
         virtual void ProcessEvents() override;
-        virtual void SetEventHandler(const EventHandler &handler) override { m_Handler = handler; }
+        virtual void SetEventHandler(const EventHandler &handler) override { mHandler = handler; }
 
     protected:
-        EventHandler m_Handler;
+        EventHandler mHandler;
     };
 
 } // namespace Antomic

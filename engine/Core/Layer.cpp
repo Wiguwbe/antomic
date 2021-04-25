@@ -18,7 +18,7 @@
 
 namespace Antomic
 {
-    Layer::Layer(const std::string &name) : m_Name(name), m_Enabled(true)
+    Layer::Layer(const std::string &name) : mName(name), mEnabled(true)
     {
     }
 

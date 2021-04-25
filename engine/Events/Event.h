@@ -78,23 +78,23 @@ namespace Antomic
 
         inline bool IsHandled() const
         {
-            return m_Handled;
+            return mHandled;
         }
 
         inline void SetHandled(bool handled)
         {
-            m_Handled = handled;
+            mHandled = handled;
         }
 
     protected:
-        bool m_Handled = false;
+        bool mHandled = false;
     };
 
     class EventDispatcher
     {
     public:
         EventDispatcher(Event &event)
-            : m_Event(event)
+            : mEvent(event)
         {
         }
 
@@ -102,16 +102,16 @@ namespace Antomic
         template <typename T, typename F>
         bool Dispatch(const F &func)
         {
-            if (m_Event.GetEventType() == T::GetStaticType())
+            if (mEvent.GetEventType() == T::GetStaticType())
             {
-                m_Event.SetHandled(func(static_cast<T &>(m_Event)));
+                mEvent.SetHandled(func(static_cast<T &>(mEvent)));
                 return true;
             }
             return false;
         }
 
     private:
-        Event &m_Event;
+        Event &mEvent;
     };
 
     inline std::ostream &operator<<(std::ostream &os, const Event &e)

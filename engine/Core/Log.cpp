@@ -19,7 +19,7 @@
 
 namespace Antomic
 {
-    Ref<spdlog::logger> Log::s_Logger;
+    Ref<spdlog::logger> Log::sLogger;
 
     void Log::Init()
     {
@@ -36,9 +36,9 @@ namespace Antomic
         logSinks[1]->set_pattern("%^[%T] %n: %v%$");
 #endif
 
-        s_Logger = std::make_shared<spdlog::logger>("Antomic", begin(logSinks), end(logSinks));
-        spdlog::register_logger(s_Logger);
-        s_Logger->set_level(spdlog::level::trace);
-        s_Logger->flush_on(spdlog::level::trace);
+        sLogger = std::make_shared<spdlog::logger>("Antomic", begin(logSinks), end(logSinks));
+        spdlog::register_logger(sLogger);
+        sLogger->set_level(spdlog::level::trace);
+        sLogger->flush_on(spdlog::level::trace);
     }
 } // namespace Antomic

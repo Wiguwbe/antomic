@@ -23,36 +23,36 @@ namespace Antomic
     class KeyEvent : public Event
     {
     public:
-        Key::Enum GetKeyCode() const { return m_KeyCode; }
-        uint8_t GetKeyModifiers() const { return m_Modifiers; }
+        Key::Enum GetKeyCode() const { return mKeyCode; }
+        uint8_t GetKeyModifiers() const { return mModifiers; }
 
         EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
     protected:
         KeyEvent(Key::Enum keycode, uint8_t modifiers)
-            : m_KeyCode(keycode), m_Modifiers(modifiers) {}
+            : mKeyCode(keycode), mModifiers(modifiers) {}
 
-        Key::Enum m_KeyCode;
-        uint8_t m_Modifiers;
+        Key::Enum mKeyCode;
+        uint8_t mModifiers;
     };
 
     class KeyPressedEvent : public KeyEvent
     {
     public:
         KeyPressedEvent(Key::Enum keycode, uint8_t modifiers, int repeat)
-            : KeyEvent(keycode, modifiers), m_Repeat(repeat) {}
+            : KeyEvent(keycode, modifiers), mRepeat(repeat) {}
 
-        int GetRepeatCount() const { return m_Repeat; }
+        int GetRepeatCount() const { return mRepeat; }
 
         std::string ToString() const override
         {
             std::stringstream ss;
-            ss << "KeyPressedEvent: " << m_KeyCode << " ( repeat:" << m_Repeat << ")";
+            ss << "KeyPressedEvent: " << mKeyCode << " ( repeat:" << mRepeat << ")";
             return ss.str();
         }
 
         EVENT_CLASS_TYPE(KeyPressed)
     private:
-        bool m_Repeat;
+        bool mRepeat;
     };
 
     class KeyReleasedEvent : public KeyEvent
@@ -64,7 +64,7 @@ namespace Antomic
         std::string ToString() const override
         {
             std::stringstream ss;
-            ss << "KeyReleasedEvent: " << m_KeyCode;
+            ss << "KeyReleasedEvent: " << mKeyCode;
             return ss.str();
         }
 
@@ -80,7 +80,7 @@ namespace Antomic
         std::string ToString() const override
         {
             std::stringstream ss;
-            ss << "KeyTypedEvent: " << m_KeyCode;
+            ss << "KeyTypedEvent: " << mKeyCode;
             return ss.str();
         }
 

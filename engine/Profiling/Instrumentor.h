@@ -38,20 +38,20 @@ namespace Antomic
 	class Instrumentor
 	{
 	private:
-		std::mutex m_Mutex;
-		InstrumentationSession *m_CurrentSession;
-		std::ofstream m_OutputStream;
+		std::mutex mMutex;
+		InstrumentationSession *mCurrentSession;
+		std::ofstream mOutputStream;
 
 	public:
 		Instrumentor()
-			: m_CurrentSession(nullptr)
+			: mCurrentSession(nullptr)
 		{
 		}
 
 		void BeginSession(const std::string &name, const std::string &filepath = "results.json")
 		{
-			std::lock_guard lock(m_Mutex);
-			if (m_CurrentSession)
+			std::lock_guard lock(mMutex);
+			if (mCurrentSession)
 			{
 				// If there is already a current session, then close it before beginning new one.
 				// Subsequent profiling output meant for the original session will end up in the
@@ -59,15 +59,15 @@ namespace Antomic
 				// profiling output.
 				if (Log::GetLogger()) // Edge case: BeginSession() might be before Log::Init()
 				{
-					ANTOMIC_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_CurrentSession->Name);
+					ANTOMIC_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, mCurrentSession->Name);
 				}
 				InternalEndSession();
 			}
-			m_OutputStream.open(filepath);
+			mOutputStream.open(filepath);
 
-			if (m_OutputStream.is_open())
+			if (mOutputStream.is_open())
 			{
-				m_CurrentSession = new InstrumentationSession({name});
+				mCurrentSession = new InstrumentationSession({name});
 				WriteHeader();
 			}
 			else
@@ -81,7 +81,7 @@ namespace Antomic
 
 		void EndSession()
 		{
-			std::lock_guard lock(m_Mutex);
+			std::lock_guard lock(mMutex);
 			InternalEndSession();
 		}
 
@@ -100,11 +100,11 @@ namespace Antomic
 			json << "\"ts\":" << result.Start.count();
 			json << "}";
 
-			std::lock_guard lock(m_Mutex);
-			if (m_CurrentSession)
+			std::lock_guard lock(mMutex);
+			if (mCurrentSession)
 			{
-				m_OutputStream << json.str();
-				m_OutputStream.flush();
+				mOutputStream << json.str();
+				mOutputStream.flush();
 			}
 		}
 
@@ -117,26 +117,26 @@ namespace Antomic
 	private:
 		void WriteHeader()
 		{
-			m_OutputStream << "{\"otherData\": {},\"traceEvents\":[{}";
-			m_OutputStream.flush();
+			mOutputStream << "{\"otherData\": {},\"traceEvents\":[{}";
+			mOutputStream.flush();
 		}
 
 		void WriteFooter()
 		{
-			m_OutputStream << "]}";
-			m_OutputStream.flush();
+			mOutputStream << "]}";
+			mOutputStream.flush();
 		}
 
-		// Note: you must already own lock on m_Mutex before
+		// Note: you must already own lock on mMutex before
 		// calling InternalEndSession()
 		void InternalEndSession()
 		{
-			if (m_CurrentSession)
+			if (mCurrentSession)
 			{
 				WriteFooter();
-				m_OutputStream.close();
-				delete m_CurrentSession;
-				m_CurrentSession = nullptr;
+				mOutputStream.close();
+				delete mCurrentSession;
+				mCurrentSession = nullptr;
 			}
 		}
 	};
@@ -145,32 +145,32 @@ namespace Antomic
 	{
 	public:
 		InstrumentationTimer(const char *name)
-			: m_Name(name), m_Stopped(false)
+			: mName(name), mStopped(false)
 		{
-			m_StartTimepoint = std::chrono::steady_clock::now();
+			mStartTimepoint = std::chrono::steady_clock::now();
 		}
 
 		~InstrumentationTimer()
 		{
-			if (!m_Stopped)
+			if (!mStopped)
 				Stop();
 		}
 
 		void Stop()
 		{
 			auto endTimepoint = std::chrono::steady_clock::now();
-			auto highResStart = FloatingPointMicroseconds{m_StartTimepoint.time_since_epoch()};
-			auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch();
+			auto highResStart = FloatingPointMicroseconds{mStartTimepoint.time_since_epoch()};
+			auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(mStartTimepoint).time_since_epoch();
 
-			Instrumentor::Get().WriteProfile({m_Name, highResStart, elapsedTime, std::this_thread::get_id()});
+			Instrumentor::Get().WriteProfile({mName, highResStart, elapsedTime, std::this_thread::get_id()});
 
-			m_Stopped = true;
+			mStopped = true;
 		}
 
 	private:
-		const char *m_Name;
-		std::chrono::time_point<std::chrono::steady_clock> m_StartTimepoint;
-		bool m_Stopped;
+		const char *mName;
+		std::chrono::time_point<std::chrono::steady_clock> mStartTimepoint;
+		bool mStopped;
 	};
 
 	namespace InstrumentorUtils

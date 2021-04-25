@@ -23,7 +23,7 @@ namespace Antomic {
     {
     public:
         NullVertexArray() {}
-        ~NullVertexArray() {}
+        virtual ~NullVertexArray() override {}
     
     public:
         virtual void Bind() const override {}

@@ -79,12 +79,12 @@ namespace Antomic
         }
     }
 
-    void LayerStack::Render()
+    void LayerStack::Submit()
     {
         for (auto it = mStack.begin(); it != mStack.end(); ++it)
         {
             if ((*it)->IsEnabled())
-                (*it)->Render();
+                (*it)->Submit();
         }
     }
 

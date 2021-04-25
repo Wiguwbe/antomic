@@ -22,14 +22,13 @@ namespace Antomic {
     {
     public:
         Game();
-        virtual void Render() override;
-        virtual void Update(const uint32_t &time) override;
+        void LoadMainScene(const std::string &scene);
+        virtual bool OnWindowResize(WindowResizeEvent &event) override;
         virtual bool OnKeyPressed(KeyPressedEvent &event) override;
         virtual bool OnKeyReleased(KeyReleasedEvent &event) override;
     private:
-        Ref<VertexArray> mVertexArray;
-        Ref<Shader> mShader;
-        glm::vec3 mCamera;
+        Ref<Camera> mCamera;
+        glm::vec3 mPosition;
         glm::vec3 mDirection;
         glm::vec3 mLookAt;
     };

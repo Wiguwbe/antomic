@@ -15,34 +15,32 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Renderer/Buffers.h"
-#include "Renderer/VertexArray.h"
+#include "Core/Cameras.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
 {
-    enum class RenderAPIDialect
-    {
-        NONE = 0,
-        OPENGL = 1
-    };
-
-    RenderAPIDialect RenderAPIFromStr(const std::string &api);
-    std::string const RenderAPIToStr(RenderAPIDialect api);
-
-    class RenderAPI
+    class Scene
     {
     public:
-        virtual ~RenderAPI() = default;
+        Scene(const Ref<Camera> &camera);
+        virtual ~Scene();
 
     public:
-        virtual void SetViewport(const uint32_t &x, const uint32_t &y, uint32_t const &width, uint32_t const &height) = 0;
-        virtual void SetClearColor(glm::vec4 color) = 0;
-        virtual void Clear() = 0;
-        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) = 0;
+        const Ref<Camera> &GetCamera() const { return mCamera; };
+        void SetCamera(const Ref<Camera> &camera) { mCamera = camera; }
+        inline const glm::mat4 &GetProjection() const { return mCamera->GetProjection(); }
+        inline const glm::mat4 &GetView() const { return mCamera->GetView(); }
+        void AddDrawable(const Ref<Drawable> &drawable);
+        void Load();
+        void Unload();
 
-    public:
-        static Scope<RenderAPI> Create(RenderAPIDialect api = RenderAPIDialect::OPENGL);
+        void Update(const uint32_t &time);
+        virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
+
+    private:
+        Ref<Camera> mCamera;
+        VectorRef<Drawable> mDrawables;
     };
 
 } // namespace Antomic

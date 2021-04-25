@@ -24,7 +24,7 @@ namespace Antomic
     {
     public:
         InputSDL();
-        virtual ~InputSDL();
+        virtual ~InputSDL() override;
 
     public:
         virtual void ProcessEvents() override;

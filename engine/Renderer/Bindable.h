@@ -14,24 +14,16 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
-#include "Renderer/Buffers.h"
-#include "Renderer/Bindable.h"
 
-namespace Antomic {
-
-    class VertexArray : public Bindable
+namespace Antomic
+{
+    class Bindable
     {
     public:
-        virtual ~VertexArray() = default;
+        virtual ~Bindable() = default;
 
     public:
-        virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) = 0;
-        virtual void SetIndexBuffer(const Ref<IndexBuffer> &buffer) = 0;
-        virtual const std::vector<Ref<VertexBuffer>> &GetVertexBuffers() const = 0;
-        virtual const Ref<IndexBuffer> &GetIndexBuffer() const = 0;
-
-    public:
-        static Ref<VertexArray> Create();
+        virtual void Bind() const = 0;
+        virtual void Unbind() const = 0;
     };
-}
+} // namespace Antomic

@@ -22,7 +22,7 @@ namespace Antomic
     {
     public:
         OpenGLIndexBuffer(uint32_t *data, uint32_t size);
-        ~OpenGLIndexBuffer();
+        virtual ~OpenGLIndexBuffer() override;
 
     public:
         virtual void Bind() const override;
@@ -39,7 +39,7 @@ namespace Antomic
     {
     public:
         OpenGLVertexBuffer(float *data, uint32_t size);
-        ~OpenGLVertexBuffer();
+        virtual ~OpenGLVertexBuffer() override;
 
     public:
         virtual void Bind() const override;

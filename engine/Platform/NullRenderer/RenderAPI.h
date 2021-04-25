@@ -22,7 +22,7 @@ namespace Antomic
     {
     public:
         NullRenderAPI() {};
-        ~NullRenderAPI() {};
+        virtual ~NullRenderAPI() override {};
 
     public:
         virtual void SetViewport(const uint32_t &x, const uint32_t &y, uint32_t const &width, uint32_t const &height) override {};

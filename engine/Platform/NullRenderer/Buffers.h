@@ -22,7 +22,7 @@ namespace Antomic
     {
     public:
         NullIndexBuffer(uint32_t *data, uint32_t size) : mCount(size / sizeof(uint32_t)) {}
-        ~NullIndexBuffer() {}
+        virtual ~NullIndexBuffer() override {}
 
     public:
         virtual void Bind() const override {}

@@ -20,6 +20,8 @@
 #include "Events/WindowEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
+#include "Renderer/Scene.h"
+#include "Renderer/Renderer.h"
 
 namespace Antomic
 {
@@ -54,7 +56,7 @@ namespace Antomic
             ANTOMIC_INFO("Error creating initializing platform");
             exit(1);
         }
-        
+
         Platform::SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
     }
 
@@ -73,17 +75,13 @@ namespace Antomic
         while (mRunning)
         {
             auto currentTime = Platform::GetCurrentTick();
-            uint32_t t = currentTime - mLastRenderTime;
+            uint32_t time = currentTime - mLastRenderTime;
             mLastRenderTime = currentTime;
 
             Platform::ProcessEvents();
-
-            mStack.Update(t);
-            this->Update(t);
-
-            this->Render();
-            mStack.Render();
-
+            Update(time);
+            auto frame = Renderer::SubmitScene(GetWidth(), GetHeight(), mScene);
+            mStack.Submit();
             Platform::UpdateWindow();
         }
 
@@ -97,6 +95,30 @@ namespace Antomic
 
     void Application::ToggleFullscreen(bool value)
     {
+    }
+
+    void Application::SetScene(const Ref<Scene> &scene)
+    {
+        if (mScene != nullptr)
+        {
+            mScene->Unload();
+        }
+
+        mScene = scene;
+        mScene->Load();
+    }
+
+    void Application::LoadScene(const std::string &name)
+    {
+    }
+
+    void Application::Update(const uint32_t &time)
+    {
+        mStack.Update(time);
+        if (mScene != nullptr)
+        {
+            mScene->Update(time);
+        }
     }
 
     void Application::OnEvent(Event &event)

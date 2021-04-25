@@ -61,6 +61,12 @@ namespace Antomic
     template <typename T>
     using Ref = std::shared_ptr<T>;
 
+    template <typename T>
+    using VectorRef = std::vector<Ref<T>>;
+
+    template <typename T>
+    using QueueRef = std::queue<Ref<T>>;
+
     template <typename T, typename... Args>
     constexpr Ref<T> CreateRef(Args &&... args)
     {
@@ -82,6 +88,15 @@ namespace Antomic
     class MouseScrolledEvent;
     class MouseButtonPressedEvent;
     class MouseButtonReleasedEvent;
+    class VertexArray;
+    class IndexBuffer;
+    class VertexBuffer;
+    class Scene;
+    class Camera;
+    class Bindable;
+    class Drawable;
+    class Shader;
+    class RendererFrame;
 
     using EventHandler = std::function<void(Event&)>;
 

@@ -15,23 +15,15 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Renderer/Buffers.h"
-#include "Renderer/Bindable.h"
+#include "glm/glm.hpp"
 
-namespace Antomic {
-
-    class VertexArray : public Bindable
+namespace Antomic
+{
+    class Renderer
     {
     public:
-        virtual ~VertexArray() = default;
-
-    public:
-        virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) = 0;
-        virtual void SetIndexBuffer(const Ref<IndexBuffer> &buffer) = 0;
-        virtual const std::vector<Ref<VertexBuffer>> &GetVertexBuffers() const = 0;
-        virtual const Ref<IndexBuffer> &GetIndexBuffer() const = 0;
-
-    public:
-        static Ref<VertexArray> Create();
+        static const Ref<RendererFrame> SubmitScene(uint32_t width, uint32_t height, const Ref<Scene> &scene);
+        static void Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable);
+        static void Flush(const Ref<RendererFrame> &frame);
     };
-}
+} // namespace Antomic

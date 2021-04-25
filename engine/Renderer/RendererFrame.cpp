@@ -13,25 +13,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
-#include "Renderer/Buffers.h"
-#include "Renderer/Bindable.h"
+#include "Renderer/RendererFrame.h"
 
-namespace Antomic {
-
-    class VertexArray : public Bindable
+namespace Antomic
+{
+    Ref<Drawable> RendererFrame::PopDrawable()
     {
-    public:
-        virtual ~VertexArray() = default;
-
-    public:
-        virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) = 0;
-        virtual void SetIndexBuffer(const Ref<IndexBuffer> &buffer) = 0;
-        virtual const std::vector<Ref<VertexBuffer>> &GetVertexBuffers() const = 0;
-        virtual const Ref<IndexBuffer> &GetIndexBuffer() const = 0;
-
-    public:
-        static Ref<VertexArray> Create();
-    };
-}
+        auto drawable = mQueue.back();
+        mQueue.pop();
+        return drawable;
+    }    
+} // namespace Antomic

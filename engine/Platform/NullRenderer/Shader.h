@@ -23,7 +23,7 @@ namespace Antomic
     {
     public:
         NullShader(const std::string &vertexSrc, const std::string &fragmentSrc) {}
-        ~NullShader() {}
+        virtual ~NullShader() override {}
 
     public:
         // Bind/Unbind commands

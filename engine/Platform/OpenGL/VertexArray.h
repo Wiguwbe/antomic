@@ -23,7 +23,7 @@ namespace Antomic {
     {
     public:
         OpenGLVertexArray();
-        ~OpenGLVertexArray();
+        virtual ~OpenGLVertexArray() override;
 
     public:
         virtual void Bind() const override;

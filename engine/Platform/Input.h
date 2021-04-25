@@ -207,15 +207,12 @@ namespace Antomic
 
 	class Input
 	{
-	protected:
-		Input() = default;
+	public:
+		virtual ~Input() = default;
 
 	public:
 		virtual void ProcessEvents() = 0;
-        virtual void SetEventHandler(const EventHandler& handler) = 0;
-
-	protected:
+		virtual void SetEventHandler(const EventHandler &handler) = 0;
 	};
-
 
 } // namespace Antomic

@@ -18,6 +18,7 @@
 int main()
 {
     Antomic::Game game;
+    game.LoadMainScene("main.asc");
     game.Run();
     return 0;
 }

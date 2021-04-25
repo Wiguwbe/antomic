@@ -16,6 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 #include "Renderer/Shader.h"
+#include "Renderer/Bindable.h"
 
 namespace Antomic
 {
@@ -49,14 +50,12 @@ namespace Antomic
         uint32_t mStride = 0;
     };
 
-    class IndexBuffer
+    class IndexBuffer : public Bindable
     {
     public:
-        ~IndexBuffer() = default;
+        virtual ~IndexBuffer() = default;
 
     public:
-        virtual void Bind() const = 0;
-        virtual void Unbind() const = 0;
         virtual void Upload(uint32_t *data, uint32_t size) const = 0;
         virtual uint32_t Count() const = 0;
 
@@ -64,14 +63,12 @@ namespace Antomic
         static Ref<IndexBuffer> Create(uint32_t *data, uint32_t size);
     };
 
-    class VertexBuffer
+    class VertexBuffer : public Bindable
     {
     public:
-        ~VertexBuffer() = default;
+        virtual ~VertexBuffer() = default;
 
     public:
-        virtual void Bind() const = 0;
-        virtual void Unbind() const = 0;
         virtual void Upload(uint32_t *data, uint32_t size) const = 0;
         virtual const BufferLayout &Layout() const = 0;
         virtual void SetLayout(const BufferLayout &layout) = 0;

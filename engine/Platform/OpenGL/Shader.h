@@ -27,7 +27,7 @@ namespace Antomic
     {
     public:
         OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc);
-        ~OpenGLShader();
+        virtual ~OpenGLShader() override;
 
     public:
         // Bind/Unbind commands

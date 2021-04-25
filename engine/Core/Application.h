@@ -56,9 +56,13 @@ namespace Antomic
         virtual bool OnMouseButtonPressed(MouseButtonPressedEvent &event) { return true; }
         virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent &event) { return true; }
 
+        // Scene 
+        const Ref<Scene> &GetScene() const { return mScene; }
+        void SetScene(const Ref<Scene>& scene);
+        void LoadScene(const std::string& name);
+
         // Render & Update
-        virtual void Update(const uint32_t &time){};
-        virtual void Render(){};
+        void Update(const uint32_t &time);
 
     public:
         static Application &Current() { return *sInstance; }
@@ -70,5 +74,6 @@ namespace Antomic
         static Application *sInstance;
         bool mRunning;
         uint32_t mLastRenderTime;
+        Ref<Scene> mScene;
     };
 } // namespace Antomic

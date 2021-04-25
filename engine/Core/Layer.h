@@ -28,7 +28,7 @@ namespace Antomic
         virtual void OnAttach() {}
         virtual void OnDetach() {}
         virtual void Update(const uint32_t &time) {}
-        virtual void Render() {}
+        virtual void Submit() {}
         virtual void OnEvent(Event &e) {}
 
         inline const void Disable() { mEnabled=false; }

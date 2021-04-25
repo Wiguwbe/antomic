@@ -32,7 +32,7 @@ namespace Antomic
         void PopBack();
         void Remove(Ref<Layer> l);
         void Update(const uint32_t& time);
-        void Render();
+        void Submit();
         void OnEvent(Event &e);
 
         inline int Empty() const { return mStack.empty(); }

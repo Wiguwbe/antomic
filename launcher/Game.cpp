@@ -22,13 +22,28 @@ namespace Antomic
     Game::Game() : Application("Game")
     {
         mDirection = {0, 0, 0};
-        mCamera = {0, 0, 3};
+        mPosition = {0, 0, 3};
         mLookAt = {0, 0, 0};
-        mVertexArray = VertexArray::Create();
+    }
 
-        mShader = Shader::CreateFromFile("media/shaders/opengl/vs_demo_1.glsl", "media/shaders/opengl/fs_demo_1.glsl");
+    void Game::LoadMainScene(const std::string &scene)
+    {
+        auto width = (float)GetWidth();
+        auto height = (float)GetHeight();
+
+        mCamera = Camera::CreatePerspective(glm::radians(45.0f), width/height , 0.1f, 100.0f);
+
+        Camera::UpdateCamera(
+            mCamera,
+            mPosition,         // Camera is at (4,3,3), in World Space
+            mLookAt,           // and looks at the origin
+            glm::vec3(0, 1, 0) // Head is up (set to 0,-1,0 to look upside-down)
+        );
 
         {
+            auto vertexArray = VertexArray::Create();
+            auto shader = Shader::CreateFromFile("media/shaders/opengl/vs_demo_1.glsl", "media/shaders/opengl/fs_demo_1.glsl");
+
             float vertices[3 * 3] = {
                 -0.5f,
                 -0.5f,
@@ -48,40 +63,20 @@ namespace Antomic
             Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));
             vertexBuffer->SetLayout(layout);
             Ref<IndexBuffer> indexBuffer = IndexBuffer::Create(indices, sizeof(indices));
-            mVertexArray->AddVertexBuffer(vertexBuffer);
-            mVertexArray->SetIndexBuffer(indexBuffer);
+            vertexArray->AddVertexBuffer(vertexBuffer);
+            vertexArray->SetIndexBuffer(indexBuffer);
+
+            Ref<Scene> scene = CreateRef<Scene>(mCamera);
+            auto drawable = CreateRef<Drawable>(vertexArray, shader);
+            scene->AddDrawable(drawable);
+            SetScene(scene);
         }
     }
 
-    void Game::Render()
+    bool Game::OnWindowResize(WindowResizeEvent &event)
     {
-        glm::mat4 m_proj = glm::perspective(glm::radians(45.0f), (float)GetWidth() / (float)GetHeight(), 0.1f, 100.0f);
-
-        // Camera matrix
-        glm::mat4 m_view = glm::lookAt(
-            mCamera,            // Camera is at (4,3,3), in World Space
-            mLookAt, // and looks at the origin
-            glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-        );
-
-        glm::mat4 m_model = glm::mat4(1.0f);
-        glm::mat4 m_mvp = m_proj * m_view * m_model;
-
-        RenderCommand::SetViewport(0, 0, GetWidth(), GetHeight());
-        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
-        RenderCommand::Clear();
-        mShader->SetUniformValue("m_proj", m_proj);
-        mShader->SetUniformValue("m_view", m_view);
-        mShader->SetUniformValue("m_model", m_model);
-        mShader->SetUniformValue("m_mvp", m_mvp);
-        mShader->Bind();
-        RenderCommand::DrawIndexed(mVertexArray);
-    }
-
-    void Game::Update(const uint32_t &timestep)
-    {
-        mCamera += (((float)timestep / 1000.f) * mDirection);
-        mLookAt += (((float)timestep / 1000.f) * mDirection);
+        Camera::UpdateCamera(mCamera, glm::radians(45.0f), (float)event.GetWidth() / (float)event.GetHeight(), 0.1f, 100.0f);
+        return true;
     }
 
     bool Game::OnKeyPressed(KeyPressedEvent &event)
@@ -128,3 +123,34 @@ namespace Antomic
     }
 
 } // namespace Antomic
+
+// void Game::Render()
+// {
+//     glm::mat4 m_proj = glm::perspective();
+
+//     // Camera matrix
+//     glm::mat4 m_view = glm::lookAt(
+//         mCamera,            // Camera is at (4,3,3), in World Space
+//         mLookAt, // and looks at the origin
+//         glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+//     );
+
+//     glm::mat4 m_model = glm::mat4(1.0f);
+//     glm::mat4 m_mvp = m_proj * m_view * m_model;
+
+//     RenderCommand::SetViewport(0, 0, GetWidth(), GetHeight());
+//     RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
+//     RenderCommand::Clear();
+//     mShader->SetUniformValue("m_proj", m_proj);
+//     mShader->SetUniformValue("m_view", m_view);
+//     mShader->SetUniformValue("m_model", m_model);
+//     mShader->SetUniformValue("m_mvp", m_mvp);
+//     mShader->Bind();
+//     RenderCommand::DrawIndexed(mVertexArray);
+// }
+
+// void Game::Update(const uint32_t &timestep)
+// {
+//     mCamera += (((float)timestep / 1000.f) * mDirection);
+//     mLookAt += (((float)timestep / 1000.f) * mDirection);
+// }

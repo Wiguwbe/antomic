@@ -27,4 +27,4 @@ namespace Antomic
         inline static void Clear() { Platform::GetRenderAPI()->Clear(); }
         inline static void DrawIndexed(const Ref<VertexArray> vertexArray) { Platform::GetRenderAPI()->DrawIndexed(vertexArray); };
     };
-}
+} // namespace Antomic

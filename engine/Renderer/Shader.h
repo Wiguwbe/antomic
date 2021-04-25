@@ -39,7 +39,7 @@ namespace Antomic
     class Shader
     {
     public:
-        ~Shader() = default;
+        virtual ~Shader() = default;
 
     public:
         // Bind/Unbind commands

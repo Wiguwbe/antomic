@@ -18,6 +18,7 @@
 #include "Platform/Platform.h"
 #include "Core/LayerStack.h"
 #include "Platform/Input.h"
+#include "glm/glm.hpp"
 
 namespace Antomic
 {
@@ -66,5 +67,6 @@ namespace Antomic
     private:
         static Application *sInstance;
         bool mRunning;
+        glm::mat4 mProjMatrix;
     };
 } // namespace Antomic

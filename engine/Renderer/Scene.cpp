@@ -22,12 +22,25 @@
 
 namespace Antomic
 {
-    Scene::Scene() : mCameraMoveDirection({0, 0, 0}), mCameraPosition({0, 0, 3}), mCameraLookAt({0, 0, 0}), mDirty(true)
+    Scene::Scene(SceneType type)
+        : mCameraMoveDirection({0, 0, 0}),
+          mCameraPosition({0, 0, 3}),
+          mCameraLookAt({0, 0, 0}),
+          mDirty(true),
+          mSceneType(type)
     {
     }
 
     Scene::~Scene()
     {
+    }
+
+    glm::mat4 Scene::GetProjectionMatrix(uint32_t width, uint32_t height)
+    {
+        if ( mSceneType == SceneType::SCENE_2D )
+            return glm::ortho(0.f, (float)width,0.f,(float)height, 0.1f, 100.0f);
+
+        return glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
     }
 
     const glm::mat4 &Scene::GetViewMatrix()

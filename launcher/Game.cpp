@@ -76,6 +76,12 @@ namespace Antomic
         case Key::Enum::KeyD:
             mDirection.x = 1;
             break;
+        case Key::Enum::KeyR:
+            mDirection.z = -1;
+            break;
+        case Key::Enum::KeyF:
+            mDirection.z = 1;
+            break;
         default:
             break;
         }
@@ -96,6 +102,9 @@ namespace Antomic
         case Key::Enum::KeyD:
             mDirection.x = 0;
             break;
+        case Key::Enum::KeyR:
+        case Key::Enum::KeyF:
+            mDirection.z = 0;
         default:
             break;
         }

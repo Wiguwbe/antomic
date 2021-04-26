@@ -15,32 +15,31 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "glm/glm.hpp"
 
 namespace Antomic
 {
     class RendererFrame
     {
     public:
-        RendererFrame(const glm::mat4 &view) : mView(view), mQueue() {}
+        RendererFrame(Ref<Scene> scene) : mDrawableQueue(), mScene(scene) {}
         virtual ~RendererFrame() {}
 
-        const glm::mat4 &GetView() const { return mView; }
+        const Ref<Scene> &GetScene() const { return mScene; }
 
         inline const uint32_t &GetStartTime() const { return mStartTime; }
         inline void SetStartTime(uint32_t time) { mStartTime = time; }
         inline const uint32_t &GetEndTime() const { return mEndTime; }
         inline void SetEndTime(uint32_t time) { mEndTime = time; }
 
-        void QueueDrawable(const Ref<Drawable> &drawable) { mQueue.push(drawable); }
+        void QueueDrawable(const Ref<Drawable> &drawable) { mDrawableQueue.push(drawable); }
         Ref<Drawable> PopDrawable();
 
-        bool Empty() { return mQueue.empty(); }
+        bool Empty() { return mDrawableQueue.empty(); }
 
     private:
         uint32_t mStartTime, mEndTime;
-        glm::mat4 mView;
-        QueueRef<Drawable> mQueue;
+        QueueRef<Drawable> mDrawableQueue;
+        Ref<Scene> mScene;
     };
 
 } // namespace Antomic

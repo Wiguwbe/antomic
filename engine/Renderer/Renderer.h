@@ -24,7 +24,7 @@ namespace Antomic
     public:
         static void SubmitScene(const Ref<Scene> &scene);
         static void Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable);
-        static void RenderFrame(uint32_t width, uint32_t height, const glm::mat4 &proj);
+        static void RenderFrame(uint32_t width, uint32_t height);
         static void QueueFrame(const Ref<RendererFrame> &frame);
         static void StartWorker();
         static void StopWorker();

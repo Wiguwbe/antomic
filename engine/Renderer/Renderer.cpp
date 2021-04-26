@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #include "Renderer/Renderer.h"
+#include "Renderer/Scene.h"
 #include "Core/Cameras.h"
 #include "Core/Application.h"
 #include "Renderer/RenderCommand.h"
@@ -65,7 +66,7 @@ namespace Antomic
         return scene;
     }
 
-    void Renderer::RenderFrame(uint32_t width, uint32_t height, const glm::mat4 &proj)
+    void Renderer::RenderFrame(uint32_t width, uint32_t height)
     {
         if (sRenderQueue.empty())
         {
@@ -79,8 +80,11 @@ namespace Antomic
         RenderCommand::SetClearColor({0.5f, 0.1f, 0.8f, 1.0f});
         RenderCommand::Clear();
 
-        auto m_view = frame->GetView();
-        auto m_projview = proj * m_view;
+        auto scene = frame->GetScene();
+
+        auto m_proj = scene->GetProjectionMatrix(width, height);
+        auto m_view = scene->GetViewMatrix();
+        auto m_projview = m_proj * m_view;
 
         while (!frame->Empty())
         {
@@ -89,7 +93,7 @@ namespace Antomic
             auto va = drawable->GetVertexArray();
             auto m_model = drawable->GetMatrix();
 
-            shader->SetUniformValue("m_proj", proj);
+            shader->SetUniformValue("m_proj", m_proj);
             shader->SetUniformValue("m_view", m_view);
             shader->SetUniformValue("m_model", m_model);
             shader->SetUniformValue("m_projview", m_projview);

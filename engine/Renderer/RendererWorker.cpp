@@ -53,7 +53,7 @@ namespace Antomic
             }
 
             // We create a new frame
-            auto frame = CreateRef<RendererFrame>(scene->GetViewMatrix());
+            auto frame = CreateRef<RendererFrame>(scene);
 
             // Get the time passed since last frame
             auto currentTime = Platform::GetCurrentTick();

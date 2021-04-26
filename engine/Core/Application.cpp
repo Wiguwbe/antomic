@@ -79,8 +79,7 @@ namespace Antomic
         while (mRunning)
         {
             Platform::ProcessEvents();
-            auto m_proj = glm::perspective(glm::radians(45.0f), (float)GetWidth() / (float)GetHeight(), 0.1f, 100.0f);
-            Renderer::RenderFrame(GetWidth(), Current().GetHeight(), m_proj);
+            Renderer::RenderFrame(GetWidth(), GetHeight());
         }
         // Stop renderer worker
         Renderer::StopWorker();

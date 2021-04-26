@@ -20,15 +20,23 @@
 
 namespace Antomic
 {
+    enum class SceneType
+    {
+        SCENE_2D,
+        SCENE_3D,
+    };
+
     class Scene
     {
     public:
-        Scene();
+        Scene(SceneType type = SceneType::SCENE_3D);
         virtual ~Scene();
 
     public:
         const glm::mat4 &GetViewMatrix();
+        glm::mat4 GetProjectionMatrix(uint32_t width, uint32_t height);
 
+        inline const SceneType &GetSceneType() const { return mSceneType; }
         inline const glm::vec3 &GetPosition() const { return mCameraPosition; }
         inline const glm::vec3 &GetLookAt() const { return mCameraLookAt; }
         inline const glm::vec3 &GetMoveDirection() const { return mCameraMoveDirection; }
@@ -50,7 +58,9 @@ namespace Antomic
         glm::vec3 mCameraPosition;
         glm::vec3 mCameraLookAt;
         glm::mat4 mViewMatrix;
+        glm::mat4 mProjectionMatrix;
         bool mDirty;
+        SceneType mSceneType;
     };
 
 } // namespace Antomic

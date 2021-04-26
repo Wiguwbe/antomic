@@ -19,8 +19,8 @@ namespace Antomic
 {
     Ref<Drawable> RendererFrame::PopDrawable()
     {
-        auto drawable = mQueue.back();
-        mQueue.pop();
+        auto drawable = mDrawableQueue.back();
+        mDrawableQueue.pop();
         return drawable;
     }    
 } // namespace Antomic

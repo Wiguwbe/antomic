@@ -28,14 +28,8 @@ namespace Antomic
         void Run();
         void Stop();
         
-    public:
-        static void SubmitScene(const Ref<Scene> &scene);
-        static const Ref<Scene> PopScene();
-
     private:
         bool mRunning;
-        static QueueRef<Scene> sSceneQueue;
-        static std::mutex sMutex;
     };
 
 } // namespace Antomic

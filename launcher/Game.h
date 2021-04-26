@@ -23,13 +23,10 @@ namespace Antomic {
     public:
         Game();
         void LoadMainScene(const std::string &scene);
-        virtual bool OnWindowResize(WindowResizeEvent &event) override;
         virtual bool OnKeyPressed(KeyPressedEvent &event) override;
         virtual bool OnKeyReleased(KeyReleasedEvent &event) override;
     private:
-        Ref<Camera> mCamera;
-        glm::vec3 mPosition;
+        Ref<Scene> mScene;
         glm::vec3 mDirection;
-        glm::vec3 mLookAt;
     };
 }

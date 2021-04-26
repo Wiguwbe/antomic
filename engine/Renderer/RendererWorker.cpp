@@ -17,13 +17,13 @@
 #include "Renderer/Scene.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererFrame.h"
+#include "Platform/Platform.h"
 #include "Core/Log.h"
+
+#define MAX_FRAME_COUNT 3
 
 namespace Antomic
 {
-    QueueRef<Scene> RendererWorker::sSceneQueue;
-    std::mutex RendererWorker::sMutex;
-
     RendererWorker::RendererWorker()
         : mRunning(false)
     {
@@ -31,21 +31,6 @@ namespace Antomic
 
     RendererWorker::~RendererWorker()
     {
-    }
-
-
-    void RendererWorker::SubmitScene(const Ref<Scene> &scene)
-    {
-        std::lock_guard<std::mutex> lock(sMutex);
-        sSceneQueue.push(scene);
-    }
-
-    const Ref<Scene> RendererWorker::PopScene()
-    {
-        std::lock_guard<std::mutex> lock(sMutex);
-        auto scene = sSceneQueue.back();
-        sSceneQueue.pop();
-        return scene;
     }
 
     void RendererWorker::Run()
@@ -59,15 +44,30 @@ namespace Antomic
 
         while (mRunning)
         {
-            if (sSceneQueue.empty())
+            // Get the current scene from the renderer
+
+            auto scene = Renderer::GetCurrentScene();
+            if (Renderer::FrameCount() > MAX_FRAME_COUNT || scene == nullptr)
             {
                 continue;
             }
 
-            auto scene = PopScene();
-            auto frame = CreateRef<RendererFrame>(scene->GetProjection(), scene->GetView());
+            // We create a new frame
+            auto frame = CreateRef<RendererFrame>(scene->GetViewMatrix());
+
+            // Get the time passed since last frame
+            auto currentTime = Platform::GetCurrentTick();
+            frame->SetStartTime(currentTime);
+
+            // Update the current scene state
+            scene->Update(currentTime - Renderer::GetLastFrameTime());
+
+            // Submit the drawables for rendering
             scene->SubmitDrawables(frame);
+
             // TODO: Optmize render
+
+            // Add this frame to the queue so it can be rendered
             Renderer::QueueFrame(frame);
         }
 
@@ -78,6 +78,5 @@ namespace Antomic
     {
         mRunning = false;
     }
-
 
 } // namespace Antomic

@@ -18,17 +18,46 @@
 #include "Renderer/RendererFrame.h"
 #include "Core/Cameras.h"
 #include "Core/Log.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
 {
-    Scene::Scene(const Ref<Camera> &camera)
+    Scene::Scene() : mCameraMoveDirection({0, 0, 0}), mCameraPosition({0, 0, 3}), mCameraLookAt({0, 0, 0}), mDirty(true)
     {
-        ANTOMIC_ASSERT(camera, "Scene: Camera is null")
-        mCamera = camera;
     }
 
     Scene::~Scene()
     {
+    }
+
+    const glm::mat4 &Scene::GetViewMatrix()
+    {
+        if (mDirty)
+        {
+            mViewMatrix = glm::lookAt(
+                mCameraPosition,
+                mCameraLookAt,
+                glm::vec3(0, 1, 0));
+        }
+
+        return mViewMatrix;
+    }
+
+    void Scene::SetPosition(const glm::vec3 &position)
+    {
+        mCameraPosition = position;
+        mDirty = true;
+    }
+
+    void Scene::SetLookAt(const glm::vec3 &lookat)
+    {
+        mCameraLookAt = lookat;
+        mDirty = true;
+    }
+
+    void Scene::SetMoveDirection(const glm::vec3 &direction)
+    {
+        mCameraMoveDirection = direction;
     }
 
     void Scene::AddDrawable(const Ref<Drawable> &drawable)
@@ -38,7 +67,8 @@ namespace Antomic
 
     void Scene::Update(const uint32_t &time)
     {
-        
+        mCameraPosition += (((float)time / 1000.f) * mCameraMoveDirection);
+        mCameraLookAt += (((float)time / 1000.f) * mCameraMoveDirection);
     }
 
     void Scene::Load()

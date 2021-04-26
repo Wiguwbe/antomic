@@ -23,6 +23,8 @@
 #include "Renderer/Scene.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererWorker.h"
+#include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
 {
@@ -74,16 +76,11 @@ namespace Antomic
 
         // Start renderer worker
         Renderer::StartWorker();
-        mLastRenderTime = Platform::GetCurrentTick();
         while (mRunning)
         {
-            auto currentTime = Platform::GetCurrentTick();
-            // uint32_t time = currentTime - mLastRenderTime;
-            mLastRenderTime = currentTime;
-
             Platform::ProcessEvents();
-            Renderer::SubmitScene(mScene);
-            Renderer::RenderFrame(GetWidth(), GetHeight());
+            auto m_proj = glm::perspective(glm::radians(45.0f), (float)GetWidth() / (float)GetHeight(), 0.1f, 100.0f);
+            Renderer::RenderFrame(GetWidth(), Current().GetHeight(), m_proj);
         }
         // Stop renderer worker
         Renderer::StopWorker();
@@ -95,13 +92,15 @@ namespace Antomic
 
     void Application::SetScene(const Ref<Scene> &scene)
     {
-        if (mScene != nullptr)
-        {
-            mScene->Unload();
-        }
+        auto oldscene = Renderer::GetCurrentScene();
 
-        mScene = scene;
-        mScene->Load();
+        scene->Load();
+        Renderer::SetCurrentScene(scene);
+
+        if (oldscene != nullptr)
+        {
+            oldscene->Unload();
+        }
     }
 
     void Application::LoadScene(const std::string &name)

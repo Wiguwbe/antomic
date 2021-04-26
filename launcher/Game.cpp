@@ -21,25 +21,11 @@ namespace Antomic
 
     Game::Game() : Application("Game")
     {
-        mDirection = {0, 0, 0};
-        mPosition = {0, 0, 3};
-        mLookAt = {0, 0, 0};
     }
 
     void Game::LoadMainScene(const std::string &scene)
     {
-        auto width = (float)GetWidth();
-        auto height = (float)GetHeight();
-
-        mCamera = Camera::CreatePerspective(glm::radians(45.0f), width/height , 0.1f, 100.0f);
-
-        Camera::UpdateCamera(
-            mCamera,
-            mPosition,         // Camera is at (4,3,3), in World Space
-            mLookAt,           // and looks at the origin
-            glm::vec3(0, 1, 0) // Head is up (set to 0,-1,0 to look upside-down)
-        );
-
+        mDirection = glm::vec3(0, 0, 0);
         {
             auto vertexArray = VertexArray::Create();
             auto shader = Shader::CreateFromFile("media/shaders/opengl/vs_demo_1.glsl", "media/shaders/opengl/fs_demo_1.glsl");
@@ -66,17 +52,11 @@ namespace Antomic
             vertexArray->AddVertexBuffer(vertexBuffer);
             vertexArray->SetIndexBuffer(indexBuffer);
 
-            Ref<Scene> scene = CreateRef<Scene>(mCamera);
+            mScene = CreateRef<Scene>();
             auto drawable = CreateRef<Drawable>(vertexArray, shader);
-            scene->AddDrawable(drawable);
-            SetScene(scene);
+            mScene->AddDrawable(drawable);
+            SetScene(mScene);
         }
-    }
-
-    bool Game::OnWindowResize(WindowResizeEvent &event)
-    {
-        Camera::UpdateCamera(mCamera, glm::radians(45.0f), (float)event.GetWidth() / (float)event.GetHeight(), 0.1f, 100.0f);
-        return true;
     }
 
     bool Game::OnKeyPressed(KeyPressedEvent &event)
@@ -100,6 +80,7 @@ namespace Antomic
             break;
         }
 
+        mScene->SetMoveDirection(mDirection);
         return true;
     }
 
@@ -119,6 +100,7 @@ namespace Antomic
             break;
         }
 
+        mScene->SetMoveDirection(mDirection);
         return true;
     }
 

@@ -22,21 +22,25 @@ namespace Antomic
     class RendererFrame
     {
     public:
-        RendererFrame(const glm::mat4 &proj, const glm::mat4 &view)
-            : mProj(proj), mView(view), mQueue() {}
+        RendererFrame(const glm::mat4 &view) : mView(view), mQueue() {}
         virtual ~RendererFrame() {}
 
-        const glm::mat4 &GetProjection() const { return mProj; }
         const glm::mat4 &GetView() const { return mView; }
+
+        inline const uint32_t &GetStartTime() const { return mStartTime; }
+        inline void SetStartTime(uint32_t time) { mStartTime = time; }
+        inline const uint32_t &GetEndTime() const { return mEndTime; }
+        inline void SetEndTime(uint32_t time) { mEndTime = time; }
+
         void QueueDrawable(const Ref<Drawable> &drawable) { mQueue.push(drawable); }
         Ref<Drawable> PopDrawable();
+
         bool Empty() { return mQueue.empty(); }
 
     private:
-        glm::mat4 mProj;
+        uint32_t mStartTime, mEndTime;
         glm::mat4 mView;
         QueueRef<Drawable> mQueue;
     };
-
 
 } // namespace Antomic

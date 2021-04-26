@@ -22,21 +22,27 @@ namespace Antomic
     class Renderer
     {
     public:
-
         static void SubmitScene(const Ref<Scene> &scene);
         static void Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable);
-        static void RenderFrame(uint32_t width, uint32_t height); 
+        static void RenderFrame(uint32_t width, uint32_t height, const glm::mat4 &proj);
         static void QueueFrame(const Ref<RendererFrame> &frame);
         static void StartWorker();
         static void StopWorker();
+        static const Ref<Scene> &GetCurrentScene();
+        static void SetCurrentScene(const Ref<Scene> &scene);
+        inline static const Ref<RendererFrame> GetLastFrame() { return sLastFrame; }
+        inline static uint32_t FrameCount() { return sRenderQueue.size(); }
+        static const uint32_t GetLastFrameTime();
 
     private:
         static const Ref<RendererFrame> PopFrame();
 
     private:
         static QueueRef<RendererFrame> sRenderQueue;
-        static std::mutex sMutex;
         static Ref<RendererWorker> sWorker;
+        static Ref<RendererFrame> sLastFrame;
+        static Ref<Scene> sScene;
+        static std::mutex sFrameMutex, sSceneMutex;
         static std::thread sThread;
     };
 } // namespace Antomic

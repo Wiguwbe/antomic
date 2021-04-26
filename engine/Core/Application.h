@@ -57,7 +57,6 @@ namespace Antomic
         virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent &event) { return true; }
 
         // Scene 
-        const Ref<Scene> &GetScene() const { return mScene; }
         void SetScene(const Ref<Scene>& scene);
         void LoadScene(const std::string& name);
 
@@ -67,8 +66,5 @@ namespace Antomic
     private:
         static Application *sInstance;
         bool mRunning;
-        uint32_t mLastRenderTime;
-        Ref<RendererFrame> mLastFrame;
-        Ref<Scene> mScene;
     };
 } // namespace Antomic

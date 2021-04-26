@@ -15,6 +15,7 @@
 */
 #include "Renderer/Renderer.h"
 #include "Core/Cameras.h"
+#include "Core/Application.h"
 #include "Renderer/RenderCommand.h"
 #include "Renderer/Drawable.h"
 #include "Renderer/Scene.h"
@@ -27,42 +28,59 @@ namespace Antomic
 {
     QueueRef<RendererFrame> Renderer::sRenderQueue;
     Ref<RendererWorker> Renderer::sWorker = nullptr;
-    std::mutex Renderer::sMutex;
+    Ref<RendererFrame> Renderer::sLastFrame = nullptr;
+    Ref<Scene> Renderer::sScene = nullptr;
+    std::mutex Renderer::sSceneMutex;
+    std::mutex Renderer::sFrameMutex;
     std::thread Renderer::sThread;
+
+    const Ref<Scene> &Renderer::GetCurrentScene()
+    {
+        std::lock_guard<std::mutex> lock(sSceneMutex);
+        return sScene;
+    }
+
+    void Renderer::SetCurrentScene(const Ref<Scene> &scene)
+    {
+        std::lock_guard<std::mutex> lock(sSceneMutex);
+        sScene = scene;
+    }
 
     void Renderer::Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable)
     {
         frame->QueueDrawable(drawable);
     }
-    
+
     void Renderer::QueueFrame(const Ref<RendererFrame> &frame)
     {
-        std::lock_guard<std::mutex> lock(sMutex);
+        std::lock_guard<std::mutex> lock(sFrameMutex);
         sRenderQueue.push(frame);
     }
 
     const Ref<RendererFrame> Renderer::PopFrame()
     {
-        std::lock_guard<std::mutex> lock(sMutex);
+        std::lock_guard<std::mutex> lock(sFrameMutex);
         auto scene = sRenderQueue.back();
         sRenderQueue.pop();
         return scene;
     }
 
-    void Renderer::RenderFrame(uint32_t width, uint32_t height)
+    void Renderer::RenderFrame(uint32_t width, uint32_t height, const glm::mat4 &proj)
     {
-        if ( sRenderQueue.empty() )
+        if (sRenderQueue.empty())
+        {
             return;
+        }
 
+        // Get the next frame to be drawn
         auto frame = PopFrame();
 
         RenderCommand::SetViewport(0, 0, width, height);
         RenderCommand::SetClearColor({0.5f, 0.1f, 0.8f, 1.0f});
         RenderCommand::Clear();
 
-        auto m_proj = frame->GetProjection();
         auto m_view = frame->GetView();
-        auto m_projview = m_proj * m_view;
+        auto m_projview = proj * m_view;
 
         while (!frame->Empty())
         {
@@ -71,7 +89,7 @@ namespace Antomic
             auto va = drawable->GetVertexArray();
             auto m_model = drawable->GetMatrix();
 
-            shader->SetUniformValue("m_proj", m_proj);
+            shader->SetUniformValue("m_proj", proj);
             shader->SetUniformValue("m_view", m_view);
             shader->SetUniformValue("m_model", m_model);
             shader->SetUniformValue("m_projview", m_projview);
@@ -80,13 +98,9 @@ namespace Antomic
             RenderCommand::DrawIndexed(va);
         }
 
+        frame->SetEndTime(Platform::GetCurrentTick());
+        sLastFrame = frame;
         Platform::SwapChain();
-    }
-
-    void Renderer::SubmitScene(const Ref<Scene> &scene)
-    {
-        ANTOMIC_ASSERT(sWorker, "RenderWorker: Worker not running")
-        RendererWorker::SubmitScene(scene);
     }
 
     void Renderer::StartWorker()
@@ -103,5 +117,14 @@ namespace Antomic
         sThread.join();
     }
 
+    const uint32_t Renderer::GetLastFrameTime()
+    {
+        if (sLastFrame == nullptr)
+        {
+            return Platform::GetCurrentTick();
+        }
+
+        return sLastFrame->GetEndTime();
+    }
 
 } // namespace Anatomic

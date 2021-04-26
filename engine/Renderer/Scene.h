@@ -23,14 +23,20 @@ namespace Antomic
     class Scene
     {
     public:
-        Scene(const Ref<Camera> &camera);
+        Scene();
         virtual ~Scene();
 
     public:
-        const Ref<Camera> &GetCamera() const { return mCamera; };
-        void SetCamera(const Ref<Camera> &camera) { mCamera = camera; }
-        inline const glm::mat4 &GetProjection() const { return mCamera->GetProjection(); }
-        inline const glm::mat4 &GetView() const { return mCamera->GetView(); }
+        const glm::mat4 &GetViewMatrix();
+
+        inline const glm::vec3 &GetPosition() const { return mCameraPosition; }
+        inline const glm::vec3 &GetLookAt() const { return mCameraLookAt; }
+        inline const glm::vec3 &GetMoveDirection() const { return mCameraMoveDirection; }
+
+        void SetPosition(const glm::vec3 &position);
+        void SetLookAt(const glm::vec3 &lookat);
+        void SetMoveDirection(const glm::vec3 &direction);
+
         void AddDrawable(const Ref<Drawable> &drawable);
         void Load();
         void Unload();
@@ -39,8 +45,12 @@ namespace Antomic
         virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
 
     private:
-        Ref<Camera> mCamera;
         VectorRef<Drawable> mDrawables;
+        glm::vec3 mCameraMoveDirection;
+        glm::vec3 mCameraPosition;
+        glm::vec3 mCameraLookAt;
+        glm::mat4 mViewMatrix;
+        bool mDirty;
     };
 
 } // namespace Antomic

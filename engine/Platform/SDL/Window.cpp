@@ -33,12 +33,13 @@ namespace Antomic
         if (SDL_Init(SDL_INIT_VIDEO) < 0)
         {
             ANTOMIC_TRACE("SDLWindow: Error initializing SDL");
+            return;
         }
 
         switch (api)
         {
-        case RenderAPIDialect::OPENGL:
 #ifdef ANTOMIC_GL_RENDERER
+        case RenderAPIDialect::OPENGL:
 
             ANTOMIC_INFO("SDLWindow: Creating window {0},{1} with OpenGL support", width, height);
             mSDLWindow = SDL_CreateWindow(
@@ -73,25 +74,18 @@ namespace Antomic
             ANTOMIC_INFO("SDLWindow: Using OpenGL version {0}", glGetString(GL_VERSION));
 
             break;
-
-#else
-            ANTOMIC_ASSERT(false, "Renderer: OpenGL not available!");
-            ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
-            SDL_Quit();
-            break;
 #endif
-            break;
         default:
             ANTOMIC_INFO("SDLWindow: Creating window {0},{1} with no Render API support", width, height);
             mSDLWindow = SDL_CreateWindow(
                 title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                 width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-            break;
             if (!mSDLWindow)
             {
                 ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
                 SDL_Quit();
             }
+            break;
         }
 
         SDL_SysWMinfo wmi;

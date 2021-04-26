@@ -15,28 +15,30 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "glm/glm.hpp"
 
 namespace Antomic
 {
-    class RendererFrame
+    class RendererWorker
     {
     public:
-        RendererFrame(const glm::mat4 &proj, const glm::mat4 &view)
-            : mProj(proj), mView(view), mQueue() {}
-        virtual ~RendererFrame() {}
+        RendererWorker();
+        ~RendererWorker();
 
-        const glm::mat4 &GetProjection() const { return mProj; }
-        const glm::mat4 &GetView() const { return mView; }
-        void QueueDrawable(const Ref<Drawable> &drawable) { mQueue.push(drawable); }
-        Ref<Drawable> PopDrawable();
-        bool Empty() { return mQueue.empty(); }
+    public:
+        void Run();
+
+    public:
+        static void SubmitScene(const Ref<Scene> &scene);
+        static const Ref<Scene> PopScene();
+        static void StartWorker();
+        static void StopWorker();
 
     private:
-        glm::mat4 mProj;
-        glm::mat4 mView;
-        QueueRef<Drawable> mQueue;
+        bool mRunning;
+        static QueueRef<Scene> sSceneQueue;
+        static Ref<RendererWorker> sWorker;
+        static std::mutex sMutex;
+        static std::thread sThread;
     };
-
 
 } // namespace Antomic

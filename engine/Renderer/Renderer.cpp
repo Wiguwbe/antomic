@@ -19,26 +19,42 @@
 #include "Renderer/Drawable.h"
 #include "Renderer/Scene.h"
 #include "Renderer/RendererFrame.h"
+#include "Renderer/RendererWorker.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
 {
-    const Ref<RendererFrame> Renderer::SubmitScene(uint32_t width, uint32_t height, const Ref<Scene> &scene)
-    {
-        auto frame = CreateRef<RendererFrame>(scene->GetProjection(), scene->GetView(), width, height);
-        scene->SubmitDrawables(frame);
-        return frame;
-    }
+    QueueRef<RendererFrame> Renderer::sRenderQueue;
+    std::mutex Renderer::sMutex;
 
     void Renderer::Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable)
     {
         frame->QueueDrawable(drawable);
     }
-
-    void Renderer::Flush(const Ref<RendererFrame> &frame)
+    
+    void Renderer::QueueFrame(const Ref<RendererFrame> &frame)
     {
-        RenderCommand::SetViewport(0, 0, frame->GetWidth(), frame->GetHeight());
+        std::lock_guard<std::mutex> lock(sMutex);
+        sRenderQueue.push(frame);
+    }
+
+    const Ref<RendererFrame> Renderer::PopFrame()
+    {
+        std::lock_guard<std::mutex> lock(sMutex);
+        auto scene = sRenderQueue.back();
+        sRenderQueue.pop();
+        return scene;
+    }
+
+    void Renderer::RenderFrame(uint32_t width, uint32_t height)
+    {
+        if ( sRenderQueue.empty() )
+            return;
+
+        auto frame = PopFrame();
+
+        RenderCommand::SetViewport(0, 0, width, height);
         RenderCommand::SetClearColor({0.5f, 0.1f, 0.8f, 1.0f});
         RenderCommand::Clear();
 
@@ -61,6 +77,8 @@ namespace Antomic
             shader->Bind();
             RenderCommand::DrawIndexed(va);
         }
+
+        Platform::SwapChain();
     }
 
 } // namespace Anatomic

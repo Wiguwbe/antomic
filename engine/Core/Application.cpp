@@ -22,6 +22,7 @@
 #include "Events/KeyEvent.h"
 #include "Renderer/Scene.h"
 #include "Renderer/Renderer.h"
+#include "Renderer/RendererWorker.h"
 
 namespace Antomic
 {
@@ -71,6 +72,8 @@ namespace Antomic
 
         mRunning = true;
 
+        // Start renderer worker
+        RendererWorker::StartWorker();
         mLastRenderTime = Platform::GetCurrentTick();
         while (mRunning)
         {
@@ -80,10 +83,12 @@ namespace Antomic
 
             Platform::ProcessEvents();
             Update(time);
-            auto frame = Renderer::SubmitScene(GetWidth(), GetHeight(), mScene);
+            RendererWorker::SubmitScene(mScene);
+            Renderer::RenderFrame(GetWidth(), GetHeight());
             mStack.Submit();
-            Platform::UpdateWindow();
         }
+        // Stop renderer worker
+        RendererWorker::StopWorker();
 
         // We clean the layer stack since some
         // layers might need to clean some resources

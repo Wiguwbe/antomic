@@ -14,7 +14,7 @@
    limitations under the License.
 */
 #include "Renderer/Scene.h"
-#include "Renderer/Renderer.h"
+#include "Renderer/RendererWorker.h"
 #include "Renderer/RendererFrame.h"
 #include "Core/Cameras.h"
 #include "Core/Log.h"
@@ -55,7 +55,5 @@ namespace Antomic
         {
             frame->QueueDrawable(drawable);
         }
-
-        Renderer::Flush(frame);
     }
 }

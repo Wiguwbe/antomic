@@ -47,7 +47,7 @@ namespace Antomic
 
         // Window Operations & Handling
         inline static const Scope<Window> &GetWindow() { return sWindow; }
-        inline static void UpdateWindow() { sWindow->Update(); }
+        inline static void SwapChain() { sWindow->SwapChain(); }
         inline static uint32_t GetWindowWidth() { return sWindow->GetWidth(); }
         inline static uint32_t GetWindowHeight() { return sWindow->GetHeight(); }
         inline static const std::string &GetWindowTitle() { return sWindow->GetTitle(); }

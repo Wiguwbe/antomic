@@ -138,7 +138,7 @@ namespace Antomic
         mTitle = title;
     }
 
-    void SDLWindow::Update()
+    void SDLWindow::SwapChain()
     {
 #ifdef ANTOMIC_GL_RENDERER
         SDL_GL_SwapWindow(mSDLWindow);

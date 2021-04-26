@@ -22,9 +22,7 @@
 namespace Antomic
 {
     QueueRef<Scene> RendererWorker::sSceneQueue;
-    Ref<RendererWorker> RendererWorker::sWorker = nullptr;
     std::mutex RendererWorker::sMutex;
-    std::thread RendererWorker::sThread;
 
     RendererWorker::RendererWorker()
         : mRunning(false)
@@ -35,19 +33,6 @@ namespace Antomic
     {
     }
 
-    void RendererWorker::StartWorker()
-    {
-        ANTOMIC_ASSERT(!sWorker, "RenderWorker: Worker already running")
-        sWorker = CreateRef<RendererWorker>();
-        sThread = std::thread(&RendererWorker::Run, sWorker);
-    }
-
-    void RendererWorker::StopWorker()
-    {
-        ANTOMIC_ASSERT(sWorker, "RenderWorker: Worker not running")
-        sWorker->mRunning = false;
-        sThread.join();
-    }
 
     void RendererWorker::SubmitScene(const Ref<Scene> &scene)
     {
@@ -88,5 +73,11 @@ namespace Antomic
 
         ANTOMIC_INFO("RendererWorker: Render worker stopped");
     }
+
+    void RendererWorker::Stop()
+    {
+        mRunning = false;
+    }
+
 
 } // namespace Antomic

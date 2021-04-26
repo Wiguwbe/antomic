@@ -22,9 +22,13 @@ namespace Antomic
     class Renderer
     {
     public:
+
+        static void SubmitScene(const Ref<Scene> &scene);
         static void Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable);
         static void RenderFrame(uint32_t width, uint32_t height); 
         static void QueueFrame(const Ref<RendererFrame> &frame);
+        static void StartWorker();
+        static void StopWorker();
 
     private:
         static const Ref<RendererFrame> PopFrame();
@@ -32,5 +36,7 @@ namespace Antomic
     private:
         static QueueRef<RendererFrame> sRenderQueue;
         static std::mutex sMutex;
+        static Ref<RendererWorker> sWorker;
+        static std::thread sThread;
     };
 } // namespace Antomic

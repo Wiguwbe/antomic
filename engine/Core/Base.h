@@ -97,6 +97,7 @@ namespace Antomic
     class Drawable;
     class Shader;
     class RendererFrame;
+    class RendererWorker;
 
     using EventHandler = std::function<void(Event&)>;
 

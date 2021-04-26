@@ -26,19 +26,16 @@ namespace Antomic
 
     public:
         void Run();
-
+        void Stop();
+        
     public:
         static void SubmitScene(const Ref<Scene> &scene);
         static const Ref<Scene> PopScene();
-        static void StartWorker();
-        static void StopWorker();
 
     private:
         bool mRunning;
         static QueueRef<Scene> sSceneQueue;
-        static Ref<RendererWorker> sWorker;
         static std::mutex sMutex;
-        static std::thread sThread;
     };
 
 } // namespace Antomic

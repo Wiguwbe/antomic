@@ -61,19 +61,14 @@ namespace Antomic
         void SetScene(const Ref<Scene>& scene);
         void LoadScene(const std::string& name);
 
-        // Render & Update
-        void Update(const uint32_t &time);
-
     public:
         static Application &Current() { return *sInstance; }
-
-    protected:
-        LayerStack mStack;
 
     private:
         static Application *sInstance;
         bool mRunning;
         uint32_t mLastRenderTime;
+        Ref<RendererFrame> mLastFrame;
         Ref<Scene> mScene;
     };
 } // namespace Antomic

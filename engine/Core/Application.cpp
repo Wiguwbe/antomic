@@ -73,29 +73,20 @@ namespace Antomic
         mRunning = true;
 
         // Start renderer worker
-        RendererWorker::StartWorker();
+        Renderer::StartWorker();
         mLastRenderTime = Platform::GetCurrentTick();
         while (mRunning)
         {
             auto currentTime = Platform::GetCurrentTick();
-            uint32_t time = currentTime - mLastRenderTime;
+            // uint32_t time = currentTime - mLastRenderTime;
             mLastRenderTime = currentTime;
 
             Platform::ProcessEvents();
-            Update(time);
-            RendererWorker::SubmitScene(mScene);
+            Renderer::SubmitScene(mScene);
             Renderer::RenderFrame(GetWidth(), GetHeight());
-            mStack.Submit();
         }
         // Stop renderer worker
-        RendererWorker::StopWorker();
-
-        // We clean the layer stack since some
-        // layers might need to clean some resources
-        while (!mStack.Empty())
-        {
-            mStack.PopFront();
-        }
+        Renderer::StopWorker();
     }
 
     void Application::ToggleFullscreen(bool value)
@@ -117,15 +108,6 @@ namespace Antomic
     {
     }
 
-    void Application::Update(const uint32_t &time)
-    {
-        mStack.Update(time);
-        if (mScene != nullptr)
-        {
-            mScene->Update(time);
-        }
-    }
-
     void Application::OnEvent(Event &event)
     {
         EventDispatcher dispatcher(event);
@@ -133,9 +115,6 @@ namespace Antomic
         // Dispatch Windows Events
         dispatcher.Dispatch<WindowCloseEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowResize));
-
-        // Dispatch Events to the stack first
-        mStack.OnEvent(event);
 
         // Dispatch key events to be handled by the application
         dispatcher.Dispatch<KeyPressedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnKeyPressed));

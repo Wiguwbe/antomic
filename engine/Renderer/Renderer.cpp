@@ -26,7 +26,9 @@
 namespace Antomic
 {
     QueueRef<RendererFrame> Renderer::sRenderQueue;
+    Ref<RendererWorker> Renderer::sWorker = nullptr;
     std::mutex Renderer::sMutex;
+    std::thread Renderer::sThread;
 
     void Renderer::Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable)
     {
@@ -80,5 +82,26 @@ namespace Antomic
 
         Platform::SwapChain();
     }
+
+    void Renderer::SubmitScene(const Ref<Scene> &scene)
+    {
+        ANTOMIC_ASSERT(sWorker, "RenderWorker: Worker not running")
+        RendererWorker::SubmitScene(scene);
+    }
+
+    void Renderer::StartWorker()
+    {
+        ANTOMIC_ASSERT(!sWorker, "RenderWorker: Worker already running")
+        sWorker = CreateRef<RendererWorker>();
+        sThread = std::thread(&RendererWorker::Run, sWorker);
+    }
+
+    void Renderer::StopWorker()
+    {
+        ANTOMIC_ASSERT(sWorker, "RenderWorker: Worker not running")
+        sWorker->Stop();
+        sThread.join();
+    }
+
 
 } // namespace Anatomic

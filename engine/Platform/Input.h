@@ -141,7 +141,7 @@ namespace Antomic
 				Keys[i] = false;
 			}			
 		}
-		u_int8_t Modifiers;
+		uint8_t Modifiers;
 		bool Keys[Key::Count];
 	};
 

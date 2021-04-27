@@ -249,6 +249,9 @@ namespace Antomic
             case SDL_MOUSEMOTION:
             {
                 const SDL_MouseMotionEvent &mev = currentEvent.motion;
+                mMouseState.X = mev.x;
+                mMouseState.Y = mev.y;
+                mMouseState.Z = 0;
                 MouseMovedEvent event(mev.x, mev.y);
                 mHandler(event);
             }
@@ -278,12 +281,14 @@ namespace Antomic
                 case SDL_PRESSED:
                 {
                     MouseButtonPressedEvent event(button);
+                    mMouseState.Buttons[button] = true;
                     mHandler(event);
                 }
                 break;
                 case SDL_RELEASED:
                 {
                     MouseButtonReleasedEvent event(button);
+                    mMouseState.Buttons[button] = false;
                     mHandler(event);
                 }
                 break;
@@ -294,6 +299,9 @@ namespace Antomic
             {
                 const SDL_MouseWheelEvent &mev = currentEvent.wheel;
                 MouseScrolledEvent event(mev.x, mev.y);
+                mMouseState.X = mev.x;
+                mMouseState.Y = mev.y;
+                mMouseState.Z = 0;
                 mHandler(event);
             }
             break;
@@ -302,11 +310,9 @@ namespace Antomic
                 const SDL_KeyboardEvent &kev = currentEvent.key;
                 uint8_t modifiers = translateKeyModifiers(kev.keysym.mod);
                 Key::Enum key = translateKey(kev.keysym.scancode);
-
 #if ANTOMIC_DEBUG
                 ANTOMIC_INFO("SDL scancode {0}, key {1}, name {2}, key name {3}", kev.keysym.scancode, key, SDL_GetScancodeName(kev.keysym.scancode), SDL_GetKeyName(kev.keysym.scancode));
 #endif
-
                 /// If you only press (e.g.) 'shift' and nothing else, then key == 'shift', modifier == 0.
                 /// Further along, pressing 'shift' + 'ctrl' would be: key == 'shift', modifier == 'ctrl.
                 if (0 == key && 0 == modifiers)
@@ -314,6 +320,7 @@ namespace Antomic
                     modifiers = translateKeyModifierPress(kev.keysym.scancode);
                 }
                 mKeyState.Keys[key] = true;
+                mKeyState.Modifiers = modifiers;
                 KeyPressedEvent event(key, modifiers, kev.repeat);
                 mHandler(event);
             }
@@ -326,6 +333,7 @@ namespace Antomic
                 Key::Enum key = translateKey(kev.keysym.scancode);
                 KeyReleasedEvent event(key, modifiers);
                 mKeyState.Keys[key] = false;
+                mKeyState.Modifiers = modifiers;
                 mHandler(event);
             }
             break;

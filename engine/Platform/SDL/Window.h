@@ -34,7 +34,7 @@ namespace Antomic
         virtual void SetTitle(const std::string &title) override;
         virtual bool IsValid() const override { return mSDLWindow != nullptr; };
         virtual void SetEventHandler(const EventHandler &handler) override { mHandler = handler; } 
-        virtual void SwapChain() override;
+        virtual void SwapBuffer() override;
         virtual void ProcessEvents() override;
         virtual void ToggleFullscreen() override;
         virtual void SetMouseLock(bool lock) override;

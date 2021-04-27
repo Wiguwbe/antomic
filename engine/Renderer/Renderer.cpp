@@ -102,7 +102,7 @@ namespace Antomic
         }
 
         mLastFrame = frame;
-        Platform::SwapChain();
+        Platform::SwapBuffer();
     }
 
     const uint32_t Renderer::GetLastFrameTime()

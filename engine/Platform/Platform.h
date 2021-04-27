@@ -18,6 +18,7 @@
 #include "Platform/RenderAPI.h"
 #include "Platform/Window.h"
 #include "Platform/Input.h"
+#include "glm/glm.hpp"
 
 namespace Antomic
 {
@@ -45,10 +46,13 @@ namespace Antomic
         // Input Operations & Handling
         inline static const Scope<Input> &GetInput() { return sInput; }
         inline static bool IsKeyPressed(Key::Enum key) { return sInput->IsKeyPressed(key); }
+		inline bool IsMouseButtonPressed(MouseButton::Enum button) { return sInput->IsMouseButtonPressed(button);}
+		inline uint8_t GetKeyModifiers() { return sInput->GetKeyModifiers(); }
+		inline glm::vec3 GetMousePosition() { return sInput->GetMousePosition(); }
 
         // Window Operations & Handling
         inline static const Scope<Window> &GetWindow() { return sWindow; }
-        inline static void SwapChain() { sWindow->SwapChain(); }
+        inline static void SwapBuffer() { sWindow->SwapBuffer(); }
         inline static uint32_t GetWindowWidth() { return sWindow->GetWidth(); }
         inline static uint32_t GetWindowHeight() { return sWindow->GetHeight(); }
         inline static const std::string &GetWindowTitle() { return sWindow->GetTitle(); }

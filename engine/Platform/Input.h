@@ -16,37 +16,10 @@
 #pragma once
 #include "Core/Base.h"
 #include "Core/Log.h"
+#include "glm/glm.hpp"
 
 namespace Antomic
 {
-	struct MouseButton
-	{
-		enum Enum
-		{
-			Left,
-			Middle,
-			Right,
-			None,
-
-			Count
-		};
-	};
-
-	struct GamepadAxis
-	{
-		enum Enum
-		{
-			LeftX,
-			LeftY,
-			LeftZ,
-			RightX,
-			RightY,
-			RightZ,
-
-			Count
-		};
-	};
-
 	struct Modifier
 	{
 		enum Enum
@@ -158,33 +131,63 @@ namespace Antomic
 		};
 	};
 
-	struct KeyState {
-
+	struct KeyState 
+	{
 		KeyState()
+			: Modifiers(0)
 		{
 			for (uint32_t i = 0; i < Key::Count; ++i)
 			{
 				Keys[i] = false;
 			}			
 		}
+		u_int8_t Modifiers;
 		bool Keys[Key::Count];
+	};
+
+	struct MouseButton
+	{
+		enum Enum
+		{
+			Left,
+			Middle,
+			Right,
+			None,
+
+			Count
+		};
 	};
 
 	struct MouseState
 	{
 		MouseState()
-			: mmx(0), mmy(0), mmz(0)
+			: X(0), Y(0), Z(0)
 		{
 			for (uint32_t i = 0; i < MouseButton::Count; ++i)
 			{
-				mbuttons[i] = MouseButton::None;
+				Buttons[i] = false;
 			}
 		}
 
-		int32_t mmx;
-		int32_t mmy;
-		int32_t mmz;
-		uint8_t mbuttons[MouseButton::Count];
+		int32_t X;
+		int32_t Y;
+		int32_t Z;
+		bool Buttons[MouseButton::Count];
+	};
+
+	struct GamepadAxis
+	{
+		enum Enum
+		{
+			LeftX,
+			LeftY,
+			LeftZ,
+			RightX,
+			RightY,
+			RightZ,
+
+			Count
+		};
 	};
 
 	struct GamepadState
@@ -209,6 +212,9 @@ namespace Antomic
 		virtual void ProcessEvents() = 0;
 		virtual void SetEventHandler(const EventHandler &handler) = 0;
 		virtual bool IsKeyPressed(Key::Enum key) = 0;
+		virtual bool IsMouseButtonPressed(MouseButton::Enum button) = 0;
+		virtual uint8_t GetKeyModifiers() = 0;
+		virtual glm::vec3 GetMousePosition() = 0;
 	};
 
 } // namespace Antomic

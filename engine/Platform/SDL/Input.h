@@ -29,11 +29,15 @@ namespace Antomic
     public:
         virtual void ProcessEvents() override;
         virtual void SetEventHandler(const EventHandler &handler) override { mHandler = handler; }
-		virtual bool IsKeyPressed(Key::Enum key) override { return mKeyState.Keys[key]; };
+        virtual bool IsKeyPressed(Key::Enum key) override { return mKeyState.Keys[key]; }
+        virtual bool IsMouseButtonPressed(MouseButton::Enum button) override { return mMouseState.Buttons[button]; };
+        virtual uint8_t GetKeyModifiers() override { return mKeyState.Modifiers; };
+        virtual glm::vec3 GetMousePosition() override{return glm::vec3(mMouseState.X, mMouseState.Y, mMouseState.Z); };
 
     protected:
         EventHandler mHandler;
         KeyState mKeyState;
+        MouseState mMouseState;
     };
 
 } // namespace Antomic

@@ -86,7 +86,7 @@ namespace Antomic
             break;
         }
 
-        mScene->SetMoveDirection(mDirection);
+        // mScene->SetMoveDirection(mDirection);
         return true;
     }
 
@@ -109,7 +109,7 @@ namespace Antomic
             break;
         }
 
-        mScene->SetMoveDirection(mDirection);
+        // mScene->SetMoveDirection(mDirection);
         return true;
     }
 

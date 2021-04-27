@@ -21,15 +21,11 @@ namespace Antomic
     class RendererWorker
     {
     public:
-        RendererWorker();
-        ~RendererWorker();
+        RendererWorker() = default;
+        ~RendererWorker() = default;
 
     public:
         void Run();
-        void Stop();
-        
-    private:
-        bool mRunning;
     };
 
 } // namespace Antomic

@@ -93,9 +93,12 @@ namespace Antomic
     class VertexBuffer;
     class Scene;
     class Camera;
+    class PerspectiveCamera;
+    class OrtographicCamera;
     class Bindable;
     class Drawable;
     class Shader;
+    class Renderer;
     class RendererFrame;
     class RendererWorker;
 

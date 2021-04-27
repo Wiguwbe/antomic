@@ -15,13 +15,13 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Core/Cameras.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
 {
     enum class SceneType
     {
+        NONE,
         SCENE_2D,
         SCENE_3D,
     };
@@ -29,21 +29,13 @@ namespace Antomic
     class Scene
     {
     public:
-        Scene(SceneType type = SceneType::SCENE_3D);
-        virtual ~Scene();
+        Scene() = default;
+        virtual ~Scene() = default;
 
     public:
-        const glm::mat4 &GetViewMatrix();
-        glm::mat4 GetProjectionMatrix(uint32_t width, uint32_t height);
-
-        inline const SceneType &GetSceneType() const { return mSceneType; }
-        inline const glm::vec3 &GetPosition() const { return mCameraPosition; }
-        inline const glm::vec3 &GetLookAt() const { return mCameraLookAt; }
-        inline const glm::vec3 &GetMoveDirection() const { return mCameraMoveDirection; }
-
-        void SetPosition(const glm::vec3 &position);
-        void SetLookAt(const glm::vec3 &lookat);
-        void SetMoveDirection(const glm::vec3 &direction);
+        inline const glm::mat4 &GetViewMatrix() const { return mViewMatrix; }
+        inline const Ref<Camera> &GetActiveCamera() const { return mActiveCamera; }
+        inline const SceneType &GetType() const { return mType; }
 
         void AddDrawable(const Ref<Drawable> &drawable);
         void Load();
@@ -54,13 +46,14 @@ namespace Antomic
 
     private:
         VectorRef<Drawable> mDrawables;
-        glm::vec3 mCameraMoveDirection;
-        glm::vec3 mCameraPosition;
-        glm::vec3 mCameraLookAt;
         glm::mat4 mViewMatrix;
-        glm::mat4 mProjectionMatrix;
+        Ref<Camera> mActiveCamera;
+        SceneType mType;
+
+    private:
+        glm::vec3 mCameraMoveDirection;
+        glm::vec3 mCameraLookAt;
         bool mDirty;
-        SceneType mSceneType;
     };
 
 } // namespace Antomic

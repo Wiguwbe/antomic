@@ -21,15 +21,8 @@ namespace Antomic
     class RendererFrame
     {
     public:
-        RendererFrame(Ref<Scene> scene) : mDrawableQueue(), mScene(scene) {}
-        virtual ~RendererFrame() {}
-
-        const Ref<Scene> &GetScene() const { return mScene; }
-
-        inline const uint32_t &GetStartTime() const { return mStartTime; }
-        inline void SetStartTime(uint32_t time) { mStartTime = time; }
-        inline const uint32_t &GetEndTime() const { return mEndTime; }
-        inline void SetEndTime(uint32_t time) { mEndTime = time; }
+        RendererFrame();
+        virtual ~RendererFrame() = default;
 
         void QueueDrawable(const Ref<Drawable> &drawable) { mDrawableQueue.push(drawable); }
         Ref<Drawable> PopDrawable();
@@ -37,9 +30,7 @@ namespace Antomic
         bool Empty() { return mDrawableQueue.empty(); }
 
     private:
-        uint32_t mStartTime, mEndTime;
         QueueRef<Drawable> mDrawableQueue;
-        Ref<Scene> mScene;
     };
 
 } // namespace Antomic

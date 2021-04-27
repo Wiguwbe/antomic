@@ -45,7 +45,7 @@ namespace Antomic
 
         // Windows Events
         virtual bool OnWindowClose(WindowCloseEvent &event);
-        virtual bool OnWindowResize(WindowResizeEvent &event) { return true; }
+        virtual bool OnWindowResize(WindowResizeEvent &event);
 
         // Keys Events
         virtual bool OnKeyPressed(KeyPressedEvent &event) { return true; }
@@ -68,5 +68,7 @@ namespace Antomic
         static Application *sInstance;
         bool mRunning;
         glm::mat4 mProjMatrix;
+        Ref<Renderer> mRenderer;
+
     };
 } // namespace Antomic

@@ -61,6 +61,8 @@ namespace Antomic
         }
 
         Platform::SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
+        RendererViewport viewport = {0, 0, _width, _height};
+        mRenderer = CreateRef<Renderer>(viewport);
     }
 
     Application::~Application()
@@ -74,15 +76,11 @@ namespace Antomic
 
         mRunning = true;
 
-        // Start renderer worker
-        Renderer::StartWorker();
         while (mRunning)
         {
             Platform::ProcessEvents();
-            Renderer::RenderFrame(GetWidth(), GetHeight());
+            mRenderer->RenderFrame();
         }
-        // Stop renderer worker
-        Renderer::StopWorker();
     }
 
     void Application::ToggleFullscreen(bool value)
@@ -91,10 +89,10 @@ namespace Antomic
 
     void Application::SetScene(const Ref<Scene> &scene)
     {
-        auto oldscene = Renderer::GetCurrentScene();
+        auto oldscene = mRenderer->GetCurrentScene();
 
         scene->Load();
-        Renderer::SetCurrentScene(scene);
+        mRenderer->SetCurrentScene(scene);
 
         if (oldscene != nullptr)
         {
@@ -128,6 +126,14 @@ namespace Antomic
     bool Application::OnWindowClose(WindowCloseEvent &event)
     {
         mRunning = false;
+        return true;
+    }
+
+    bool Application::OnWindowResize(WindowResizeEvent &event)
+    {
+        ANTOMIC_ASSERT(mRenderer, "Application: Renderer not available");
+        RendererViewport viewport = {0, 0, event.GetWidth(), event.GetHeight()};
+        mRenderer->SetViewport(viewport);
         return true;
     }
 

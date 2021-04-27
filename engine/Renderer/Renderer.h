@@ -19,30 +19,47 @@
 
 namespace Antomic
 {
+    struct RendererViewport
+    {
+        uint32_t Left;
+        uint32_t Top;
+        uint32_t Right;
+        uint32_t Bottom;
+
+        RendererViewport(uint32_t left, uint32_t top, uint32_t right, uint32_t bottom)
+            : Left(left), Top(top), Right(right), Bottom(bottom)  {}
+
+        RendererViewport(uint32_t right, uint32_t bottom)
+            : Left(0), Top(0), Right(right), Bottom(bottom) {}
+
+        RendererViewport()
+            : Left(0), Top(0), Right(0), Bottom(0) {}
+    };
+
     class Renderer
     {
     public:
-        static void SubmitScene(const Ref<Scene> &scene);
-        static void Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable);
-        static void RenderFrame(uint32_t width, uint32_t height);
-        static void QueueFrame(const Ref<RendererFrame> &frame);
-        static void StartWorker();
-        static void StopWorker();
-        static const Ref<Scene> &GetCurrentScene();
-        static void SetCurrentScene(const Ref<Scene> &scene);
-        inline static const Ref<RendererFrame> GetLastFrame() { return sLastFrame; }
-        inline static uint32_t FrameCount() { return sRenderQueue.size(); }
-        static const uint32_t GetLastFrameTime();
+        Renderer(const RendererViewport& viewport);
+        ~Renderer() = default;
+
+    public:
+        void RenderFrame();
+
+        const Ref<Scene> &GetCurrentScene();
+        void SetCurrentScene(const Ref<Scene> &scene);
+
+        inline const Ref<RendererFrame> GetLastFrame() const { return mLastFrame; }
+        inline const glm::mat4 &GetProjectionMatrix() const { return mProjectionMatrix; }
+        const uint32_t GetLastFrameTime();
+
+        inline const RendererViewport &GetViewport() const { return mViewport; }
+        void SetViewport(const RendererViewport& viewport );
 
     private:
-        static const Ref<RendererFrame> PopFrame();
-
-    private:
-        static QueueRef<RendererFrame> sRenderQueue;
-        static Ref<RendererWorker> sWorker;
-        static Ref<RendererFrame> sLastFrame;
-        static Ref<Scene> sScene;
-        static std::mutex sFrameMutex, sSceneMutex;
-        static std::thread sThread;
+        Ref<RendererFrame> mLastFrame;
+        uint32_t mLastFrameTime;
+        Ref<Scene> mScene;
+        RendererViewport mViewport;
+        glm::mat4 mProjectionMatrix;
     };
 } // namespace Antomic

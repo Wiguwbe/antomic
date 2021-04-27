@@ -15,75 +15,75 @@
 */
 #include "Renderer/Renderer.h"
 #include "Renderer/Scene.h"
-#include "Core/Cameras.h"
-#include "Core/Application.h"
+#include "Renderer/Camera.h"
 #include "Renderer/RenderCommand.h"
 #include "Renderer/Drawable.h"
 #include "Renderer/Scene.h"
 #include "Renderer/RendererFrame.h"
 #include "Renderer/RendererWorker.h"
+#include "Core/Application.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
 {
-    QueueRef<RendererFrame> Renderer::sRenderQueue;
-    Ref<RendererWorker> Renderer::sWorker = nullptr;
-    Ref<RendererFrame> Renderer::sLastFrame = nullptr;
-    Ref<Scene> Renderer::sScene = nullptr;
-    std::mutex Renderer::sSceneMutex;
-    std::mutex Renderer::sFrameMutex;
-    std::thread Renderer::sThread;
+    Renderer::Renderer(const RendererViewport &viewport)
+    {
+        SetViewport(viewport);
+    }
 
     const Ref<Scene> &Renderer::GetCurrentScene()
     {
-        std::lock_guard<std::mutex> lock(sSceneMutex);
-        return sScene;
+        return mScene;
     }
 
     void Renderer::SetCurrentScene(const Ref<Scene> &scene)
     {
-        std::lock_guard<std::mutex> lock(sSceneMutex);
-        sScene = scene;
+        mScene = scene;
+        ANTOMIC_ASSERT(mScene->GetActiveCamera(),"Renderer: Scene without active camera!")
+        mProjectionMatrix = mScene->GetActiveCamera()->GetProjectionMatrix(mViewport);
     }
 
-    void Renderer::Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable)
+    void Renderer::SetViewport(const RendererViewport &viewport)
     {
-        frame->QueueDrawable(drawable);
+        mViewport = viewport;
+        if (mScene == nullptr)
+        {
+            mProjectionMatrix = glm::mat4(1.0f);
+            return;
+        }
+        ANTOMIC_ASSERT(mScene->GetActiveCamera(),"Renderer: Scene without active camera!")
+        mProjectionMatrix = mScene->GetActiveCamera()->GetProjectionMatrix(mViewport);
     }
 
-    void Renderer::QueueFrame(const Ref<RendererFrame> &frame)
+    void Renderer::RenderFrame()
     {
-        std::lock_guard<std::mutex> lock(sFrameMutex);
-        sRenderQueue.push(frame);
-    }
-
-    const Ref<RendererFrame> Renderer::PopFrame()
-    {
-        std::lock_guard<std::mutex> lock(sFrameMutex);
-        auto scene = sRenderQueue.back();
-        sRenderQueue.pop();
-        return scene;
-    }
-
-    void Renderer::RenderFrame(uint32_t width, uint32_t height)
-    {
-        if (sRenderQueue.empty())
+        if (mScene == nullptr)
         {
             return;
         }
 
-        // Get the next frame to be drawn
-        auto frame = PopFrame();
+        // Create a new frame
+        auto frame = CreateRef<RendererFrame>();
 
-        RenderCommand::SetViewport(0, 0, width, height);
+        // Get the time passed since last frame
+        auto currentTime = Platform::GetCurrentTick();
+
+        // Update the current scene state
+        // Get the time passed since last frame
+        auto timestep = currentTime - Renderer::GetLastFrameTime();
+        mLastFrameTime = currentTime;
+        mScene->Update(timestep);
+
+        // Ask scene to submit drawables to this frame
+        mScene->SubmitDrawables(frame);
+
+        RenderCommand::SetViewport(mViewport.Left, mViewport.Top, mViewport.Right, mViewport.Bottom);
         RenderCommand::SetClearColor({0.5f, 0.1f, 0.8f, 1.0f});
         RenderCommand::Clear();
 
-        auto scene = frame->GetScene();
-
-        auto m_proj = scene->GetProjectionMatrix(width, height);
-        auto m_view = scene->GetViewMatrix();
+        auto m_proj = mProjectionMatrix;
+        auto m_view = mScene->GetViewMatrix();
         auto m_projview = m_proj * m_view;
 
         while (!frame->Empty())
@@ -102,33 +102,18 @@ namespace Antomic
             RenderCommand::DrawIndexed(va);
         }
 
-        frame->SetEndTime(Platform::GetCurrentTick());
-        sLastFrame = frame;
+        mLastFrame = frame;
         Platform::SwapChain();
-    }
-
-    void Renderer::StartWorker()
-    {
-        ANTOMIC_ASSERT(!sWorker, "RenderWorker: Worker already running")
-        sWorker = CreateRef<RendererWorker>();
-        sThread = std::thread(&RendererWorker::Run, sWorker);
-    }
-
-    void Renderer::StopWorker()
-    {
-        ANTOMIC_ASSERT(sWorker, "RenderWorker: Worker not running")
-        sWorker->Stop();
-        sThread.join();
     }
 
     const uint32_t Renderer::GetLastFrameTime()
     {
-        if (sLastFrame == nullptr)
+        if (mLastFrame == nullptr)
         {
             return Platform::GetCurrentTick();
         }
 
-        return sLastFrame->GetEndTime();
+        return mLastFrameTime;
     }
 
 } // namespace Anatomic

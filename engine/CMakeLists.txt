@@ -16,10 +16,20 @@ target_link_libraries(
 )
 
 # SDL 
-target_link_libraries( 
-    "${PROJECT_NAME}Engine"
-    SDL2::Main
-)
+if (SDL_SUPPORT)
+    target_link_libraries( 
+        "${PROJECT_NAME}Engine"
+        SDL2::Main
+    )
+ENDIF()
+
+# GLFW 
+if (GLFW_SUPPORT)
+    target_link_libraries( 
+        "${PROJECT_NAME}Engine"
+        glfw
+    )
+ENDIF()
 
 # OpenGL
 target_include_directories( 

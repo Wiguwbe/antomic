@@ -34,7 +34,7 @@ namespace Antomic
         virtual uint8_t GetKeyModifiers() override { return mKeyState.Modifiers; };
         virtual glm::vec3 GetMousePosition() override{return glm::vec3(mMouseState.X, mMouseState.Y, mMouseState.Z); };
 
-    protected:
+    private:
         EventHandler mHandler;
         KeyState mKeyState;
         MouseState mMouseState;

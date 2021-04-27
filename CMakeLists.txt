@@ -53,6 +53,17 @@ if(NOT DEFINED ENV{ANTOMIC_NO_SDL})
     endif()
 else()
     set(SDL_SUPPORT false)
+    set(GLFW_SUPPORT true)
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)    
+    include(3rdparty/CMakeLists.glfw.txt)
+    add_definitions(-DANTOMIC_GLFW_PLATFORM)
+    if(WIN32)
+        add_definitions(-DANTOMIC_WINDOWS_GLFW_PLATFORM)
+    elseif(UNIX)
+        add_definitions(-DANTOMIC_LINUX_GLFW_PLATFORM)
+    endif()
 endif() 
 
 # std::chrono support
@@ -60,7 +71,6 @@ endif()
 if(NOT DEFINED ENV{ANTOMIC_NO_CHRONO} AND NOT SDL_SUPPORT)
     add_definitions(-DANTOMIC_CHRONO_SUPPORT)
 endif() 
-
 
 # OpenGL RenderAPI Support
 # https://www.opengl.org/

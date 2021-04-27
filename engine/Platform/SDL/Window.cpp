@@ -26,7 +26,7 @@ namespace Antomic
 {
     SDLWindow::SDLWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api)
     {
-        mSDLWindow = nullptr;
+        mWindow = nullptr;
 #ifdef ANTOMIC_GL_RENDERER
         mGLContext = nullptr;
 #endif
@@ -42,22 +42,22 @@ namespace Antomic
         case RenderAPIDialect::OPENGL:
 
             ANTOMIC_INFO("SDLWindow: Creating window {0},{1} with OpenGL support", width, height);
-            mSDLWindow = SDL_CreateWindow(
+            mWindow = SDL_CreateWindow(
                 title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                 width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
-            if (!mSDLWindow)
+            if (!mWindow)
             {
                 ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
                 SDL_Quit();
             }
 
-            mGLContext = SDL_GL_CreateContext(mSDLWindow);
+            mGLContext = SDL_GL_CreateContext(mWindow);
             if (!mGLContext)
             {
                 ANTOMIC_TRACE("SDLWindow: Error creating OpenGL context");
-                SDL_DestroyWindow(mSDLWindow);
-                mSDLWindow = nullptr;
+                SDL_DestroyWindow(mWindow);
+                mWindow = nullptr;
                 SDL_Quit();
             }
 
@@ -65,9 +65,9 @@ namespace Antomic
             {
                 ANTOMIC_TRACE("SDLWindow: Error initializing Glad");
                 SDL_GL_DeleteContext(mGLContext);
-                SDL_DestroyWindow(mSDLWindow);
+                SDL_DestroyWindow(mWindow);
                 mGLContext = nullptr;
-                mSDLWindow = nullptr;
+                mWindow = nullptr;
                 SDL_Quit();
             }
 
@@ -77,10 +77,10 @@ namespace Antomic
 #endif
         default:
             ANTOMIC_INFO("SDLWindow: Creating window {0},{1} with no Render API support", width, height);
-            mSDLWindow = SDL_CreateWindow(
+            mWindow = SDL_CreateWindow(
                 title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                 width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-            if (!mSDLWindow)
+            if (!mWindow)
             {
                 ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
                 SDL_Quit();
@@ -91,15 +91,15 @@ namespace Antomic
         SDL_SysWMinfo wmi;
         SDL_VERSION(&wmi.version);
 
-        if (!SDL_GetWindowWMInfo(mSDLWindow, &wmi))
+        if (!SDL_GetWindowWMInfo(mWindow, &wmi))
         {
             ANTOMIC_TRACE("SDLWindow: Error retrieving window information");
 #ifdef ANTOMIC_GL_RENDERER
             SDL_GL_DeleteContext(mGLContext);
             mGLContext = nullptr;
 #endif
-            SDL_DestroyWindow(mSDLWindow);
-            mSDLWindow = nullptr;
+            SDL_DestroyWindow(mWindow);
+            mWindow = nullptr;
             SDL_Quit();
         }
 
@@ -116,18 +116,18 @@ namespace Antomic
             SDL_GL_DeleteContext(mGLContext);
         }
 #endif
-        if (mSDLWindow)
+        if (mWindow)
         {
-            SDL_DestroyWindow(mSDLWindow);
+            SDL_DestroyWindow(mWindow);
             SDL_Quit();
         }
     }
 
     void SDLWindow::SetTitle(const std::string &title)
     {
-        if (mSDLWindow)
+        if (mWindow)
         {
-            SDL_SetWindowTitle(mSDLWindow, title.c_str());
+            SDL_SetWindowTitle(mWindow, title.c_str());
         }
         mTitle = title;
     }
@@ -135,7 +135,7 @@ namespace Antomic
     void SDLWindow::SwapBuffer()
     {
 #ifdef ANTOMIC_GL_RENDERER
-        SDL_GL_SwapWindow(mSDLWindow);
+        SDL_GL_SwapWindow(mWindow);
 #endif
     }
 
@@ -143,7 +143,7 @@ namespace Antomic
     {
         // On SDL everything is handled in the same loop, the main loop is
         // implemented on the InputSDL module
-        SDL_GetWindowSize(mSDLWindow, (int *)&mWidth, (int *)&mHeight);
+        SDL_GetWindowSize(mWindow, (int *)&mWidth, (int *)&mHeight);
     }
 
     void SDLWindow::ToggleFullscreen()

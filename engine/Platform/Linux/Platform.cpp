@@ -20,6 +20,9 @@
 #include "Platform/SDL/Window.h"
 #include "Platform/SDL/Input.h"
 #include "Platform/SDL/Utils.h"
+#elif ANTOMIC_GLFW_PLATFORM
+#include "Platform/GLFW/Window.h"
+#include "Platform/GLFW/Input.h"
 #endif
 
 namespace Antomic
@@ -39,6 +42,8 @@ namespace Antomic
     {
 #ifdef ANTOMIC_SDL_PLATFORM
         return CreateScope<SDLWindow>(width, height, title, api);
+#elif ANTOMIC_GLFW_PLATFORM
+        return CreateScope<GLFWWindow>(width, height, title, api);
 #else
         ANTOMIC_ASSERT(false, "LinuxPlatform: No window support!");
         return nullptr;
@@ -49,6 +54,8 @@ namespace Antomic
     {
 #ifdef ANTOMIC_SDL_PLATFORM
         return CreateScope<InputSDL>();
+#elif ANTOMIC_GLFW_PLATFORM
+        return CreateScope<InputGLFW>();
 #else
         ANTOMIC_ASSERT(false, "LinuxPlatform: No input support!");
         return nullptr;

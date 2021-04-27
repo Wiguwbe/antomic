@@ -49,11 +49,6 @@ namespace Antomic
         glm::mat4 mViewMatrix;
         Ref<Camera> mActiveCamera;
         SceneType mType;
-
-    private:
-        glm::vec3 mCameraMoveDirection;
-        glm::vec3 mCameraLookAt;
-        bool mDirty;
     };
 
 } // namespace Antomic

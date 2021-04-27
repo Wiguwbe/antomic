@@ -128,7 +128,7 @@ static Antomic::Key::Enum translateKey(SDL_Scancode _sdl)
 namespace Antomic
 {
 
-    InputSDL::InputSDL(/* args */) : mHandler(nullptr)
+    InputSDL::InputSDL() : mHandler(nullptr)
     {
         std::memset(stranslateKey, 0, sizeof(stranslateKey));
         initTranslateKey(SDL_SCANCODE_ESCAPE, Key::Esc);
@@ -313,7 +313,7 @@ namespace Antomic
                 {
                     modifiers = translateKeyModifierPress(kev.keysym.scancode);
                 }
-
+                mKeyState.Keys[key] = true;
                 KeyPressedEvent event(key, modifiers, kev.repeat);
                 mHandler(event);
             }
@@ -325,6 +325,7 @@ namespace Antomic
                 uint8_t modifiers = translateKeyModifiers(kev.keysym.mod);
                 Key::Enum key = translateKey(kev.keysym.scancode);
                 KeyReleasedEvent event(key, modifiers);
+                mKeyState.Keys[key] = false;
                 mHandler(event);
             }
             break;

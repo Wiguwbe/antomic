@@ -25,21 +25,22 @@ namespace Antomic
         uint32_t Top;
         uint32_t Right;
         uint32_t Bottom;
+        glm::vec4 Color;
 
         RendererViewport(uint32_t left, uint32_t top, uint32_t right, uint32_t bottom)
-            : Left(left), Top(top), Right(right), Bottom(bottom)  {}
+            : Left(left), Top(top), Right(right), Bottom(bottom), Color(0, 0, 0, 1) {}
 
         RendererViewport(uint32_t right, uint32_t bottom)
-            : Left(0), Top(0), Right(right), Bottom(bottom) {}
+            : Left(0), Top(0), Right(right), Bottom(bottom), Color(0, 0, 0, 1) {}
 
         RendererViewport()
-            : Left(0), Top(0), Right(0), Bottom(0) {}
+            : Left(0), Top(0), Right(0), Bottom(0), Color(0, 0, 0, 1) {}
     };
 
     class Renderer
     {
     public:
-        Renderer(const RendererViewport& viewport);
+        Renderer(const RendererViewport &viewport);
         ~Renderer() = default;
 
     public:
@@ -53,7 +54,7 @@ namespace Antomic
         const uint32_t GetLastFrameTime();
 
         inline const RendererViewport &GetViewport() const { return mViewport; }
-        void SetViewport(const RendererViewport& viewport );
+        void SetViewport(const RendererViewport &viewport);
 
     private:
         Ref<RendererFrame> mLastFrame;

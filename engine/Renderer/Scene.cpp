@@ -17,6 +17,7 @@
 #include "Renderer/Camera.h"
 #include "Renderer/RendererWorker.h"
 #include "Renderer/RendererFrame.h"
+#include "Platform/Platform.h"
 #include "Core/Log.h"
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -29,13 +30,22 @@ namespace Antomic
 
     void Scene::Update(const uint32_t &time)
     {
+        int8_t dx = 0;
+        int8_t dy = 0;
+        int8_t dz = 0;
+
+        dx = Platform::IsKeyPressed(Key::KeyA) ? 1 : (Platform::IsKeyPressed(Key::KeyD) ? -1 : dx);
+        dy = Platform::IsKeyPressed(Key::KeyW) ? 1 : (Platform::IsKeyPressed(Key::KeyS) ? -1 : dy);
+        dz = Platform::IsKeyPressed(Key::KeyR) ? 1 : (Platform::IsKeyPressed(Key::KeyF) ? -1 : dz);
+
         auto cPosition = mActiveCamera->GetPosition();
-        cPosition += (((float)time / 1000.f) * mCameraMoveDirection);
+        cPosition += (((float)time / 1000.f) * glm::vec3(dx, dy, dz));
+        auto lookat = cPosition - glm::vec3(0, 0, 1);
+
         mActiveCamera->SetPosition(cPosition);
-        mCameraLookAt += (((float)time / 1000.f) * mCameraMoveDirection);
         mViewMatrix = glm::lookAt(
             mActiveCamera->GetPosition(),
-            mCameraLookAt,
+            lookat,
             glm::vec3(0, 1, 0));
     }
 
@@ -48,7 +58,7 @@ namespace Antomic
         mActiveCamera->SetPosition({0, 0, 3});
         mViewMatrix = glm::lookAt(
             mActiveCamera->GetPosition(),
-            mCameraLookAt,
+            glm::vec3(0, 0, 2),
             glm::vec3(0, 1, 0));
     }
 

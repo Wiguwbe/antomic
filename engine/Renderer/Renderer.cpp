@@ -22,7 +22,6 @@
 #include "Renderer/RendererFrame.h"
 #include "Renderer/RendererWorker.h"
 #include "Core/Application.h"
-#include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
@@ -40,7 +39,7 @@ namespace Antomic
     void Renderer::SetCurrentScene(const Ref<Scene> &scene)
     {
         mScene = scene;
-        ANTOMIC_ASSERT(mScene->GetActiveCamera(),"Renderer: Scene without active camera!")
+        ANTOMIC_ASSERT(mScene->GetActiveCamera(), "Renderer: Scene without active camera!")
         mProjectionMatrix = mScene->GetActiveCamera()->GetProjectionMatrix(mViewport);
     }
 
@@ -52,7 +51,7 @@ namespace Antomic
             mProjectionMatrix = glm::mat4(1.0f);
             return;
         }
-        ANTOMIC_ASSERT(mScene->GetActiveCamera(),"Renderer: Scene without active camera!")
+        ANTOMIC_ASSERT(mScene->GetActiveCamera(), "Renderer: Scene without active camera!")
         mProjectionMatrix = mScene->GetActiveCamera()->GetProjectionMatrix(mViewport);
     }
 
@@ -79,7 +78,7 @@ namespace Antomic
         mScene->SubmitDrawables(frame);
 
         RenderCommand::SetViewport(mViewport.Left, mViewport.Top, mViewport.Right, mViewport.Bottom);
-        RenderCommand::SetClearColor({0.5f, 0.1f, 0.8f, 1.0f});
+        RenderCommand::SetClearColor(mViewport.Color);
         RenderCommand::Clear();
 
         auto m_proj = mProjectionMatrix;

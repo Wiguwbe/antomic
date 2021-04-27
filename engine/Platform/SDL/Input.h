@@ -29,9 +29,11 @@ namespace Antomic
     public:
         virtual void ProcessEvents() override;
         virtual void SetEventHandler(const EventHandler &handler) override { mHandler = handler; }
+		virtual bool IsKeyPressed(Key::Enum key) override { return mKeyState.Keys[key]; };
 
     protected:
         EventHandler mHandler;
+        KeyState mKeyState;
     };
 
 } // namespace Antomic

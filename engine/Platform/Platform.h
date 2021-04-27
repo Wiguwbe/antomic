@@ -44,6 +44,7 @@ namespace Antomic
 
         // Input Operations & Handling
         inline static const Scope<Input> &GetInput() { return sInput; }
+        inline static bool IsKeyPressed(Key::Enum key) { return sInput->IsKeyPressed(key); }
 
         // Window Operations & Handling
         inline static const Scope<Window> &GetWindow() { return sWindow; }

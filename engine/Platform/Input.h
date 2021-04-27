@@ -154,25 +154,20 @@ namespace Antomic
 			KeyX,
 			KeyY,
 			KeyZ,
-
-			GamepadA,
-			GamepadB,
-			GamepadX,
-			GamepadY,
-			GamepadThumbL,
-			GamepadThumbR,
-			GamepadShoulderL,
-			GamepadShoulderR,
-			GamepadUp,
-			GamepadDown,
-			GamepadLeft,
-			GamepadRight,
-			GamepadBack,
-			GamepadStart,
-			GamepadGuide,
-
 			Count
 		};
+	};
+
+	struct KeyState {
+
+		KeyState()
+		{
+			for (uint32_t i = 0; i < Key::Count; ++i)
+			{
+				Keys[i] = false;
+			}			
+		}
+		bool Keys[Key::Count];
 	};
 
 	struct MouseState
@@ -213,6 +208,7 @@ namespace Antomic
 	public:
 		virtual void ProcessEvents() = 0;
 		virtual void SetEventHandler(const EventHandler &handler) = 0;
+		virtual bool IsKeyPressed(Key::Enum key) = 0;
 	};
 
 } // namespace Antomic

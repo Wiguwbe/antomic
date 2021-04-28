@@ -17,7 +17,7 @@
 #pragma once
 #include "Platform/Window.h"
 #include "Platform/RenderAPI.h"
-#ifdef DANTOMIC_GL_RENDERER
+#ifdef ANTOMIC_GL_RENDERER
 #include "glad/glad.h"
 #endif
 #include "GLFW/glfw3.h"
@@ -42,17 +42,10 @@ namespace Antomic
         virtual void ToggleFullscreen() override;
         virtual void SetMouseLock(bool lock) override;
         virtual void* GetNativeWindow() const override { return mWindow; }
+        virtual void Close() override;
 
     private:
-        GLFWwindow *mWindow;
-		struct WindowData
-		{
-			std::string Title;
-			unsigned int Width, Height;
-			bool VSync;
-
-			EventHandler Handler;
-		};    
+        GLFWwindow *mWindow;  
         WindowData mData;
     };
 } // namspace Antomic

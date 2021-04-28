@@ -29,13 +29,14 @@ namespace Antomic
 {
     LinuxPlatform::LinuxPlatform()
     {
+#ifdef ANTOMIC_SDL_PLATFORM
+        InputSDL::InitMappings();
+#elif ANTOMIC_GLFW_PLATFORM
+        InputGLFW::InitMappings();
+#endif            
 #ifdef ANTOMIC_CHRONO_SUPPORT
         mPlatformStart = std::chrono::high_resolution_clock::now();
 #endif
-    }
-
-    LinuxPlatform::~LinuxPlatform()
-    {
     }
 
     Scope<Window> LinuxPlatform::CreateWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api)

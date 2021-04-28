@@ -13,27 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ANTOMIC_GLFW_PLATFORM
-#pragma once
 #include "Platform/Input.h"
 namespace Antomic
 {
-    class InputGLFW : public Input
-    {
-    public:
-        InputGLFW() = default;
-        virtual ~InputGLFW() override = default;
+    uint8_t Input::sKeyForwardMap[256];
+    uint8_t Input::sKeyReverseMap[256];
 
-    public:
-        virtual bool IsKeyPressed(Key::Enum key) override;
-        virtual bool IsMouseButtonPressed(MouseButton::Enum button) override;
-        virtual uint8_t GetKeyModifiers() override;
-        virtual glm::vec3 GetMousePosition() override;
-    
-    public:
-        static void InitMappings();
-
-    };
-
-} // namepsace Antomic
-#endif
+} // namespace Antomic

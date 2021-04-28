@@ -57,19 +57,11 @@ namespace Antomic
         inline static uint32_t GetWindowHeight() { return sWindow->GetHeight(); }
         inline static const std::string &GetWindowTitle() { return sWindow->GetTitle(); }
         inline static void SetWindowTitle(const std::string& title) { sWindow->SetTitle(title); }
+        inline static void WindowClose() { sWindow->Close(); }
         
         // Events Handling
-        inline static void SetEventHandler(const EventHandler& handler)
-        {
-            sInput->SetEventHandler(handler);
-            sWindow->SetEventHandler(handler);
-        }
-        
-        inline static void ProcessEvents() 
-        { 
-            sInput->ProcessEvents();
-            sWindow->ProcessEvents(); 
-        }
+        inline static void SetEventHandler(const EventHandler& handler) { sWindow->SetEventHandler(handler); }
+        inline static void ProcessEvents() { sWindow->ProcessEvents(); }
         
         // Time Operations 
         inline static uint32_t GetCurrentTick() { return sPlatform->GetTicks(); }

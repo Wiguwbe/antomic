@@ -131,20 +131,6 @@ namespace Antomic
 		};
 	};
 
-	struct KeyState 
-	{
-		KeyState()
-			: Modifiers(0)
-		{
-			for (uint32_t i = 0; i < Key::Count; ++i)
-			{
-				Keys[i] = false;
-			}			
-		}
-		uint8_t Modifiers;
-		bool Keys[Key::Count];
-	};
-
 	struct MouseButton
 	{
 		enum Enum
@@ -156,23 +142,6 @@ namespace Antomic
 
 			Count
 		};
-	};
-
-	struct MouseState
-	{
-		MouseState()
-			: X(0), Y(0), Z(0)
-		{
-			for (uint32_t i = 0; i < MouseButton::Count; ++i)
-			{
-				Buttons[i] = false;
-			}
-		}
-
-		int32_t X;
-		int32_t Y;
-		int32_t Z;
-		bool Buttons[MouseButton::Count];
 	};
 
 	struct GamepadAxis
@@ -190,18 +159,6 @@ namespace Antomic
 		};
 	};
 
-	struct GamepadState
-	{
-		GamepadState()
-		{
-			for (uint32_t i = 0; i < GamepadAxis::Count; ++i)
-			{
-				maxis[i] = 0;
-			}
-		}
-
-		int32_t maxis[GamepadAxis::Count];
-	};
 
 	class Input
 	{
@@ -209,12 +166,37 @@ namespace Antomic
 		virtual ~Input() = default;
 
 	public:
-		virtual void ProcessEvents() = 0;
-		virtual void SetEventHandler(const EventHandler &handler) = 0;
 		virtual bool IsKeyPressed(Key::Enum key) = 0;
 		virtual bool IsMouseButtonPressed(MouseButton::Enum button) = 0;
 		virtual uint8_t GetKeyModifiers() = 0;
 		virtual glm::vec3 GetMousePosition() = 0;
+
+	public:
+		inline static void AddKeyTranslation(uint16_t src, Antomic::Key::Enum tgt)
+		{
+			sKeyForwardMap[src & 0xff] = (uint8_t)tgt;
+			sKeyReverseMap[tgt & 0xff] = (uint8_t)src;
+		}
+
+		inline static int FromKey(Antomic::Key::Enum key)
+		{
+			return (int)sKeyReverseMap[key & 0xff];
+		}
+
+		inline static Antomic::Key::Enum ToKey(int key)
+		{
+			return (Antomic::Key::Enum)sKeyForwardMap[key & 0xff];
+		}
+
+		inline static void ClearKeyMap()
+		{
+			std::memset(sKeyForwardMap, 0, sizeof(sKeyForwardMap));
+			std::memset(sKeyReverseMap, 0, sizeof(sKeyReverseMap));
+		}
+
+	private:
+		static uint8_t sKeyForwardMap[256];
+		static uint8_t sKeyReverseMap[256];
 	};
 
 } // namespace Antomic

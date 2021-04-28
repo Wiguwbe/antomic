@@ -29,7 +29,7 @@ namespace Antomic
         Application() : Application("Application", 640, 480){};
         Application(const std::string &title) : Application(title, 640, 480){};
         Application(const std::string &title, uint32_t width, uint32_t height, RenderAPIDialect api = RenderAPIDialect::OPENGL);
-        virtual ~Application();
+        virtual ~Application() = default;
 
     public:
         // Control Operations

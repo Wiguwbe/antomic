@@ -20,43 +20,50 @@
 #include "Platform/SDL/Window.h"
 #include "Platform/SDL/Input.h"
 #include "Platform/SDL/Utils.h"
+#elif ANTOMIC_GLFW_PLATFORM
+#include "Platform/GLFW/Window.h"
+#include "Platform/GLFW/Input.h"
 #endif
 
 namespace Antomic
 {
-    WindowsPlatform::WindowsPlatform() 
+    WindowsPlatform::WindowsPlatform()
     {
+#ifdef ANTOMIC_SDL_PLATFORM
+        InputSDL::InitMappings();
+#elif ANTOMIC_GLFW_PLATFORM
+        InputGLFW::InitMappings();
+#endif
 #ifdef ANTOMIC_CHRONO_SUPPORT
         mPlatformStart = std::chrono::high_resolution_clock::now();
 #endif
     }
 
-    WindowsPlatform::~WindowsPlatform()
-    {
-
-    }
-
-    Scope<Window> WindowsPlatform::CreateWindow(uint32_t width, uint32_t height, std::string name, RenderAPIDialect api) 
+    Scope<Window> WindowsPlatform::CreateWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api)
     {
 #ifdef ANTOMIC_SDL_PLATFORM
-        return CreateScope<SDLWindow>(width,height,name,api);
+        return CreateScope<SDLWindow>(width, height, title, api);
+#elif ANTOMIC_GLFW_PLATFORM
+        return CreateScope<GLFWWindow>(width, height, title, api);
 #else
         ANTOMIC_ASSERT(false, "WindowsPlatform: No window support!");
         return nullptr;
-#endif            
+#endif
     }
 
-	Scope<Input> WindowsPlatform::CreateInput()
-	{
+    Scope<Input> WindowsPlatform::CreateInput()
+    {
 #ifdef ANTOMIC_SDL_PLATFORM
         return CreateScope<InputSDL>();
+#elif ANTOMIC_GLFW_PLATFORM
+        return CreateScope<InputGLFW>();
 #else
         ANTOMIC_ASSERT(false, "WindowsPlatform: No input support!");
-		return nullptr;
+        return nullptr;
 #endif
-	}
+    }
 
-    uint32_t WindowsPlatform::GetTicks() const 
+    uint32_t WindowsPlatform::GetTicks() const
     {
 #ifdef ANTOMIC_SDL_PLATFORM
         return GetCurrentTime();
@@ -65,8 +72,8 @@ namespace Antomic
         auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now - mPlatformStart);
         return milliseconds.count();
 #else
-    ANTOMIC_ASSERT(false, "LinuxPlatform: No time tick support!");
-    return nullptr;
+        ANTOMIC_ASSERT(false, "LinuxPlatform: No time tick support!");
+        return nullptr;
 #endif
     }
 } // namespace Antomic

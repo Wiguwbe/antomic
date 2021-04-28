@@ -65,10 +65,6 @@ namespace Antomic
         mRenderer = CreateRef<Renderer>(viewport);
     }
 
-    Application::~Application()
-    {
-    }
-
     void Application::Run()
     {
         if (mRunning)
@@ -81,6 +77,8 @@ namespace Antomic
             Platform::ProcessEvents();
             mRenderer->RenderFrame();
         }
+
+        Platform::WindowClose();
     }
 
     void Application::ToggleFullscreen(bool value)

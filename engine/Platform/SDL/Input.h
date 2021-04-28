@@ -20,24 +20,66 @@
 
 namespace Antomic
 {
+	struct KeyState
+	{
+		KeyState()
+			: Modifiers(0)
+		{
+			for (uint32_t i = 0; i < Key::Count; ++i)
+			{
+				Keys[i] = false;
+			}
+		}
+		uint8_t Modifiers;
+		bool Keys[Key::Count];
+	};
+
+	struct MouseState
+	{
+		MouseState()
+			: X(0), Y(0), Z(0)
+		{
+			for (uint32_t i = 0; i < MouseButton::Count; ++i)
+			{
+				Buttons[i] = false;
+			}
+		}
+
+		int32_t X;
+		int32_t Y;
+		int32_t Z;
+		bool Buttons[MouseButton::Count];
+	};
+
+	struct GamepadState
+	{
+		GamepadState()
+		{
+			for (uint32_t i = 0; i < GamepadAxis::Count; ++i)
+			{
+				maxis[i] = 0;
+			}
+		}
+
+		int32_t maxis[GamepadAxis::Count];
+	};
+
     class InputSDL : public Input
     {
     public:
-        InputSDL();
-        virtual ~InputSDL() override;
+        InputSDL() = default;
+        virtual ~InputSDL() override = default;
 
     public:
-        virtual void ProcessEvents() override;
-        virtual void SetEventHandler(const EventHandler &handler) override { mHandler = handler; }
-        virtual bool IsKeyPressed(Key::Enum key) override { return mKeyState.Keys[key]; }
-        virtual bool IsMouseButtonPressed(MouseButton::Enum button) override { return mMouseState.Buttons[button]; };
-        virtual uint8_t GetKeyModifiers() override { return mKeyState.Modifiers; };
-        virtual glm::vec3 GetMousePosition() override{return glm::vec3(mMouseState.X, mMouseState.Y, mMouseState.Z); };
+        virtual bool IsKeyPressed(Key::Enum key) override;
+        virtual bool IsMouseButtonPressed(MouseButton::Enum button) override;
+        virtual uint8_t GetKeyModifiers() override;
+        virtual glm::vec3 GetMousePosition() override;
 
-    private:
-        EventHandler mHandler;
-        KeyState mKeyState;
-        MouseState mMouseState;
+    public:
+        static void InitMappings();
+        static uint8_t TranslateKeyModifiers(uint16_t key);
+        static uint8_t TranslateKeyModifierPress(uint16_t _key);
     };
 
 } // namespace Antomic

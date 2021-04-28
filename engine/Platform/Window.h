@@ -18,6 +18,15 @@
 
 namespace Antomic
 {
+    struct WindowData
+    {
+        std::string Title;
+        unsigned int Width, Height;
+        bool VSync;
+
+        EventHandler Handler;
+    };  
+
     class Window
     {
     public:
@@ -35,6 +44,8 @@ namespace Antomic
         virtual void ToggleFullscreen() = 0;
         virtual void SetMouseLock(bool lock) = 0;
         virtual void* GetNativeWindow() const = 0;
+        virtual void Close() = 0;
+
     };
 
 } // namespace Antomic

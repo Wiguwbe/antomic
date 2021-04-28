@@ -15,6 +15,7 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Renderer/Bindable.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
@@ -36,15 +37,12 @@ namespace Antomic
 
     uint32_t ShaderDataTypeSize(ShaderDataType t);
 
-    class Shader
+    class Shader : public Bindable
     {
     public:
         virtual ~Shader() = default;
 
     public:
-        // Bind/Unbind commands
-        virtual void Bind() const = 0;
-        virtual void Unbind() const = 0;
 
         // Uniform Commands
         virtual void SetUniformValue(const std::string& name, float value) = 0;

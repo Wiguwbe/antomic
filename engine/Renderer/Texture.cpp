@@ -13,19 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/Drawable.h"
+#include "Renderer/Texture.h"
 
 namespace Antomic
 {
-    Drawable::Drawable(const Ref<VertexArray> &vertexArray, const Ref<Shader> &shader) 
-        : mVertexArray(vertexArray), mShader(shader), mMatrix(1.0f) 
+    Ref<Texture> Texture::CreateTexture(uint16_t width, uint16_t height, unsigned char* data)
     {
-
+        return nullptr;
     }
-
-    Drawable::~Drawable()
-    {
-        
-    }
-    
 } // namespace Antomic

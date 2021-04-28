@@ -199,7 +199,7 @@ namespace Antomic
     {
     }
 
-    void SDLWindow::Close() 
+    void GLFWWindow::Close() 
     {
         if (mWindow)
         {

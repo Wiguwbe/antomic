@@ -102,6 +102,10 @@ include(3rdparty/CMakeLists.glm.txt)
 # https://glad.dav1d.de/
 add_subdirectory(3rdparty/glad)
 
+# single-file public domain (or MIT licensed) libraries for C/C++
+# https://github.com/nothings/stb
+add_subdirectory(3rdparty/stb)
+
 # Antomic Engine
 add_subdirectory(engine)
 add_subdirectory(editor)

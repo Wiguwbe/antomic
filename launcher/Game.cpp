@@ -51,8 +51,8 @@ namespace Antomic
             vertexArray->SetIndexBuffer(indexBuffer);
 
             auto scene = CreateRef<Scene>();
-            auto drawable = CreateRef<Drawable>(vertexArray, shader);
-            scene->AddDrawable(drawable);
+            auto triangle = CreateRef<Mesh>(vertexArray, shader);
+            scene->AddDrawable(triangle);
             SetScene(scene);
         }
     }

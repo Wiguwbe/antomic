@@ -15,20 +15,17 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "glm/glm.hpp"
+#include "Renderer/Bindable.h"
 
 namespace Antomic
 {
-    class Drawable
+    class Texture : public Bindable
     {
-    public:
-        virtual ~Drawable() = default;
+        public:
+        virtual ~Texture() = default;
 
     public:
-        virtual const Ref<VertexArray> &GetVertexArray() const = 0;
-        virtual const glm::mat4 &GetModelMatrix() const = 0;
-        virtual const QueueRef<Bindable> &GetBindables() const = 0;
-
-        virtual const Ref<Shader> &GetShader() const = 0;
+        static Ref<Texture> CreateTexture(uint16_t width, uint16_t height, unsigned char* data);
     };
+    
 } // namespace Antomic

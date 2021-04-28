@@ -90,7 +90,7 @@ namespace Antomic
             auto drawable = frame->PopDrawable();
             auto shader = drawable->GetShader();
             auto va = drawable->GetVertexArray();
-            auto m_model = drawable->GetMatrix();
+            auto m_model = drawable->GetModelMatrix();
 
             shader->SetUniformValue("m_proj", m_proj);
             shader->SetUniformValue("m_view", m_view);

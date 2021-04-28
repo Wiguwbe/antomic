@@ -96,6 +96,6 @@
         "stack": "cpp"
     },
     "cmake.environment": {
-        //"ANTOMIC_NO_SDL": "1"
+        "ANTOMIC_NO_SDL": "0"
     }
 }

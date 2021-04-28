@@ -13,22 +13,26 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
-#include "glm/glm.hpp"
+#include "Renderer/Mesh.h"
+#include "Renderer/Bindable.h"
+#include "Renderer/Shader.h"
+#include "Renderer/Texture.h"
 
 namespace Antomic
 {
-    class Drawable
+    Mesh::Mesh(const Ref<VertexArray> &vertexArray, const Ref<Shader> &shader)
+        : mVertexArray(vertexArray), mShader(shader), mMatrix(1.0f)
     {
-    public:
-        virtual ~Drawable() = default;
+    }
 
-    public:
-        virtual const Ref<VertexArray> &GetVertexArray() const = 0;
-        virtual const glm::mat4 &GetModelMatrix() const = 0;
-        virtual const QueueRef<Bindable> &GetBindables() const = 0;
+    void Mesh::AddBindable(const Ref<Texture> &texture)
+    {
+        mBindables.push(std::dynamic_pointer_cast<Bindable>(texture));
+    }
 
-        virtual const Ref<Shader> &GetShader() const = 0;
-    };
+    void Mesh::AddBindable(const Ref<Shader> &shader)
+    {
+        mBindables.push(std::dynamic_pointer_cast<Shader>(shader));
+    }
+
 } // namespace Antomic

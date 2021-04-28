@@ -22,7 +22,7 @@ else ()
     set(BUILD_ARCH "x86")
 endif ()
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 # Platform specific configuration
 if(WIN32)
@@ -104,6 +104,7 @@ add_subdirectory(3rdparty/glad)
 
 # single-file public domain (or MIT licensed) libraries for C/C++
 # https://github.com/nothings/stb
+add_definitions(-DSTB_IMAGE_IMPLEMENTATION)
 add_subdirectory(3rdparty/stb)
 
 # Antomic Engine

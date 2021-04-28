@@ -13,26 +13,26 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#pragma once
+#include "Core/Base.h"
 #include "Renderer/Texture.h"
-#include "Platform/Platform.h"
-#include "Platform/RenderAPI.h"
-#include "Platform/NullRenderer/Texture.h"
-#ifdef ANTOMIC_GL_RENDERER
-#include "Platform/OpenGL/Texture.h"
-#endif
+#include "glad/glad.h"
 
 namespace Antomic
 {
-    Ref<Texture> Texture::CreateTexture(uint32_t width, uint32_t height, unsigned char *data)
+    class OpenGLTexture : public Texture
     {
-        switch (Platform::GetRenderAPIDialect())
-        {
-#ifdef ANTOMIC_GL_RENDERER
-        case RenderAPIDialect::OPENGL:
-            return CreateRef<OpenGLTexture>(width, height, data);
-#endif
-        default:
-            return CreateRef<NullTexture>(width, height, data);
-        }
-    }
+    public:
+        OpenGLTexture(uint32_t width, uint32_t height, unsigned char* data);
+        virtual ~OpenGLTexture();
+
+    public:
+        // Bind/Unbind commands
+        virtual void Bind() const override;
+        virtual void Unbind() const override;
+
+    private:
+        GLuint mRendererID;
+    };
+    
 } // namespace Antomic

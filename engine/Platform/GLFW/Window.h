@@ -17,7 +17,9 @@
 #pragma once
 #include "Platform/Window.h"
 #include "Platform/RenderAPI.h"
+#ifdef DANTOMIC_GL_RENDERER
 #include "glad/glad.h"
+#endif
 #include "GLFW/glfw3.h"
 
 namespace Antomic

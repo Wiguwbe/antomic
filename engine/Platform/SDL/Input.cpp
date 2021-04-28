@@ -310,9 +310,6 @@ namespace Antomic
                 const SDL_KeyboardEvent &kev = currentEvent.key;
                 uint8_t modifiers = translateKeyModifiers(kev.keysym.mod);
                 Key::Enum key = translateKey(kev.keysym.scancode);
-#if ANTOMIC_DEBUG
-                ANTOMIC_INFO("SDL scancode {0}, key {1}, name {2}, key name {3}", kev.keysym.scancode, key, SDL_GetScancodeName(kev.keysym.scancode), SDL_GetKeyName(kev.keysym.scancode));
-#endif
                 /// If you only press (e.g.) 'shift' and nothing else, then key == 'shift', modifier == 0.
                 /// Further along, pressing 'shift' + 'ctrl' would be: key == 'shift', modifier == 'ctrl.
                 if (0 == key && 0 == modifiers)

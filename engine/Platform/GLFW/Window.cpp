@@ -54,14 +54,19 @@ namespace Antomic
             return;
         }
 
+#ifdef DANTOMIC_GL_RENDERER
+        glfwMakeContextCurrent(mWindow);
+
         if (!gladLoadGL())
         {
             ANTOMIC_TRACE("GLFWWindow: Error initializing Glad");
             glfwDestroyWindow(mWindow);
             mWindow = nullptr;
+            return;
         }
 
         ANTOMIC_INFO("GLFWWindow: Using OpenGL version {0}", glGetString(GL_VERSION));
+#endif
 
         std::memset(stranslateKey, 0, sizeof(stranslateKey));
         initTranslateKey(GLFW_KEY_ESCAPE, Key::Esc);
@@ -147,7 +152,6 @@ namespace Antomic
         initTranslateKey(GLFW_KEY_Y, Key::KeyY);
         initTranslateKey(GLFW_KEY_Z, Key::KeyZ);
 
-        glfwMakeContextCurrent(mWindow);
         glfwSetWindowUserPointer(mWindow, &mData);
 
         // Set GLFW callbacks

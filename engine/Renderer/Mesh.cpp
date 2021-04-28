@@ -13,15 +13,26 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "engine.h"
-#include "glm/glm.hpp"
+#include "Renderer/Mesh.h"
+#include "Renderer/Bindable.h"
+#include "Renderer/Shader.h"
+#include "Renderer/Texture.h"
 
-namespace Antomic {
-    class Game: public Application
+namespace Antomic
+{
+    Mesh::Mesh(const Ref<VertexArray> &vertexArray, const Ref<Shader> &shader)
+        : mVertexArray(vertexArray), mShader(shader), mMatrix(1.0f)
     {
-    public:
-        Game();
-        void LoadMainScene(const std::string &scene);
-    };
-}
+    }
+
+    void Mesh::AddBindable(const Ref<Texture> &texture)
+    {
+        mBindables.push(std::dynamic_pointer_cast<Bindable>(texture));
+    }
+
+    void Mesh::AddBindable(const Ref<Shader> &shader)
+    {
+        mBindables.push(std::dynamic_pointer_cast<Shader>(shader));
+    }
+
+} // namespace Antomic

@@ -22,19 +22,13 @@ namespace Antomic
     class Drawable
     {
     public:
-        Drawable(const Ref<VertexArray> &vertexArray, const Ref<Shader> &shader);
-        virtual ~Drawable();
+        virtual ~Drawable() = default;
 
     public:
-        const Ref<VertexArray> &GetVertexArray() const { return mVertexArray; }
-        const Ref<Shader> &GetShader() const { return mShader; }
-        const glm::mat4 &GetMatrix() const { return mMatrix; }
-        void SetMatrix(const glm::mat4 &matrix) { mMatrix = matrix; }
+        virtual const Ref<VertexArray> &GetVertexArray() const = 0;
+        virtual const glm::mat4 &GetModelMatrix() const = 0;
+        virtual const QueueRef<Bindable> &GetBindables() const = 0;
 
-    private:
-        Ref<VertexArray> mVertexArray;
-        Ref<Shader> mShader;
-        glm::mat4 mMatrix;
-
+        virtual const Ref<Shader> &GetShader() const = 0;
     };
 } // namespace Antomic

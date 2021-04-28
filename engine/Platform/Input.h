@@ -16,37 +16,10 @@
 #pragma once
 #include "Core/Base.h"
 #include "Core/Log.h"
+#include "glm/glm.hpp"
 
 namespace Antomic
 {
-	struct MouseButton
-	{
-		enum Enum
-		{
-			Left,
-			Middle,
-			Right,
-			None,
-
-			Count
-		};
-	};
-
-	struct GamepadAxis
-	{
-		enum Enum
-		{
-			LeftX,
-			LeftY,
-			LeftZ,
-			RightX,
-			RightY,
-			RightZ,
-
-			Count
-		};
-	};
-
 	struct Modifier
 	{
 		enum Enum
@@ -154,56 +127,38 @@ namespace Antomic
 			KeyX,
 			KeyY,
 			KeyZ,
+			Count
+		};
+	};
 
-			GamepadA,
-			GamepadB,
-			GamepadX,
-			GamepadY,
-			GamepadThumbL,
-			GamepadThumbR,
-			GamepadShoulderL,
-			GamepadShoulderR,
-			GamepadUp,
-			GamepadDown,
-			GamepadLeft,
-			GamepadRight,
-			GamepadBack,
-			GamepadStart,
-			GamepadGuide,
+	struct MouseButton
+	{
+		enum Enum
+		{
+			Left,
+			Middle,
+			Right,
+			None,
 
 			Count
 		};
 	};
 
-	struct MouseState
+	struct GamepadAxis
 	{
-		MouseState()
-			: mmx(0), mmy(0), mmz(0)
+		enum Enum
 		{
-			for (uint32_t i = 0; i < MouseButton::Count; ++i)
-			{
-				mbuttons[i] = MouseButton::None;
-			}
-		}
+			LeftX,
+			LeftY,
+			LeftZ,
+			RightX,
+			RightY,
+			RightZ,
 
-		int32_t mmx;
-		int32_t mmy;
-		int32_t mmz;
-		uint8_t mbuttons[MouseButton::Count];
+			Count
+		};
 	};
 
-	struct GamepadState
-	{
-		GamepadState()
-		{
-			for (uint32_t i = 0; i < GamepadAxis::Count; ++i)
-			{
-				maxis[i] = 0;
-			}
-		}
-
-		int32_t maxis[GamepadAxis::Count];
-	};
 
 	class Input
 	{
@@ -211,8 +166,37 @@ namespace Antomic
 		virtual ~Input() = default;
 
 	public:
-		virtual void ProcessEvents() = 0;
-		virtual void SetEventHandler(const EventHandler &handler) = 0;
+		virtual bool IsKeyPressed(Key::Enum key) = 0;
+		virtual bool IsMouseButtonPressed(MouseButton::Enum button) = 0;
+		virtual uint8_t GetKeyModifiers() = 0;
+		virtual glm::vec3 GetMousePosition() = 0;
+
+	public:
+		inline static void AddKeyTranslation(uint16_t src, Antomic::Key::Enum tgt)
+		{
+			sKeyForwardMap[src & 0xff] = (uint8_t)tgt;
+			sKeyReverseMap[tgt & 0xff] = (uint8_t)src;
+		}
+
+		inline static int FromKey(Antomic::Key::Enum key)
+		{
+			return (int)sKeyReverseMap[key & 0xff];
+		}
+
+		inline static Antomic::Key::Enum ToKey(int key)
+		{
+			return (Antomic::Key::Enum)sKeyForwardMap[key & 0xff];
+		}
+
+		inline static void ClearKeyMap()
+		{
+			std::memset(sKeyForwardMap, 0, sizeof(sKeyForwardMap));
+			std::memset(sKeyReverseMap, 0, sizeof(sKeyReverseMap));
+		}
+
+	private:
+		static uint8_t sKeyForwardMap[256];
+		static uint8_t sKeyReverseMap[256];
 	};
 
 } // namespace Antomic

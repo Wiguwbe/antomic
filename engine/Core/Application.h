@@ -18,6 +18,7 @@
 #include "Platform/Platform.h"
 #include "Core/LayerStack.h"
 #include "Platform/Input.h"
+#include "glm/glm.hpp"
 
 namespace Antomic
 {
@@ -28,7 +29,7 @@ namespace Antomic
         Application() : Application("Application", 640, 480){};
         Application(const std::string &title) : Application(title, 640, 480){};
         Application(const std::string &title, uint32_t width, uint32_t height, RenderAPIDialect api = RenderAPIDialect::OPENGL);
-        virtual ~Application();
+        virtual ~Application() = default;
 
     public:
         // Control Operations
@@ -44,7 +45,7 @@ namespace Antomic
 
         // Windows Events
         virtual bool OnWindowClose(WindowCloseEvent &event);
-        virtual bool OnWindowResize(WindowResizeEvent &event) { return true; }
+        virtual bool OnWindowResize(WindowResizeEvent &event);
 
         // Keys Events
         virtual bool OnKeyPressed(KeyPressedEvent &event) { return true; }
@@ -57,23 +58,17 @@ namespace Antomic
         virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent &event) { return true; }
 
         // Scene 
-        const Ref<Scene> &GetScene() const { return mScene; }
         void SetScene(const Ref<Scene>& scene);
         void LoadScene(const std::string& name);
-
-        // Render & Update
-        void Update(const uint32_t &time);
 
     public:
         static Application &Current() { return *sInstance; }
 
-    protected:
-        LayerStack mStack;
-
     private:
         static Application *sInstance;
         bool mRunning;
-        uint32_t mLastRenderTime;
-        Ref<Scene> mScene;
+        glm::mat4 mProjMatrix;
+        Ref<Renderer> mRenderer;
+
     };
 } // namespace Antomic

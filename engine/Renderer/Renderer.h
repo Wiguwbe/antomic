@@ -19,18 +19,48 @@
 
 namespace Antomic
 {
+    struct RendererViewport
+    {
+        uint32_t Left;
+        uint32_t Top;
+        uint32_t Right;
+        uint32_t Bottom;
+        glm::vec4 Color;
+
+        RendererViewport(uint32_t left, uint32_t top, uint32_t right, uint32_t bottom)
+            : Left(left), Top(top), Right(right), Bottom(bottom), Color(0, 0, 0, 1) {}
+
+        RendererViewport(uint32_t right, uint32_t bottom)
+            : Left(0), Top(0), Right(right), Bottom(bottom), Color(0, 0, 0, 1) {}
+
+        RendererViewport()
+            : Left(0), Top(0), Right(0), Bottom(0), Color(0, 0, 0, 1) {}
+    };
+
     class Renderer
     {
     public:
-        static void Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable);
-        static void RenderFrame(uint32_t width, uint32_t height); 
-        static void QueueFrame(const Ref<RendererFrame> &frame);
+        Renderer(const RendererViewport &viewport);
+        ~Renderer() = default;
+
+    public:
+        void RenderFrame();
+
+        const Ref<Scene> &GetCurrentScene();
+        void SetCurrentScene(const Ref<Scene> &scene);
+
+        inline const Ref<RendererFrame> GetLastFrame() const { return mLastFrame; }
+        inline const glm::mat4 &GetProjectionMatrix() const { return mProjectionMatrix; }
+        const uint32_t GetLastFrameTime();
+
+        inline const RendererViewport &GetViewport() const { return mViewport; }
+        void SetViewport(const RendererViewport &viewport);
 
     private:
-        static const Ref<RendererFrame> PopFrame();
-
-    private:
-        static QueueRef<RendererFrame> sRenderQueue;
-        static std::mutex sMutex;
+        Ref<RendererFrame> mLastFrame;
+        uint32_t mLastFrameTime;
+        Ref<Scene> mScene;
+        RendererViewport mViewport;
+        glm::mat4 mProjectionMatrix;
     };
 } // namespace Antomic

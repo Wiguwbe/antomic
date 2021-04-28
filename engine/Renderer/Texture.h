@@ -14,14 +14,18 @@
    limitations under the License.
 */
 #pragma once
-#include "engine.h"
-#include "glm/glm.hpp"
+#include "Core/Base.h"
+#include "Renderer/Bindable.h"
 
-namespace Antomic {
-    class Game: public Application
+namespace Antomic
+{
+    class Texture : public Bindable
     {
+        public:
+        virtual ~Texture() = default;
+
     public:
-        Game();
-        void LoadMainScene(const std::string &scene);
+        static Ref<Texture> CreateTexture(uint16_t width, uint16_t height, unsigned char* data);
     };
-}
+    
+} // namespace Antomic

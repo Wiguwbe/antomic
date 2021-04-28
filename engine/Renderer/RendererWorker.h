@@ -21,24 +21,11 @@ namespace Antomic
     class RendererWorker
     {
     public:
-        RendererWorker();
-        ~RendererWorker();
+        RendererWorker() = default;
+        ~RendererWorker() = default;
 
     public:
         void Run();
-
-    public:
-        static void SubmitScene(const Ref<Scene> &scene);
-        static const Ref<Scene> PopScene();
-        static void StartWorker();
-        static void StopWorker();
-
-    private:
-        bool mRunning;
-        static QueueRef<Scene> sSceneQueue;
-        static Ref<RendererWorker> sWorker;
-        static std::mutex sMutex;
-        static std::thread sThread;
     };
 
 } // namespace Antomic

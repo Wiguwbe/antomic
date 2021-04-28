@@ -13,19 +13,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ANTOMIC_SDL_PLATFORM
+#ifdef ANTOMIC_GLFW_PLATFORM
 #pragma once
 #include "Platform/Window.h"
 #include "Platform/RenderAPI.h"
-#include "SDL2/SDL.h"
+#ifdef ANTOMIC_GL_RENDERER
+#include "glad/glad.h"
+#endif
+#include "GLFW/glfw3.h"
 
 namespace Antomic
 {
-    class SDLWindow : public Window
+    class GLFWWindow : public Window
     {
     public:
-        SDLWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api);
-        virtual ~SDLWindow() override;
+        GLFWWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api);
+        virtual ~GLFWWindow() override;
 
     public:
         virtual uint32_t GetWidth() const override { return mData.Width; };
@@ -42,13 +45,8 @@ namespace Antomic
         virtual void Close() override;
 
     private:
-        SDL_Window *mWindow;
-#ifdef ANTOMIC_GL_RENDERER
-        SDL_GLContext mGLContext;
-#endif
+        GLFWwindow *mWindow;  
         WindowData mData;
-
     };
-
-} // namespace Antomic
+} // namspace Antomic
 #endif

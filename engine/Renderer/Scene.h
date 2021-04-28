@@ -15,22 +15,28 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Core/Cameras.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
 {
+    enum class SceneType
+    {
+        NONE,
+        SCENE_2D,
+        SCENE_3D,
+    };
+
     class Scene
     {
     public:
-        Scene(const Ref<Camera> &camera);
-        virtual ~Scene();
+        Scene() = default;
+        virtual ~Scene() = default;
 
     public:
-        const Ref<Camera> &GetCamera() const { return mCamera; };
-        void SetCamera(const Ref<Camera> &camera) { mCamera = camera; }
-        inline const glm::mat4 &GetProjection() const { return mCamera->GetProjection(); }
-        inline const glm::mat4 &GetView() const { return mCamera->GetView(); }
+        inline const glm::mat4 &GetViewMatrix() const { return mViewMatrix; }
+        inline const Ref<Camera> &GetActiveCamera() const { return mActiveCamera; }
+        inline const SceneType &GetType() const { return mType; }
+
         void AddDrawable(const Ref<Drawable> &drawable);
         void Load();
         void Unload();
@@ -39,8 +45,10 @@ namespace Antomic
         virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
 
     private:
-        Ref<Camera> mCamera;
         VectorRef<Drawable> mDrawables;
+        glm::mat4 mViewMatrix;
+        Ref<Camera> mActiveCamera;
+        SceneType mType;
     };
 
 } // namespace Antomic

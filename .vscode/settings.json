@@ -94,5 +94,8 @@
         "queue": "cpp",
         "semaphore": "cpp",
         "stack": "cpp"
+    },
+    "cmake.environment": {
+        "ANTOMIC_NO_SDL": "0"
     }
 }

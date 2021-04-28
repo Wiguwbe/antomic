@@ -18,6 +18,7 @@
 #include "Platform/RenderAPI.h"
 #include "Platform/Window.h"
 #include "Platform/Input.h"
+#include "glm/glm.hpp"
 
 namespace Antomic
 {
@@ -44,27 +45,23 @@ namespace Antomic
 
         // Input Operations & Handling
         inline static const Scope<Input> &GetInput() { return sInput; }
+        inline static bool IsKeyPressed(Key::Enum key) { return sInput->IsKeyPressed(key); }
+		inline bool IsMouseButtonPressed(MouseButton::Enum button) { return sInput->IsMouseButtonPressed(button);}
+		inline uint8_t GetKeyModifiers() { return sInput->GetKeyModifiers(); }
+		inline glm::vec3 GetMousePosition() { return sInput->GetMousePosition(); }
 
         // Window Operations & Handling
         inline static const Scope<Window> &GetWindow() { return sWindow; }
-        inline static void SwapChain() { sWindow->SwapChain(); }
+        inline static void SwapBuffer() { sWindow->SwapBuffer(); }
         inline static uint32_t GetWindowWidth() { return sWindow->GetWidth(); }
         inline static uint32_t GetWindowHeight() { return sWindow->GetHeight(); }
         inline static const std::string &GetWindowTitle() { return sWindow->GetTitle(); }
         inline static void SetWindowTitle(const std::string& title) { sWindow->SetTitle(title); }
+        inline static void WindowClose() { sWindow->Close(); }
         
         // Events Handling
-        inline static void SetEventHandler(const EventHandler& handler)
-        {
-            sInput->SetEventHandler(handler);
-            sWindow->SetEventHandler(handler);
-        }
-        
-        inline static void ProcessEvents() 
-        { 
-            sInput->ProcessEvents();
-            sWindow->ProcessEvents(); 
-        }
+        inline static void SetEventHandler(const EventHandler& handler) { sWindow->SetEventHandler(handler); }
+        inline static void ProcessEvents() { sWindow->ProcessEvents(); }
         
         // Time Operations 
         inline static uint32_t GetCurrentTick() { return sPlatform->GetTicks(); }

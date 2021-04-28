@@ -23,6 +23,8 @@
 #include "Renderer/Scene.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererWorker.h"
+#include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
 {
@@ -59,10 +61,8 @@ namespace Antomic
         }
 
         Platform::SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
-    }
-
-    Application::~Application()
-    {
+        RendererViewport viewport = {0, 0, _width, _height};
+        mRenderer = CreateRef<Renderer>(viewport);
     }
 
     void Application::Run()
@@ -72,30 +72,13 @@ namespace Antomic
 
         mRunning = true;
 
-        // Start renderer worker
-        RendererWorker::StartWorker();
-        mLastRenderTime = Platform::GetCurrentTick();
         while (mRunning)
         {
-            auto currentTime = Platform::GetCurrentTick();
-            uint32_t time = currentTime - mLastRenderTime;
-            mLastRenderTime = currentTime;
-
             Platform::ProcessEvents();
-            Update(time);
-            RendererWorker::SubmitScene(mScene);
-            Renderer::RenderFrame(GetWidth(), GetHeight());
-            mStack.Submit();
+            mRenderer->RenderFrame();
         }
-        // Stop renderer worker
-        RendererWorker::StopWorker();
 
-        // We clean the layer stack since some
-        // layers might need to clean some resources
-        while (!mStack.Empty())
-        {
-            mStack.PopFront();
-        }
+        Platform::WindowClose();
     }
 
     void Application::ToggleFullscreen(bool value)
@@ -104,26 +87,19 @@ namespace Antomic
 
     void Application::SetScene(const Ref<Scene> &scene)
     {
-        if (mScene != nullptr)
-        {
-            mScene->Unload();
-        }
+        auto oldscene = mRenderer->GetCurrentScene();
 
-        mScene = scene;
-        mScene->Load();
+        scene->Load();
+        mRenderer->SetCurrentScene(scene);
+
+        if (oldscene != nullptr)
+        {
+            oldscene->Unload();
+        }
     }
 
     void Application::LoadScene(const std::string &name)
     {
-    }
-
-    void Application::Update(const uint32_t &time)
-    {
-        mStack.Update(time);
-        if (mScene != nullptr)
-        {
-            mScene->Update(time);
-        }
     }
 
     void Application::OnEvent(Event &event)
@@ -133,9 +109,6 @@ namespace Antomic
         // Dispatch Windows Events
         dispatcher.Dispatch<WindowCloseEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowResize));
-
-        // Dispatch Events to the stack first
-        mStack.OnEvent(event);
 
         // Dispatch key events to be handled by the application
         dispatcher.Dispatch<KeyPressedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnKeyPressed));
@@ -151,6 +124,14 @@ namespace Antomic
     bool Application::OnWindowClose(WindowCloseEvent &event)
     {
         mRunning = false;
+        return true;
+    }
+
+    bool Application::OnWindowResize(WindowResizeEvent &event)
+    {
+        ANTOMIC_ASSERT(mRenderer, "Application: Renderer not available");
+        RendererViewport viewport = {0, 0, event.GetWidth(), event.GetHeight()};
+        mRenderer->SetViewport(viewport);
         return true;
     }
 

@@ -17,10 +17,15 @@
 
 namespace Antomic
 {
+    RendererFrame::RendererFrame()
+        : mDrawableQueue()
+    {
+    }
+
     Ref<Drawable> RendererFrame::PopDrawable()
     {
-        auto drawable = mQueue.back();
-        mQueue.pop();
+        auto drawable = mDrawableQueue.front();
+        mDrawableQueue.pop();
         return drawable;
-    }    
+    }
 } // namespace Antomic

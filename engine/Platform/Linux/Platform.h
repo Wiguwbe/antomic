@@ -23,7 +23,7 @@ namespace Antomic
     {
     public:
         LinuxPlatform();
-        virtual ~LinuxPlatform() override;
+        virtual ~LinuxPlatform() override = default;
 
     public:
         // Windows Operations

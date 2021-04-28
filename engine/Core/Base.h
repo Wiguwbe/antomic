@@ -93,10 +93,16 @@ namespace Antomic
     class VertexBuffer;
     class Scene;
     class Camera;
+    class PerspectiveCamera;
+    class OrtographicCamera;
     class Bindable;
     class Drawable;
     class Shader;
+    class Renderer;
     class RendererFrame;
+    class RendererWorker;
+    class Texture;
+    class Mesh;
 
     using EventHandler = std::function<void(Event&)>;
 

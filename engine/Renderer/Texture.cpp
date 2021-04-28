@@ -13,15 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "engine.h"
-#include "glm/glm.hpp"
+#include "Renderer/Texture.h"
 
-namespace Antomic {
-    class Game: public Application
+namespace Antomic
+{
+    Ref<Texture> Texture::CreateTexture(uint16_t width, uint16_t height, unsigned char* data)
     {
-    public:
-        Game();
-        void LoadMainScene(const std::string &scene);
-    };
-}
+        return nullptr;
+    }
+} // namespace Antomic

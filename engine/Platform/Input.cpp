@@ -13,19 +13,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/Drawable.h"
-
+#include "Platform/Input.h"
 namespace Antomic
 {
-    Drawable::Drawable(const Ref<VertexArray> &vertexArray, const Ref<Shader> &shader) 
-        : mVertexArray(vertexArray), mShader(shader), mMatrix(1.0f) 
-    {
+    uint8_t Input::sKeyForwardMap[256];
+    uint8_t Input::sKeyReverseMap[256];
 
-    }
-
-    Drawable::~Drawable()
-    {
-        
-    }
-    
 } // namespace Antomic

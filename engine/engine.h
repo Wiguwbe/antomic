@@ -9,6 +9,7 @@
 #include "Renderer/VertexArray.h"
 #include "Renderer/Scene.h"
 #include "Renderer/Drawable.h"
+#include "Renderer/Mesh.h"
 #include "Platform/Input.h"
 #include "Events/WindowEvent.h"
 #include "Events/KeyEvent.h"

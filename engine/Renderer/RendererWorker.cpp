@@ -17,74 +17,17 @@
 #include "Renderer/Scene.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererFrame.h"
+#include "Platform/Platform.h"
 #include "Core/Log.h"
 
 namespace Antomic
 {
-    QueueRef<Scene> RendererWorker::sSceneQueue;
-    Ref<RendererWorker> RendererWorker::sWorker = nullptr;
-    std::mutex RendererWorker::sMutex;
-    std::thread RendererWorker::sThread;
-
-    RendererWorker::RendererWorker()
-        : mRunning(false)
-    {
-    }
-
-    RendererWorker::~RendererWorker()
-    {
-    }
-
-    void RendererWorker::StartWorker()
-    {
-        ANTOMIC_ASSERT(!sWorker, "RenderWorker: Worker already running")
-        sWorker = CreateRef<RendererWorker>();
-        sThread = std::thread(&RendererWorker::Run, sWorker);
-    }
-
-    void RendererWorker::StopWorker()
-    {
-        ANTOMIC_ASSERT(sWorker, "RenderWorker: Worker not running")
-        sWorker->mRunning = false;
-        sThread.join();
-    }
-
-    void RendererWorker::SubmitScene(const Ref<Scene> &scene)
-    {
-        std::lock_guard<std::mutex> lock(sMutex);
-        sSceneQueue.push(scene);
-    }
-
-    const Ref<Scene> RendererWorker::PopScene()
-    {
-        std::lock_guard<std::mutex> lock(sMutex);
-        auto scene = sSceneQueue.back();
-        sSceneQueue.pop();
-        return scene;
-    }
 
     void RendererWorker::Run()
     {
-        if (mRunning)
-        {
-            return;
-        }
-        ANTOMIC_INFO("RendererWorker: Render worker started");
-        mRunning = true;
+        ANTOMIC_INFO("RendererWorker: Scene update worker started");
 
-        while (mRunning)
-        {
-            if (sSceneQueue.empty())
-            {
-                continue;
-            }
-
-            auto scene = PopScene();
-            auto frame = CreateRef<RendererFrame>(scene->GetProjection(), scene->GetView());
-            scene->SubmitDrawables(frame);
-            // TODO: Optmize render
-            Renderer::QueueFrame(frame);
-        }
+        // TODO: Optmize render queue
 
         ANTOMIC_INFO("RendererWorker: Render worker stopped");
     }

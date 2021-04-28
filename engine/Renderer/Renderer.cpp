@@ -14,52 +14,75 @@
    limitations under the License.
 */
 #include "Renderer/Renderer.h"
-#include "Core/Cameras.h"
+#include "Renderer/Scene.h"
+#include "Renderer/Camera.h"
 #include "Renderer/RenderCommand.h"
 #include "Renderer/Drawable.h"
 #include "Renderer/Scene.h"
 #include "Renderer/RendererFrame.h"
 #include "Renderer/RendererWorker.h"
-#include "glm/glm.hpp"
+#include "Core/Application.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
 {
-    QueueRef<RendererFrame> Renderer::sRenderQueue;
-    std::mutex Renderer::sMutex;
-
-    void Renderer::Submit(const Ref<RendererFrame> &frame, const Ref<Drawable> &drawable)
+    Renderer::Renderer(const RendererViewport &viewport)
     {
-        frame->QueueDrawable(drawable);
-    }
-    
-    void Renderer::QueueFrame(const Ref<RendererFrame> &frame)
-    {
-        std::lock_guard<std::mutex> lock(sMutex);
-        sRenderQueue.push(frame);
+        SetViewport(viewport);
     }
 
-    const Ref<RendererFrame> Renderer::PopFrame()
+    const Ref<Scene> &Renderer::GetCurrentScene()
     {
-        std::lock_guard<std::mutex> lock(sMutex);
-        auto scene = sRenderQueue.back();
-        sRenderQueue.pop();
-        return scene;
+        return mScene;
     }
 
-    void Renderer::RenderFrame(uint32_t width, uint32_t height)
+    void Renderer::SetCurrentScene(const Ref<Scene> &scene)
     {
-        if ( sRenderQueue.empty() )
+        mScene = scene;
+        ANTOMIC_ASSERT(mScene->GetActiveCamera(), "Renderer: Scene without active camera!")
+        mProjectionMatrix = mScene->GetActiveCamera()->GetProjectionMatrix(mViewport);
+    }
+
+    void Renderer::SetViewport(const RendererViewport &viewport)
+    {
+        mViewport = viewport;
+        if (mScene == nullptr)
+        {
+            mProjectionMatrix = glm::mat4(1.0f);
             return;
+        }
+        ANTOMIC_ASSERT(mScene->GetActiveCamera(), "Renderer: Scene without active camera!")
+        mProjectionMatrix = mScene->GetActiveCamera()->GetProjectionMatrix(mViewport);
+    }
 
-        auto frame = PopFrame();
+    void Renderer::RenderFrame()
+    {
+        if (mScene == nullptr)
+        {
+            return;
+        }
 
-        RenderCommand::SetViewport(0, 0, width, height);
-        RenderCommand::SetClearColor({0.5f, 0.1f, 0.8f, 1.0f});
+        // Create a new frame
+        auto frame = CreateRef<RendererFrame>();
+
+        // Get the time passed since last frame
+        auto currentTime = Platform::GetCurrentTick();
+
+        // Update the current scene state
+        // Get the time passed since last frame
+        auto timestep = currentTime - Renderer::GetLastFrameTime();
+        mLastFrameTime = currentTime;
+        mScene->Update(timestep);
+
+        // Ask scene to submit drawables to this frame
+        mScene->SubmitDrawables(frame);
+
+        RenderCommand::SetViewport(mViewport.Left, mViewport.Top, mViewport.Right, mViewport.Bottom);
+        RenderCommand::SetClearColor(mViewport.Color);
         RenderCommand::Clear();
 
-        auto m_proj = frame->GetProjection();
-        auto m_view = frame->GetView();
+        auto m_proj = mProjectionMatrix;
+        auto m_view = mScene->GetViewMatrix();
         auto m_projview = m_proj * m_view;
 
         while (!frame->Empty())
@@ -67,7 +90,7 @@ namespace Antomic
             auto drawable = frame->PopDrawable();
             auto shader = drawable->GetShader();
             auto va = drawable->GetVertexArray();
-            auto m_model = drawable->GetMatrix();
+            auto m_model = drawable->GetModelMatrix();
 
             shader->SetUniformValue("m_proj", m_proj);
             shader->SetUniformValue("m_view", m_view);
@@ -78,7 +101,18 @@ namespace Antomic
             RenderCommand::DrawIndexed(va);
         }
 
-        Platform::SwapChain();
+        mLastFrame = frame;
+        Platform::SwapBuffer();
+    }
+
+    const uint32_t Renderer::GetLastFrameTime()
+    {
+        if (mLastFrame == nullptr)
+        {
+            return Platform::GetCurrentTick();
+        }
+
+        return mLastFrameTime;
     }
 
 } // namespace Anatomic

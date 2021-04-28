@@ -23,7 +23,7 @@ namespace Antomic
     {
     public:
         WindowsPlatform();
-        virtual ~WindowsPlatform() override;
+        virtual ~WindowsPlatform() override = default;
 
     public:
         // Windows Operations

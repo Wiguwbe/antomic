@@ -15,19 +15,23 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "glm/glm.hpp"
+#include "Renderer/Material.h"
+#include "Renderer/Shader.h"
 
 namespace Antomic
 {
-    class Drawable
+    class BasicMaterial : public Material
     {
-    public:
-        virtual ~Drawable() = default;
+        public:
+            BasicMaterial();
+            virtual ~BasicMaterial() = default;
 
-    public:
-        virtual const Ref<VertexArray> &GetVertexArray() const = 0;
-        virtual const glm::mat4 &GetModelMatrix() const = 0;
-        virtual const VectorRef<Bindable> &GetBindables() const = 0;
-        virtual const Ref<Shader> &GetShader() const = 0;
+        public:
+            virtual void Bind() const;
+            virtual void Unbind() const { mShader->Unbind(); }
+            virtual const Ref<Shader> &GetShader() const { return mShader; };
+        
+        private:
+            Ref<Shader> mShader;
     };
-} // namespace Antomic
+} //namespace Antomic

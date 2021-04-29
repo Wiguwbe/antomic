@@ -30,3 +30,4 @@
 #include "Renderer/Drawable.h"
 #include "Renderer/Mesh.h"
 #include "Renderer/Texture.h"
+#include "Renderer/Materials/BasicMaterial.h"

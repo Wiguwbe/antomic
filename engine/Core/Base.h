@@ -103,6 +103,7 @@ namespace Antomic
     class RendererWorker;
     class Texture;
     class Mesh;
+    class Material;
 
     using EventHandler = std::function<void(Event&)>;
 

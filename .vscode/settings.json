@@ -93,7 +93,8 @@
         "locale": "cpp",
         "queue": "cpp",
         "semaphore": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "*.vs": "cpp"
     },
     "cmake.environment": {
         "ANTOMIC_NO_SDL": "0"

@@ -92,6 +92,11 @@ namespace Antomic
             auto va = drawable->GetVertexArray();
             auto m_model = drawable->GetModelMatrix();
 
+            for(auto bindable : drawable->GetBindables())
+            {
+                bindable->Bind();
+            }
+
             shader->SetUniformValue("m_proj", m_proj);
             shader->SetUniformValue("m_view", m_view);
             shader->SetUniformValue("m_model", m_model);

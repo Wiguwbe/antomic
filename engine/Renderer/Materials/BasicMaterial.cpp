@@ -13,21 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
-#include "glm/glm.hpp"
+#include "Renderer/Materials/BasicMaterial.h"
 
 namespace Antomic
 {
-    class Drawable
+    BasicMaterial::BasicMaterial() 
     {
-    public:
-        virtual ~Drawable() = default;
+        mShader = Shader::CreateFromFile("media/shaders/materials/vs_basic.glsl", "media/shaders/materials/fs_basic.glsl");
+    }
 
-    public:
-        virtual const Ref<VertexArray> &GetVertexArray() const = 0;
-        virtual const glm::mat4 &GetModelMatrix() const = 0;
-        virtual const VectorRef<Bindable> &GetBindables() const = 0;
-        virtual const Ref<Shader> &GetShader() const = 0;
-    };
-} // namespace Antomic
+    void BasicMaterial::Bind() const
+    {
+        mShader->Bind();
+    }
+}

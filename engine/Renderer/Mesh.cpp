@@ -20,19 +20,19 @@
 
 namespace Antomic
 {
-    Mesh::Mesh(const Ref<VertexArray> &vertexArray, const Ref<Shader> &shader)
-        : mVertexArray(vertexArray), mShader(shader), mMatrix(1.0f)
+    Mesh::Mesh(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
+        : mVertexArray(vertexArray), mMaterial(material), mMatrix(1.0f)
     {
     }
 
     void Mesh::AddBindable(const Ref<Texture> &texture)
     {
-        mBindables.push(std::dynamic_pointer_cast<Bindable>(texture));
+        mBindables.push_back(std::dynamic_pointer_cast<Bindable>(texture));
     }
 
-    void Mesh::AddBindable(const Ref<Shader> &shader)
+    void Mesh::AddBindable(const Ref<Material> &material)
     {
-        mBindables.push(std::dynamic_pointer_cast<Shader>(shader));
+        mBindables.push_back(std::dynamic_pointer_cast<Shader>(material));
     }
 
 } // namespace Antomic

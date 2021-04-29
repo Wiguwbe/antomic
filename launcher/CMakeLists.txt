@@ -7,20 +7,14 @@ target_include_directories(
     "${PROJECT_NAME}Launcher"
     PRIVATE
     "${PROJECT_SOURCE_DIR}/engine"
+    "${GLM_DIR}"
 )
+
+
 target_link_libraries(
     "${PROJECT_NAME}Launcher" 
     "${PROJECT_NAME}Engine"
-)
-
-target_link_libraries(
-    "${PROJECT_NAME}Launcher" 
+    "stb"
     ${OPENGL_LIBRARIES} 
 )
 
-#Math Library setup
-target_include_directories( 
-    "${PROJECT_NAME}Launcher"
-    PRIVATE
-    "${GLM_DIR}"
-)

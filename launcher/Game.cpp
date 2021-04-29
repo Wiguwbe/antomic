@@ -15,6 +15,7 @@
 */
 #include "Game.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "stb_image.h"
 
 namespace Antomic
 {
@@ -26,23 +27,22 @@ namespace Antomic
     {
         {
             auto vertexArray = VertexArray::Create();
-            auto shader = Shader::CreateFromFile("media/shaders/opengl/vs_demo_1.glsl", "media/shaders/opengl/fs_demo_1.glsl");
+            auto shader = Shader::CreateFromFile("media/shaders/opengl/vs_demo_2.glsl", "media/shaders/opengl/fs_demo_2.glsl");
 
-            float vertices[3 * 3] = {
-                -0.5f,
-                -0.5f,
-                0.0f,
-                0.5f,
-                -0.5f,
-                0.0f,
-                0.0f,
-                0.5f,
-                0.0f,
+            float vertices[] = {
+                // positions          // colors           // texture coords
+                0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
+                0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
+                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+                -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f   // top left
             };
-            uint32_t indices[3] = {0, 1, 2};
+
+            uint32_t indices[6] = {0, 1, 3, 1, 2, 3};
 
             BufferLayout layout = {
-                {ShaderDataType::Float3, "a_Position"}};
+                {ShaderDataType::Float3, "aPos"},
+                {ShaderDataType::Float3, "aColor"},
+                {ShaderDataType::Float2, "aTexCoord"}};
 
             Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));
             vertexBuffer->SetLayout(layout);
@@ -50,8 +50,20 @@ namespace Antomic
             vertexArray->AddVertexBuffer(vertexBuffer);
             vertexArray->SetIndexBuffer(indexBuffer);
 
-            auto scene = CreateRef<Scene>();
             auto triangle = CreateRef<Mesh>(vertexArray, shader);
+
+            // load and generate the texture
+            int width, height, nrChannels;
+            unsigned char *data = stbi_load("media/textures/container.jpg", &width, &height, &nrChannels, 0);
+            if (data)
+            {
+                Ref<Texture> texture = Texture::CreateTexture(width, height, data);
+                triangle->AddBindable(texture);
+            }
+            stbi_image_free(data);
+
+
+            auto scene = CreateRef<Scene>();
             scene->AddDrawable(triangle);
             SetScene(scene);
         }

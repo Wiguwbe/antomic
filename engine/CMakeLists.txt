@@ -76,10 +76,3 @@ target_link_libraries(
     "${PROJECT_NAME}Engine" 
     "glad"
 )
-
-# STB 
-target_include_directories( 
-    "${PROJECT_NAME}Engine"
-    PRIVATE
-    "${STB_INCLUDE_DIR}"
-)

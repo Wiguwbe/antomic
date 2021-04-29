@@ -104,6 +104,7 @@ add_subdirectory(3rdparty/glad)
 
 # single-file public domain (or MIT licensed) libraries for C/C++
 # https://github.com/nothings/stb
+add_definitions(-DSTB_IMAGE_IMPLEMENTATION)
 add_subdirectory(3rdparty/stb)
 
 # Antomic Engine

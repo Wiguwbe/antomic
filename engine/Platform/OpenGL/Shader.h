@@ -43,7 +43,7 @@ namespace Antomic
         virtual void SetUniformValue(const std::string& name, const glm::mat4 &value) override;
 
     private:
-        uint32_t mRendererId = 0;
+        GLuint mRendererId = 0;
     };
 
 } // namespace Antomic

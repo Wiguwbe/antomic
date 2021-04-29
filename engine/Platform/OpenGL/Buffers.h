@@ -15,6 +15,7 @@
 */
 #pragma once
 #include "Renderer/Buffers.h"
+#include "glad/glad.h"
 
 namespace Antomic
 {
@@ -31,7 +32,7 @@ namespace Antomic
         virtual uint32_t Count() const override { return mCount; };
 
     private:
-        uint32_t mRendererId;
+        GLuint mRendererId;
         uint32_t mCount;
     };
 
@@ -49,7 +50,7 @@ namespace Antomic
         virtual void SetLayout(const BufferLayout &layout) override;
 
     private:
-        uint32_t mRendererId;
+        GLuint mRendererId;
         BufferLayout mLayout;
     };
 

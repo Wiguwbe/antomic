@@ -22,7 +22,7 @@ else ()
     set(BUILD_ARCH "x86")
 endif ()
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 
 # Platform specific configuration
 if(WIN32)

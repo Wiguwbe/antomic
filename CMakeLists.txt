@@ -52,6 +52,8 @@ if(NOT DEFINED ENV{ANTOMIC_NO_SDL})
         add_definitions(-DANTOMIC_LINUX_SDL_PLATFORM)
     endif()
 else()
+# GLFW - multi-platform library for OpenGL, OpenGL ES and Vulkan development on the desktop
+# https://www.glfw.org/
     set(SDL_SUPPORT false)
     set(GLFW_SUPPORT true)
     set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -75,6 +77,7 @@ endif()
 # OpenGL RenderAPI Support
 # https://www.opengl.org/
 if(NOT DEFINED ENV{ANTOMIC_NO_OPENGL})
+    set(OPENGL_SUPPORT false)
     add_definitions(-DANTOMIC_GL_RENDERER)
     if (UNIX)
         set("OpenGL_GL_PREFERENCE" "GLVND")
@@ -117,6 +120,17 @@ add_subdirectory(launcher)
 if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
     include(3rdparty/CMakeLists.googletest.txt)
     add_subdirectory(tests)
+    enable_testing()
+    # Add test Engine Core Tests
+    add_test(
+        NAME "${PROJECT_NAME}CoreTests" 
+        COMMAND "${PROJECT_NAME}CoreTests"
+    ) 
+    # Add test Engine Graph Tests
+    add_test(
+        NAME "${PROJECT_NAME}GraphTests" 
+        COMMAND "${PROJECT_NAME}GraphTests"
+    ) 
 endif() 
 
 file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX})

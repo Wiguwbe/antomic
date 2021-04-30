@@ -93,9 +93,16 @@
         "locale": "cpp",
         "queue": "cpp",
         "semaphore": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "*.vs": "cpp"
     },
+    "cmake.configureArgs": [
+        "-DENABLE_CPPUNIT=yes"
+    ],
     "cmake.environment": {
         "ANTOMIC_NO_SDL": "0"
-    }
+    },
+    "cmakeExplorer.cmakeIntegration": true,
+    "cmakeExplorer.buildDir": "${workspaceFolder}/build",
+    "cmakeExplorer.buildConfig": "Debug",
 }

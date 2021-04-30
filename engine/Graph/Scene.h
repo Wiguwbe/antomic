@@ -15,6 +15,7 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Graph/Node.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
@@ -26,26 +27,25 @@ namespace Antomic
         SCENE_3D,
     };
 
-    class Scene
+    class Scene : public Node
     {
     public:
         Scene() = default;
         virtual ~Scene() = default;
 
     public:
+        // Scene Information
         inline const glm::mat4 &GetViewMatrix() const { return mViewMatrix; }
         inline const Ref<Camera> &GetActiveCamera() const { return mActiveCamera; }
         inline const SceneType &GetType() const { return mType; }
 
-        void AddDrawable(const Ref<Drawable> &drawable);
+        // Load & Unloading
         void Load();
         void Unload();
 
-        void Update(const uint32_t &time);
-        virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
+        virtual void Update(const uint32_t &time) override;
 
     private:
-        VectorRef<Drawable> mDrawables;
         glm::mat4 mViewMatrix;
         Ref<Camera> mActiveCamera;
         SceneType mType;

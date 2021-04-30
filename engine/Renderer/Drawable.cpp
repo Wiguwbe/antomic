@@ -13,23 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/RendererWorker.h"
-#include "Graph/Scene.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/RendererFrame.h"
-#include "Platform/Platform.h"
-#include "Core/Log.h"
+#include "Renderer/Drawable.h"
+#include "Renderer/Bindable.h"
+#include "Renderer/Shader.h"
+#include "Renderer/Texture.h"
 
 namespace Antomic
 {
-
-    void RendererWorker::Run()
+    Drawable::Drawable(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
+        : mVertexArray(vertexArray), mMaterial(material), mMatrix(1.0f)
     {
-        ANTOMIC_INFO("RendererWorker: Scene update worker started");
+    }
 
-        // TODO: Optmize render queue
-
-        ANTOMIC_INFO("RendererWorker: Render worker stopped");
+    void Drawable::AddBindable(const Ref<Bindable> &bindable)
+    {
+        mBindables.push_back(bindable);
     }
 
 } // namespace Antomic

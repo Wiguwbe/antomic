@@ -13,23 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/RendererWorker.h"
-#include "Graph/Scene.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/RendererFrame.h"
-#include "Platform/Platform.h"
-#include "Core/Log.h"
+#pragma once
+#include "Core/Base.h"
+#include "Renderer/Material.h"
+#include "Renderer/Shader.h"
 
 namespace Antomic
 {
-
-    void RendererWorker::Run()
+    class BasicMaterial : public Material
     {
-        ANTOMIC_INFO("RendererWorker: Scene update worker started");
+        public:
+            BasicMaterial();
+            virtual ~BasicMaterial() = default;
 
-        // TODO: Optmize render queue
-
-        ANTOMIC_INFO("RendererWorker: Render worker stopped");
-    }
-
-} // namespace Antomic
+        public:
+            virtual void Bind() const;
+            virtual void Unbind() const { mShader->Unbind(); }
+            virtual const Ref<Shader> &GetShader() const { return mShader; };
+        
+        private:
+            Ref<Shader> mShader;
+    };
+} //namespace Antomic

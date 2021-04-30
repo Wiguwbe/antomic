@@ -27,7 +27,7 @@ namespace Antomic
     {
         {
             auto vertexArray = VertexArray::Create();
-            auto shader = Shader::CreateFromFile("media/shaders/opengl/vs_demo_2.glsl", "media/shaders/opengl/fs_demo_2.glsl");
+            auto material = CreateRef<BasicMaterial>();
 
             float vertices[] = {
                 // positions          // colors           // texture coords
@@ -50,7 +50,7 @@ namespace Antomic
             vertexArray->AddVertexBuffer(vertexBuffer);
             vertexArray->SetIndexBuffer(indexBuffer);
 
-            auto triangle = CreateRef<Mesh>(vertexArray, shader);
+            auto triangle = CreateRef<Drawable>(vertexArray, material);
 
             // load and generate the texture
             int width, height, nrChannels;
@@ -61,7 +61,6 @@ namespace Antomic
                 triangle->AddBindable(texture);
             }
             stbi_image_free(data);
-
 
             auto scene = CreateRef<Scene>();
             scene->AddDrawable(triangle);

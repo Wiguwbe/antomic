@@ -13,23 +13,17 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/RendererWorker.h"
-#include "Graph/Scene.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/RendererFrame.h"
-#include "Platform/Platform.h"
-#include "Core/Log.h"
+#include "Renderer/Materials/BasicMaterial.h"
 
 namespace Antomic
 {
-
-    void RendererWorker::Run()
+    BasicMaterial::BasicMaterial() 
     {
-        ANTOMIC_INFO("RendererWorker: Scene update worker started");
-
-        // TODO: Optmize render queue
-
-        ANTOMIC_INFO("RendererWorker: Render worker stopped");
+        mShader = Shader::CreateFromFile("media/shaders/materials/vs_basic.glsl", "media/shaders/materials/fs_basic.glsl");
     }
 
-} // namespace Antomic
+    void BasicMaterial::Bind() const
+    {
+        mShader->Bind();
+    }
+}

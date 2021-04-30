@@ -14,11 +14,11 @@
    limitations under the License.
 */
 #include "Renderer/Renderer.h"
-#include "Renderer/Scene.h"
+#include "Graph/Scene.h"
 #include "Renderer/Camera.h"
 #include "Renderer/RenderCommand.h"
 #include "Renderer/Drawable.h"
-#include "Renderer/Scene.h"
+#include "Graph/Scene.h"
 #include "Renderer/RendererFrame.h"
 #include "Renderer/RendererWorker.h"
 #include "Core/Application.h"
@@ -74,16 +74,18 @@ namespace Antomic
         mLastFrameTime = currentTime;
         mScene->Update(timestep);
 
-        // Ask scene to submit drawables to this frame
-        mScene->SubmitDrawables(frame);
-
-        RenderCommand::SetViewport(mViewport.Left, mViewport.Top, mViewport.Right, mViewport.Bottom);
-        RenderCommand::SetClearColor(mViewport.Color);
-        RenderCommand::Clear();
-
+        // Get Projection & View matrices
         auto m_proj = mProjectionMatrix;
         auto m_view = mScene->GetViewMatrix();
         auto m_projview = m_proj * m_view;
+
+        // Ask scene to submit drawables to this frame
+        mScene->SubmitDrawables(frame,m_view);
+
+        // Start the rendering process
+        RenderCommand::SetViewport(mViewport.Left, mViewport.Top, mViewport.Right, mViewport.Bottom);
+        RenderCommand::SetClearColor(mViewport.Color);
+        RenderCommand::Clear();
 
         while (!frame->Empty())
         {

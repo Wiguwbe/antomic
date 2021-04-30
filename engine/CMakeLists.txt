@@ -9,46 +9,53 @@ target_include_directories(
     "${PROJECT_SOURCE_DIR}/engine"
 )
 
-# PThreads
+# POSIX Threads
 target_link_libraries( 
     "${PROJECT_NAME}Engine"
     ${CMAKE_THREAD_LIBS_INIT}    
 )
 
-# SDL 
+# SDL - Simple DirectMedia Layer
+# https://www.libsdl.org/
 if (SDL_SUPPORT)
     target_link_libraries( 
         "${PROJECT_NAME}Engine"
         SDL2::Main
     )
-ENDIF()
+ENDIF(SDL_SUPPORT)
 
-# GLFW 
+# GLFW - multi-platform library for OpenGL, OpenGL ES and Vulkan development on the desktop
+# https://www.glfw.org/
 if (GLFW_SUPPORT)
     target_link_libraries( 
         "${PROJECT_NAME}Engine"
         glfw
     )
-ENDIF()
+ENDIF(GLFW_SUPPORT)
 
-# OpenGL
-target_include_directories( 
-    "${PROJECT_NAME}Engine"
-    PRIVATE
-    ${OPENGL_INCLUDE_DIRS}
-)
-target_link_libraries(
-    "${PROJECT_NAME}Engine"
-    ${OPENGL_LIBRARIES} 
-)
+# OpenGL RenderAPI Support
+# https://www.opengl.org/
+if (OPENGL_SUPPORT)
+    target_include_directories( 
+        "${PROJECT_NAME}Engine"
+        PRIVATE
+        ${OPENGL_INCLUDE_DIRS}
+    )
+    target_link_libraries(
+        "${PROJECT_NAME}Engine"
+        ${OPENGL_LIBRARIES} 
+    )
+endif(OPENGL_SUPPORT)
 
-#JSON Library setup
+# JSON Library setup
+# https://github.com/nlohmann/json.git
 target_link_libraries( 
     "${PROJECT_NAME}Engine"
     nlohmann_json::nlohmann_json
 )
 
-#Logging Library setup
+# Logging Library setup
+# https://github.com/gabime/spdlog.git
 target_include_directories( 
     "${PROJECT_NAME}Engine"
     PRIVATE
@@ -59,14 +66,16 @@ target_link_libraries(
     spdlog::spdlog
 )
 
-#Math Library setup
+# GLM Library setup
+# https://github.com/g-truc/glm
 target_include_directories( 
     "${PROJECT_NAME}Engine"
     PRIVATE
     "${GLM_DIR}"
 )
 
-# GLAD 
+# GLAD Multi-Language GL/GLES/EGL/GLX/WGL Loader-Generator based on the official specs.
+# https://glad.dav1d.de/
 target_include_directories( 
     "${PROJECT_NAME}Engine"
     PRIVATE

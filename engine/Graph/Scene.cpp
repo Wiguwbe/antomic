@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/Scene.h"
+#include "Graph/Scene.h"
 #include "Renderer/Camera.h"
 #include "Renderer/RendererWorker.h"
 #include "Renderer/RendererFrame.h"
@@ -23,11 +23,6 @@
 
 namespace Antomic
 {
-    void Scene::AddDrawable(const Ref<Drawable> &drawable)
-    {
-        mDrawables.push_back(drawable);
-    }
-
     void Scene::Update(const uint32_t &time)
     {
         int8_t dx = 0;
@@ -47,6 +42,8 @@ namespace Antomic
             mActiveCamera->GetPosition(),
             lookat,
             glm::vec3(0, 1, 0));
+
+        Node::Update(time);
     }
 
     void Scene::Load()
@@ -64,14 +61,6 @@ namespace Antomic
 
     void Scene::Unload()
     {
-    }
-
-    void Scene::SubmitDrawables(const Ref<RendererFrame> &frame)
-    {
-        for (auto drawable : mDrawables)
-        {
-            frame->QueueDrawable(drawable);
-        }
     }
 
 }

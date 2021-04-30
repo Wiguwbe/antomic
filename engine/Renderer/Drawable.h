@@ -15,6 +15,7 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Renderer/Material.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
@@ -22,12 +23,22 @@ namespace Antomic
     class Drawable
     {
     public:
+        Drawable(const Ref<VertexArray> &vertexArray, const Ref<Material> &material);
         virtual ~Drawable() = default;
 
     public:
-        virtual const Ref<VertexArray> &GetVertexArray() const = 0;
-        virtual const glm::mat4 &GetModelMatrix() const = 0;
-        virtual const VectorRef<Bindable> &GetBindables() const = 0;
-        virtual const Ref<Shader> &GetShader() const = 0;
+        const Ref<VertexArray> &GetVertexArray() const { return mVertexArray; }
+        const glm::mat4 &GetModelMatrix() const { return mMatrix; }
+        const VectorRef<Bindable> &GetBindables() const { return mBindables; }
+        const Ref<Shader> &GetShader() const { return mMaterial->GetShader(); }
+
+        void SetMatrix(const glm::mat4 &matrix) { mMatrix = matrix; }
+        void AddBindable(const Ref<Bindable> &Bindable);
+
+    private:
+        Ref<VertexArray> mVertexArray;
+        VectorRef<Bindable> mBindables;
+        Ref<Material> mMaterial;
+        glm::mat4 mMatrix;        
     };
 } // namespace Antomic

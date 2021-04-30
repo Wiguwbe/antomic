@@ -13,26 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/Mesh.h"
-#include "Renderer/Bindable.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Texture.h"
+#include "gtest/gtest.h"
 
-namespace Antomic
-{
-    Mesh::Mesh(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
-        : mVertexArray(vertexArray), mMaterial(material), mMatrix(1.0f)
-    {
-    }
-
-    void Mesh::AddBindable(const Ref<Texture> &texture)
-    {
-        mBindables.push_back(std::dynamic_pointer_cast<Bindable>(texture));
-    }
-
-    void Mesh::AddBindable(const Ref<Material> &material)
-    {
-        mBindables.push_back(std::dynamic_pointer_cast<Shader>(material));
-    }
-
-} // namespace Antomic
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}

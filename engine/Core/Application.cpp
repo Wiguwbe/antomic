@@ -20,7 +20,7 @@
 #include "Events/WindowEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
-#include "Renderer/Scene.h"
+#include "Graph/Scene.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererWorker.h"
 #include "glm/glm.hpp"

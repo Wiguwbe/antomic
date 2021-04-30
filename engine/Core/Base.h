@@ -102,8 +102,8 @@ namespace Antomic
     class RendererFrame;
     class RendererWorker;
     class Texture;
-    class Mesh;
     class Material;
+    class Node;
 
     using EventHandler = std::function<void(Event&)>;
 

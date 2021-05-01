@@ -78,7 +78,7 @@ namespace Antomic
         {
             Platform::ProcessEvents();
             mRenderer->RenderFrame();
-#ifdef ANTOMIC_PROFILE
+#if ANTOMIC_PROFILE
             // Since we are profiling we just render one frame
             mRunning = false;
 #endif

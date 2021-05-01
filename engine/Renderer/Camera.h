@@ -68,7 +68,7 @@ namespace Antomic
         virtual CameraType GetType() const override { return CameraType::ORTOGRAPHIC; }
         virtual const glm::mat4 GetProjectionMatrix(const RendererViewport &viewport) override
         {
-            return glm::ortho((float)viewport.Left, (float)viewport.Top, (float)viewport.Right, (float)viewport.Bottom, 1.f, 1.f);
+            return glm::ortho((float)viewport.Left, (float)viewport.Top, (float)viewport.Right, (float)viewport.Bottom, -1.f, 1.f);
         }
     };
 

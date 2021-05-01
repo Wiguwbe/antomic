@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/Drawable.h"
+#include "Renderer/Mesh.h"
 #include "Renderer/Bindable.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Texture.h"
@@ -21,30 +21,22 @@
 
 namespace Antomic
 {
-    Drawable::Drawable(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
+    Mesh::Mesh(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
         : mVertexArray(vertexArray), mMaterial(material), mMatrix(1.0f)
     {
     }
 
-    void Drawable::AddBindable(const Ref<Bindable> &bindable)
+    void Mesh::Draw()
     {
-        mBindables.push_back(bindable);
-    }
-
-    void Drawable::Draw()
-    {
-        auto shader = GetShader();
-        auto va = GetVertexArray();
-        auto m_model = GetModelMatrix();
-
         for (auto bindable : GetBindables())
         {
             bindable->Bind();
         }
 
-        shader->SetUniformValue("m_model", m_model);
+        auto shader = mMaterial->GetShader();
+        shader->SetUniformValue("m_model", mMatrix);
         shader->Bind();
-        RenderCommand::DrawIndexed(va);
+        RenderCommand::DrawIndexed(mVertexArray);
     }
 
 } // namespace Antomic

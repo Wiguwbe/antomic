@@ -50,7 +50,7 @@ namespace Antomic
             vertexArray->AddVertexBuffer(vertexBuffer);
             vertexArray->SetIndexBuffer(indexBuffer);
 
-            auto triangle = CreateRef<Drawable>(vertexArray, material);
+            auto triangle = CreateRef<Mesh>(vertexArray, material);
 
             // load and generate the texture
             int width, height, nrChannels;

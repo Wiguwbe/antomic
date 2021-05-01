@@ -14,22 +14,26 @@
    limitations under the License.
 */
 #pragma once
-
 #include "Core/Base.h"
-#include "Core/Log.h"
-#include "Core/Application.h"
-#include "Core/Layer.h"
-#include "Platform/Input.h"
-#include "Events/WindowEvent.h"
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Buffers.h"
-#include "Renderer/VertexArray.h"
 #include "Renderer/Drawable.h"
-#include "Renderer/Texture.h"
-#include "Renderer/Materials/BasicMaterial.h"
-#include "Renderer/Canvas.h"
-#include "Renderer/Mesh.h"
-#include "Graph/Node.h"
-#include "Graph/Scene.h"
+#include "glm/glm.hpp"
+
+namespace Antomic
+{
+    class Canvas : public Drawable
+    {
+    public:
+        Canvas(const Ref<VertexArray> &vertexArray, const Ref<Material> &material);
+        virtual ~Canvas() override {}
+
+    public:
+        virtual const glm::mat4 &GetModelMatrix() const override { return mMatrix; }
+        virtual void SetModelMatrix(const glm::mat4 &matrix) override { mMatrix = matrix; }
+        virtual void Draw() override;
+
+    private:
+        Ref<VertexArray> mVertexArray;
+        Ref<Material> mMaterial;
+        glm::mat4 mMatrix;  
+    };
+}

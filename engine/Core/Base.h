@@ -16,6 +16,8 @@
 #pragma once
 #include "enginepch.h"
 
+#define ANTOMIC_PROFILE 1
+
 #ifdef ANTOMIC_DEBUG
 #if defined(ANTOMIC_PLATFORM_WINDOWS)
 #define ANTOMIC_DEBUGBREAK() __debugbreak()

@@ -204,7 +204,9 @@ namespace Antomic
 	} // namespace InstrumentorUtils
 } // namespace Antomic
 
-#define ANTOMIC_PROFILE 1
+#ifndef ANTOMIC_PROFILE 
+#define ANTOMIC_PROFILE 0
+#endif
 #if ANTOMIC_PROFILE
 // Resolve which function signature macro will be used. Note that this only
 // is resolved when the (pre)compiler starts, so the syntax highlighting

@@ -13,23 +13,30 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-
-#include "Core/Base.h"
-#include "Core/Log.h"
-#include "Core/Application.h"
-#include "Core/Layer.h"
-#include "Platform/Input.h"
-#include "Events/WindowEvent.h"
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Buffers.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Drawable.h"
-#include "Renderer/Texture.h"
-#include "Renderer/Materials/BasicMaterial.h"
 #include "Renderer/Canvas.h"
-#include "Renderer/Mesh.h"
-#include "Graph/Node.h"
-#include "Graph/Scene.h"
+#include "Renderer/Bindable.h"
+#include "Renderer/Shader.h"
+#include "Renderer/Texture.h"
+#include "Renderer/RenderCommand.h"
+
+namespace Antomic
+{
+    Canvas::Canvas(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
+        : mVertexArray(vertexArray), mMaterial(material), mMatrix(1.0f)
+    {
+    }
+
+    void Canvas::Draw()
+    {
+        for (auto bindable : GetBindables())
+        {
+            bindable->Bind();
+        }
+
+        auto shader = mMaterial->GetShader();
+        shader->SetUniformValue("m_model", mMatrix);
+        shader->Bind();
+        RenderCommand::DrawIndexed(mVertexArray);
+    }
+
+} // namespace Antomic

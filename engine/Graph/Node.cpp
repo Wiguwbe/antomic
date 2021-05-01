@@ -75,7 +75,7 @@ namespace Antomic
         // Update the view matrix in all attached drawables
         for (auto drawable : mDrawables)
         {
-            drawable->SetMatrix(mWorld);
+            drawable->SetModelMatrix(mWorld);
         }
 
         // Requests all childs to update

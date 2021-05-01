@@ -29,7 +29,7 @@
 #include "Renderer/Drawable.h"
 #include "Renderer/Texture.h"
 #include "Renderer/Materials/BasicMaterial.h"
-#include "Renderer/Canvas.h"
+#include "Renderer/Sprite.h"
 #include "Renderer/Mesh.h"
 #include "Graph/Node.h"
 #include "Graph/Scene.h"

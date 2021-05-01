@@ -8,6 +8,7 @@ layout (std140, binding = 0) uniform Matrices
     mat4 m_proj;
     mat4 m_view;
     mat4 m_projview;
+    mat4 m_ortho;
 };
 
 uniform mat4 m_model;

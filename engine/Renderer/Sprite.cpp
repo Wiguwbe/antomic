@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/Canvas.h"
+#include "Renderer/Sprite.h"
 #include "Renderer/Bindable.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Texture.h"
@@ -21,12 +21,12 @@
 
 namespace Antomic
 {
-    Canvas::Canvas(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
+    Sprite::Sprite(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
         : mVertexArray(vertexArray), mMaterial(material), mMatrix(1.0f)
     {
     }
 
-    void Canvas::Draw()
+    void Sprite::Draw()
     {
         for (auto bindable : GetBindables())
         {

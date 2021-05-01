@@ -15,22 +15,28 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Renderer/Renderer.h"
+#include "glm/glm.hpp"
 
 namespace Antomic
 {
     class RendererFrame
     {
     public:
-        RendererFrame();
+        RendererFrame(const RendererViewport &viewport, const glm::mat4 &view) : mViewport(viewport), mViewMatrix(view) {}
         virtual ~RendererFrame() = default;
 
-        void QueueDrawable(const Ref<Drawable> &drawable) { mDrawableQueue.push(drawable); }
-        Ref<Drawable> PopDrawable();
+        void QueueDrawable(const Ref<Drawable> &drawable);
+        void Draw();
 
-        bool Empty() { return mDrawableQueue.empty(); }
+        const RendererViewport &GetViewport() const { return mViewport; }
+        const glm::mat4 &GetViewMatrix() const { return mViewMatrix; }
 
     private:
-        QueueRef<Drawable> mDrawableQueue;
+        QueueRef<Drawable> mSpriteQueue;
+        QueueRef<Drawable> mMeshQueue;
+        RendererViewport mViewport;
+        glm::mat4 mViewMatrix;
     };
 
 } // namespace Antomic

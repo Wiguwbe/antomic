@@ -1,0 +1,52 @@
+{
+    "otherData": {
+        "version": "Antomic v0.0.1"
+    },
+    "traceEvents": [
+        {
+            "cat": "function,Graph",
+            "dur": 5,
+            "name": "virtual void Antomic::Scene::Update(const uint32_t&)",
+            "ph": "X",
+            "pid": 2520,
+            "tid": 1,
+            "ts": 71557980552.7
+        },
+        {
+            "cat": "function,Renderer",
+            "dur": 0,
+            "name": "void Antomic::RendererFrame::QueueDrawable(Antomic::Ref<Antomic::Drawable>&)",
+            "ph": "X",
+            "pid": 2520,
+            "tid": 1,
+            "ts": 71557980648.5
+        },
+        {
+            "cat": "function,Graph",
+            "dur": 538,
+            "name": "virtual void Antomic::Node::SubmitDrawables(Antomic::Ref<Antomic::RendererFrame>&)",
+            "ph": "X",
+            "pid": 2520,
+            "tid": 1,
+            "ts": 71557980648.0
+        },
+        {
+            "cat": "function,Renderer",
+            "dur": 3648,
+            "name": "void Antomic::RendererFrame::Draw()",
+            "ph": "X",
+            "pid": 2520,
+            "tid": 1,
+            "ts": 71557982889.8
+        },
+        {
+            "cat": "function,Renderer",
+            "dur": 7783,
+            "name": "void Antomic::Renderer::RenderFrame()",
+            "ph": "X",
+            "pid": 2520,
+            "tid": 1,
+            "ts": 71557980550.5
+        }
+    ]
+}

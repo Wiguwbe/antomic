@@ -85,11 +85,11 @@ namespace Antomic
         }
     }
 
-    void Node::SubmitDrawables(const Ref<RendererFrame> &frame, const glm::mat4 &view)
+    void Node::SubmitDrawables(const Ref<RendererFrame> &frame)
     {
         // TODO: Optimize in order only to send drawables that are inside the view
 
-        ANTOMIC_PROFILE_FUNCTION();
+        ANTOMIC_PROFILE_FUNCTION("Graph");
 
         // Submit all drawables in this node
         for (auto drawable : mDrawables)
@@ -100,7 +100,7 @@ namespace Antomic
         // Asks children to submit alls drawables to frame
         for (auto child : mChildren)
         {
-            child->SubmitDrawables(frame, view);
+            child->SubmitDrawables(frame);
         }
     }
 

@@ -20,15 +20,16 @@
 
 namespace Antomic
 {
-    class Canvas : public Drawable
+    class Sprite : public Drawable
     {
     public:
-        Canvas(const Ref<VertexArray> &vertexArray, const Ref<Material> &material);
-        virtual ~Canvas() override {}
+        Sprite(const Ref<VertexArray> &vertexArray, const Ref<Material> &material);
+        virtual ~Sprite() override {}
 
     public:
         virtual const glm::mat4 &GetModelMatrix() const override { return mMatrix; }
         virtual void SetModelMatrix(const glm::mat4 &matrix) override { mMatrix = matrix; }
+        virtual const DrawableType GetType() override { return DrawableType::SPRITE; }
         virtual void Draw() override;
 
     private:

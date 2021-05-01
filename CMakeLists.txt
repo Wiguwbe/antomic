@@ -37,6 +37,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/dist")
 
+# Pass version variables to Application
+configure_file(config.h.in config.h @ONLY)
+
+# Allow config.h to be visible
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 # POSIX Threads
 find_package(Threads REQUIRED)
 

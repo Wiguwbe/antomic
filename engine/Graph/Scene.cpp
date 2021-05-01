@@ -26,7 +26,7 @@ namespace Antomic
 {
     void Scene::Update(const uint32_t &time)
     {
-        ANTOMIC_PROFILE_FUNCTION();
+        ANTOMIC_PROFILE_FUNCTION("Graph");
 
         int8_t dx = 0;
         int8_t dy = 0;
@@ -51,6 +51,8 @@ namespace Antomic
 
     void Scene::Load()
     {
+        ANTOMIC_PROFILE_FUNCTION("Graph");
+
         // For now hardcoded
         CameraFrustum f = {0.1f, 100.f};
         mType = SceneType::SCENE_3D;
@@ -64,6 +66,7 @@ namespace Antomic
 
     void Scene::Unload()
     {
+        ANTOMIC_PROFILE_FUNCTION("Graph");
     }
 
 }

@@ -42,7 +42,7 @@ namespace Antomic
         void AddDrawable(const Ref<Drawable> &drawable) { mDrawables.push_back(drawable); }
 
         // Render Operations
-        virtual void SubmitDrawables(const Ref<RendererFrame> &frame, const glm::mat4 &view);
+        virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
         
         // State Operations
         virtual void Update(const uint32_t &time);

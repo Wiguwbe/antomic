@@ -20,6 +20,13 @@
 
 namespace Antomic
 {
+    enum class DrawableType
+    {
+        NONE,
+        SPRITE,
+        MESH
+    };
+
     class Drawable
     {
     public:
@@ -29,7 +36,8 @@ namespace Antomic
         virtual const glm::mat4 &GetModelMatrix() const = 0;
         virtual void SetModelMatrix(const glm::mat4 &matrix) = 0;
         virtual void Draw() = 0;
-        
+        virtual DrawableType const GetType() = 0;
+
         inline void AddBindable(const Ref<Bindable> &bindable) { mBindables.push_back(bindable); }
         inline const VectorRef<Bindable> &GetBindables() const { return mBindables; }
         

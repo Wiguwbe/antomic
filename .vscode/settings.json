@@ -94,7 +94,9 @@
         "queue": "cpp",
         "semaphore": "cpp",
         "stack": "cpp",
-        "*.vs": "cpp"
+        "*.vs": "cpp",
+        "*.in": "cpp",
+        "filesystem": "cpp"
     },
     "cmake.configureArgs": [
         "-DENABLE_CPPUNIT=yes"

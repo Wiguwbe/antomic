@@ -15,6 +15,7 @@
 */
 #pragma once
 #include "enginepch.h"
+#include "config.h"
 
 #define ANTOMIC_PROFILE 1
 
@@ -122,10 +123,11 @@ namespace Antomic
     class Material;
     class Camera;
     class PerspectiveCamera;
-    class OrtographicCamera;
+    class OrthographicCamera;
     class Renderer;
     class RendererFrame;
     class RendererWorker;
+    struct RendererViewport;
 
     /*************************************************************
      * Graph

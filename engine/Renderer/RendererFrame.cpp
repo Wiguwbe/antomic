@@ -14,18 +14,57 @@
    limitations under the License.
 */
 #include "Renderer/RendererFrame.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/Drawable.h"
+#include "RenderCommand.h"
+#include "Core/Log.h"
+#include "Profiling/Instrumentor.h"
 
 namespace Antomic
 {
-    RendererFrame::RendererFrame()
-        : mDrawableQueue()
+    void RendererFrame::QueueDrawable(const Ref<Drawable> &drawable)
     {
+        ANTOMIC_PROFILE_FUNCTION("Renderer");
+
+        switch (drawable->GetType())
+        {
+        case DrawableType::SPRITE:
+            mSpriteQueue.push(drawable);
+            return;
+        case DrawableType::MESH:
+            mMeshQueue.push(drawable);
+            return;
+        default:
+            ANTOMIC_ASSERT(false,"RendererFrame::QueueDrawable: Type not handled");
+            return;
+        }
     }
 
-    Ref<Drawable> RendererFrame::PopDrawable()
+    void RendererFrame::Draw()
     {
-        auto drawable = mDrawableQueue.front();
-        mDrawableQueue.pop();
-        return drawable;
+
+        ANTOMIC_PROFILE_FUNCTION("Renderer");
+
+        // Start the rendering process
+        RenderCommand::SetViewport(mViewport.Left, mViewport.Top, mViewport.Right, mViewport.Bottom);
+        RenderCommand::SetClearColor(mViewport.Color);
+        RenderCommand::Clear();
+
+        // First we draw the 3D elements
+        while (!mMeshQueue.empty())
+        {
+            auto drawable = mMeshQueue.front();
+            mMeshQueue.pop();
+            drawable->Draw();
+        }
+
+        // Now we draw the 2D elements
+        while (!mSpriteQueue.empty())
+        {
+            auto drawable = mSpriteQueue.front();
+            mSpriteQueue.pop();
+            drawable->Draw();
+        }
     }
+
 } // namespace Antomic

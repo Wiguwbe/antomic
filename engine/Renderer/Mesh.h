@@ -29,6 +29,7 @@ namespace Antomic
     public:
         virtual const glm::mat4 &GetModelMatrix() const override { return mMatrix; }
         virtual void SetModelMatrix(const glm::mat4 &matrix) override { mMatrix = matrix; }
+        virtual const DrawableType GetType() override { return DrawableType::MESH; }
         virtual void Draw() override;
 
     private:

@@ -72,12 +72,16 @@ namespace Antomic
 
         mRunning = true;
 
-        ANTOMIC_PROFILE_BEGIN_SESSION("ANTOMIC","antomic_profile.json");
+        ANTOMIC_PROFILE_BEGIN_SESSION();
 
         while (mRunning)
         {
             Platform::ProcessEvents();
             mRenderer->RenderFrame();
+#ifdef ANTOMIC_PROFILE
+            // Since we are profiling we just render one frame
+            mRunning = false;
+#endif
         }
 
         ANTOMIC_PROFILE_END_SESSION();

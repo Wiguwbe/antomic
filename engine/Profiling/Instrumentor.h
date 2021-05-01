@@ -204,7 +204,7 @@ namespace Antomic
 	} // namespace InstrumentorUtils
 } // namespace Antomic
 
-#define ANTOMIC_PROFILE 0
+#define ANTOMIC_PROFILE 1
 #if ANTOMIC_PROFILE
 // Resolve which function signature macro will be used. Note that this only
 // is resolved when the (pre)compiler starts, so the syntax highlighting
@@ -227,11 +227,11 @@ namespace Antomic
 #define ANTOMIC_FUNC_SIG "ANTOMIC_FUNC_SIG unknown!"
 #endif
 
-#define ANTOMIC_PROFILE_BEGIN_SESSION(name, filepath) ::Hazel::Instrumentor::Get().BeginSession(name, filepath)
-#define ANTOMIC_PROFILE_END_SESSION() ::Hazel::Instrumentor::Get().EndSession()
+#define ANTOMIC_PROFILE_BEGIN_SESSION(name, filepath) ::Antomic::Instrumentor::Get().BeginSession(name, filepath)
+#define ANTOMIC_PROFILE_END_SESSION() ::Antomic::Instrumentor::Get().EndSession()
 #define ANTOMIC_PROFILE_SCOPE(name)                                                                    \
-	constexpr auto fixedName = ::Hazel::InstrumentorUtils::CleanupOutputString(name, "__cdecl "); \
-	::Hazel::InstrumentationTimer timer##__LINE__(fixedName.Data)
+	constexpr auto fixedName = ::Antomic::InstrumentorUtils::CleanupOutputString(name, "__cdecl "); \
+	::Antomic::InstrumentationTimer timer##__LINE__(fixedName.Data)
 #define ANTOMIC_PROFILE_FUNCTION() ANTOMIC_PROFILE_SCOPE(ANTOMIC_FUNC_SIG)
 #else
 #define ANTOMIC_PROFILE_BEGIN_SESSION(name, filepath)

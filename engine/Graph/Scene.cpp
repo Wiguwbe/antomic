@@ -20,11 +20,14 @@
 #include "Platform/Platform.h"
 #include "Core/Log.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Profiling/Instrumentor.h"
 
 namespace Antomic
 {
     void Scene::Update(const uint32_t &time)
     {
+        ANTOMIC_PROFILE_FUNCTION();
+
         int8_t dx = 0;
         int8_t dy = 0;
         int8_t dz = 0;

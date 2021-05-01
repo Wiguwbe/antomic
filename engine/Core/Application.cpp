@@ -72,11 +72,15 @@ namespace Antomic
 
         mRunning = true;
 
+        ANTOMIC_PROFILE_BEGIN_SESSION("ANTOMIC","antomic_profile.json");
+
         while (mRunning)
         {
             Platform::ProcessEvents();
             mRenderer->RenderFrame();
         }
+
+        ANTOMIC_PROFILE_END_SESSION();
 
         Platform::WindowClose();
     }

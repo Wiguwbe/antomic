@@ -22,6 +22,7 @@
 #include "Renderer/RendererWorker.h"
 #include "Renderer/Buffers.h"
 #include "Graph/Scene.h"
+#include "Profiling/Instrumentor.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
@@ -68,6 +69,8 @@ namespace Antomic
 
     void Renderer::RenderFrame()
     {
+        ANTOMIC_PROFILE_FUNCTION();
+
         if (mScene == nullptr)
         {
             return;

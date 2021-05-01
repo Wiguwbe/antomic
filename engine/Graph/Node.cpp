@@ -17,6 +17,7 @@
 #include "Renderer/Drawable.h"
 #include "Renderer/RendererFrame.h"
 #include "Core/Log.h"
+#include "Profiling/Instrumentor.h"
 
 namespace Antomic
 {
@@ -87,6 +88,8 @@ namespace Antomic
     void Node::SubmitDrawables(const Ref<RendererFrame> &frame, const glm::mat4 &view)
     {
         // TODO: Optimize in order only to send drawables that are inside the view
+
+        ANTOMIC_PROFILE_FUNCTION();
 
         // Submit all drawables in this node
         for (auto drawable : mDrawables)

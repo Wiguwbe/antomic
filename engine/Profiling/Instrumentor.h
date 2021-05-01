@@ -231,8 +231,8 @@ namespace Antomic
 	::Antomic::InstrumentationTimer timer##__LINE__(fixedName.Data,category)
 #define ANTOMIC_PROFILE_FUNCTION(category) ANTOMIC_PROFILE_SCOPE(ANTOMIC_FUNC_SIG,category)
 #else
-#define ANTOMIC_PROFILE_BEGIN_SESSION(name, filepath)
+#define ANTOMIC_PROFILE_BEGIN_SESSION()
 #define ANTOMIC_PROFILE_END_SESSION()
-#define ANTOMIC_PROFILE_SCOPE(name)
-#define ANTOMIC_PROFILE_FUNCTION()
+#define ANTOMIC_PROFILE_SCOPE(name, category)
+#define ANTOMIC_PROFILE_FUNCTION(category)
 #endif

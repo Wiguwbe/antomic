@@ -17,7 +17,7 @@
 #include "enginepch.h"
 #include "config.h"
 
-#define ANTOMIC_PROFILE 1
+#define ANTOMIC_PROFILE 0
 
 #ifdef ANTOMIC_DEBUG
 #if defined(ANTOMIC_PLATFORM_WINDOWS)

@@ -20,6 +20,10 @@
 
 namespace Antomic
 {
+    /*************************************************************
+     * BufferElement Implementation
+     *************************************************************/
+
     struct BufferElement
     {
         std::string Name;
@@ -32,6 +36,30 @@ namespace Antomic
             : Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized) {}
     };
 
+    /*************************************************************
+     * UniformBufferElement Implementation
+     *************************************************************/
+
+    struct UniformBufferElement
+    {
+        std::string Name;
+        ShaderDataType Type;
+        uint8_t Size;
+        uint8_t BaseAlignment;
+        uint8_t Count;
+        uint32_t Offset;
+
+        UniformBufferElement(ShaderDataType type, const std::string &name)
+            : Name(name), Type(type), Size(ShaderDataTypeSize(type)), BaseAlignment(ShaderDataTypeAlignment(type)), Count(1), Offset(0) {}
+
+        UniformBufferElement(ShaderDataType type, uint8_t count, const std::string &name)
+            : Name(name), Type(type), Size(ShaderDataTypeSize(type)), BaseAlignment(ShaderDataTypeAlignment(type)), Count(count), Offset(0) {}
+    };
+
+    /*************************************************************
+     * BufferLayout Implementation
+     *************************************************************/
+
     class BufferLayout
     {
     public:
@@ -39,8 +67,9 @@ namespace Antomic
         BufferLayout() {}
         ~BufferLayout(){};
 
+    public:
         inline const std::vector<BufferElement> &Elements() const { return mElements; }
-        inline uint32_t Stride() const { return mStride; }
+        inline uint32_t Stride() const { return mStride; }        
 
     private:
         void Update();
@@ -49,6 +78,34 @@ namespace Antomic
         std::vector<BufferElement> mElements;
         uint32_t mStride = 0;
     };
+
+    /*************************************************************
+     * UniformBufferLayout Implementation
+     *************************************************************/
+
+    class UniformBufferLayout
+    {
+    public:
+        UniformBufferLayout(const std::initializer_list<UniformBufferElement> &elements);
+        UniformBufferLayout() {}
+        ~UniformBufferLayout(){};
+
+    public:
+        inline const std::vector<UniformBufferElement> &Elements() const { return mElements; }
+        inline uint32_t Stride() const { return mStride; }
+        const UniformBufferElement &GetElement(const std::string& name);
+
+    private:
+        void Update();
+
+    private:
+        std::vector<UniformBufferElement> mElements;
+        uint32_t mStride = 0;
+    };
+
+    /*************************************************************
+     * IndexBuffer Implementation
+     *************************************************************/
 
     class IndexBuffer : public Bindable
     {
@@ -63,6 +120,10 @@ namespace Antomic
         static Ref<IndexBuffer> Create(uint32_t *data, uint32_t size);
     };
 
+    /*************************************************************
+     * VertexBuffer Implementation
+     *************************************************************/
+
     class VertexBuffer : public Bindable
     {
     public:
@@ -76,4 +137,31 @@ namespace Antomic
     public:
         static Ref<VertexBuffer> Create(float *data, uint32_t size);
     };
+
+    /*************************************************************
+     * UniformBuffer Implementation
+     *************************************************************/
+
+    class UniformBuffer 
+    {
+    public:
+        virtual ~UniformBuffer() = default;
+
+    public:
+        virtual void SetValue(const std::string &name, const glm::mat4 &data) = 0;
+        virtual void SetValue(const std::string &name, const glm::mat3 &data) = 0;
+        virtual void SetValue(const std::string &name, const glm::vec4 &data) = 0;
+        virtual void SetValue(const std::string &name, const glm::vec3 &data) = 0;
+        virtual void SetValue(const std::string &name, const glm::vec2 &data) = 0;
+        virtual void SetValue(const std::string &name, float data ) = 0;
+        virtual void SetValue(const std::string &name, uint32_t data) = 0;
+        virtual void SetValue(const std::string &name, int data) = 0;
+        virtual void SetValue(const std::string &name, bool data) = 0;
+        virtual const UniformBufferLayout &Layout() const = 0;
+
+    public:
+        static Ref<UniformBuffer> Create(const UniformBufferLayout &layout, uint32_t binding);
+    };
+
+
 } // namespace Antomic

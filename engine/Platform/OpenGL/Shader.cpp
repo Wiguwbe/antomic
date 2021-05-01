@@ -25,9 +25,9 @@ namespace Antomic
         switch (t)
         {
         case ShaderDataType::Float:
-        case ShaderDataType::Float2:
-        case ShaderDataType::Float3:
-        case ShaderDataType::Float4:
+        case ShaderDataType::Vec2:
+        case ShaderDataType::Vec3:
+        case ShaderDataType::Vec4:
         case ShaderDataType::Mat3:
         case ShaderDataType::Mat4:
             return GL_FLOAT;
@@ -50,11 +50,11 @@ namespace Antomic
         {
         case ShaderDataType::Float:
             return 1;
-        case ShaderDataType::Float2:
+        case ShaderDataType::Vec2:
             return 2;
-        case ShaderDataType::Float3:
+        case ShaderDataType::Vec3:
             return 3;
-        case ShaderDataType::Float4:
+        case ShaderDataType::Vec4:
             return 4;
         case ShaderDataType::Mat3:
             return 9;
@@ -169,68 +169,56 @@ namespace Antomic
 
     void OpenGLShader::SetUniformValue(const std::string &name, float value)
     {
-        glUseProgram(mRendererId);
         GLint loc = glGetUniformLocation(mRendererId, name.c_str());
         if (loc != -1)
         {
             glUniform1f(loc, value);
         }
-        glUseProgram(0);
     }
 
     void OpenGLShader::SetUniformValue(const std::string &name, const glm::vec2 &value)
     {
-        glUseProgram(mRendererId);
         GLint loc = glGetUniformLocation(mRendererId, name.c_str());
         if (loc != -1)
         {
             glUniform2f(loc, value.x, value.y);
         }
-        glUseProgram(0);
     }
 
     void OpenGLShader::SetUniformValue(const std::string &name, const glm::vec3 &value)
     {
-        glUseProgram(mRendererId);
         GLint loc = glGetUniformLocation(mRendererId, name.c_str());
         if (loc != -1)
         {
             glUniform3f(loc, value.x, value.y, value.z);
         }
-        glUseProgram(0);
     }
 
     void OpenGLShader::SetUniformValue(const std::string &name, const glm::vec4 &value)
     {
-        glUseProgram(mRendererId);
         GLint loc = glGetUniformLocation(mRendererId, name.c_str());
         if (loc != -1)
         {
             glUniform4f(loc, value.x, value.y, value.z, value.w);
         }
-        glUseProgram(0);
     }
 
     void OpenGLShader::SetUniformValue(const std::string &name, const glm::mat3 &value)
     {
-        glUseProgram(mRendererId);
         GLint loc = glGetUniformLocation(mRendererId, name.c_str());
         if (loc != -1)
         {
             glUniformMatrix3fv(loc, 1, GL_FALSE, glm::value_ptr(value));
         }
-        glUseProgram(0);
     }
 
     void OpenGLShader::SetUniformValue(const std::string &name, const glm::mat4 &value)
     {
-        glUseProgram(mRendererId);
         GLint loc = glGetUniformLocation(mRendererId, name.c_str());
         if (loc != -1)
         {
             glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(value));
         }
-        glUseProgram(0);
     }
 
 } // namespace Antomic

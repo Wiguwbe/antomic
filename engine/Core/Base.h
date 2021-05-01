@@ -49,6 +49,11 @@
 
 namespace Antomic
 {
+
+    /*************************************************************
+     * Generics
+     *************************************************************/ 
+
     template <typename T>
     using Scope = std::unique_ptr<T>;
 
@@ -73,10 +78,19 @@ namespace Antomic
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
 
+    /*************************************************************
+     * Core
+     *************************************************************/ 
+
     class Application;
     class Platform;
     class Input;
     class Log;
+
+    /*************************************************************
+     * Event
+     *************************************************************/ 
+
     class Event;
     class EventListener;
     class WindowCloseEvent;
@@ -88,24 +102,36 @@ namespace Antomic
     class MouseScrolledEvent;
     class MouseButtonPressedEvent;
     class MouseButtonReleasedEvent;
+
+    using EventHandler = std::function<void(Event&)>;
+
+    /*************************************************************
+     * Renderer
+     *************************************************************/ 
+
+    class Bindable;
     class VertexArray;
     class IndexBuffer;
     class VertexBuffer;
-    class Scene;
+    class Shader;
+    class UniformBuffer;
+    class Drawable;
+    class Texture;
+    class Material;
     class Camera;
     class PerspectiveCamera;
     class OrtographicCamera;
-    class Bindable;
-    class Drawable;
-    class Shader;
     class Renderer;
     class RendererFrame;
     class RendererWorker;
-    class Texture;
-    class Material;
-    class Node;
 
-    using EventHandler = std::function<void(Event&)>;
+    /*************************************************************
+     * Graph
+     *************************************************************/ 
+
+    class Node;
+    class Scene;
+
 
 } // namespace Antomic
 

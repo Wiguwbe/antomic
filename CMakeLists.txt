@@ -121,6 +121,7 @@ if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
     include(3rdparty/CMakeLists.googletest.txt)
     add_subdirectory(tests)
     enable_testing()
+    include(Dart)
     # Add test Engine Core Tests
     add_test(
         NAME "${PROJECT_NAME}CoreTests" 
@@ -130,6 +131,11 @@ if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
     add_test(
         NAME "${PROJECT_NAME}GraphTests" 
         COMMAND "${PROJECT_NAME}GraphTests"
+    ) 
+    # Add test Engine Renderer Tests
+    add_test(
+        NAME "${PROJECT_NAME}RendererTests" 
+        COMMAND "${PROJECT_NAME}RendererTests"
     ) 
 endif() 
 

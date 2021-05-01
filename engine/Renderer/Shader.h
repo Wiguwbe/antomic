@@ -23,9 +23,9 @@ namespace Antomic
     enum class ShaderDataType
     {
         Float,
-        Float2,
-        Float3,
-        Float4,
+        Vec2,
+        Vec3,
+        Vec4,
         Mat3,
         Mat4,
         Int,
@@ -36,6 +36,7 @@ namespace Antomic
     };
 
     uint32_t ShaderDataTypeSize(ShaderDataType t);
+    uint32_t ShaderDataTypeAlignment(ShaderDataType t);
 
     class Shader : public Bindable
     {

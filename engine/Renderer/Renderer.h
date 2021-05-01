@@ -62,5 +62,6 @@ namespace Antomic
         Ref<Scene> mScene;
         RendererViewport mViewport;
         glm::mat4 mProjectionMatrix;
+        Ref<UniformBuffer> mCameraBuffer;
     };
 } // namespace Antomic

@@ -13,21 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Platform/RenderAPI.h"
+#include "gtest/gtest.h"
 
-namespace Antomic
-{
-    class OpenGLRenderAPI : public RenderAPI
-    {
-    public:
-        OpenGLRenderAPI() = default;
-        virtual ~OpenGLRenderAPI() override = default;
-
-    public:
-        virtual void SetViewport(const uint32_t &x, const uint32_t &y, uint32_t const &width, uint32_t const &height) override;
-        virtual void SetClearColor(glm::vec4 color) override;
-        virtual void Clear() override;
-        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) override;
-    };
-} // namespace Antomic
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}

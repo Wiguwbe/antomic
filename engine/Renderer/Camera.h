@@ -33,6 +33,10 @@ namespace Antomic
         PERSPECTIVE,
     };
 
+    /*************************************************************
+     * Camera Implementation
+     *************************************************************/
+
     class Camera
     {
     public:
@@ -50,6 +54,10 @@ namespace Antomic
         glm::vec3 mPosition;
     };
 
+    /*************************************************************
+     * OrthographicCamera Implementation
+     *************************************************************/
+
     class OrthographicCamera : public Camera
     {
     public:
@@ -63,6 +71,10 @@ namespace Antomic
             return glm::ortho((float)viewport.Left, (float)viewport.Top, (float)viewport.Right, (float)viewport.Bottom, 1.f, 1.f);
         }
     };
+
+    /*************************************************************
+     * PerspetiveCamera Implementation
+     *************************************************************/
 
     class PerspetiveCamera : public Camera
     {

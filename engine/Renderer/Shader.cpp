@@ -30,11 +30,11 @@ namespace Antomic
         {
         case ShaderDataType::Float:
             return 4;
-        case ShaderDataType::Float2:
+        case ShaderDataType::Vec2:
             return 8;
-        case ShaderDataType::Float3:
+        case ShaderDataType::Vec3:
             return 12;
-        case ShaderDataType::Float4:
+        case ShaderDataType::Vec4:
             return 16;
         case ShaderDataType::Mat3:
             return 36;
@@ -50,6 +50,38 @@ namespace Antomic
             return 16;
         case ShaderDataType::Bool:
             return 1;
+        }
+
+        ANTOMIC_ASSERT(false, "ShaderDataType: Unknown data type")
+        return 0;
+    }
+
+    uint32_t ShaderDataTypeAlignment(ShaderDataType t)
+    {
+        switch (t)
+        {
+        case ShaderDataType::Float:
+            return 4;
+        case ShaderDataType::Vec2:
+            return 8;
+        case ShaderDataType::Vec3:
+            return 16;
+        case ShaderDataType::Vec4:
+            return 16;
+        case ShaderDataType::Mat3:
+            return 16;
+        case ShaderDataType::Mat4:
+            return 16;
+        case ShaderDataType::Int:
+            return 4;
+        case ShaderDataType::Int2:
+            return 8;
+        case ShaderDataType::Int3:
+            return 16;
+        case ShaderDataType::Int4:
+            return 16;
+        case ShaderDataType::Bool:
+            return 4;
         }
 
         ANTOMIC_ASSERT(false, "ShaderDataType: Unknown data type")

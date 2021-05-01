@@ -14,20 +14,29 @@
    limitations under the License.
 */
 #include "Renderer/Renderer.h"
-#include "Graph/Scene.h"
+#include "Core/Application.h"
 #include "Renderer/Camera.h"
 #include "Renderer/RenderCommand.h"
 #include "Renderer/Drawable.h"
-#include "Graph/Scene.h"
 #include "Renderer/RendererFrame.h"
 #include "Renderer/RendererWorker.h"
-#include "Core/Application.h"
+#include "Renderer/Buffers.h"
+#include "Graph/Scene.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
 {
     Renderer::Renderer(const RendererViewport &viewport)
     {
+        {
+            UniformBufferLayout cameraBufferLayout = {
+                {ShaderDataType::Mat4, "m_proj"},
+                {ShaderDataType::Mat4, "m_view"},
+                {ShaderDataType::Mat4, "m_projview"}};
+
+            mCameraBuffer = UniformBuffer::Create(cameraBufferLayout, 0);
+        }
+
         SetViewport(viewport);
     }
 
@@ -41,6 +50,7 @@ namespace Antomic
         mScene = scene;
         ANTOMIC_ASSERT(mScene->GetActiveCamera(), "Renderer: Scene without active camera!")
         mProjectionMatrix = mScene->GetActiveCamera()->GetProjectionMatrix(mViewport);
+        mCameraBuffer->SetValue("m_proj", mProjectionMatrix);
     }
 
     void Renderer::SetViewport(const RendererViewport &viewport)
@@ -53,6 +63,7 @@ namespace Antomic
         }
         ANTOMIC_ASSERT(mScene->GetActiveCamera(), "Renderer: Scene without active camera!")
         mProjectionMatrix = mScene->GetActiveCamera()->GetProjectionMatrix(mViewport);
+        mCameraBuffer->SetValue("m_proj", mProjectionMatrix);
     }
 
     void Renderer::RenderFrame()
@@ -74,18 +85,20 @@ namespace Antomic
         mLastFrameTime = currentTime;
         mScene->Update(timestep);
 
-        // Get Projection & View matrices
-        auto m_proj = mProjectionMatrix;
+        // Get View matrices
         auto m_view = mScene->GetViewMatrix();
-        auto m_projview = m_proj * m_view;
+        auto m_projview = mProjectionMatrix * m_view;
 
         // Ask scene to submit drawables to this frame
-        mScene->SubmitDrawables(frame,m_view);
+        mScene->SubmitDrawables(frame, m_view);
 
         // Start the rendering process
         RenderCommand::SetViewport(mViewport.Left, mViewport.Top, mViewport.Right, mViewport.Bottom);
         RenderCommand::SetClearColor(mViewport.Color);
         RenderCommand::Clear();
+
+        mCameraBuffer->SetValue("m_view", m_view);
+        mCameraBuffer->SetValue("m_projview", m_projview);
 
         while (!frame->Empty())
         {
@@ -94,16 +107,12 @@ namespace Antomic
             auto va = drawable->GetVertexArray();
             auto m_model = drawable->GetModelMatrix();
 
-            for(auto bindable : drawable->GetBindables())
+            for (auto bindable : drawable->GetBindables())
             {
                 bindable->Bind();
             }
 
-            shader->SetUniformValue("m_proj", m_proj);
-            shader->SetUniformValue("m_view", m_view);
             shader->SetUniformValue("m_model", m_model);
-            shader->SetUniformValue("m_projview", m_projview);
-
             shader->Bind();
             RenderCommand::DrawIndexed(va);
         }

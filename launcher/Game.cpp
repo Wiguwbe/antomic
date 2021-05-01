@@ -40,9 +40,9 @@ namespace Antomic
             uint32_t indices[6] = {0, 1, 3, 1, 2, 3};
 
             BufferLayout layout = {
-                {ShaderDataType::Float3, "aPos"},
-                {ShaderDataType::Float3, "aColor"},
-                {ShaderDataType::Float2, "aTexCoord"}};
+                {ShaderDataType::Vec3, "aPos"},
+                {ShaderDataType::Vec3, "aColor"},
+                {ShaderDataType::Vec2, "aTexCoord"}};
 
             Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));
             vertexBuffer->SetLayout(layout);

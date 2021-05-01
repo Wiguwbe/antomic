@@ -106,18 +106,7 @@ namespace Antomic
         while (!frame->Empty())
         {
             auto drawable = frame->PopDrawable();
-            auto shader = drawable->GetShader();
-            auto va = drawable->GetVertexArray();
-            auto m_model = drawable->GetModelMatrix();
-
-            for (auto bindable : drawable->GetBindables())
-            {
-                bindable->Bind();
-            }
-
-            shader->SetUniformValue("m_model", m_model);
-            shader->Bind();
-            RenderCommand::DrawIndexed(va);
+            drawable->Draw();
         }
 
         mLastFrame = frame;

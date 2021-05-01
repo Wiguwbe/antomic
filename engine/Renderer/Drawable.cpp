@@ -17,6 +17,7 @@
 #include "Renderer/Bindable.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Texture.h"
+#include "Renderer/RenderCommand.h"
 
 namespace Antomic
 {
@@ -28,6 +29,22 @@ namespace Antomic
     void Drawable::AddBindable(const Ref<Bindable> &bindable)
     {
         mBindables.push_back(bindable);
+    }
+
+    void Drawable::Draw()
+    {
+        auto shader = GetShader();
+        auto va = GetVertexArray();
+        auto m_model = GetModelMatrix();
+
+        for (auto bindable : GetBindables())
+        {
+            bindable->Bind();
+        }
+
+        shader->SetUniformValue("m_model", m_model);
+        shader->Bind();
+        RenderCommand::DrawIndexed(va);
     }
 
 } // namespace Antomic

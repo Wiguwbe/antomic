@@ -70,3 +70,4 @@ lib
 *.log
 imgui.ini
 # End of https://www.toptal.com/developers/gitignore/api/cmake,visualstudiocode,c++
+antomic_profile.json

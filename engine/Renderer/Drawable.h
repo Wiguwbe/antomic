@@ -34,6 +34,7 @@ namespace Antomic
 
         void SetMatrix(const glm::mat4 &matrix) { mMatrix = matrix; }
         void AddBindable(const Ref<Bindable> &Bindable);
+        void Draw();
 
     private:
         Ref<VertexArray> mVertexArray;

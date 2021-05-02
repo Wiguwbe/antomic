@@ -35,11 +35,14 @@ namespace Antomic
     public:
         virtual void Draw() = 0;
         virtual DrawableType const GetType() = 0;
+        const glm::mat4 &GetModelMatrix() const { return mModelMatrix; }
+        void SetModelMatrix(const glm::mat4 &matrix) { mModelMatrix = matrix; }
 
         inline void AddBindable(const Ref<Bindable> &bindable) { mBindables.push_back(bindable); }
         inline const VectorRef<Bindable> &GetBindables() const { return mBindables; }
         
     private:
         VectorRef<Bindable> mBindables;
+        glm::mat4 mModelMatrix;
     };
 } // namespace Antomic

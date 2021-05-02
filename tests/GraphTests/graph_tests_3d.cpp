@@ -16,7 +16,7 @@
 #include "gtest/gtest.h"
 #include "Core/Base.h"
 #include "Core/Log.h"
-#include "Graph/3D/Node3d.h"
+#include "Graph/3D/TestNode3d.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -24,13 +24,13 @@ using namespace Antomic;
 
 TEST(AntomicGraphTest, Node3dTests)
 {
-    auto root = CreateRef<Node3d>();
+    auto root = CreateRef<TestNode3d>();
     EXPECT_EQ(root->GetParent(), nullptr);
     EXPECT_EQ(root->GetChildren().size(), 0);
     EXPECT_EQ(root->GetWorldMatrix(), glm::mat4(1.0f));
     EXPECT_EQ(root->GetWorldMatrix(), root->GetLocalMatrix());
 
-    auto child1 = CreateRef<Node3d>();
+    auto child1 = CreateRef<TestNode3d>();
     EXPECT_EQ(child1->GetParent(), nullptr);
     EXPECT_EQ(child1->GetWorldMatrix(), glm::mat4(1.0f));
     EXPECT_EQ(child1->GetWorldMatrix(), child1->GetLocalMatrix());
@@ -39,7 +39,7 @@ TEST(AntomicGraphTest, Node3dTests)
     EXPECT_EQ(child1->GetParent(), root);
     EXPECT_EQ(root->GetChildren().size(), 1);
 
-    auto child2 = CreateRef<Node3d>();
+    auto child2 = CreateRef<TestNode3d>();
     EXPECT_EQ(child2->GetParent(), nullptr);
     EXPECT_EQ(child2->GetWorldMatrix(), glm::mat4(1.0f));
     EXPECT_EQ(child2->GetWorldMatrix(), child2->GetLocalMatrix());

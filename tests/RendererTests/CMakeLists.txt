@@ -31,3 +31,18 @@ target_link_libraries(
     gtest_main
 )
 
+# Logging Library setup
+# https://github.com/gabime/spdlog.git
+target_link_libraries( 
+    "${PROJECT_NAME}RendererTests"
+    PRIVATE
+    nlohmann_json::nlohmann_json
+)
+
+# Logging Library setup
+# https://github.com/gabime/spdlog.git
+target_link_libraries( 
+    "${PROJECT_NAME}RendererTests"
+    PRIVATE
+    spdlog::spdlog
+)

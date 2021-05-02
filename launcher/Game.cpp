@@ -29,8 +29,8 @@ namespace Antomic
             // Load a new sprite
             auto sprite = CreateRef<SpriteNode>("assets/textures/container.jpg");
             // Add sprite to the scene
-            sprite->SetPosition(glm::vec2(200.0f, 200.0f));
-            sprite->SetSize(glm::vec2(300.0f, 300.0f));
+            sprite->SetPosition(glm::vec2(0, 0));
+            sprite->SetSize(glm::vec2(50.0f, 50.0f));
             sprite->SetRotation(45.f);
             sprite->SetColor({0.0f, 1.0f, 0.0f,1.0f});
             scene->AddChild(sprite);

@@ -30,13 +30,13 @@ namespace Antomic
             // Vertices for our quad
             float vertices[] = {
                 // pos      // tex
-                0.0f, 1.0f, 0.0f, 1.0f,
-                1.0f, 0.0f, 1.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 0.0f,
+                -0.5f, 0.5f, 0.0f, 1.0f,
+                0.5f, -0.5f, 1.0f, 0.0f,
+                -0.5f, -0.5f, 0.0f, 0.0f,
 
-                0.0f, 1.0f, 0.0f, 1.0f,
-                1.0f, 1.0f, 1.0f, 1.0f,
-                1.0f, 0.0f, 1.0f, 0.0f};
+                -0.5f, 0.5f, 0.0f, 1.0f,
+                0.5f, 0.5f, 1.0f, 1.0f,
+                0.5f, -0.5f, 1.0f, 0.0f};
 
             uint32_t indices[6] = {0, 1, 2, 3, 4, 5};
 
@@ -58,7 +58,7 @@ namespace Antomic
 
     void Sprite::Draw()
     {
-        mShader->SetUniformValue("m_model", mModelMatrix);
+        mShader->SetUniformValue("m_model", GetModelMatrix());
         mShader->SetUniformValue("m_color", mSpriteColor);
         mShader->Bind();
         for (auto bindable : GetBindables())

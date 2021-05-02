@@ -13,29 +13,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
+#ifdef ANTOMIC_TESTS
 #include "Core/Base.h"
-#include "Renderer/Drawable.h"
+#include "Graph/2D/TestNode2d.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
 {
-    class Sprite : public Drawable
+    void TestNode2d::UpdateSpatialInformation()
     {
-    public:
-        Sprite();
-        virtual ~Sprite() override {}
+        if (!IsDirty())
+        {
+            return;
+        }
 
-    public:
-        virtual const DrawableType GetType() override { return DrawableType::SPRITE; }
-        virtual void Draw() override;
+        // Update the world matrix
+        auto parent = std::dynamic_pointer_cast<Node2d>(GetParent());
+        mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
 
-        inline const glm::vec4 &GetSpriteColor() const { return mSpriteColor; }
-        inline void SetSpriteColor(const glm::vec4 &color) { mSpriteColor = color; }
-
-    private:
-        Ref<VertexArray> mVertexArray = nullptr;
-        Ref<Shader> mShader = nullptr;
-        glm::vec4 mSpriteColor = glm::vec4(1.f, 1.f, 1.f, 1.f);
-    };
-}
+        ClearDirty();
+    }
+} // namespace Antomic
+#endif

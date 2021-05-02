@@ -42,22 +42,23 @@ namespace Antomic
 
         // Render Operations
         virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
-        inline const VectorRef<Drawable> &GetDrawables() const { return mDrawables; }
         
         // State Operations
         virtual void Update(const uint32_t &time);
 
     protected:
-        // Container Operations
-        void AddDrawable(const Ref<Drawable> &drawable);
+        // Render Operations       
+        virtual const Ref<Drawable> GetDrawable() const = 0;
+        
+        // State operations
         virtual void MakeDirty();
         inline bool IsDirty() { return mDirty; }
         inline void ClearDirty() { mDirty = false; }
+        virtual void UpdateSpatialInformation() = 0;
 
     private:
         Ref<Node> mParent = nullptr;
         VectorRef<Node> mChildren;    
-        VectorRef<Drawable> mDrawables;
         bool mDirty = true;
     };
 } // namespace Antomic

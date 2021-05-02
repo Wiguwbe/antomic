@@ -16,6 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 #include "Graph/2D/Node2d.h"
+#include "Renderer/Sprite.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
@@ -26,5 +27,15 @@ namespace Antomic
         SpriteNode(const std::string name);
         virtual ~SpriteNode() = default;
 
+    public:
+        // Object attributes
+        inline const glm::vec4 &GetColor() const { return mSprite->GetSpriteColor(); }
+        inline void SetColor(const glm::vec4 &color) { mSprite->SetSpriteColor(color); }
+
+    protected:
+        virtual const Ref<Drawable> GetDrawable() const override { return mSprite; };
+
+    private:
+        Ref<Sprite> mSprite;
     };
 } // namespace Antomic

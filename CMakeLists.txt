@@ -22,8 +22,6 @@ else ()
     set(BUILD_ARCH "x86")
 endif ()
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
-
 # Platform specific configuration
 if(WIN32)
     add_definitions(-DANTOMIC_PLATFORM_WINDOWS)
@@ -31,11 +29,24 @@ elseif (UNIX)
     add_definitions(-DANTOMIC_PLATFORM_LINUX)
 endif(WIN32)
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+# POSIX Threads
+find_package(Threads REQUIRED)
+else()
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W3")
+endif()
+
 # Specify build paths
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/dist")
+
+# Activate Unit Testing
+if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
+    add_definitions(-DANTOMIC_TESTS)
+endif()
 
 # Pass version variables to Application
 configure_file(config.h.in config.h @ONLY)
@@ -43,8 +54,6 @@ configure_file(config.h.in config.h @ONLY)
 # Allow config.h to be visible
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-# POSIX Threads
-find_package(Threads REQUIRED)
 
 # SDL - Simple DirectMedia Layer
 # https://www.libsdl.org/

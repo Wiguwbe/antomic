@@ -13,20 +13,17 @@ target_include_directories(
 
 target_link_libraries(
     "${PROJECT_NAME}Launcher" 
+    PRIVATE
     "${PROJECT_NAME}Engine"
 )
 
 # OpenGL RenderAPI Support
 # https://www.opengl.org/
 if(OPENGL_SUPPORT)
-    target_include_directories( 
-        "${PROJECT_NAME}Launcher"
-        PRIVATE
-        ${OPENGL_INCLUDE_DIRS}
-    )
     target_link_libraries(
         "${PROJECT_NAME}Launcher"
-        ${OPENGL_LIBRARIES} 
+        PRIVATE
+        OpenGL::OpenGL
     )
 endif() 
 
@@ -42,6 +39,22 @@ target_include_directories(
 # https://github.com/nothings/stb
 target_link_libraries(
     "${PROJECT_NAME}Launcher" 
+    PRIVATE
     "stb"
 )
 
+# Logging Library setup
+# https://github.com/gabime/spdlog.git
+target_link_libraries( 
+    "${PROJECT_NAME}Launcher"
+    PRIVATE
+    spdlog::spdlog
+)
+
+# Logging Library setup
+# https://github.com/gabime/spdlog.git
+target_link_libraries( 
+    "${PROJECT_NAME}Launcher"
+    PRIVATE
+    nlohmann_json::nlohmann_json
+)

@@ -19,17 +19,16 @@
 #include "Renderer/RendererFrame.h"
 #include "Core/Log.h"
 #include "Profiling/Instrumentor.h"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace Antomic
 {
     const glm::mat4 &Node3d::GetWorldMatrix()
     {
-        if (IsDirty())
-        {
-            auto parent = std::dynamic_pointer_cast<Node3d>(GetParent());
-            mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
-            ClearDirty();
-        }
+        UpdateSpatialInformation();
         return mWorld;
     }
 
@@ -39,31 +38,44 @@ namespace Antomic
         MakeDirty();
     }
 
-    void Node3d::Update(const uint32_t &time)
+    void Node3d::SetPosition(const glm::vec3 &position)
     {
-        // Update world matrix if dirty
-        if (IsDirty())
-        {
-            auto parent = std::dynamic_pointer_cast<Node3d>(GetParent());
-            mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
-        }
-        Node::Update(time);
+        mPosition = position;
+        MakeDirty();
     }
 
-    void Node3d::SubmitDrawables(const Ref<RendererFrame> &frame)
+    void Node3d::SetSize(const glm::vec3 &size)
     {
-        // TODO: Optimize in order only to send drawables that are inside the view
-
-        ANTOMIC_PROFILE_FUNCTION("Graph");
-
-        // Update the current drawable matrix and submit all drawables in this node
-        for (auto drawable : GetDrawables())
-        {
-            auto mesh = std::dynamic_pointer_cast<Mesh>(drawable);
-            mesh->SetModelMatrix(mWorld);
-            frame->QueueDrawable(mesh);
-        }
-        
-        Node::SubmitDrawables(frame);
+        mSize = size;
+        MakeDirty();
     }
+
+    void Node3d::SetRotation(const glm::vec3 &rotation)
+    {
+        mRotation = rotation;
+        MakeDirty();
+    }
+
+    void Node3d::UpdateSpatialInformation()
+    {
+        if (!IsDirty())
+        {
+            return;
+        }
+
+        // Update the local matrix
+        auto quat = glm::quat(mRotation);
+        mLocal = glm::mat4(quat);
+        mLocal = glm::translate(mLocal, mPosition);
+        mLocal = glm::scale(mSize);
+
+        // Update the world matrix
+        auto parent = std::dynamic_pointer_cast<Node3d>(GetParent());
+        mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
+
+        // Set the model matrix as the world matrix
+        GetDrawable()->SetModelMatrix(mWorld);
+        ClearDirty();
+    }
+
 }

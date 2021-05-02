@@ -23,45 +23,37 @@ namespace Antomic
     class Node2d : public Node
     {
     public:
-        Node2d() = default;
         virtual ~Node2d() = default;
 
     public:
         // Graph operations
         virtual NodeType GetType() override { return NodeType::NODE_2D; };
 
-        // Spatial Operations
+        // Spatial Information
         const glm::mat3 &GetWorldMatrix();
-        inline const glm::mat3 &GetLocalMatrix() { return mLocal; }
-        void SetLocalMatrix(const glm::mat3 &transform);
-
-        // Spatial Operation
-        inline const glm::vec2 &getPosition() const { return mPosition; }
-        inline const glm::vec2 &getSize() const { return mSize; }
-        inline const float &getRotation() const { return mRotation; }
-        inline const glm::vec4 &getColor() const { return mColor; }
-
+        const glm::mat3 &GetLocalMatrix();
+        inline const glm::vec2 &GetPosition() const { return mPosition; }
+        inline const glm::vec2 &GetSize() const { return mSize; }
+        inline const float &GetRotation() const { return mRotation; }
         void SetPosition(const glm::vec2 &position);
         void SetSize(const glm::vec2 &size);
         void SetRotation(float rotation);
-        void SetColor(const glm::vec4 &color);
-
         inline int GetZOrder() { return mZOrder; }
         inline void SetZOrder(int zorder) { mZOrder = zorder; }
 
-        // Render Operations
-        virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
+    protected:
+        virtual void UpdateSpatialInformation() override;    
 
-        // State Operations
-        virtual void Update(const uint32_t &time) override;
 
+#ifdef ANTOMIC_TESTS
+    protected:
+#else
     private:
+#endif
         glm::mat3 mLocal = glm::mat3(1.f);
         glm::mat3 mWorld = glm::mat3(1.f);
-        glm::mat4 mModelMatrix = glm::mat4(1.f);
         glm::vec2 mPosition = glm::vec2(0,0);
         glm::vec2 mSize = glm::vec2(1,1);;
-        glm::vec4 mColor = glm::vec4(1,1,1,1);
         float mRotation = 0.f;
         int mZOrder = 0.f;
     };

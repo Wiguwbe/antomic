@@ -5,7 +5,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+c       http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,24 +20,20 @@
 #include "Core/Log.h"
 #include "Profiling/Instrumentor.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/matrix_transform_2d.hpp>
 
 namespace Antomic
 {
     const glm::mat3 &Node2d::GetWorldMatrix()
     {
-        if (IsDirty())
-        {
-            auto parent = std::dynamic_pointer_cast<Node2d>(GetParent());
-            mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
-            ClearDirty();
-        }
+        UpdateSpatialInformation();
         return mWorld;
     }
 
-    void Node2d::SetLocalMatrix(const glm::mat3 &local)
+    const glm::mat3 &Node2d::GetLocalMatrix()
     {
-        mLocal = local;
-        MakeDirty();
+        UpdateSpatialInformation();
+        return mLocal;
     }
 
     void Node2d::SetPosition(const glm::vec2 &position)
@@ -58,43 +54,40 @@ namespace Antomic
         MakeDirty();
     }
 
-    void Node2d::SetColor(const glm::vec4 &color)
+    void Node2d::UpdateSpatialInformation()
     {
-        mColor = color;
-    }
-
-    void Node2d::Update(const uint32_t &time)
-    {
-        // Update world matrix if dirty
-        if (IsDirty())
+        if (!IsDirty())
         {
-            auto parent = std::dynamic_pointer_cast<Node2d>(GetParent());
-            mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
-            mModelMatrix = glm::mat4(1.0f);
-            mModelMatrix = glm::translate(mModelMatrix, glm::vec3(mPosition, 0.0f));  
-            mModelMatrix = glm::translate(mModelMatrix, glm::vec3(0.5f * mSize.x, 0.5f * mSize.y, 0.0f)); 
-            mModelMatrix = glm::rotate(mModelMatrix, glm::radians(mRotation), glm::vec3(0.0f, 0.0f, 1.0f)); 
-            mModelMatrix = glm::translate(mModelMatrix, glm::vec3(-0.5f * mSize.x, -0.5f * mSize.y, 0.0f));
-            mModelMatrix = glm::scale(mModelMatrix, glm::vec3(mSize, 1.0f)); 
+            return;
         }
-        Node::Update(time);
-    }
 
-    void Node2d::SubmitDrawables(const Ref<RendererFrame> &frame)
-    {
-        // TODO: Optimize in order only to send drawables that are inside the view
+        // Update Local Matrix
+        mLocal = glm::mat4(1.0f);
+        mLocal = glm::translate(mLocal, mPosition);
+        mLocal = glm::rotate(mLocal, glm::radians(mRotation));
+        mLocal = glm::scale(mLocal, mSize);
 
-        ANTOMIC_PROFILE_FUNCTION("Graph");
+        // Update World Matrix
+        auto parent = std::dynamic_pointer_cast<Node2d>(GetParent());
+        mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
 
-        // Update the current drawable matrix and submit all drawables in this node
-        for (auto drawable : GetDrawables())
-        {
-            auto sprite = std::dynamic_pointer_cast<Sprite>(drawable);
-            sprite->SetModelMatrix(mModelMatrix);
-            sprite->SetSpriteColor(mColor);
-            frame->QueueDrawable(sprite);
-        }
-        
-        Node::SubmitDrawables(frame);
+        // TODO: Check if there is a way to take advantage of the mWorld matrix
+        // auto model = glm::mat4(1.0f);
+        // model = glm::translate(model, glm::vec3(mPosition, 0.0f));
+        // model = glm::translate(model, glm::vec3(0.5f * mSize.x, 0.5f * mSize.y, 0.0f));
+        // model = glm::rotate(model, glm::radians(mRotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        // model = glm::translate(model, glm::vec3(-0.5f * mSize.x, -0.5f * mSize.y, 0.0f));
+        // model = glm::scale(model, glm::vec3(mSize, 1.0f));
+
+        // Update Model Matrix
+        auto mat43 = glm::vec4(glm::vec2(mWorld[2]), 0, 1);
+        auto mat42 = glm::vec4(0, 0, 1, 0);
+        auto mat41 = glm::vec4(glm::vec2(mWorld[1]), 0, 0);
+        auto mat40 = glm::vec4(glm::vec2(mWorld[0]), 0, 0);
+        auto model = glm::mat4(mat40, mat41, mat42, mat43);
+
+        GetDrawable()->SetModelMatrix(model);
+
+        ClearDirty();
     }
 }

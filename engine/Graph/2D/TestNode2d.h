@@ -13,38 +13,31 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+#ifdef ANTOMIC_TESTS
 #pragma once
 #include "Core/Base.h"
-#include "Graph/Node.h"
+#include "Graph/2D/Node2d.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
 {
-    class Scene : public Node
+    class TestNode2d : public Node2d
     {
     public:
-        Scene() = default;
-        virtual ~Scene() = default;
+        TestNode2d() = default;
+        virtual ~TestNode2d() = default;
 
     public:
-        // Scene Information
-        inline const glm::mat4 &GetViewMatrix() const { return mViewMatrix; }
-        inline const Ref<Camera> &GetActiveCamera() const { return mActiveCamera; }
-        virtual NodeType GetType() override { return NodeType::SCENE; };
-
-        // Load & Unloading
-        void Load();
-        void Unload();
-
-        virtual void Update(const uint32_t &time) override;
+        // Spatial information
+        inline void SetLocalMatrix(const glm::mat3 &matrix)
+        {
+            mLocal = matrix;
+            MakeDirty();
+        }
 
     protected:
-        virtual const Ref<Drawable> GetDrawable() const override { return nullptr; }
-    virtual void UpdateSpatialInformation() override {}
-
-    private:
-        glm::mat4 mViewMatrix;
-        Ref<Camera> mActiveCamera;
+        virtual const Ref<Drawable> GetDrawable() const override { return nullptr; };
+        virtual void UpdateSpatialInformation() override;            
     };
-
 } // namespace Antomic
+#endif

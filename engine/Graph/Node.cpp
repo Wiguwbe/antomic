@@ -30,7 +30,7 @@ namespace Antomic
         // Node2d only accepts Node2d
         // Node3d only accepts Node3d
 
-        if (GetType() == NodeType::SCENE )
+        if (GetType() == NodeType::SCENE)
         {
             node->mParent = shared_from_this();
             mChildren.push_back(node);
@@ -68,7 +68,7 @@ namespace Antomic
     void Node::Update(const uint32_t &time)
     {
         // Requests all childs to update
-        ClearDirty();
+        UpdateSpatialInformation();
         for (auto child : mChildren)
         {
             child->Update(time);
@@ -77,41 +77,21 @@ namespace Antomic
 
     void Node::SubmitDrawables(const Ref<RendererFrame> &frame)
     {
-        // Asks children to submit alls drawables to frame
+        // TODO: Optimize in order only to send drawables that are inside the view
+
+        ANTOMIC_PROFILE_FUNCTION("Graph");
+
+        // Submit any existing drawable if it exists
+        if (GetDrawable() != nullptr)
+        {
+            frame->QueueDrawable(GetDrawable());
+        }
+
+        // Asks children to submit their drawables to frame
         for (auto child : mChildren)
         {
             child->SubmitDrawables(frame);
         }
     }
 
-    void Node::AddDrawable(const Ref<Drawable> &drawable)
-    {
-        switch (GetType())
-        {
-        case NodeType::NODE_2D:
-            // Node2d only accept sprites
-            if (drawable->GetType() != DrawableType::SPRITE)
-            {
-                ANTOMIC_ASSERT(false, "Node::AddDrawable: Invalid type");
-                return;
-            }
-            mDrawables.push_back(drawable);
-            return;
-        case NodeType::NODE_3D:
-            // Node3d only accept meshes
-            if (drawable->GetType() != DrawableType::MESH)
-            {
-                ANTOMIC_ASSERT(false, "Node::AddDrawable: Invalid type");
-                return;
-            }
-            mDrawables.push_back(drawable);
-            return;
-        case NodeType::SCENE:
-            // Don't accept any
-            return;
-        default:
-            ANTOMIC_ASSERT(false, "Node::AddDrawable: Invalid type");
-            return;
-        }
-    }
 }

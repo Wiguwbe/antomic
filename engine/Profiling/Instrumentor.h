@@ -16,7 +16,7 @@
 #pragma once
 #include "Core/Base.h"
 #include "Core/Log.h"
-#include "json/json.h"
+#include <nlohmann/json.hpp>
 #include <sys/types.h>
 #ifdef ANTOMIC_PLATFORM_WINDOWS
 #include <process.h>

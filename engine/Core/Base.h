@@ -127,6 +127,7 @@ namespace Antomic
     class Renderer;
     class RendererFrame;
     class RendererWorker;
+    class Sprite;
     struct RendererViewport;
 
     /*************************************************************

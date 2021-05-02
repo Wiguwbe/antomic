@@ -16,27 +16,28 @@
 #include "Graph/2D/SpriteNode.h"
 #include "Renderer/Sprite.h"
 #include "Renderer/Texture.h"
+#include "Renderer/RendererFrame.h"
 #include "stb_image.h"
 #include <glm/gtx/matrix_transform_2d.hpp>
+#include "Profiling/Instrumentor.h"
 
 namespace Antomic
 {
     SpriteNode::SpriteNode(const std::string name)
     {
         {
-            auto sprite = CreateRef<Sprite>();
+            mSprite = CreateRef<Sprite>();
 
+            // TODO: change the way we load resources
             // load and generate the texture
             int width, height, nrChannels;
             unsigned char *data = stbi_load(name.c_str(), &width, &height, &nrChannels, 0);
             if (data)
             {
                 Ref<Texture> texture = Texture::CreateTexture(width, height, data);
-                sprite->AddBindable(texture);
+                mSprite->AddBindable(texture);
             }
             stbi_image_free(data);
-
-            AddDrawable(sprite);
         }
     }
 }

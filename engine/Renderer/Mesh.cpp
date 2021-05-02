@@ -22,7 +22,7 @@
 namespace Antomic
 {
     Mesh::Mesh(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
-        : mVertexArray(vertexArray), mMaterial(material), mModelMatrix(1.0f)
+        : mVertexArray(vertexArray), mMaterial(material)
     {
     }
 
@@ -34,7 +34,7 @@ namespace Antomic
         }
 
         auto shader = mMaterial->GetShader();
-        shader->SetUniformValue("m_model", mModelMatrix);
+        shader->SetUniformValue("m_model", GetModelMatrix());
         shader->Bind();
         RenderCommand::DrawIndexed(mVertexArray);
     }

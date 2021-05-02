@@ -16,45 +16,53 @@
 #pragma once
 #include "Core/Base.h"
 #include "glm/glm.hpp"
+#include "nlohmann/json.hpp"
 
 namespace Antomic
 {
+    enum class NodeType
+    {
+        SCENE,
+        NODE_3D,
+        NODE_2D
+    };
+
     class Node : public std::enable_shared_from_this<Node>
     {
     public:
-        Node() : mParent(nullptr), mLocal(1.0f),mWorld(1.0f) {};
         virtual ~Node() = default;
 
     public:
-
-        // Spatial Operations
-        inline const glm::mat4 &GetLocalMatrix() { return mLocal; }
-        const glm::mat4 &GetWorldMatrix();
-        void SetLocalMatrix(const glm::mat4 &matrix);
-
         // Graph Operations
         inline const VectorRef<Node> &GetChildren() const { return mChildren; }
-        inline const Ref<Node> &GetParent() const { return mParent; }    
+        inline const Ref<Node> &GetParent() const { return mParent; }
         void AddChild(const Ref<Node> &node);
         void RemoveChild(const Ref<Node> &node);
-
-        // Container Operations
-        void AddDrawable(const Ref<Drawable> &drawable) { mDrawables.push_back(drawable); }
+        virtual NodeType GetType() = 0;
 
         // Render Operations
-        virtual void SubmitDrawables(const Ref<RendererFrame> &frame, const glm::mat4 &view);
-        
+        virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
+
         // State Operations
         virtual void Update(const uint32_t &time);
 
+        // Serialization
+        virtual void Serialize(nlohmann::json &json);
+        virtual void Deserialize(const nlohmann::json &json);
+
     protected:
-        void MakeDirty();
+        // Render Operations
+        virtual const Ref<Drawable> GetDrawable() const = 0;
+
+        // State operations
+        virtual void MakeDirty();
+        inline bool IsDirty() { return mDirty; }
+        inline void ClearDirty() { mDirty = false; }
+        virtual void UpdateSpatialInformation() = 0;
 
     private:
-        Ref<Node> mParent;
-        glm::mat4 mLocal, mWorld;
-        bool mDirty;
-        VectorRef<Node> mChildren;    
-        VectorRef<Drawable> mDrawables;
+        Ref<Node> mParent = nullptr;
+        VectorRef<Node> mChildren;
+        bool mDirty = true;
     };
 } // namespace Antomic

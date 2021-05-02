@@ -44,23 +44,28 @@ namespace Antomic
         ~Renderer() = default;
 
     public:
-        void RenderFrame();
-
+        // Scene Operations
         const Ref<Scene> &GetCurrentScene();
         void SetCurrentScene(const Ref<Scene> &scene);
 
-        inline const Ref<RendererFrame> GetLastFrame() const { return mLastFrame; }
-        inline const glm::mat4 &GetProjectionMatrix() const { return mProjectionMatrix; }
-        const uint32_t GetLastFrameTime();
-
+        // Viewport Operations
         inline const RendererViewport &GetViewport() const { return mViewport; }
         void SetViewport(const RendererViewport &viewport);
 
+        // Frame Operations
+        void RenderFrame();
+        inline const Ref<RendererFrame> GetLastFrame() const { return mLastFrame; }
+        const uint64_t GetLastFrameTime();
+
+    private:
+        void UpdateProjectionMatrix();
+
     private:
         Ref<RendererFrame> mLastFrame;
-        uint32_t mLastFrameTime;
+        uint64_t mLastFrameTime;
         Ref<Scene> mScene;
         RendererViewport mViewport;
         glm::mat4 mProjectionMatrix;
+        Ref<UniformBuffer> mCameraBuffer;
     };
 } // namespace Antomic

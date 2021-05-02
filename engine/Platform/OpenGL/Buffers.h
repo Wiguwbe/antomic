@@ -19,6 +19,10 @@
 
 namespace Antomic
 {
+    /*************************************************************
+     * OpenGLIndexBuffer Implementation
+     *************************************************************/
+
     class OpenGLIndexBuffer : public IndexBuffer
     {
     public:
@@ -26,8 +30,11 @@ namespace Antomic
         virtual ~OpenGLIndexBuffer() override;
 
     public:
+        // Bind/Unbind commands
         virtual void Bind() const override;
         virtual void Unbind() const override;
+        
+        // IndexBuffer commands
         virtual void Upload(uint32_t *data, uint32_t size) const override;
         virtual uint32_t Count() const override { return mCount; };
 
@@ -36,6 +43,10 @@ namespace Antomic
         uint32_t mCount;
     };
 
+    /*************************************************************
+     * OpenGLVertexBuffer Implementation
+     *************************************************************/
+
     class OpenGLVertexBuffer : public VertexBuffer
     {
     public:
@@ -43,8 +54,11 @@ namespace Antomic
         virtual ~OpenGLVertexBuffer() override;
 
     public:
+        // Bind/Unbind commands
         virtual void Bind() const override;
         virtual void Unbind() const override;
+        
+        // VertexBuffer commands
         virtual void Upload(uint32_t *data, uint32_t size) const override;
         virtual const BufferLayout &Layout() const { return mLayout; };
         virtual void SetLayout(const BufferLayout &layout) override;
@@ -53,5 +67,34 @@ namespace Antomic
         GLuint mRendererId;
         BufferLayout mLayout;
     };
+
+    /*************************************************************
+     * OPenGLUniformBuffer Implementation
+     *************************************************************/
+
+    class OpenGLUniformBuffer : public UniformBuffer
+    {
+    public:
+        OpenGLUniformBuffer(const UniformBufferLayout &layout, uint32_t binding);
+        virtual ~OpenGLUniformBuffer() override;
+
+    public:
+        // UniformBuffer commands
+        virtual void SetValue(const std::string &name, const glm::mat4 &data) override;
+        virtual void SetValue(const std::string &name, const glm::mat3 &data) override;
+        virtual void SetValue(const std::string &name, const glm::vec4 &data) override;
+        virtual void SetValue(const std::string &name, const glm::vec3 &data) override;
+        virtual void SetValue(const std::string &name, const glm::vec2 &data) override;
+        virtual void SetValue(const std::string &name, float data ) override;
+        virtual void SetValue(const std::string &name, uint32_t data) override;
+        virtual void SetValue(const std::string &name, int data) override;
+        virtual void SetValue(const std::string &name, bool data) override;
+        virtual const UniformBufferLayout &Layout() const override { return mLayout; }
+
+    private:
+        GLuint mRendererId;
+        UniformBufferLayout mLayout;
+    };
+
 
 } // namespace Antomic

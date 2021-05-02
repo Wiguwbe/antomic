@@ -19,6 +19,7 @@
 #include "Core/Log.h"
 #include "Core/Application.h"
 #include "Core/Layer.h"
+#include "Core/Serialization.h"
 #include "Platform/Input.h"
 #include "Events/WindowEvent.h"
 #include "Events/KeyEvent.h"
@@ -31,3 +32,4 @@
 #include "Renderer/Materials/BasicMaterial.h"
 #include "Graph/Node.h"
 #include "Graph/Scene.h"
+#include "Graph/2D/SpriteNode.h"

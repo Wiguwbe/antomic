@@ -37,7 +37,6 @@ namespace Antomic
         virtual void SetUniformValue(const std::string& name, const glm::vec4 &value) override {}
         virtual void SetUniformValue(const std::string& name, const glm::mat3 &value) override {}
         virtual void SetUniformValue(const std::string& name, const glm::mat4 &value) override {}
-    private:
     };
 
 } // namespace Antomic

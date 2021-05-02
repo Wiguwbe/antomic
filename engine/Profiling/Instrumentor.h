@@ -16,6 +16,15 @@
 #pragma once
 #include "Core/Base.h"
 #include "Core/Log.h"
+#include <nlohmann/json.hpp>
+#include <sys/types.h>
+#ifdef ANTOMIC_PLATFORM_WINDOWS
+#include <process.h>
+#define GET_PROCESS_ID _getpid
+#elif ANTOMIC_PLATFORM_LINUX
+#include <unistd.h>
+#define GET_PROCESS_ID getpid
+#endif
 
 namespace Antomic
 {
@@ -28,6 +37,8 @@ namespace Antomic
 		FloatingPointMicroseconds Start;
 		std::chrono::microseconds ElapsedTime;
 		std::thread::id ThreadID;
+		int ProcessID;
+		std::string Category;
 	};
 
 	struct InstrumentationSession
@@ -40,7 +51,8 @@ namespace Antomic
 	private:
 		std::mutex mMutex;
 		InstrumentationSession *mCurrentSession;
-		std::ofstream mOutputStream;
+		std::string mFilepath;
+		nlohmann::json mTraceEvents;
 
 	public:
 		Instrumentor()
@@ -51,6 +63,7 @@ namespace Antomic
 		void BeginSession(const std::string &name, const std::string &filepath = "results.json")
 		{
 			std::lock_guard lock(mMutex);
+			mFilepath = filepath;
 			if (mCurrentSession)
 			{
 				// If there is already a current session, then close it before beginning new one.
@@ -63,20 +76,7 @@ namespace Antomic
 				}
 				InternalEndSession();
 			}
-			mOutputStream.open(filepath);
-
-			if (mOutputStream.is_open())
-			{
-				mCurrentSession = new InstrumentationSession({name});
-				WriteHeader();
-			}
-			else
-			{
-				if (Log::GetLogger()) // Edge case: BeginSession() might be before Log::Init()
-				{
-					ANTOMIC_ERROR("Instrumentor could not open results file '{0}'.", filepath);
-				}
-			}
+			mCurrentSession = new InstrumentationSession({name});
 		}
 
 		void EndSession()
@@ -87,25 +87,21 @@ namespace Antomic
 
 		void WriteProfile(const ProfileResult &result)
 		{
-			std::stringstream json;
+			std::stringstream tidss;
+			tidss << result.ThreadID;
+			uint64_t tid = std::stoull(tidss.str());
 
-			json << std::setprecision(3) << std::fixed;
-			json << ",{";
-			json << "\"cat\":\"function\",";
-			json << "\"dur\":" << (result.ElapsedTime.count()) << ',';
-			json << "\"name\":\"" << result.Name << "\",";
-			json << "\"ph\":\"X\",";
-			json << "\"pid\":0,";
-			json << "\"tid\":" << result.ThreadID << ",";
-			json << "\"ts\":" << result.Start.count();
-			json << "}";
+			nlohmann::json traceEvent;
+			traceEvent["cat"] = "function," + result.Category;
+			traceEvent["dur"] = result.ElapsedTime.count();
+			traceEvent["name"] = result.Name;
+			traceEvent["ph"] = "X";
+			traceEvent["pid"] = result.ProcessID;
+			traceEvent["tid"] = tid;
+			traceEvent["ts"] = result.Start.count();
 
 			std::lock_guard lock(mMutex);
-			if (mCurrentSession)
-			{
-				mOutputStream << json.str();
-				mOutputStream.flush();
-			}
+			mTraceEvents.push_back(traceEvent);
 		}
 
 		static Instrumentor &Get()
@@ -115,16 +111,16 @@ namespace Antomic
 		}
 
 	private:
-		void WriteHeader()
+		void WriteTraceDocument()
 		{
-			mOutputStream << "{\"otherData\": {},\"traceEvents\":[{}";
-			mOutputStream.flush();
-		}
+			nlohmann::json document;
 
-		void WriteFooter()
-		{
-			mOutputStream << "]}";
-			mOutputStream.flush();
+			document["otherData"] = "{ \"version\":\"Antomic v" ANTOMIC_VERSION "\"}"_json;
+			document["traceEvents"] = mTraceEvents;
+
+			std::ofstream o(mFilepath);
+			o << std::setw(4) << document << std::endl;
+			o.flush();
 		}
 
 		// Note: you must already own lock on mMutex before
@@ -133,8 +129,7 @@ namespace Antomic
 		{
 			if (mCurrentSession)
 			{
-				WriteFooter();
-				mOutputStream.close();
+				WriteTraceDocument();
 				delete mCurrentSession;
 				mCurrentSession = nullptr;
 			}
@@ -144,8 +139,8 @@ namespace Antomic
 	class InstrumentationTimer
 	{
 	public:
-		InstrumentationTimer(const char *name)
-			: mName(name), mStopped(false)
+		InstrumentationTimer(const char *name, const char *category)
+			: mName(name), mCategory(category), mStopped(false)
 		{
 			mStartTimepoint = std::chrono::steady_clock::now();
 		}
@@ -162,13 +157,13 @@ namespace Antomic
 			auto highResStart = FloatingPointMicroseconds{mStartTimepoint.time_since_epoch()};
 			auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(mStartTimepoint).time_since_epoch();
 
-			Instrumentor::Get().WriteProfile({mName, highResStart, elapsedTime, std::this_thread::get_id()});
+			Instrumentor::Get().WriteProfile({mName, highResStart, elapsedTime, std::this_thread::get_id(), GET_PROCESS_ID(), mCategory});
 
 			mStopped = true;
 		}
 
 	private:
-		const char *mName;
+		const char *mName, *mCategory;
 		std::chrono::time_point<std::chrono::steady_clock> mStartTimepoint;
 		bool mStopped;
 	};
@@ -204,7 +199,9 @@ namespace Antomic
 	} // namespace InstrumentorUtils
 } // namespace Antomic
 
+#ifndef ANTOMIC_PROFILE
 #define ANTOMIC_PROFILE 0
+#endif
 #if ANTOMIC_PROFILE
 // Resolve which function signature macro will be used. Note that this only
 // is resolved when the (pre)compiler starts, so the syntax highlighting
@@ -227,15 +224,15 @@ namespace Antomic
 #define ANTOMIC_FUNC_SIG "ANTOMIC_FUNC_SIG unknown!"
 #endif
 
-#define ANTOMIC_PROFILE_BEGIN_SESSION(name, filepath) ::Hazel::Instrumentor::Get().BeginSession(name, filepath)
-#define ANTOMIC_PROFILE_END_SESSION() ::Hazel::Instrumentor::Get().EndSession()
-#define ANTOMIC_PROFILE_SCOPE(name)                                                                    \
-	constexpr auto fixedName = ::Hazel::InstrumentorUtils::CleanupOutputString(name, "__cdecl "); \
-	::Hazel::InstrumentationTimer timer##__LINE__(fixedName.Data)
-#define ANTOMIC_PROFILE_FUNCTION() ANTOMIC_PROFILE_SCOPE(ANTOMIC_FUNC_SIG)
+#define ANTOMIC_PROFILE_BEGIN_SESSION() ::Antomic::Instrumentor::Get().BeginSession("Antomic Engine")
+#define ANTOMIC_PROFILE_END_SESSION() ::Antomic::Instrumentor::Get().EndSession()
+#define ANTOMIC_PROFILE_SCOPE(name, category)                                                       \
+	constexpr auto fixedName = ::Antomic::InstrumentorUtils::CleanupOutputString(name, "__cdecl "); \
+	::Antomic::InstrumentationTimer timer##__LINE__(fixedName.Data,category)
+#define ANTOMIC_PROFILE_FUNCTION(category) ANTOMIC_PROFILE_SCOPE(ANTOMIC_FUNC_SIG,category)
 #else
-#define ANTOMIC_PROFILE_BEGIN_SESSION(name, filepath)
+#define ANTOMIC_PROFILE_BEGIN_SESSION()
 #define ANTOMIC_PROFILE_END_SESSION()
-#define ANTOMIC_PROFILE_SCOPE(name)
-#define ANTOMIC_PROFILE_FUNCTION()
+#define ANTOMIC_PROFILE_SCOPE(name, category)
+#define ANTOMIC_PROFILE_FUNCTION(category)
 #endif

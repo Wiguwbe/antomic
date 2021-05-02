@@ -33,6 +33,10 @@ namespace Antomic
         PERSPECTIVE,
     };
 
+    /*************************************************************
+     * Camera Implementation
+     *************************************************************/
+
     class Camera
     {
     public:
@@ -50,6 +54,10 @@ namespace Antomic
         glm::vec3 mPosition;
     };
 
+    /*************************************************************
+     * OrthographicCamera Implementation
+     *************************************************************/
+
     class OrthographicCamera : public Camera
     {
     public:
@@ -60,9 +68,19 @@ namespace Antomic
         virtual CameraType GetType() const override { return CameraType::ORTOGRAPHIC; }
         virtual const glm::mat4 GetProjectionMatrix(const RendererViewport &viewport) override
         {
-            return glm::ortho((float)viewport.Left, (float)viewport.Top, (float)viewport.Right, (float)viewport.Bottom, 1.f, 1.f);
+            return OrthographicCamera::GetProjectionMatrix(viewport);
         }
+
+        inline static const glm::mat4 ProjectionMatrix(const RendererViewport &viewport)
+        {
+            return glm::ortho((float)viewport.Left, (float)viewport.Right, (float)viewport.Bottom, (float)viewport.Top, -1.f, 1.f);
+        }
+
     };
+
+    /*************************************************************
+     * PerspetiveCamera Implementation
+     *************************************************************/
 
     class PerspetiveCamera : public Camera
     {
@@ -76,7 +94,12 @@ namespace Antomic
         float GetFoV() const { return mFoV; }
         virtual const glm::mat4 GetProjectionMatrix(const RendererViewport &viewport) override
         {
-            return glm::perspective(glm::radians(mFoV), (float)(viewport.Right - viewport.Left) / (float)(viewport.Bottom - viewport.Top), mFrustum.Near, mFrustum.Far);
+            return PerspetiveCamera::ProjectionMatrix(mFoV, viewport, mFrustum);
+        }
+
+        inline static const glm::mat4 ProjectionMatrix(float fov, const RendererViewport &viewport, const CameraFrustum &frustum) 
+        {
+            return glm::perspective(glm::radians(fov), (float)(viewport.Right - viewport.Left) / (float)(viewport.Bottom - viewport.Top), frustum.Near, frustum.Far);
         }
 
     private:

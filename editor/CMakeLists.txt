@@ -11,11 +11,36 @@ target_include_directories(
     "${PROJECT_SOURCE_DIR}/engine"
 )
 
-# GLM Include
+target_link_libraries(
+    "${PROJECT_NAME}Editor" 
+    PRIVATE
+    "${PROJECT_NAME}Engine"
+)
+
+# OpenGL RenderAPI Support
+# https://www.opengl.org/
+if(OPENGL_SUPPORT)
+    target_link_libraries(
+        "${PROJECT_NAME}Launcher"
+        PRIVATE
+        OpenGL::OpenGL
+    )
+endif() 
+
+# GLM Library setup
+# https://github.com/g-truc/glm
 target_include_directories( 
     "${PROJECT_NAME}Editor"
     PRIVATE
     "${GLM_DIR}"
+)
+
+# single-file public domain (or MIT licensed) libraries for C/C++
+# https://github.com/nothings/stb
+target_link_libraries(
+    "${PROJECT_NAME}Editor" 
+    PRIVATE
+    "stb"
 )
 
 # ImGui Include
@@ -25,21 +50,26 @@ target_include_directories(
     ${IMGUI_DIR}
 )
 
-# Antomic Engine Library
-target_link_libraries(
-    "${PROJECT_NAME}Editor" 
-    "${PROJECT_NAME}Engine"
-)
-
-# OpenGL Library
-target_link_libraries(
-    "${PROJECT_NAME}Editor" 
-    ${OPENGL_LIBRARIES} 
-)
 
 # ImGui Library
 target_link_libraries(
     "${PROJECT_NAME}Editor" 
+    PRIVATE
     "imgui"
 )
 
+# Logging Library setup
+# https://github.com/gabime/spdlog.git
+target_link_libraries( 
+    "${PROJECT_NAME}Editor"
+    PRIVATE
+    spdlog::spdlog
+)
+
+# Logging Library setup
+# https://github.com/gabime/spdlog.git
+target_link_libraries( 
+    "${PROJECT_NAME}Editor"
+    PRIVATE
+    nlohmann_json::nlohmann_json
+)

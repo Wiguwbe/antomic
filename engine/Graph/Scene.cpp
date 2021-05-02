@@ -20,11 +20,14 @@
 #include "Platform/Platform.h"
 #include "Core/Log.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "Profiling/Instrumentor.h"
 
 namespace Antomic
 {
     void Scene::Update(const uint32_t &time)
     {
+        ANTOMIC_PROFILE_FUNCTION("Graph");
+
         int8_t dx = 0;
         int8_t dy = 0;
         int8_t dz = 0;
@@ -48,9 +51,10 @@ namespace Antomic
 
     void Scene::Load()
     {
+        ANTOMIC_PROFILE_FUNCTION("Graph");
+
         // For now hardcoded
         CameraFrustum f = {0.1f, 100.f};
-        mType = SceneType::SCENE_3D;
         mActiveCamera = CreateRef<PerspetiveCamera>(f, 45.0f);
         mActiveCamera->SetPosition({0, 0, 3});
         mViewMatrix = glm::lookAt(
@@ -61,6 +65,18 @@ namespace Antomic
 
     void Scene::Unload()
     {
+        ANTOMIC_PROFILE_FUNCTION("Graph");
+    }
+
+    // Serialization
+    void Scene::Serialize(nlohmann::json &json) 
+    {
+        Node::Serialize(json["scene"]);
+    }
+
+    void Scene::Deserialize(const nlohmann::json &json)
+    {
+        Scene::Deserialize(json);
     }
 
 }

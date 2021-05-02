@@ -72,11 +72,19 @@ namespace Antomic
 
         mRunning = true;
 
+        ANTOMIC_PROFILE_BEGIN_SESSION();
+
         while (mRunning)
         {
             Platform::ProcessEvents();
             mRenderer->RenderFrame();
+#if ANTOMIC_PROFILE
+            // Since we are profiling we just render one frame
+            mRunning = false;
+#endif
         }
+
+        ANTOMIC_PROFILE_END_SESSION();
 
         Platform::WindowClose();
     }

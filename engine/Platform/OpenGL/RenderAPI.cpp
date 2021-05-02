@@ -18,14 +18,6 @@
 
 namespace Antomic
 {
-    OpenGLRenderAPI::OpenGLRenderAPI()
-    {
-    }
-
-    OpenGLRenderAPI::~OpenGLRenderAPI()
-    {
-    }
-
     void OpenGLRenderAPI::SetViewport(const uint32_t &x, const uint32_t &y, uint32_t const &width, uint32_t const &height)
     {
         glViewport(x, y, width, height);

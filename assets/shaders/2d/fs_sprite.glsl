@@ -13,21 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/Drawable.h"
-#include "Renderer/Bindable.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Texture.h"
+#version 420 core
 
-namespace Antomic
+in vec2 t_coord;
+out vec4 o_color;
+
+uniform vec4 m_color;
+uniform sampler2D m_sprite;
+
+void main()
 {
-    Drawable::Drawable(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
-        : mVertexArray(vertexArray), mMaterial(material), mMatrix(1.0f)
-    {
-    }
-
-    void Drawable::AddBindable(const Ref<Bindable> &bindable)
-    {
-        mBindables.push_back(bindable);
-    }
-
-} // namespace Antomic
+    o_color = m_color * texture(m_sprite, t_coord);
+}

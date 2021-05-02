@@ -22,8 +22,6 @@ else ()
     set(BUILD_ARCH "x86")
 endif ()
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
-
 # Platform specific configuration
 if(WIN32)
     add_definitions(-DANTOMIC_PLATFORM_WINDOWS)
@@ -31,14 +29,31 @@ elseif (UNIX)
     add_definitions(-DANTOMIC_PLATFORM_LINUX)
 endif(WIN32)
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+# POSIX Threads
+find_package(Threads REQUIRED)
+else()
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W3")
+endif()
+
 # Specify build paths
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/dist")
 
-# POSIX Threads
-find_package(Threads REQUIRED)
+# Activate Unit Testing
+if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
+    add_definitions(-DANTOMIC_TESTS)
+endif()
+
+# Pass version variables to Application
+configure_file(config.h.in config.h @ONLY)
+
+# Allow config.h to be visible
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 
 # SDL - Simple DirectMedia Layer
 # https://www.libsdl.org/
@@ -121,6 +136,7 @@ if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
     include(3rdparty/CMakeLists.googletest.txt)
     add_subdirectory(tests)
     enable_testing()
+    include(Dart)
     # Add test Engine Core Tests
     add_test(
         NAME "${PROJECT_NAME}CoreTests" 
@@ -131,6 +147,11 @@ if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
         NAME "${PROJECT_NAME}GraphTests" 
         COMMAND "${PROJECT_NAME}GraphTests"
     ) 
+    # Add test Engine Renderer Tests
+    add_test(
+        NAME "${PROJECT_NAME}RendererTests" 
+        COMMAND "${PROJECT_NAME}RendererTests"
+    ) 
 endif() 
 
 file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX})
@@ -140,7 +161,7 @@ install(TARGETS "${PROJECT_NAME}Engine"
     CONFIGURATIONS Debug Release
 )
 
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/media
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/assets
     DESTINATION ${CMAKE_INSTALL_PREFIX}
     CONFIGURATIONS Debug Release
 )

@@ -15,6 +15,9 @@
 */
 #pragma once
 #include "enginepch.h"
+#include "config.h"
+
+#define ANTOMIC_PROFILE 0
 
 #ifdef ANTOMIC_DEBUG
 #if defined(ANTOMIC_PLATFORM_WINDOWS)
@@ -49,6 +52,11 @@
 
 namespace Antomic
 {
+
+    /*************************************************************
+     * Generics
+     *************************************************************/ 
+
     template <typename T>
     using Scope = std::unique_ptr<T>;
 
@@ -73,10 +81,19 @@ namespace Antomic
         return std::make_shared<T>(std::forward<Args>(args)...);
     }
 
+    /*************************************************************
+     * Core
+     *************************************************************/ 
+
     class Application;
     class Platform;
     class Input;
     class Log;
+
+    /*************************************************************
+     * Event
+     *************************************************************/ 
+
     class Event;
     class EventListener;
     class WindowCloseEvent;
@@ -88,24 +105,38 @@ namespace Antomic
     class MouseScrolledEvent;
     class MouseButtonPressedEvent;
     class MouseButtonReleasedEvent;
+
+    using EventHandler = std::function<void(Event&)>;
+
+    /*************************************************************
+     * Renderer
+     *************************************************************/ 
+
+    class Bindable;
     class VertexArray;
     class IndexBuffer;
     class VertexBuffer;
-    class Scene;
+    class Shader;
+    class UniformBuffer;
+    class Drawable;
+    class Texture;
+    class Material;
     class Camera;
     class PerspectiveCamera;
-    class OrtographicCamera;
-    class Bindable;
-    class Drawable;
-    class Shader;
+    class OrthographicCamera;
     class Renderer;
     class RendererFrame;
     class RendererWorker;
-    class Texture;
-    class Material;
-    class Node;
+    class Sprite;
+    struct RendererViewport;
 
-    using EventHandler = std::function<void(Event&)>;
+    /*************************************************************
+     * Graph
+     *************************************************************/ 
+
+    class Node;
+    class Scene;
+
 
 } // namespace Antomic
 

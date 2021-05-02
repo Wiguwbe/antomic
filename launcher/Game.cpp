@@ -14,8 +14,7 @@
    limitations under the License.
 */
 #include "Game.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include "stb_image.h"
+#include <iostream>
 
 namespace Antomic
 {
@@ -26,45 +25,19 @@ namespace Antomic
     void Game::LoadMainScene(const std::string &scene)
     {
         {
-            auto vertexArray = VertexArray::Create();
-            auto material = CreateRef<BasicMaterial>();
-
-            float vertices[] = {
-                // positions          // colors           // texture coords
-                0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
-                0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
-                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-                -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f   // top left
-            };
-
-            uint32_t indices[6] = {0, 1, 3, 1, 2, 3};
-
-            BufferLayout layout = {
-                {ShaderDataType::Float3, "aPos"},
-                {ShaderDataType::Float3, "aColor"},
-                {ShaderDataType::Float2, "aTexCoord"}};
-
-            Ref<VertexBuffer> vertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));
-            vertexBuffer->SetLayout(layout);
-            Ref<IndexBuffer> indexBuffer = IndexBuffer::Create(indices, sizeof(indices));
-            vertexArray->AddVertexBuffer(vertexBuffer);
-            vertexArray->SetIndexBuffer(indexBuffer);
-
-            auto triangle = CreateRef<Drawable>(vertexArray, material);
-
-            // load and generate the texture
-            int width, height, nrChannels;
-            unsigned char *data = stbi_load("media/textures/container.jpg", &width, &height, &nrChannels, 0);
-            if (data)
-            {
-                Ref<Texture> texture = Texture::CreateTexture(width, height, data);
-                triangle->AddBindable(texture);
-            }
-            stbi_image_free(data);
-
+            // Create a new scene
             auto scene = CreateRef<Scene>();
-            scene->AddDrawable(triangle);
+            // Load a new sprite
+            auto sprite = CreateRef<SpriteNode>("assets/textures/container.jpg");
+            // Add sprite to the scene
+            sprite->SetPosition(glm::vec2(25, 25));
+            sprite->SetSize(glm::vec2(50.0f, 50.0f));
+            sprite->SetRotation(0.f);
+            sprite->SetColor({0.0f, 1.0f, 0.0f,1.0f});
+            scene->AddChild(sprite);
             SetScene(scene);
+
+            Serialization::Save(scene,"scene.json");
         }
     }
 } // namespace Antomic

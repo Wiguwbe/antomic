@@ -10,10 +10,13 @@ target_include_directories(
 )
 
 # POSIX Threads
-target_link_libraries( 
-    "${PROJECT_NAME}Engine"
-    ${CMAKE_THREAD_LIBS_INIT}    
-)
+if(CMAKE_COMPILER_IS_GNUCXX)
+    target_link_libraries( 
+        "${PROJECT_NAME}Engine"
+        PRIVATE
+        ${CMAKE_THREAD_LIBS_INIT}    
+    )
+endif()
 
 # SDL - Simple DirectMedia Layer
 # https://www.libsdl.org/
@@ -29,6 +32,7 @@ ENDIF(SDL_SUPPORT)
 if (GLFW_SUPPORT)
     target_link_libraries( 
         "${PROJECT_NAME}Engine"
+        PRIVATE
         glfw
     )
 ENDIF(GLFW_SUPPORT)
@@ -51,18 +55,15 @@ endif(OPENGL_SUPPORT)
 # https://github.com/nlohmann/json.git
 target_link_libraries( 
     "${PROJECT_NAME}Engine"
+    PRIVATE
     nlohmann_json::nlohmann_json
 )
 
 # Logging Library setup
 # https://github.com/gabime/spdlog.git
-target_include_directories( 
-    "${PROJECT_NAME}Engine"
-    PRIVATE
-    ${LOG_INCLUDE_DIR}
-)
 target_link_libraries( 
     "${PROJECT_NAME}Engine"
+    PRIVATE
     spdlog::spdlog
 )
 
@@ -82,6 +83,16 @@ target_include_directories(
     "${GLAD_INCLUDE_DIR}"
 )
 target_link_libraries(
-    "${PROJECT_NAME}Engine" 
+    "${PROJECT_NAME}Engine"
+    PRIVATE
     "glad"
 )
+
+# single-file public domain (or MIT licensed) libraries for C/C++
+# https://github.com/nothings/stb
+target_link_libraries(
+    "${PROJECT_NAME}Engine"
+    PRIVATE
+    "stb"
+)
+

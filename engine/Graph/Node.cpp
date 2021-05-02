@@ -17,13 +17,32 @@
 #include "Renderer/Drawable.h"
 #include "Renderer/RendererFrame.h"
 #include "Core/Log.h"
+#include "Profiling/Instrumentor.h"
 
 namespace Antomic
 {
     void Node::AddChild(const Ref<Node> &node)
     {
-        ANTOMIC_ASSERT(node != nullptr, "Node: Child cannot be null");
-        ANTOMIC_ASSERT(node->mParent.get() != this, "Node: Already child of this node");
+        ANTOMIC_ASSERT(node != nullptr, "Node::AddChild: Child cannot be null");
+        ANTOMIC_ASSERT(node->mParent.get() != this, "Node::AddChild: Already child of this node");
+
+        // Scene accept any node type
+        // Node2d only accepts Node2d
+        // Node3d only accepts Node3d
+
+        if (GetType() == NodeType::SCENE)
+        {
+            node->mParent = shared_from_this();
+            mChildren.push_back(node);
+            return;
+        }
+
+        if (node->GetType() != GetType())
+        {
+            ANTOMIC_INFO("Node::AddChild: Invalid node type. must be of the same type");
+            return;
+        }
+
         node->mParent = shared_from_this();
         mChildren.push_back(node);
     }
@@ -37,22 +56,6 @@ namespace Antomic
         mChildren.erase(child);
     }
 
-    const glm::mat4 &Node::GetWorldMatrix()
-    {
-        if (mDirty)
-        {
-            mWorld = GetParent() == nullptr ? mLocal : GetParent()->GetWorldMatrix() * mLocal;
-            mDirty = false;
-        }
-        return mWorld;
-    }
-
-    void Node::SetLocalMatrix(const glm::mat4 &matrix)
-    {
-        mLocal = matrix;
-        MakeDirty();
-    }
-
     void Node::MakeDirty()
     {
         mDirty = true;
@@ -64,41 +67,43 @@ namespace Antomic
 
     void Node::Update(const uint32_t &time)
     {
-        // Update world matrix if dirty
-        if (mDirty)
-        {
-            mWorld = GetParent() == nullptr ? mLocal : GetParent()->GetWorldMatrix() * mLocal;
-            mDirty = false;
-        }
-
-        // Update the view matrix in all attached drawables
-        for (auto drawable : mDrawables)
-        {
-            drawable->SetMatrix(mWorld);
-        }
-
         // Requests all childs to update
+        UpdateSpatialInformation();
         for (auto child : mChildren)
         {
             child->Update(time);
         }
     }
 
-    void Node::SubmitDrawables(const Ref<RendererFrame> &frame, const glm::mat4 &view)
+    void Node::SubmitDrawables(const Ref<RendererFrame> &frame)
     {
         // TODO: Optimize in order only to send drawables that are inside the view
 
-        // Submit all drawables in this node
-        for (auto drawable : mDrawables)
+        ANTOMIC_PROFILE_FUNCTION("Graph");
+
+        // Submit any existing drawable if it exists
+        if (GetDrawable() != nullptr)
         {
-            frame->QueueDrawable(drawable);
+            frame->QueueDrawable(GetDrawable());
         }
 
-        // Asks children to submit alls drawables to frame
+        // Asks children to submit their drawables to frame
         for (auto child : mChildren)
         {
-            child->SubmitDrawables(frame, view);
+            child->SubmitDrawables(frame);
         }
     }
 
+    void Node::Serialize(nlohmann::json &json)
+    {
+        for (auto child : mChildren)
+        {
+            child->Serialize(json["node"]);
+        }
+    }
+
+    void Node::Deserialize(const nlohmann::json &json)
+    {
+
+    }
 }

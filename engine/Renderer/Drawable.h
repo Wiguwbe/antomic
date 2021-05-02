@@ -20,25 +20,29 @@
 
 namespace Antomic
 {
+    enum class DrawableType
+    {
+        NONE,
+        SPRITE,
+        MESH
+    };
+
     class Drawable
     {
     public:
-        Drawable(const Ref<VertexArray> &vertexArray, const Ref<Material> &material);
         virtual ~Drawable() = default;
 
     public:
-        const Ref<VertexArray> &GetVertexArray() const { return mVertexArray; }
-        const glm::mat4 &GetModelMatrix() const { return mMatrix; }
-        const VectorRef<Bindable> &GetBindables() const { return mBindables; }
-        const Ref<Shader> &GetShader() const { return mMaterial->GetShader(); }
+        virtual void Draw() = 0;
+        virtual DrawableType const GetType() = 0;
+        const glm::mat4 &GetModelMatrix() const { return mModelMatrix; }
+        void SetModelMatrix(const glm::mat4 &matrix) { mModelMatrix = matrix; }
 
-        void SetMatrix(const glm::mat4 &matrix) { mMatrix = matrix; }
-        void AddBindable(const Ref<Bindable> &Bindable);
-
+        inline void AddBindable(const Ref<Bindable> &bindable) { mBindables.push_back(bindable); }
+        inline const VectorRef<Bindable> &GetBindables() const { return mBindables; }
+        
     private:
-        Ref<VertexArray> mVertexArray;
         VectorRef<Bindable> mBindables;
-        Ref<Material> mMaterial;
-        glm::mat4 mMatrix;        
+        glm::mat4 mModelMatrix;
     };
 } // namespace Antomic

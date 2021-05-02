@@ -14,20 +14,31 @@
    limitations under the License.
 */
 #include "Renderer/Renderer.h"
-#include "Graph/Scene.h"
+#include "Core/Application.h"
 #include "Renderer/Camera.h"
 #include "Renderer/RenderCommand.h"
 #include "Renderer/Drawable.h"
-#include "Graph/Scene.h"
 #include "Renderer/RendererFrame.h"
 #include "Renderer/RendererWorker.h"
-#include "Core/Application.h"
+#include "Renderer/Buffers.h"
+#include "Graph/Scene.h"
+#include "Profiling/Instrumentor.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
 {
     Renderer::Renderer(const RendererViewport &viewport)
     {
+        {
+            UniformBufferLayout cameraBufferLayout = {
+                {ShaderDataType::Mat4, "m_proj"},
+                {ShaderDataType::Mat4, "m_view"},
+                {ShaderDataType::Mat4, "m_projview"},
+                {ShaderDataType::Mat4, "m_ortho"}};
+
+            mCameraBuffer = UniformBuffer::Create(cameraBufferLayout, 0);
+        }
+
         SetViewport(viewport);
     }
 
@@ -39,31 +50,23 @@ namespace Antomic
     void Renderer::SetCurrentScene(const Ref<Scene> &scene)
     {
         mScene = scene;
-        ANTOMIC_ASSERT(mScene->GetActiveCamera(), "Renderer: Scene without active camera!")
-        mProjectionMatrix = mScene->GetActiveCamera()->GetProjectionMatrix(mViewport);
+        UpdateProjectionMatrix();
     }
 
     void Renderer::SetViewport(const RendererViewport &viewport)
     {
         mViewport = viewport;
-        if (mScene == nullptr)
-        {
-            mProjectionMatrix = glm::mat4(1.0f);
-            return;
-        }
-        ANTOMIC_ASSERT(mScene->GetActiveCamera(), "Renderer: Scene without active camera!")
-        mProjectionMatrix = mScene->GetActiveCamera()->GetProjectionMatrix(mViewport);
+        UpdateProjectionMatrix();
     }
 
     void Renderer::RenderFrame()
     {
+        ANTOMIC_PROFILE_FUNCTION("Renderer");
+
         if (mScene == nullptr)
         {
             return;
         }
-
-        // Create a new frame
-        auto frame = CreateRef<RendererFrame>();
 
         // Get the time passed since last frame
         auto currentTime = Platform::GetCurrentTick();
@@ -72,47 +75,29 @@ namespace Antomic
         // Get the time passed since last frame
         auto timestep = currentTime - Renderer::GetLastFrameTime();
         mLastFrameTime = currentTime;
-        mScene->Update(timestep);
+        mScene->Update((uint32_t) timestep);
 
-        // Get Projection & View matrices
-        auto m_proj = mProjectionMatrix;
-        auto m_view = mScene->GetViewMatrix();
-        auto m_projview = m_proj * m_view;
+        // Get View matrices
+        auto viewMatrix = mScene->GetViewMatrix();
+        auto projView = mProjectionMatrix * viewMatrix;
+
+        // Update the values on our camera uniform
+        mCameraBuffer->SetValue("m_view", viewMatrix);
+        mCameraBuffer->SetValue("m_projview", projView);
+
+        // Create a new frame
+        auto frame = CreateRef<RendererFrame>(mViewport, viewMatrix);
 
         // Ask scene to submit drawables to this frame
-        mScene->SubmitDrawables(frame,m_view);
+        mScene->SubmitDrawables(frame);
 
         // Start the rendering process
-        RenderCommand::SetViewport(mViewport.Left, mViewport.Top, mViewport.Right, mViewport.Bottom);
-        RenderCommand::SetClearColor(mViewport.Color);
-        RenderCommand::Clear();
-
-        while (!frame->Empty())
-        {
-            auto drawable = frame->PopDrawable();
-            auto shader = drawable->GetShader();
-            auto va = drawable->GetVertexArray();
-            auto m_model = drawable->GetModelMatrix();
-
-            for(auto bindable : drawable->GetBindables())
-            {
-                bindable->Bind();
-            }
-
-            shader->SetUniformValue("m_proj", m_proj);
-            shader->SetUniformValue("m_view", m_view);
-            shader->SetUniformValue("m_model", m_model);
-            shader->SetUniformValue("m_projview", m_projview);
-
-            shader->Bind();
-            RenderCommand::DrawIndexed(va);
-        }
-
+        frame->Draw();
         mLastFrame = frame;
         Platform::SwapBuffer();
     }
 
-    const uint32_t Renderer::GetLastFrameTime()
+    const uint64_t Renderer::GetLastFrameTime()
     {
         if (mLastFrame == nullptr)
         {
@@ -122,4 +107,25 @@ namespace Antomic
         return mLastFrameTime;
     }
 
+    void Renderer::UpdateProjectionMatrix()
+    {
+        if (mScene == nullptr)
+        {
+            mProjectionMatrix = glm::mat4(1.0f);
+            return;
+        }
+        auto active = mScene->GetActiveCamera();
+        ANTOMIC_ASSERT(active != nullptr, "Renderer: Scene without active camera!")
+        mProjectionMatrix = active->GetProjectionMatrix(mViewport);
+        mCameraBuffer->SetValue("m_proj", mProjectionMatrix);
+        switch (active->GetType())
+        {
+        case CameraType::ORTOGRAPHIC:
+            mCameraBuffer->SetValue("m_ortho", mProjectionMatrix);
+            return;
+        default:
+            mCameraBuffer->SetValue("m_ortho", OrthographicCamera::ProjectionMatrix(mViewport));
+            return;
+        }
+    }
 } // namespace Anatomic

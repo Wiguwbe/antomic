@@ -20,13 +20,6 @@
 
 namespace Antomic
 {
-    enum class SceneType
-    {
-        NONE,
-        SCENE_2D,
-        SCENE_3D,
-    };
-
     class Scene : public Node
     {
     public:
@@ -37,18 +30,24 @@ namespace Antomic
         // Scene Information
         inline const glm::mat4 &GetViewMatrix() const { return mViewMatrix; }
         inline const Ref<Camera> &GetActiveCamera() const { return mActiveCamera; }
-        inline const SceneType &GetType() const { return mType; }
+        virtual NodeType GetType() override { return NodeType::SCENE; };
 
         // Load & Unloading
         void Load();
         void Unload();
 
         virtual void Update(const uint32_t &time) override;
+        // Serialization
+        virtual void Serialize(nlohmann::json &json) override;
+        virtual void Deserialize(const nlohmann::json &json) override;
+        
+    protected:
+        virtual const Ref<Drawable> GetDrawable() const override { return nullptr; }
+    virtual void UpdateSpatialInformation() override {}
 
     private:
         glm::mat4 mViewMatrix;
         Ref<Camera> mActiveCamera;
-        SceneType mType;
     };
 
 } // namespace Antomic

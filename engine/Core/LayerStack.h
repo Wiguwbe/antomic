@@ -36,7 +36,7 @@ namespace Antomic
         void OnEvent(Event &e);
 
         inline int Empty() const { return mStack.empty(); }
-        inline int Count() const { return mStack.size(); }
+        inline size_t Count() const { return mStack.size(); }
     protected:
         std::vector<Ref<Layer>> mStack;
     };

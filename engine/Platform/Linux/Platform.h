@@ -31,7 +31,7 @@ namespace Antomic
         virtual Scope<Input> CreateInput() override;
 
         // Time Operations
-        virtual uint32_t GetTicks() const override;
+        virtual uint64_t GetTicks() const override;
 
     private:
 #ifdef ANTOMIC_CHRONO_SUPPORT

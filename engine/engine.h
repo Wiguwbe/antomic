@@ -19,6 +19,7 @@
 #include "Core/Log.h"
 #include "Core/Application.h"
 #include "Core/Layer.h"
+#include "Core/Serialization.h"
 #include "Platform/Input.h"
 #include "Events/WindowEvent.h"
 #include "Events/KeyEvent.h"

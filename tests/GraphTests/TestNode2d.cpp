@@ -13,25 +13,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ANTOMIC_TESTS
 #include "Core/Base.h"
-#include "Graph/2D/TestNode2d.h"
+#include "TestNode2d.h"
 #include "glm/glm.hpp"
 
-namespace Antomic
+void TestNode2d::UpdateSpatialInformation()
 {
-    void TestNode2d::UpdateSpatialInformation()
+    if (!IsDirty())
     {
-        if (!IsDirty())
-        {
-            return;
-        }
-
-        // Update the world matrix
-        auto parent = std::dynamic_pointer_cast<Node2d>(GetParent());
-        mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
-
-        ClearDirty();
+        return;
     }
-} // namespace Antomic
-#endif
+
+    // Update the world matrix
+    auto parent = std::dynamic_pointer_cast<Node2d>(GetParent());
+    mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
+
+    ClearDirty();
+}

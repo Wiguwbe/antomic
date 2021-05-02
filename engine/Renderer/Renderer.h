@@ -55,14 +55,14 @@ namespace Antomic
         // Frame Operations
         void RenderFrame();
         inline const Ref<RendererFrame> GetLastFrame() const { return mLastFrame; }
-        const uint32_t GetLastFrameTime();
+        const uint64_t GetLastFrameTime();
 
     private:
         void UpdateProjectionMatrix();
 
     private:
         Ref<RendererFrame> mLastFrame;
-        uint32_t mLastFrameTime;
+        uint64_t mLastFrameTime;
         Ref<Scene> mScene;
         RendererViewport mViewport;
         glm::mat4 mProjectionMatrix;

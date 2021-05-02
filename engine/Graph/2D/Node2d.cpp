@@ -19,9 +19,9 @@ c       http://www.apache.org/licenses/LICENSE-2.0
 #include "Renderer/RendererFrame.h"
 #include "Core/Log.h"
 #include "Profiling/Instrumentor.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/matrix_transform_2d.hpp>
+#include "Core/Serialization.h"
 
+#include <glm/gtx/matrix_transform_2d.hpp>
 namespace Antomic
 {
     const glm::mat3 &Node2d::GetWorldMatrix()
@@ -54,6 +54,17 @@ namespace Antomic
         MakeDirty();
     }
 
+    void Node2d::SetAnchor(const glm::vec2 &anchor)
+    {
+        mAnchor = glm::normalize(anchor);
+        MakeDirty();
+    }
+
+    void Node2d::SetZOrder(int zorder)
+    {
+        mZOrder = zorder;
+    }
+
     void Node2d::UpdateSpatialInformation()
     {
         if (!IsDirty())
@@ -65,29 +76,41 @@ namespace Antomic
         mLocal = glm::mat4(1.0f);
         mLocal = glm::translate(mLocal, mPosition);
         mLocal = glm::rotate(mLocal, glm::radians(mRotation));
+        mLocal = glm::translate(mLocal, {mSize.x * -abs(mAnchor.x), mSize.y * -abs(mAnchor.y)});
         mLocal = glm::scale(mLocal, mSize);
 
         // Update World Matrix
         auto parent = std::dynamic_pointer_cast<Node2d>(GetParent());
         mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
 
-        // TODO: Check if there is a way to take advantage of the mWorld matrix
-        // auto model = glm::mat4(1.0f);
-        // model = glm::translate(model, glm::vec3(mPosition, 0.0f));
-        // model = glm::translate(model, glm::vec3(0.5f * mSize.x, 0.5f * mSize.y, 0.0f));
-        // model = glm::rotate(model, glm::radians(mRotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        // model = glm::translate(model, glm::vec3(-0.5f * mSize.x, -0.5f * mSize.y, 0.0f));
-        // model = glm::scale(model, glm::vec3(mSize, 1.0f));
-
         // Update Model Matrix
-        auto mat43 = glm::vec4(glm::vec2(mWorld[2]), 0, 1);
-        auto mat42 = glm::vec4(0, 0, 1, 0);
-        auto mat41 = glm::vec4(glm::vec2(mWorld[1]), 0, 0);
-        auto mat40 = glm::vec4(glm::vec2(mWorld[0]), 0, 0);
-        auto model = glm::mat4(mat40, mat41, mat42, mat43);
-
-        GetDrawable()->SetModelMatrix(model);
+        // Convert the 3x3 matrix to a 4x4 matrix
+        GetDrawable()->SetModelMatrix(glm::mat4(
+            glm::vec4(glm::vec2(mWorld[0]), 0, 0), 
+            glm::vec4(glm::vec2(mWorld[1]), 0, 0), 
+            glm::vec4(0, 0, 1, 0), 
+            glm::vec4(glm::vec2(mWorld[2]), 0, 1)));
 
         ClearDirty();
     }
+
+    // Serialization
+    void Node2d::Serialize(nlohmann::json &json) 
+    {
+        json["type"] = "Node2d";
+        Serialization::Serialize(json["world"],mWorld);
+        Serialization::Serialize(json["local"],mLocal);
+        Serialization::Serialize(json["position"],mPosition);
+        Serialization::Serialize(json["size"],mSize);
+        Serialization::Serialize(json["anchor"],mAnchor);
+        json["rotation"] = mRotation;
+        json["zorder"] = mZOrder;
+        Node::Serialize(json);
+    }
+
+    void Node2d::Deserialize(const nlohmann::json &json)
+    {
+        Node::Deserialize(json);
+    }
+
 }

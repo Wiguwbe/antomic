@@ -32,10 +32,16 @@ namespace Antomic
         inline const glm::vec4 &GetColor() const { return mSprite->GetSpriteColor(); }
         inline void SetColor(const glm::vec4 &color) { mSprite->SetSpriteColor(color); }
 
+    public:
+        // Serialization
+        virtual void Serialize(nlohmann::json &json) override;
+        virtual void Deserialize(const nlohmann::json &json) override;
+
     protected:
         virtual const Ref<Drawable> GetDrawable() const override { return mSprite; };
 
     private:
+        std::string mUrl;
         Ref<Sprite> mSprite;
     };
 } // namespace Antomic

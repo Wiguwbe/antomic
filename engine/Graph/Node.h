@@ -16,14 +16,15 @@
 #pragma once
 #include "Core/Base.h"
 #include "glm/glm.hpp"
+#include "nlohmann/json.hpp"
 
 namespace Antomic
 {
-    enum class NodeType 
+    enum class NodeType
     {
         SCENE,
         NODE_3D,
-        NODE_2D      
+        NODE_2D
     };
 
     class Node : public std::enable_shared_from_this<Node>
@@ -32,24 +33,27 @@ namespace Antomic
         virtual ~Node() = default;
 
     public:
-
         // Graph Operations
         inline const VectorRef<Node> &GetChildren() const { return mChildren; }
-        inline const Ref<Node> &GetParent() const { return mParent; }    
+        inline const Ref<Node> &GetParent() const { return mParent; }
         void AddChild(const Ref<Node> &node);
         void RemoveChild(const Ref<Node> &node);
         virtual NodeType GetType() = 0;
 
         // Render Operations
         virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
-        
+
         // State Operations
         virtual void Update(const uint32_t &time);
 
+        // Serialization
+        virtual void Serialize(nlohmann::json &json);
+        virtual void Deserialize(const nlohmann::json &json);
+
     protected:
-        // Render Operations       
+        // Render Operations
         virtual const Ref<Drawable> GetDrawable() const = 0;
-        
+
         // State operations
         virtual void MakeDirty();
         inline bool IsDirty() { return mDirty; }
@@ -58,7 +62,7 @@ namespace Antomic
 
     private:
         Ref<Node> mParent = nullptr;
-        VectorRef<Node> mChildren;    
+        VectorRef<Node> mChildren;
         bool mDirty = true;
     };
 } // namespace Antomic

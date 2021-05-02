@@ -63,7 +63,7 @@ namespace Antomic
 #endif
     }
 
-    uint32_t WindowsPlatform::GetTicks() const
+    uint64_t WindowsPlatform::GetTicks() const
     {
 #ifdef ANTOMIC_SDL_PLATFORM
         return GetCurrentTime();

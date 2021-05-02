@@ -34,7 +34,7 @@ namespace Antomic
 		virtual Scope<Input> CreateInput() = 0;
 
         // Time Operations
-        virtual uint32_t GetTicks() const = 0;
+        virtual uint64_t GetTicks() const = 0;
 
     public:
         static bool SetupPlatform(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api = RenderAPIDialect::OPENGL);
@@ -64,7 +64,7 @@ namespace Antomic
         inline static void ProcessEvents() { sWindow->ProcessEvents(); }
         
         // Time Operations 
-        inline static uint32_t GetCurrentTick() { return sPlatform->GetTicks(); }
+        inline static uint64_t GetCurrentTick() { return sPlatform->GetTicks(); }
     
     private:
         static Scope<Platform> sPlatform;

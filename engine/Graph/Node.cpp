@@ -94,4 +94,16 @@ namespace Antomic
         }
     }
 
+    void Node::Serialize(nlohmann::json &json)
+    {
+        for (auto child : mChildren)
+        {
+            child->Serialize(json["node"]);
+        }
+    }
+
+    void Node::Deserialize(const nlohmann::json &json)
+    {
+
+    }
 }

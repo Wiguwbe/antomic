@@ -13,25 +13,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifdef ANTOMIC_TESTS
+#pragma once
 #include "Core/Base.h"
-#include "Graph/3D/TestNode3d.h"
+#include "Graph/3D/Node3d.h"
 #include "glm/glm.hpp"
 
-namespace Antomic
+using namespace Antomic;
+
+class TestNode3d : public Node3d
 {
-    void TestNode3d::UpdateSpatialInformation()
+public:
+    TestNode3d() = default;
+    virtual ~TestNode3d() = default;
+
+public:
+    // Spatial information
+    inline void SetLocalMatrix(const glm::mat4 &matrix)
     {
-        if (!IsDirty())
-        {
-            return;
-        }
-
-        // Update the world matrix
-        auto parent = std::dynamic_pointer_cast<Node3d>(GetParent());
-        mWorld = (parent == nullptr) ? mLocal : parent->GetWorldMatrix() * mLocal;
-
-        ClearDirty();
+        mLocal = matrix;
+        MakeDirty();
     }
-} // namespace Antomic
-#endif
+
+protected:
+    virtual const Ref<Drawable> GetDrawable() const override { return nullptr; };
+    virtual void UpdateSpatialInformation() override;
+};

@@ -75,7 +75,7 @@ namespace Antomic
         // Get the time passed since last frame
         auto timestep = currentTime - Renderer::GetLastFrameTime();
         mLastFrameTime = currentTime;
-        mScene->Update(timestep);
+        mScene->Update((uint32_t) timestep);
 
         // Get View matrices
         auto viewMatrix = mScene->GetViewMatrix();
@@ -97,7 +97,7 @@ namespace Antomic
         Platform::SwapBuffer();
     }
 
-    const uint32_t Renderer::GetLastFrameTime()
+    const uint64_t Renderer::GetLastFrameTime()
     {
         if (mLastFrame == nullptr)
         {

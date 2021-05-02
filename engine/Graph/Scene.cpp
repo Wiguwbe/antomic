@@ -68,4 +68,15 @@ namespace Antomic
         ANTOMIC_PROFILE_FUNCTION("Graph");
     }
 
+    // Serialization
+    void Scene::Serialize(nlohmann::json &json) 
+    {
+        Node::Serialize(json["scene"]);
+    }
+
+    void Scene::Deserialize(const nlohmann::json &json)
+    {
+        Scene::Deserialize(json);
+    }
+
 }

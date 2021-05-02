@@ -24,6 +24,7 @@
 namespace Antomic
 {
     SpriteNode::SpriteNode(const std::string name)
+        : mUrl(name)
     {
         {
             mSprite = CreateRef<Sprite>();
@@ -40,4 +41,18 @@ namespace Antomic
             stbi_image_free(data);
         }
     }
+
+    // Serialization
+    void SpriteNode::Serialize(nlohmann::json &json) 
+    {
+        json["class"] = "SpriteNode";
+        json["url"] = mUrl;
+        Node2d::Serialize(json);
+    }
+
+    void SpriteNode::Deserialize(const nlohmann::json &json)
+    {
+        Node2d::Deserialize(json);
+    }
+
 }

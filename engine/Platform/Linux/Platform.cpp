@@ -63,7 +63,7 @@ namespace Antomic
 #endif
     }
 
-    uint32_t LinuxPlatform::GetTicks() const 
+    uint64_t LinuxPlatform::GetTicks() const 
     {
 #ifdef ANTOMIC_SDL_PLATFORM
         return GetCurrentTime();

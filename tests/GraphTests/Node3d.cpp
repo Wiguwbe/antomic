@@ -16,32 +16,32 @@
 #include "gtest/gtest.h"
 #include "Core/Base.h"
 #include "Core/Log.h"
-#include "Graph/2D/TestNode2d.h"
+#include "TestNode3d.h"
 #include "glm/glm.hpp"
-#include <glm/gtx/matrix_transform_2d.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 using namespace Antomic;
 
-TEST(AntomicGraphTest, Node2dTests)
+TEST(AntomicGraphTest, Node3dTests)
 {
-    auto root = CreateRef<TestNode2d>();
+    auto root = CreateRef<TestNode3d>();
     EXPECT_EQ(root->GetParent(), nullptr);
     EXPECT_EQ(root->GetChildren().size(), 0);
-    EXPECT_EQ(root->GetWorldMatrix(), glm::mat3(1.0f));
+    EXPECT_EQ(root->GetWorldMatrix(), glm::mat4(1.0f));
     EXPECT_EQ(root->GetWorldMatrix(), root->GetLocalMatrix());
 
-    auto child1 = CreateRef<TestNode2d>();
+    auto child1 = CreateRef<TestNode3d>();
     EXPECT_EQ(child1->GetParent(), nullptr);
-    EXPECT_EQ(child1->GetWorldMatrix(), glm::mat3(1.0f));
+    EXPECT_EQ(child1->GetWorldMatrix(), glm::mat4(1.0f));
     EXPECT_EQ(child1->GetWorldMatrix(), child1->GetLocalMatrix());
 
     root->AddChild(child1);
     EXPECT_EQ(child1->GetParent(), root);
     EXPECT_EQ(root->GetChildren().size(), 1);
 
-    auto child2 = CreateRef<TestNode2d>();
+    auto child2 = CreateRef<TestNode3d>();
     EXPECT_EQ(child2->GetParent(), nullptr);
-    EXPECT_EQ(child2->GetWorldMatrix(), glm::mat3(1.0f));
+    EXPECT_EQ(child2->GetWorldMatrix(), glm::mat4(1.0f));
     EXPECT_EQ(child2->GetWorldMatrix(), child2->GetLocalMatrix());
 
     root->AddChild(child2);
@@ -59,17 +59,18 @@ TEST(AntomicGraphTest, Node2dTests)
     root->AddChild(child1);
     child1->AddChild(child2);
 
-    auto t1 = glm::translate(glm::mat3(1.0f), glm::vec2(-1.0f, 0.0f));
-    auto m1 = glm::rotate(t1, glm::radians(45.f));
+    auto t1 = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+    auto m1 = glm::rotate(t1, glm::radians(45.f), glm::vec3(-1.0f, 0.0f, 0.0f));
 
     child1->SetLocalMatrix(m1);
     EXPECT_EQ(child1->GetLocalMatrix(), m1);
     EXPECT_EQ(child2->GetWorldMatrix(), m1);
 
-    auto t2 = glm::translate(glm::mat3(1.0f), glm::vec2(-1.0f, -1.0f));
-    auto m2 = glm::rotate(t2, glm::radians(45.f));
+    auto t2 = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, -1.0f, 0.0f));
+    auto m2 = glm::rotate(t2, glm::radians(45.f), glm::vec3(0.0f, -1.0f, 0.0f));
 
     child2->SetLocalMatrix(m2);
     EXPECT_EQ(child2->GetLocalMatrix(), m2);
     EXPECT_EQ(child2->GetWorldMatrix(), m1 * m2);
 }
+

@@ -1,6 +1,7 @@
 file(GLOB_RECURSE TESTS_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+FILE(GLOB_RECURSE TESTS_HDRS "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 
-add_executable("${PROJECT_NAME}GraphTests" ${TESTS_SRCS})
+add_executable("${PROJECT_NAME}GraphTests" ${TESTS_SRCS} ${TESTS_HDRS})
 
 # Antomic Engine
 target_include_directories( 

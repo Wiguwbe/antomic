@@ -14,6 +14,7 @@
    limitations under the License.
 */
 #include "Game.h"
+#include <iostream>
 
 namespace Antomic
 {
@@ -29,12 +30,14 @@ namespace Antomic
             // Load a new sprite
             auto sprite = CreateRef<SpriteNode>("assets/textures/container.jpg");
             // Add sprite to the scene
-            sprite->SetPosition(glm::vec2(0, 0));
+            sprite->SetPosition(glm::vec2(25, 25));
             sprite->SetSize(glm::vec2(50.0f, 50.0f));
-            sprite->SetRotation(45.f);
+            sprite->SetRotation(0.f);
             sprite->SetColor({0.0f, 1.0f, 0.0f,1.0f});
             scene->AddChild(sprite);
             SetScene(scene);
+
+            Serialization::Save(scene,"scene.json");
         }
     }
 } // namespace Antomic

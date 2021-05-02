@@ -32,18 +32,25 @@ namespace Antomic
         // Spatial Information
         const glm::mat3 &GetWorldMatrix();
         const glm::mat3 &GetLocalMatrix();
+        
         inline const glm::vec2 &GetPosition() const { return mPosition; }
         inline const glm::vec2 &GetSize() const { return mSize; }
         inline const float &GetRotation() const { return mRotation; }
+        inline const glm::vec2 &GetAnchor() const { return mAnchor; }
+        inline int GetZOrder() { return mZOrder; }
+
         void SetPosition(const glm::vec2 &position);
         void SetSize(const glm::vec2 &size);
         void SetRotation(float rotation);
-        inline int GetZOrder() { return mZOrder; }
-        inline void SetZOrder(int zorder) { mZOrder = zorder; }
+        void SetAnchor(const glm::vec2 &anchor);
+        void SetZOrder(int zorder);
+
+        // Serialization
+        virtual void Serialize(nlohmann::json &json) override;
+        virtual void Deserialize(const nlohmann::json &json) override;
 
     protected:
-        virtual void UpdateSpatialInformation() override;    
-
+        virtual void UpdateSpatialInformation() override;
 
 #ifdef ANTOMIC_TESTS
     protected:
@@ -52,9 +59,10 @@ namespace Antomic
 #endif
         glm::mat3 mLocal = glm::mat3(1.f);
         glm::mat3 mWorld = glm::mat3(1.f);
-        glm::vec2 mPosition = glm::vec2(0,0);
-        glm::vec2 mSize = glm::vec2(1,1);;
+        glm::vec2 mPosition = glm::vec2(0, 0);
+        glm::vec2 mSize = glm::vec2(1, 1);
+        glm::vec2 mAnchor = glm::vec2(0.5f, 0.5f);
         float mRotation = 0.f;
-        int mZOrder = 0.f;
+        int mZOrder = 0;
     };
 } // namespace Antomic

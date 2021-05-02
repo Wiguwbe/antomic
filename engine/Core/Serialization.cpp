@@ -13,31 +13,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
-#include "Core/Layer.h"
+#include "Core/Serialization.h"
+#include "Graph/Scene.h"
 
 namespace Antomic
 {
-    class LayerStack
+    void Serialization::Save(const Ref<Scene>& scene, const std::string& file)
     {
+        nlohmann::json json;
 
-    public:
-        LayerStack();
-        ~LayerStack();
+        scene->Serialize(json);
+        std::ofstream o(file);
+        o << std::setw(4) << json << std::endl;
+        o.flush();            
+    }
 
-        void PushFront(Ref<Layer> l);
-        void PushBack(Ref<Layer> l);
-        void PopFront();
-        void PopBack();
-        void Remove(Ref<Layer> l);
-        void Update(const uint32_t& time);
-        void Submit();
-        void OnEvent(Event &e);
-
-        inline int Empty() const { return mStack.empty(); }
-        inline size_t Count() const { return mStack.size(); }
-    protected:
-        std::vector<Ref<Layer>> mStack;
-    };
-} // namespace Antomic
+    Ref<Scene> Serialization::Load(const std::string& file)
+    {
+        return nullptr;
+    }
+}

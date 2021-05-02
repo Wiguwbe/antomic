@@ -13,30 +13,30 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/Mesh.h"
-#include "Renderer/Bindable.h"
-#include "Renderer/Shader.h"
+#include "Graph/2D/SpriteNode.h"
+#include "Renderer/Sprite.h"
 #include "Renderer/Texture.h"
-#include "Renderer/RenderCommand.h"
+#include "stb_image.h"
+#include <glm/gtx/matrix_transform_2d.hpp>
 
 namespace Antomic
 {
-    Mesh::Mesh(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
-        : mVertexArray(vertexArray), mMaterial(material), mModelMatrix(1.0f)
+    SpriteNode::SpriteNode(const std::string name)
     {
-    }
-
-    void Mesh::Draw()
-    {
-        for (auto bindable : GetBindables())
         {
-            bindable->Bind();
+            auto sprite = CreateRef<Sprite>();
+
+            // load and generate the texture
+            int width, height, nrChannels;
+            unsigned char *data = stbi_load(name.c_str(), &width, &height, &nrChannels, 0);
+            if (data)
+            {
+                Ref<Texture> texture = Texture::CreateTexture(width, height, data);
+                sprite->AddBindable(texture);
+            }
+            stbi_image_free(data);
+
+            AddDrawable(sprite);
         }
-
-        auto shader = mMaterial->GetShader();
-        shader->SetUniformValue("m_model", mModelMatrix);
-        shader->Bind();
-        RenderCommand::DrawIndexed(mVertexArray);
     }
-
-} // namespace Antomic
+}

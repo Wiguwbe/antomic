@@ -23,8 +23,26 @@ namespace Antomic
 {
     void Node::AddChild(const Ref<Node> &node)
     {
-        ANTOMIC_ASSERT(node != nullptr, "Node: Child cannot be null");
-        ANTOMIC_ASSERT(node->mParent.get() != this, "Node: Already child of this node");
+        ANTOMIC_ASSERT(node != nullptr, "Node::AddChild: Child cannot be null");
+        ANTOMIC_ASSERT(node->mParent.get() != this, "Node::AddChild: Already child of this node");
+
+        // Scene accept any node type
+        // Node2d only accepts Node2d
+        // Node3d only accepts Node3d
+
+        if (GetType() == NodeType::SCENE )
+        {
+            node->mParent = shared_from_this();
+            mChildren.push_back(node);
+            return;
+        }
+
+        if (node->GetType() != GetType())
+        {
+            ANTOMIC_INFO("Node::AddChild: Invalid node type. must be of the same type");
+            return;
+        }
+
         node->mParent = shared_from_this();
         mChildren.push_back(node);
     }
@@ -38,22 +56,6 @@ namespace Antomic
         mChildren.erase(child);
     }
 
-    const glm::mat4 &Node::GetWorldMatrix()
-    {
-        if (mDirty)
-        {
-            mWorld = GetParent() == nullptr ? mLocal : GetParent()->GetWorldMatrix() * mLocal;
-            mDirty = false;
-        }
-        return mWorld;
-    }
-
-    void Node::SetLocalMatrix(const glm::mat4 &matrix)
-    {
-        mLocal = matrix;
-        MakeDirty();
-    }
-
     void Node::MakeDirty()
     {
         mDirty = true;
@@ -65,20 +67,8 @@ namespace Antomic
 
     void Node::Update(const uint32_t &time)
     {
-        // Update world matrix if dirty
-        if (mDirty)
-        {
-            mWorld = GetParent() == nullptr ? mLocal : GetParent()->GetWorldMatrix() * mLocal;
-            mDirty = false;
-        }
-
-        // Update the view matrix in all attached drawables
-        for (auto drawable : mDrawables)
-        {
-            drawable->SetModelMatrix(mWorld);
-        }
-
         // Requests all childs to update
+        ClearDirty();
         for (auto child : mChildren)
         {
             child->Update(time);
@@ -87,16 +77,6 @@ namespace Antomic
 
     void Node::SubmitDrawables(const Ref<RendererFrame> &frame)
     {
-        // TODO: Optimize in order only to send drawables that are inside the view
-
-        ANTOMIC_PROFILE_FUNCTION("Graph");
-
-        // Submit all drawables in this node
-        for (auto drawable : mDrawables)
-        {
-            frame->QueueDrawable(drawable);
-        }
-
         // Asks children to submit alls drawables to frame
         for (auto child : mChildren)
         {
@@ -104,4 +84,34 @@ namespace Antomic
         }
     }
 
+    void Node::AddDrawable(const Ref<Drawable> &drawable)
+    {
+        switch (GetType())
+        {
+        case NodeType::NODE_2D:
+            // Node2d only accept sprites
+            if (drawable->GetType() != DrawableType::SPRITE)
+            {
+                ANTOMIC_ASSERT(false, "Node::AddDrawable: Invalid type");
+                return;
+            }
+            mDrawables.push_back(drawable);
+            return;
+        case NodeType::NODE_3D:
+            // Node3d only accept meshes
+            if (drawable->GetType() != DrawableType::MESH)
+            {
+                ANTOMIC_ASSERT(false, "Node::AddDrawable: Invalid type");
+                return;
+            }
+            mDrawables.push_back(drawable);
+            return;
+        case NodeType::SCENE:
+            // Don't accept any
+            return;
+        default:
+            ANTOMIC_ASSERT(false, "Node::AddDrawable: Invalid type");
+            return;
+        }
+    }
 }

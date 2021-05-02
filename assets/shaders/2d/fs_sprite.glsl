@@ -13,22 +13,15 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
+#version 420 core
 
-#include "Core/Base.h"
-#include "Core/Log.h"
-#include "Core/Application.h"
-#include "Core/Layer.h"
-#include "Platform/Input.h"
-#include "Events/WindowEvent.h"
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Buffers.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Drawable.h"
-#include "Renderer/Texture.h"
-#include "Renderer/Materials/BasicMaterial.h"
-#include "Graph/Node.h"
-#include "Graph/Scene.h"
-#include "Graph/2D/SpriteNode.h"
+in vec2 t_coord;
+out vec4 o_color;
+
+uniform vec4 m_color;
+uniform sampler2D m_sprite;
+
+void main()
+{
+    o_color = m_color * texture(m_sprite, t_coord);
+}

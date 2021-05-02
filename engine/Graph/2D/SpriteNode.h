@@ -14,21 +14,17 @@
    limitations under the License.
 */
 #pragma once
-
 #include "Core/Base.h"
-#include "Core/Log.h"
-#include "Core/Application.h"
-#include "Core/Layer.h"
-#include "Platform/Input.h"
-#include "Events/WindowEvent.h"
-#include "Events/KeyEvent.h"
-#include "Events/MouseEvent.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Buffers.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Drawable.h"
-#include "Renderer/Texture.h"
-#include "Renderer/Materials/BasicMaterial.h"
-#include "Graph/Node.h"
-#include "Graph/Scene.h"
-#include "Graph/2D/SpriteNode.h"
+#include "Graph/2D/Node2d.h"
+#include "glm/glm.hpp"
+
+namespace Antomic
+{
+    class SpriteNode : public Node2d
+    {
+    public:
+        SpriteNode(const std::string name);
+        virtual ~SpriteNode() = default;
+
+    };
+} // namespace Antomic

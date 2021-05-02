@@ -85,3 +85,11 @@ target_link_libraries(
     "${PROJECT_NAME}Engine" 
     "glad"
 )
+
+# single-file public domain (or MIT licensed) libraries for C/C++
+# https://github.com/nothings/stb
+target_link_libraries(
+    "${PROJECT_NAME}Engine" 
+    "stb"
+)
+

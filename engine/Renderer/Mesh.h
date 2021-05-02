@@ -27,14 +27,15 @@ namespace Antomic
         virtual ~Mesh() override {};
 
     public:
-        virtual const glm::mat4 &GetModelMatrix() const override { return mMatrix; }
-        virtual void SetModelMatrix(const glm::mat4 &matrix) override { mMatrix = matrix; }
         virtual const DrawableType GetType() override { return DrawableType::MESH; }
         virtual void Draw() override;
+        inline const glm::mat4 &GetModelMatrix() const { return mModelMatrix; }
+        inline void SetModelMatrix(const glm::mat4 &matrix ) { mModelMatrix = matrix; }
+        
 
     private:
         Ref<VertexArray> mVertexArray;
         Ref<Material> mMaterial;
-        glm::mat4 mMatrix;  
+        glm::mat4 mModelMatrix;  
     };
 }

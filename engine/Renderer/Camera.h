@@ -73,7 +73,7 @@ namespace Antomic
 
         inline static const glm::mat4 ProjectionMatrix(const RendererViewport &viewport)
         {
-            return glm::ortho((float)viewport.Left, (float)viewport.Top, (float)viewport.Right, (float)viewport.Bottom, -1.f, 1.f);
+            return glm::ortho((float)viewport.Left, (float)viewport.Right, (float)viewport.Bottom, (float)viewport.Top, -1.f, 1.f);
         }
 
     };

@@ -15,31 +15,34 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Renderer/Material.h"
+#include "Graph/Node.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
 {
-    enum class DrawableType
-    {
-        NONE,
-        SPRITE,
-        MESH
-    };
-
-    class Drawable
+    class Node3d : public Node
     {
     public:
-        virtual ~Drawable() = default;
+        Node3d() = default;
+        virtual ~Node3d() = default;
 
     public:
-        virtual void Draw() = 0;
-        virtual DrawableType const GetType() = 0;
+        // Graph Operations
+        virtual NodeType GetType() override { return NodeType::NODE_3D; };
 
-        inline void AddBindable(const Ref<Bindable> &bindable) { mBindables.push_back(bindable); }
-        inline const VectorRef<Bindable> &GetBindables() const { return mBindables; }
-        
+        // Spatial Operations
+        const glm::mat4 &GetWorldMatrix();
+        inline const glm::mat4 &GetLocalMatrix() { return mLocal; }
+        void SetLocalMatrix(const glm::mat4 &matrix);
+
+        // Render Operations
+        virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
+
+        // State Operations
+        virtual void Update(const uint32_t &time) override;
+
     private:
-        VectorRef<Bindable> mBindables;
+        glm::mat4 mLocal = glm::mat4(1.0f);
+        glm::mat4 mWorld = glm::mat4(1.0f);
     };
 } // namespace Antomic

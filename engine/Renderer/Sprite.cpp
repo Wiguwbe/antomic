@@ -21,21 +21,50 @@
 
 namespace Antomic
 {
-    Sprite::Sprite(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
-        : mVertexArray(vertexArray), mMaterial(material), mMatrix(1.0f)
+    Sprite::Sprite()
     {
+        {
+            mVertexArray = VertexArray::Create();
+            mShader = Shader::CreateFromFile("assets/shaders/2d/vs_sprite.glsl", "assets/shaders/2d/fs_sprite.glsl");
+
+            // Vertices for our quad
+            float vertices[] = {
+                // pos      // tex
+                0.0f, 1.0f, 0.0f, 1.0f,
+                1.0f, 0.0f, 1.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 0.0f,
+
+                0.0f, 1.0f, 0.0f, 1.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                1.0f, 0.0f, 1.0f, 0.0f};
+
+            uint32_t indices[6] = {0, 1, 2, 3, 4, 5};
+
+            // Set the buffer layout for the shader
+            BufferLayout layout = {
+                {ShaderDataType::Vec2, "m_pos"},
+                {ShaderDataType::Vec2, "m_tex"}};
+
+            // Create a vertex buffer for the quad
+            auto vertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));
+            vertexBuffer->SetLayout(layout);
+            mVertexArray->AddVertexBuffer(vertexBuffer);
+
+            // Index buffer for the quad
+            auto indexBuffer = IndexBuffer::Create(indices, sizeof(indices));
+            mVertexArray->SetIndexBuffer(indexBuffer);
+        }
     }
 
     void Sprite::Draw()
     {
+        mShader->SetUniformValue("m_model", mModelMatrix);
+        mShader->SetUniformValue("m_color", mSpriteColor);
+        mShader->Bind();
         for (auto bindable : GetBindables())
         {
             bindable->Bind();
         }
-
-        auto shader = mMaterial->GetShader();
-        shader->SetUniformValue("m_model", mMatrix);
-        shader->Bind();
         RenderCommand::DrawIndexed(mVertexArray);
     }
 

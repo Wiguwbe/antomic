@@ -96,7 +96,8 @@
         "stack": "cpp",
         "*.vs": "cpp",
         "*.in": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "*.inc": "cpp"
     },
     "cmake.configureArgs": [
         "-DENABLE_CPPUNIT=yes"

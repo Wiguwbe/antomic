@@ -55,7 +55,6 @@ namespace Antomic
 
         // For now hardcoded
         CameraFrustum f = {0.1f, 100.f};
-        mType = SceneType::SCENE_3D;
         mActiveCamera = CreateRef<PerspetiveCamera>(f, 45.0f);
         mActiveCamera->SetPosition({0, 0, 3});
         mViewMatrix = glm::lookAt(

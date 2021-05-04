@@ -12,7 +12,7 @@ jobs:
 
   container: 
     image: ubuntu:latest
-    options: --platform=linux --network=nat
+    options: --platform=linux
 
   steps:
   - script: printenv

@@ -6,22 +6,14 @@
 trigger:
 - master
 
+pool: A13Labs-Pool
+
 jobs:
 - job: RunInContainerLinux
-  pool: A13Labs-Pool
-
-  container: 
-    image: ubuntu:latest
-    options: --platform=linux
-
   steps:
-  - script: printenv
+  - script: docker run --platfrom=linux ubuntu:latest printenv 
 
 - job: RunInContainerWindows
-  pool: A13Labs-Pool
-
-  container: 
-    image: mcr.microsoft.com/windows/servercore:ltsc2019
-
   steps:
-  - script: set
+  - script: docker run mcr.microsoft.com/windows/servercore:ltsc2019 set
+

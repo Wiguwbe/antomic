@@ -11,9 +11,9 @@ pool: A13Labs-Pool
 jobs:
 - job: RunInContainerLinux
   steps:
-  - script: docker run --platform=linux ubuntu:latest printenv 
+  - script: docker run -rm --platform=linux ubuntu:latest printenv 
 
 - job: RunInContainerWindows
   steps:
-  - script: docker run mcr.microsoft.com/windows/servercore:ltsc2019 set
+  - script: docker run -rm mcr.microsoft.com/windows/servercore:ltsc2019 set
 

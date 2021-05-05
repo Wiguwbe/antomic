@@ -13,7 +13,7 @@ jobs:
   steps:
   - script: |
       docker context use dev.local
-      docker run --rm --platform=linux ubuntu:latest echo "Hello from Ubuntu"
+      docker run --rm ubuntu:latest echo "Hello from Ubuntu"
 
 - job: RunInContainerWindows
   steps:

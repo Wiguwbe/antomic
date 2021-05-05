@@ -11,7 +11,7 @@ pool: A13Labs-Pool
 jobs:
 - job: RunInContainerLinux
   steps:
-  - script: docker run --platfrom=linux ubuntu:latest printenv 
+  - script: docker run --platform=linux ubuntu:latest printenv 
 
 - job: RunInContainerWindows
   steps:

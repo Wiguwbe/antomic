@@ -11,8 +11,12 @@ pool: A13Labs-Pool
 jobs:
 - job: RunInContainerLinux
   steps:
-  - script: docker run --rm --platform=linux ubuntu:latest echo "Hello from Ubuntu"
+  - script: |
+      docker context use dev.local
+      docker run --rm --platform=linux ubuntu:latest echo "Hello from Ubuntu"
 
 - job: RunInContainerWindows
   steps:
-  - script: docker run --rm mcr.microsoft.com/windows/servercore:ltsc2019 powershell.exe Write-Host "Hello from Windows"
+  - script: |
+      docker context use default
+      docker run --rm mcr.microsoft.com/windows/servercore:ltsc2019 powershell.exe Write-Host "Hello from Windows"

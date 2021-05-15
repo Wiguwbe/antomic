@@ -53,7 +53,6 @@ namespace Antomic
 	Ref<SpriteNode> SpriteNode::Deserialize(const nlohmann::json& json)
 	{
 		glm::vec2 pos, size, anchor;
-		float rotation;
 		ANTOMIC_ASSERT(json.contains("url"), "Missing sprite URL");
 		auto url = json["url"].get<std::string>();
 		ANTOMIC_ASSERT(json.contains("position"), "Missing sprite position");

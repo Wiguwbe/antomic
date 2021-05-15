@@ -15,26 +15,17 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Renderer/Drawable.h"
-#include "Renderer/Render2d.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
 {
-    class Sprite : public Drawable
+    class Render2d
     {
     public:
-        Sprite() = default;
-        virtual ~Sprite() override {}
+        static void Init();
+        static void Shutdown();
 
-    public:
-        virtual const DrawableType GetType() override { return DrawableType::SPRITE; }
-        virtual void Draw() override { Render2d::DrawSprite(*this); }
-
-        inline const glm::vec4 &GetSpriteColor() const { return mSpriteColor; }
-        inline void SetSpriteColor(const glm::vec4 &color) { mSpriteColor = color; }
-
-    private:
-        glm::vec4 mSpriteColor = glm::vec4(1.f, 1.f, 1.f, 1.f);
+        static void DrawSprite(const Ref<Sprite> &sprite);
+        static void DrawSprite(const Sprite &sprite);
     };
 }

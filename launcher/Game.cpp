@@ -5,7 +5,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+	   http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,26 +18,24 @@
 
 namespace Antomic
 {
-    Game::Game() : Application("Game")
-    {
-    }
+	Game::Game() : Application("Game")
+	{
+	}
 
-    void Game::LoadMainScene(const std::string &scene)
-    {
-        {
-            // Create a new scene
-            auto scene = CreateRef<Scene>();
-            // Load a new sprite
-            auto sprite = CreateRef<SpriteNode>("assets/textures/container.jpg");
-            // Add sprite to the scene
-            sprite->SetPosition(glm::vec2(25, 25));
-            sprite->SetSize(glm::vec2(50.0f, 50.0f));
-            sprite->SetRotation(0.f);
-            sprite->SetColor({0.0f, 1.0f, 0.0f,1.0f});
-            scene->AddChild(sprite);
-            SetScene(scene);
+	void Game::LoadMainScene(const std::string& filePath)
+	{
+		if (!std::filesystem::exists(filePath))
+		{
+			ANTOMIC_ERROR("Scene {0}, does not exits");
+			return;
+		}
 
-            Serialization::Save(scene,"scene.json");
-        }
-    }
+		// Load the scene
+		std::ifstream sceneFile(filePath);
+		nlohmann::json sceneJSON;
+		sceneFile>> sceneJSON;
+
+		auto scene = Scene::Deserialize(sceneJSON["scene"]);
+		SetScene(scene);
+	}
 } // namespace Antomic

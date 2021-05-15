@@ -48,7 +48,8 @@ namespace Antomic
 
         // Serialization
         virtual void Serialize(nlohmann::json &json);
-        virtual void Deserialize(const nlohmann::json &json);
+        
+        static Ref<Node> Deserialize(const nlohmann::json &json);
 
     protected:
         // Render Operations

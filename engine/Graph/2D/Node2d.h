@@ -47,7 +47,6 @@ namespace Antomic
 
         // Serialization
         virtual void Serialize(nlohmann::json &json) override;
-        virtual void Deserialize(const nlohmann::json &json) override;
 
     protected:
         virtual void UpdateSpatialInformation() override;

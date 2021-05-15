@@ -57,7 +57,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # SDL - Simple DirectMedia Layer
 # https://www.libsdl.org/
-if(NOT DEFINED ENV{ANTOMIC_NO_SDL})
+if(DEFINED ENV{ANTOMIC_SDL})
     set(SDL_SUPPORT true)
     find_package(SDL2 REQUIRED)
     add_definitions(-DANTOMIC_SDL_PLATFORM)

@@ -8,7 +8,7 @@
             "name": "(Windows) Antomic Launcher",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicLauncher.exe",
+            "program": "${workspaceFolder}/bin/Debug/AntomicLauncher.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -19,7 +19,7 @@
             "name": "(Windows) Antomic Editor",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicEditor.exe",
+            "program": "${workspaceFolder}/bin/Debug/AntomicEditor.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -30,7 +30,7 @@
             "name": "(Windows) Antomic Core Tests",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicCoreTests.exe",
+            "program": "${workspaceFolder}/bin/Debug/AntomicCoreTests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -41,7 +41,7 @@
             "name": "(Windows) Antomic Graph Tests",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicGraphTests.exe",
+            "program": "${workspaceFolder}/bin/Debug/AntomicGraphTests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -52,7 +52,18 @@
             "name": "(Windows) Antomic Renderer Tests",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicRendererTests.exe",
+            "program": "${workspaceFolder}/bin/Debug/AntomicRendererTests.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "(Windows) Antomic Python Tests",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/Debug/AntomicPythonTests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -153,6 +164,25 @@
                     "ignoreFailures": true
                 }
             ],
-        },  
+        },
+        {
+            "name": "(Linux) Antomic Python Tests",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/AntomicPythonTests",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable automatic reformating for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+        },
     ]
 }

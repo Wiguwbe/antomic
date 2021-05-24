@@ -13,36 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
+#include "gtest/gtest.h"
 
-#include <cstdint>
-#include <iostream>
-#include <fstream>
-#include <memory>
-#include <utility>
-#include <algorithm>
-#include <functional>
-#include <any>
-
-#include <cstring>
-#include <string>
-#include <sstream>
-#include <array>
-#include <vector>
-#include <stack>
-#include <queue>
-#include <unordered_map>
-#include <unordered_set>
-
-#include <filesystem>
-
-#ifdef ANTOMIC_CHRONO_SUPPORT
-#include <chrono>
-#endif
-
-#include <algorithm>
-#include <chrono>
-#include <iomanip>
-#include <thread>
-#include <mutex>
-
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}

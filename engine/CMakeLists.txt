@@ -1,7 +1,11 @@
 # Antomic Engine Library
+ASDL_TARGET(PYTHON_LANG ${CMAKE_CURRENT_SOURCE_DIR}/Python/Parser/python.asdl
+    ${CMAKE_CURRENT_BINARY_DIR}/Python/Parser/Python.h
+    ${CMAKE_CURRENT_BINARY_DIR}/Python/Parser/Python.cpp)
+
 FILE(GLOB_RECURSE ANTOMIC_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 FILE(GLOB_RECURSE ANTOMIC_HDR "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
-add_library("${PROJECT_NAME}Engine" ${ANTOMIC_HDR} ${ANTOMIC_SRC})
+add_library("${PROJECT_NAME}Engine" ${ANTOMIC_HDR} ${ANTOMIC_SRC} ${ASDL_PYTHON_LANG_OUTPUTS})
 target_compile_features("${PROJECT_NAME}Engine" PUBLIC cxx_std_17)
 target_include_directories( 
     "${PROJECT_NAME}Engine"

@@ -5,6 +5,7 @@ project(Antomic)
 project(${PROJECT_NAME} CXX C)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/asdl)
 
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 0)
@@ -36,6 +37,9 @@ find_package(Threads REQUIRED)
 else()
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W3")
 endif()
+
+# Tool for ASDL files
+find_package(ASDL)
 
 # Specify build paths
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
@@ -152,6 +156,13 @@ if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
         NAME "${PROJECT_NAME}RendererTests" 
         COMMAND "${PROJECT_NAME}RendererTests"
     ) 
+
+    # Add test Engine Python Tests
+    add_test(
+        NAME "${PROJECT_NAME}PythonTests" 
+        COMMAND "${PROJECT_NAME}PythonTests"
+    ) 
+
 endif() 
 
 file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX})

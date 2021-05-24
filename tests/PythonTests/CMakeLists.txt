@@ -30,3 +30,11 @@ target_link_libraries(
     PRIVATE
     spdlog::spdlog
 )
+
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/tests/files)
+
+add_custom_command(
+        TARGET "${PROJECT_NAME}PythonTests" POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_SOURCE_DIR}/tests/files/lexer_test.py
+                ${CMAKE_BINARY_DIR}/tests/files/lexer_test.py)

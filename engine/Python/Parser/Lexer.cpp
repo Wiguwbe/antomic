@@ -111,10 +111,6 @@ namespace Antomic
         }
     }
 
-    void Lexer::ProcessIdentation()
-    {
-    }
-
     void Lexer::ProcessOpenParenteses()
     {
         StartToken();

@@ -149,7 +149,6 @@ namespace Antomic
 
     private:
         void ProcessComment();
-        void ProcessIdentation();
         void ProcessString();
         void ProcessOpenParenteses();
         void ProcessCloseParenteses();

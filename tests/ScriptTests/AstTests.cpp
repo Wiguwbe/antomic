@@ -19,8 +19,33 @@
 
 using namespace Antomic;
 
+// class EvalVisitor : public BaseVisitor {
+//  public:
+ 
+//   std::any visitBinOp(BinOp_t node) override {
+//     int left = std::any_cast<int>(visit(node->left));
+//     int right = std::any_cast<int>(visit(node->right));
+//     switch (node->op) {
+//         case operator_t::kAdd: return left + right;
+//         case operator_t::kSub: return left - right;
+//         case operator_t::kMul: return left * right;
+//         case operator_t::kDiv: return left / right;
+//     }
+//   }
+  
+//   std::any visitNum(Num_t node) override {
+//     return node->n;
+//   }
+
+//   std::any visitOperator(operator_t value) override {
+//     // not reached
+//     return 0;
+//   }
+// };
+
 TEST(AntomicCoreTest, AsdlTests)
 {
+    // TODO: Write more tests
     auto expr = Expression(
         BinOp(
             Constant(1, "Int", 1, 1),
@@ -28,5 +53,5 @@ TEST(AntomicCoreTest, AsdlTests)
             Constant(1, "Int", 1, 3),
             1, 2));
 
-    std::cout << to_string(expr) << std::endl;
+    
 }

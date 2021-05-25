@@ -4,18 +4,16 @@
 module Antomic
 {
     mod = Module(stmt* body)
-        | Interactive(stmt* body)
         | Expression(expr body)
         | FunctionType(expr* argtypes, expr returns)
 
     stmt = FunctionDef(identifier name, arguments args,
-                       stmt* body, expr* decorator_list, expr? returns)
+                       stmt* body)
 
           | ClassDef(identifier name,
              expr* bases,
              keyword* keywords,
-             stmt* body,
-             expr* decorator_list)
+             stmt* body)
           | Return(expr? value)
 
           | Delete(expr* targets)
@@ -33,7 +31,7 @@ module Antomic
           | Assert(expr test, expr? msg)
 
           | Import(alias* names)
-          | ImportFrom(identifier? module, alias* names, int? level)
+          | ImportFrom(identifier? module, alias* names)
 
           | Expr(expr value)
           | Pass | Break | Continue
@@ -59,20 +57,18 @@ module Antomic
          | Constant(constant value, string? kind)
 
          -- the following expression can appear in assignment context
-         | Attribute(expr value, identifier attr, expr_context ctx)
-         | Subscript(expr value, expr slice, expr_context ctx)
-         | Starred(expr value, expr_context ctx)
-         | Name(identifier id, expr_context ctx)
-         | List(expr* elts, expr_context ctx)
-         | Tuple(expr* elts, expr_context ctx)
+         | Attribute(expr value, identifier attrRead)
+         | Subscript(expr value, expr sliceRead)
+         | Starred(expr valueRead)
+         | Name(identifier idRead)
+         | List(expr* eltsRead)
+         | Tuple(expr* eltsRead)
 
          -- can appear only in Subscript
          | Slice(expr? lower, expr? upper, expr? step)
 
           -- col_offset is the byte offset in the utf8 string the parser uses
           attributes (int lineno, int col_offset)
-
-    expr_context = Load | Store | Del
 
     boolop = And | Or
 
@@ -82,8 +78,6 @@ module Antomic
     unaryop = Invert | Not | UAdd | USub
 
     cmpop = Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn
-
-    comprehension = (expr target, expr iter, expr* ifs, int is_async)
 
     excepthandler = ExceptHandler(expr? type, identifier? name, stmt* body)
                     attributes (int lineno, int col_offset)

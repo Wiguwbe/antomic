@@ -66,8 +66,6 @@ namespace Antomic
         KeywordWhile,
         KeywordWith,
 
-        Ellipsis,
-
         OpAdd,
         OpSub,
         OpMul,
@@ -111,7 +109,6 @@ namespace Antomic
         SymbolBracketClose,
         SymbolParentesesOpen,
         SymbolParentesesClose,
-        SymbolAt,
     };
 
     struct Token
@@ -143,9 +140,11 @@ namespace Antomic
         Lexer(const Ref<Reader> reader);
         ~Lexer() = default;
 
-        Token Next();
+        Token Read();
+        Token Peek();
 
     private:
+        Token ParseNext();
         void ProcessComment();
         void ProcessString();
         void ProcessOpenParenteses();
@@ -163,7 +162,6 @@ namespace Antomic
         void ProcessColon();
         void ProcessSemicolon();
         void ProcessMod();
-        void ProcessAt();
         void ProcessGreatThen();
         void ProcessLessThen();
         void ProcessAssign();
@@ -219,5 +217,6 @@ namespace Antomic
     private:
         Ref<Reader> mReader = nullptr;
         LexerState mState;
+        std::queue<Token> mQueue;
     };
 }

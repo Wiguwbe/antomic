@@ -314,13 +314,6 @@ namespace Antomic
         EndToken(TokenType::OpAdd);
     }
 
-    void Lexer::ProcessAt()
-    {
-        StartToken();
-        mState.CurrentToken.Value += ReadNextChar();
-        EndToken(TokenType::SymbolAt);
-    }
-
     void Lexer::ProcessGreatThen()
     {
         StartToken();
@@ -588,7 +581,29 @@ namespace Antomic
         }
     }
 
-    Token Lexer::Next()
+    Token Lexer::Read()
+    {
+        if (!mQueue.empty())
+        {
+            auto token = mQueue.front();
+            mQueue.pop();
+            return token;
+        }
+
+        return ParseNext();
+    }
+
+    Token Lexer::Peek()
+    {
+        if (mQueue.empty())
+        {
+            mQueue.push(ParseNext());
+        }
+
+        return mQueue.back();
+    }
+
+    Token Lexer::ParseNext()
     {
         if (mReader->IsEOF())
         {
@@ -640,6 +655,13 @@ namespace Antomic
                 while (PeekNextChar() == ' ' && !mReader->IsEOF())
                 {
                     mState.CurrentToken.Value += ReadNextChar();
+                }
+
+                // Empty spaces with no text, skip it
+                if (PeekNextChar() == '\n')
+                {
+                    NewToken();
+                    continue;
                 }
                 return mState.CurrentToken;
 
@@ -711,9 +733,6 @@ namespace Antomic
             case '%':
                 ProcessMod();
                 return mState.CurrentToken;
-            case '@':
-                ProcessAt();
-                return mState.CurrentToken;
             case '>':
                 ProcessGreatThen();
                 return mState.CurrentToken;
@@ -757,4 +776,5 @@ namespace Antomic
 
         return mState.CurrentToken;
     }
+
 }

@@ -21,7 +21,7 @@ def get_c_type(name):
     if name in asdl.builtin_types:
         return name
 
-    return "%s_t" % name
+    return "%s_" % name
 
 
 def is_simple(sum):
@@ -54,9 +54,11 @@ def get_args(fields):
             name = f.name
         ctype = get_c_type(f.type)
         if f.seq:
-            ctype = "std::vector<%s>" % ctype
-        if ctype.startswith("std::") or ctype == "identifier":
+            ctype = "VectorRef<%s>" % ctype
+        elif ctype.startswith("std::") or ctype == "identifier":
             ctype = "const " + ctype + "&"
+        elif ctype != 'int':
+            ctype = "const Ref<" + ctype + ">&"
         args.append((ctype, name, f.opt or f.seq))
     return args
 
@@ -124,7 +126,7 @@ class EmitVisitor(asdl.VisitorBase):
             self.file.write(line)
 
 
-class NamespaceVisitor(EmitVisitor):
+class NamespaceVisitorHeader(EmitVisitor):
     """ Emits namespace for a module """
 
     def visitModule(self, mod):
@@ -132,7 +134,24 @@ class NamespaceVisitor(EmitVisitor):
         self.emit("", 0)
         self.emit('typedef std::string identifier;', 0)
         self.emit('typedef void* pointer;', 0)
+        self.emit('template <typename T>', 0)
+        self.emit('using Ref = std::shared_ptr<T>;', 0)
 
+        self.emit('template <typename T>', 0)
+        self.emit('using VectorRef = std::vector<Ref<T>>;', 0)
+
+        self.emit('template <typename T, typename... Args>', 0)
+        self.emit('constexpr Ref<T> CreateRef(Args &&... args)', 0)
+        self.emit('{', 0)
+        self.emit('    return std::make_shared<T>(std::forward<Args>(args)...);', 0)
+        self.emit('}', 0)
+
+class NamespaceVisitorSource(EmitVisitor):
+    """ Emits namespace for a module """
+
+    def visitModule(self, mod):
+        self.emit("namespace %s {" % mod.name, 0)
+        self.emit("", 0)
 
 class TypeDefVisitor(EmitVisitor):
     """ Emit enums for simple sums and typedefs for everything else """
@@ -166,7 +185,7 @@ class TypeDefVisitor(EmitVisitor):
     def typedef(self, name, depth):
         ctype = get_c_type(name)
         self.emit("struct %(name)s_;" % locals(), depth)
-        s = "typedef %(name)s_* %(ctype)s;" % locals()
+        s = "typedef Ref<%(ctype)s> %(name)sRef;" % locals()
         self.emit(s, depth)
         self.emit("", depth)
 
@@ -228,9 +247,11 @@ class StructVisitor(EmitVisitor):
         ctype = get_c_type(field.type)
         name = field.name
         if field.seq:
-            self.emit("std::vector<%(ctype)s> %(name)s;" % locals(), depth)
-        else:
+            self.emit("VectorRef<%(ctype)s> %(name)s;" % locals(), depth)
+        elif ctype.startswith("std::") or ctype == "identifier" or ctype == 'int':
             self.emit("%(ctype)s %(name)s;" % locals(), depth)
+        else:
+            self.emit("Ref<%(ctype)s> %(name)s;" % locals(), depth)
 
     def visitProduct(self, product, name, depth):
         self.emit_struct(product.fields + product.attributes, [], name, False, depth)
@@ -250,7 +271,7 @@ class BaseVisitorVistor(EmitVisitor):
 
     def visitType(self, type, abstracts, depth):
         if not abstracts:
-            self.emit("std::any visit(%s_t node) {" % type.name, depth)
+            self.emit("std::any visit(Ref<%s_> node) {" % type.name, depth)
             self.visit(type.value, type.name, abstracts, depth + 1)
             self.emit("}", depth)
             self.emit("", depth)
@@ -273,14 +294,16 @@ class BaseVisitorVistor(EmitVisitor):
     def emit_sum_abstracts(self, sum, name, depth):
         if is_simple(sum):
             fname = name.title()
-            self.emit("virtual std::any visit%s(%s_t value) = 0;" % (fname, name), depth)
+            self.emit("virtual std::any visit%s(Ref<%s_> value) = 0;" % (fname, name), depth)
+            self.emit("virtual std::any visit%s(%s_ *value) = 0;" % (fname, name), depth)
         else:
             for c in sum.types:
                 self.emit_sum_abstract(c, name, depth)
 
     def emit_sum_abstract(self, cons, type, depth):
         name = cons.name
-        self.emit("virtual std::any visit%s(%s_t node) = 0;" % (name, name), depth)
+        self.emit("virtual std::any visit%s(Ref<%s_> node) = 0;" % (name, name), depth)
+        self.emit("virtual std::any visit%s(%s_ *node) = 0;" % (name, name), depth)
 
     def visitProduct(self, prod, name, abstracts, depth):
         if not abstracts:
@@ -295,7 +318,8 @@ class BaseVisitorVistor(EmitVisitor):
 
     def emit_prod_abstracts(self, prod, name, depth):
         fname = name.title()
-        self.emit("virtual std::any visit%s(%s_t node) = 0;" % (fname, name), depth)
+        self.emit("virtual std::any visit%s(Ref<%s_> node) = 0;" % (fname, name), depth)
+        self.emit("virtual std::any visit%s(%s_ *node) = 0;" % (fname, name), depth)
 
 
 class InheritanceVisitor(EmitVisitor):
@@ -347,9 +371,11 @@ class InheritanceVisitor(EmitVisitor):
         ctype = get_c_type(field.type)
         name = field.name
         if field.seq:
-            self.emit("std::vector<%(ctype)s> %(name)s;" % locals(), depth)
-        else:
+            self.emit("VectorRef<%(ctype)s> %(name)s;" % locals(), depth)
+        elif ctype.startswith("std::") or ctype == "identifier" or ctype == 'int':
             self.emit("%(ctype)s %(name)s;" % locals(), depth)
+        else:
+            self.emit("Ref<%(ctype)s> %(name)s;" % locals(), depth)
 
     def visitProduct(self, product, name, depth):
         pass
@@ -382,7 +408,7 @@ class PrototypeVisitor(EmitVisitor):
         args = args + attrs
         argstr = ", ".join(["%s %s" % (atype, aname)
                             for atype, aname, opt in args])
-        self.emit("%s %s(%s);" % (ctype, name, argstr), 0)
+        self.emit("%sRef %s(%s);" % (name, name, argstr), 0)
 
     def visitProduct(self, prod, name):
         args = get_args(prod.fields)
@@ -399,7 +425,7 @@ class ToStringPrototypeVisitor(EmitVisitor):
             self.visit(type)
 
     def visitType(self, type, depth=0):
-        self.emit("std::string to_string(%s_t node);" % type.name, depth)
+        self.emit("std::string to_string(Ref<%s_> node);" % type.name, depth)
 
 
 class FunctionVisitor(PrototypeVisitor):
@@ -409,9 +435,9 @@ class FunctionVisitor(PrototypeVisitor):
         args = args + attrs
         argstr = ", ".join(["%s %s" % (atype, aname)
                             for atype, aname, opt in args])
-        self.emit("%s %s(%s) {" % (ctype, name, argstr), 0)
+        self.emit("%sRef %s(%s) {" % (name, name, argstr), 0)
         argstr2 = ", ".join([aname for atype, aname, opt in args])
-        self.emit("return new %s_(%s);" % (name, argstr2), 1)
+        self.emit("return CreateRef<%s_>(%s);" % (name, argstr2), 1)
         self.emit("}", 0)
         self.emit("", 0)
 
@@ -440,6 +466,13 @@ class ToStringVisitorVisitor(EmitVisitor):
 
     template <class T>
     std::string to_string(T* value) {
+        std::ostringstream oss;
+        oss << value;
+        return oss.str();
+    }
+
+    template <class T>
+    std::string to_string(const Ref<T> &value) {
         std::ostringstream oss;
         oss << value;
         return oss.str();
@@ -512,11 +545,22 @@ class ToStringVisitorVisitor(EmitVisitor):
 
     def simple_sum(self, sum, name, depth):
         fname = name.title()
-        self.emit("std::any visit%s(%s_t value) override {" % (fname, name), depth)
+        self.emit("std::any visit%s(Ref<%s_> value) override {" % (fname, name), depth)
         self.emit("std::string result;", depth + 1)
-        self.emit("switch (value) {", depth + 1)
+        self.emit("switch (*value) {", depth + 1)
         for c in sum.types:
-            self.emit("case %s_t::k%s:" % (name, c.name), depth + 2)
+            self.emit("case %s_::k%s:" % (name, c.name), depth + 2)
+            self.emit("result = \"%s\";" % c.name, depth + 3)
+            self.emit("break;", depth + 3)
+        self.emit("}", depth + 1)
+        self.emit("return result;", depth + 1)
+        self.emit("}", depth)
+        self.emit("", 0)
+        self.emit("std::any visit%s(%s_ *value) override {" % (fname, name), depth)
+        self.emit("std::string result;", depth + 1)
+        self.emit("switch (*value) {", depth + 1)
+        for c in sum.types:
+            self.emit("case %s_::k%s:" % (name, c.name), depth + 2)
             self.emit("result = \"%s\";" % c.name, depth + 3)
             self.emit("break;", depth + 3)
         self.emit("}", depth + 1)
@@ -532,7 +576,25 @@ class ToStringVisitorVisitor(EmitVisitor):
 
     def emit_function(self, name, fname, fields, attrs, depth):
         args = get_args(fields + attrs)
-        self.emit("std::any visit%s(%s_t node) override {" % (fname, name), depth)
+        self.emit("std::any visit%s(Ref<%s_> node) override {" % (fname, name), depth)
+        self.emit("std::string result = spaces() + to_string(node) + \" %s(\";" % name, depth + 1)
+        pstr = " + \", \" + ".join(["\"%s=\" + to_string(node->%s)"
+                                    % (aname, aname) for atype, aname, opt in args])
+        if len(pstr) != 0:
+            self.emit("result += %s;" % pstr, depth + 1)
+        self.emit("result += \")\\n\";", depth + 1)
+        self.emit("", 0)
+        pstr = " + ".join(["follow(node->%s)" % aname for atype, aname, opt in args])
+        if len(pstr) != 0:
+            self.emit("depth += 2;", depth + 1)
+            self.emit("result += %s;" % pstr, depth + 1)
+            self.emit("depth -= 2;", depth + 1)
+            self.emit("", 0)
+        self.emit("return result;", depth + 1)
+        self.emit("}", depth)
+        self.emit("", 0)
+
+        self.emit("std::any visit%s(%s_ *node) override {" % (fname, name), depth)
         self.emit("std::string result = spaces() + to_string(node) + \" %s(\";" % name, depth + 1)
         pstr = " + \", \" + ".join(["\"%s=\" + to_string(node->%s)"
                                     % (aname, aname) for atype, aname, opt in args])
@@ -559,7 +621,7 @@ class ToStringFunctionVisitor(EmitVisitor):
             self.visit(type)
 
     def visitType(self, type, depth=0):
-        self.emit("std::string to_string(%s_t node) {" % type.name, depth)
+        self.emit("std::string to_string(Ref<%s_> node) {" % type.name, depth)
         self.emit("ToStringVisitor string_visitor;", depth + 1)
         self.emit("return std::any_cast<std::string>(string_visitor.visit(node));", depth + 1)
         self.emit("}", depth)
@@ -593,10 +655,13 @@ def main(srcfile, output_header, output_file):
     f = open(output_header, "w")
     f.write(auto_gen_msg)
     f.write("#pragma once\n\n")
-    f.write('#include "Core/Base.h"\n')
+    f.write('#include <vector>\n')
+    f.write('#include <string>\n')
+    f.write('#include <any>\n')
+    f.write('#include <memory>\n\n')
 
     c = ChainOfVisitors(
-                        NamespaceVisitor(f),
+                        NamespaceVisitorHeader(f),
                         TypeDefVisitor(f),
                         StructVisitor(f),
                         BaseVisitorVistor(f),
@@ -615,7 +680,7 @@ def main(srcfile, output_header, output_file):
     f.write('#include <sstream>\n\n')
     f.write('#include "%s"\n\n' % output_header)
     c = ChainOfVisitors(
-                        NamespaceVisitor(f),
+                        NamespaceVisitorSource(f),
                         FunctionVisitor(f),
                         ToStringVisitorVisitor(f),
                         ToStringFunctionVisitor(f),

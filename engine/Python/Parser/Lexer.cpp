@@ -149,52 +149,52 @@ namespace Antomic
     void Lexer::ProcessOpenParenteses()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::SymbolParentesesOpen);
     }
 
     void Lexer::ProcessCloseParenteses()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::SymbolParentesesClose);
     }
 
     void Lexer::ProcessOpenBrackets()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::SymbolBracketOpen);
     }
 
     void Lexer::ProcessCloseBrackets()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::SymbolBracketClose);
     }
 
     void Lexer::ProcessOpenBraces()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::SymbolBraceOpen);
     }
 
     void Lexer::ProcessCloseBraces()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::SymbolBraceClose);
     }
 
     void Lexer::ProcessAdd()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         if (PeekNextChar() == '=')
         {
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpAddAssign);
             return;
         }
@@ -204,10 +204,10 @@ namespace Antomic
     void Lexer::ProcessSub()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         if (PeekNextChar() == '=')
         {
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpSubAssign);
             return;
         }
@@ -217,18 +217,18 @@ namespace Antomic
     void Lexer::ProcessDiv()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         switch (PeekNextChar())
         {
         case '=':
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpDivAssign);
             break;
         case '/':
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             if (PeekNextChar() == '=')
             {
-                ReadNextChar();
+                mState.CurrentToken.Value += ReadNextChar();
                 EndToken(TokenType::OpFloorDivAssign);
             }
             else
@@ -244,18 +244,18 @@ namespace Antomic
     void Lexer::ProcessMul()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         switch (PeekNextChar())
         {
         case '=':
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpMulAssign);
             break;
         case '*':
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             if (PeekNextChar() == '=')
             {
-                ReadNextChar();
+                mState.CurrentToken.Value += ReadNextChar();
                 EndToken(TokenType::OpExpAssign);
             }
             else
@@ -271,14 +271,14 @@ namespace Antomic
     void Lexer::ProcessPeriod()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::SymbolPeriod);
     }
 
     void Lexer::ProcessComma()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         if (PeekNextChar() >= '0' && PeekNextChar() <= '9')
         {
             ProcessDecimalNumber();
@@ -290,24 +290,24 @@ namespace Antomic
     void Lexer::ProcessColon()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::SymbolColon);
     }
 
     void Lexer::ProcessSemicolon()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::SymbolSemiColon);
     }
 
     void Lexer::ProcessMod()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         if (PeekNextChar() == '=')
         {
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpModAssign);
             return;
         }
@@ -317,25 +317,25 @@ namespace Antomic
     void Lexer::ProcessAt()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::SymbolAt);
     }
 
     void Lexer::ProcessGreatThen()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         switch (PeekNextChar())
         {
         case '=':
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpGreatEqual);
             break;
         case '>':
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             if (PeekNextChar() == '=')
             {
-                ReadNextChar();
+                mState.CurrentToken.Value += ReadNextChar();
                 EndToken(TokenType::OpShiftRightAssign);
             }
             else
@@ -352,18 +352,18 @@ namespace Antomic
     void Lexer::ProcessLessThen()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         switch (PeekNextChar())
         {
         case '=':
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpLessEqual);
             break;
         case '<':
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             if (PeekNextChar() == '=')
             {
-                ReadNextChar();
+                mState.CurrentToken.Value += ReadNextChar();
                 EndToken(TokenType::OpShiftLeftAssign);
             }
             else
@@ -380,10 +380,10 @@ namespace Antomic
     void Lexer::ProcessAssign()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         if (PeekNextChar() == '=')
         {
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpEqual);
             return;
         }
@@ -393,10 +393,10 @@ namespace Antomic
     void Lexer::ProcessXor()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         if (PeekNextChar() == '=')
         {
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpXorAssign);
             return;
         }
@@ -406,14 +406,14 @@ namespace Antomic
     void Lexer::ProcessNot()
     {
         StartToken();
-        auto c = ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::OpInv);
     }
 
     void Lexer::ProcessNotEqual()
     {
         StartToken();
-        auto c = ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         if (PeekNextChar() != '=')
         {
             EndToken(TokenType::Invalid);
@@ -425,10 +425,10 @@ namespace Antomic
     void Lexer::ProcessAnd()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         if (PeekNextChar() == '=')
         {
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpAndAssign);
             return;
         }
@@ -438,10 +438,10 @@ namespace Antomic
     void Lexer::ProcessOr()
     {
         StartToken();
-        ReadNextChar();
+        mState.CurrentToken.Value += ReadNextChar();
         if (PeekNextChar() == '=')
         {
-            ReadNextChar();
+            mState.CurrentToken.Value += ReadNextChar();
             EndToken(TokenType::OpOrAssign);
             return;
         }

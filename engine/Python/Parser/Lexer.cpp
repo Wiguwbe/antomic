@@ -15,6 +15,41 @@
 */
 #include "Python/Parser/Lexer.h"
 
+static std::map<std::string, Antomic::TokenType> sKeywordsMaps{
+    {"and", Antomic::TokenType::KeywordAnd},
+    {"as", Antomic::TokenType::KeywordAs},
+    {"assert", Antomic::TokenType::KeywordAssert},
+    {"break", Antomic::TokenType::KeywordBreak},
+    {"class", Antomic::TokenType::KeywordClass},
+    {"continue", Antomic::TokenType::KeywordContinue},
+    {"def", Antomic::TokenType::KeywordDef},
+    {"del", Antomic::TokenType::KeywordDel},
+    {"elif", Antomic::TokenType::KeywordElIf},
+    {"else", Antomic::TokenType::KeywordElse},
+    {"except", Antomic::TokenType::KeywordExcept},
+    {"exec", Antomic::TokenType::KeywordExec},
+    {"False", Antomic::TokenType::KeywordFalse},
+    {"finally", Antomic::TokenType::KeywordFinally},
+    {"for", Antomic::TokenType::KeywordFor},
+    {"from", Antomic::TokenType::KeywordFrom},
+    {"global", Antomic::TokenType::KeywordGlobal},
+    {"if", Antomic::TokenType::KeywordIf},
+    {"import", Antomic::TokenType::KeywordImport},
+    {"in", Antomic::TokenType::KeywordIn},
+    {"is", Antomic::TokenType::KeywordIs},
+    {"lambda", Antomic::TokenType::KeywordLambda},
+    {"None", Antomic::TokenType::KeywordNone},
+    {"not", Antomic::TokenType::KeywordNot},
+    {"or", Antomic::TokenType::KeywordOr},
+    {"pass", Antomic::TokenType::KeywordPass},
+    {"raise", Antomic::TokenType::KeywordRaise},
+    {"def", Antomic::TokenType::KeywordReturn},
+    {"True", Antomic::TokenType::KeywordTrue},
+    {"try", Antomic::TokenType::KeywordTry},
+    {"while", Antomic::TokenType::KeywordWhile},
+    {"with", Antomic::TokenType::KeywordWith},
+};
+
 namespace Antomic
 {
     Lexer::Lexer(const std::string &name)
@@ -458,9 +493,15 @@ namespace Antomic
         {
             auto c = PeekNextChar();
 
-            if (c < '0' || c > '9')
+            if (!IsDigit(c) && c != '.')
             {
-                if (decimal)
+                if (IsLetter(c) && c != 'f')
+                {
+                    EndToken(TokenType::Invalid);
+                    return;
+                }
+
+                if (decimal || (IsLetter(c) && c == 'g'))
                 {
                     EndToken(TokenType::NumberFloat);
                     return;
@@ -472,13 +513,9 @@ namespace Antomic
 
             if (c == '.')
             {
-                if (decimal)
-                {
-                    EndToken(TokenType::Invalid);
-                    return;
-                }
-
-                decimal = true;
+                mState.CurrentToken.Value += ReadNextChar();
+                ProcessDecimalNumber();
+                return;
             }
 
             mState.CurrentToken.Value += ReadNextChar();
@@ -490,15 +527,15 @@ namespace Antomic
         for (;;)
         {
             auto c = PeekNextChar();
-            if ((c < '0' || c > '9') && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+            if (!IsHexadecimalDigit(c))
             {
-                EndToken(TokenType::NumberHex);
-                return;
-            }
+                if (IsLetter(c) || c == '.')
+                {
+                    EndToken(TokenType::Invalid);
+                    return;
+                }
 
-            if (c == '.')
-            {
-                EndToken(TokenType::Invalid);
+                EndToken(TokenType::NumberHex);
                 return;
             }
 
@@ -511,15 +548,16 @@ namespace Antomic
         for (;;)
         {
             auto c = PeekNextChar();
-            if (c < '0' || c > '9')
+            if (!IsDigit(c))
             {
-                EndToken(TokenType::NumberFloat);
-                return;
-            }
 
-            if (c == '.')
-            {
-                EndToken(TokenType::Invalid);
+                if (IsLetter(c) || c == '.')
+                {
+                    EndToken(TokenType::Invalid);
+                    return;
+                }
+
+                EndToken(TokenType::NumberFloat);
                 return;
             }
 
@@ -533,200 +571,16 @@ namespace Antomic
         for (;;)
         {
             auto c = PeekNextChar();
-            if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && c != '_' && (c < '0' || c > '9'))
+            if (!IsAlphaNumeric(c) && c != '_')
             {
-                if (mState.CurrentToken.Value.compare("and") == 0)
+                // Check for the name in the keywords map
+                if (sKeywordsMaps.find(mState.CurrentToken.Value) != sKeywordsMaps.end())
                 {
-                    EndToken(TokenType::KeywordAnd);
+                    EndToken(sKeywordsMaps[mState.CurrentToken.Value]);
                     return;
                 }
 
-                if (mState.CurrentToken.Value.compare("as") == 0)
-                {
-                    EndToken(TokenType::KeywordAs);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("assert") == 0)
-                {
-                    EndToken(TokenType::KeywordAssert);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("break") == 0)
-                {
-                    EndToken(TokenType::KeywordBreak);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("class") == 0)
-                {
-                    EndToken(TokenType::KeywordClass);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("continue") == 0)
-                {
-                    EndToken(TokenType::KeywordContinue);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("def") == 0)
-                {
-                    EndToken(TokenType::KeywordDef);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("del") == 0)
-                {
-                    EndToken(TokenType::KeywordDel);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("elif") == 0)
-                {
-                    EndToken(TokenType::KeywordElIf);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("else") == 0)
-                {
-                    EndToken(TokenType::KeywordElse);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("except") == 0)
-                {
-                    EndToken(TokenType::KeywordExcept);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("exec") == 0)
-                {
-                    EndToken(TokenType::KeywordExec);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("False") == 0)
-                {
-                    EndToken(TokenType::KeywordFalse);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("finally") == 0)
-                {
-                    EndToken(TokenType::KeywordFinally);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("for") == 0)
-                {
-                    EndToken(TokenType::KeywordFor);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("from") == 0)
-                {
-                    EndToken(TokenType::KeywordFrom);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("global") == 0)
-                {
-                    EndToken(TokenType::KeywordGlobal);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("if") == 0)
-                {
-                    EndToken(TokenType::KeywordIf);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("import") == 0)
-                {
-                    EndToken(TokenType::KeywordImport);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("in") == 0)
-                {
-                    EndToken(TokenType::KeywordIn);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("is") == 0)
-                {
-                    EndToken(TokenType::KeywordIs);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("lambda") == 0)
-                {
-                    EndToken(TokenType::KeywordLambda);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("None") == 0)
-                {
-                    EndToken(TokenType::KeywordNone);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("not") == 0)
-                {
-                    EndToken(TokenType::KeywordNot);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("or") == 0)
-                {
-                    EndToken(TokenType::KeywordOr);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("pass") == 0)
-                {
-                    EndToken(TokenType::KeywordPass);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("raise") == 0)
-                {
-                    EndToken(TokenType::KeywordRaise);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("def") == 0)
-                {
-                    EndToken(TokenType::KeywordReturn);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("True") == 0)
-                {
-                    EndToken(TokenType::KeywordTrue);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("try") == 0)
-                {
-                    EndToken(TokenType::KeywordTry);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("while") == 0)
-                {
-                    EndToken(TokenType::KeywordWhile);
-                    return;
-                }
-
-                if (mState.CurrentToken.Value.compare("with") == 0)
-                {
-                    EndToken(TokenType::KeywordWith);
-                    return;
-                }
-
+                // Not a keyworkd, must be an identifier
                 EndToken(TokenType::Identifier);
                 return;
             }

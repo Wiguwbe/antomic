@@ -182,19 +182,19 @@ TEST(AntomicCoreTest, PythonTests)
     EXPECT_EQ(t.Column, 3);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NumberInteger);
-    EXPECT_EQ(t.Value, "12");
+    EXPECT_EQ(t.Type, Antomic::TokenType::NumberFloat);
+    EXPECT_EQ(t.Value, "12.0");
     EXPECT_EQ(t.Line, 13);
     EXPECT_EQ(t.Column, 5);
 
     t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::OpAdd);
     EXPECT_EQ(t.Line, 13);
-    EXPECT_EQ(t.Column, 8);
+    EXPECT_EQ(t.Column, 10);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NumberInteger);
-    EXPECT_EQ(t.Value, "32");
+    EXPECT_EQ(t.Type, Antomic::TokenType::NumberHex);
+    EXPECT_EQ(t.Value, "0x32");
     EXPECT_EQ(t.Line, 14);
     EXPECT_EQ(t.Column, 5);
 }

@@ -10,8 +10,8 @@ print(b)
 for a in range(1):
     b = a
 
-c = 12 + \
-    32
+c = 12.0 + \
+    0x32
 
 def myth():
     pass

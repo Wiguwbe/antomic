@@ -444,4 +444,5 @@ lib
 imgui.ini
 antomic_profile.json
 scene.json
-
+engine/Script/Parser/Ast.h
+engine/Script/Parser/Ast.cpp

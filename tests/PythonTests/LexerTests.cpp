@@ -27,30 +27,15 @@ TEST(AntomicCoreTest, PythonTests)
     EXPECT_EQ(t.Column, 1);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
-    EXPECT_EQ(t.Line, 1);
-    EXPECT_EQ(t.Column, 13);
-
-    t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
     EXPECT_EQ(t.Value, "a");
     EXPECT_EQ(t.Line, 2);
     EXPECT_EQ(t.Column, 1);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::Space);
-    EXPECT_EQ(t.Line, 2);
-    EXPECT_EQ(t.Column, 2);
-
-    t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::OpAssign);
     EXPECT_EQ(t.Line, 2);
     EXPECT_EQ(t.Column, 3);
-
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::Space);
-    EXPECT_EQ(t.Line, 2);
-    EXPECT_EQ(t.Column, 4);
 
     t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::String);
@@ -59,18 +44,13 @@ TEST(AntomicCoreTest, PythonTests)
     EXPECT_EQ(t.Column, 5);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
-    EXPECT_EQ(t.Line, 2);
-    EXPECT_EQ(t.Column, 15);
-
-    t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
     EXPECT_EQ(t.Value, "print");
     EXPECT_EQ(t.Line, 3);
     EXPECT_EQ(t.Column, 1);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::DelimParentesesOpen);
+    EXPECT_EQ(t.Type, Antomic::TokenType::SymbolParentesesOpen);
     EXPECT_EQ(t.Line, 3);
     EXPECT_EQ(t.Column, 6);
 
@@ -81,19 +61,9 @@ TEST(AntomicCoreTest, PythonTests)
     EXPECT_EQ(t.Column, 7);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::DelimParentesesClose);
+    EXPECT_EQ(t.Type, Antomic::TokenType::SymbolParentesesClose);
     EXPECT_EQ(t.Line, 4);
     EXPECT_EQ(t.Column, 9);
-
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
-    EXPECT_EQ(t.Line, 4);
-    EXPECT_EQ(t.Column, 10);
-
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
-    EXPECT_EQ(t.Line, 5);
-    EXPECT_EQ(t.Column, 1);
 
     t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
@@ -113,23 +83,13 @@ TEST(AntomicCoreTest, PythonTests)
     EXPECT_EQ(t.Column, 3);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
-    EXPECT_EQ(t.Line, 6);
-    EXPECT_EQ(t.Column, 19);
-
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
-    EXPECT_EQ(t.Line, 7);
-    EXPECT_EQ(t.Column, 1);
-
-    t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
     EXPECT_EQ(t.Value, "print");
     EXPECT_EQ(t.Line, 8);
     EXPECT_EQ(t.Column, 1);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::DelimParentesesOpen);
+    EXPECT_EQ(t.Type, Antomic::TokenType::SymbolParentesesOpen);
     EXPECT_EQ(t.Line, 8);
     EXPECT_EQ(t.Column, 6);
 
@@ -140,28 +100,14 @@ TEST(AntomicCoreTest, PythonTests)
     EXPECT_EQ(t.Column, 7);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::DelimParentesesClose);
+    EXPECT_EQ(t.Type, Antomic::TokenType::SymbolParentesesClose);
     EXPECT_EQ(t.Line, 8);
     EXPECT_EQ(t.Column, 8);
-
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
-    EXPECT_EQ(t.Line, 8);
-    EXPECT_EQ(t.Column, 9);
-
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
-    EXPECT_EQ(t.Line, 9);
-    EXPECT_EQ(t.Column, 1);
 
     t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::KeywordFor);
     EXPECT_EQ(t.Line, 10);
     EXPECT_EQ(t.Column, 1);
-
-    // Whitespace
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::Space);
 
     t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
@@ -169,18 +115,10 @@ TEST(AntomicCoreTest, PythonTests)
     EXPECT_EQ(t.Line, 10);
     EXPECT_EQ(t.Column, 5);
 
-    // Whitespace
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::Space);
-
     t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::KeywordIn);
     EXPECT_EQ(t.Line, 10);
     EXPECT_EQ(t.Column, 7);
-
-    // Whitespace
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::Space);
 
     t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
@@ -189,7 +127,7 @@ TEST(AntomicCoreTest, PythonTests)
     EXPECT_EQ(t.Column, 10);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::DelimParentesesOpen);
+    EXPECT_EQ(t.Type, Antomic::TokenType::SymbolParentesesOpen);
     EXPECT_EQ(t.Line, 10);
     EXPECT_EQ(t.Column, 15);
 
@@ -200,22 +138,17 @@ TEST(AntomicCoreTest, PythonTests)
     EXPECT_EQ(t.Column, 16);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::DelimParentesesClose);
+    EXPECT_EQ(t.Type, Antomic::TokenType::SymbolParentesesClose);
     EXPECT_EQ(t.Line, 10);
     EXPECT_EQ(t.Column, 17);
 
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::DelimColon);
+    EXPECT_EQ(t.Type, Antomic::TokenType::SymbolColon);
     EXPECT_EQ(t.Line, 10);
     EXPECT_EQ(t.Column, 18);
 
-    // New line
     t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
-
-    t = lex.Next();
-    // 4 Whitespaces
-    EXPECT_EQ(t.Type, Antomic::TokenType::Space);
+    EXPECT_EQ(t.Type, Antomic::TokenType::Identation);
     EXPECT_EQ(t.Value.size(), 4);
     EXPECT_EQ(t.Line, 11);
     EXPECT_EQ(t.Column, 1);
@@ -226,23 +159,42 @@ TEST(AntomicCoreTest, PythonTests)
     EXPECT_EQ(t.Line, 11);
     EXPECT_EQ(t.Column, 5);
 
-    // Whitespace
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::Space);
-
-    // Whitespace
     t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::OpAssign);
     EXPECT_EQ(t.Line, 11);
     EXPECT_EQ(t.Column, 7);
-
-    // Whitespace
-    t = lex.Next();
-    EXPECT_EQ(t.Type, Antomic::TokenType::Space);
 
     t = lex.Next();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
     EXPECT_EQ(t.Value, "a");
     EXPECT_EQ(t.Line, 11);
     EXPECT_EQ(t.Column, 9);
+
+    t = lex.Next();
+    EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
+    EXPECT_EQ(t.Value, "c");
+    EXPECT_EQ(t.Line, 13);
+    EXPECT_EQ(t.Column, 1);
+
+    t = lex.Next();
+    EXPECT_EQ(t.Type, Antomic::TokenType::OpAssign);
+    EXPECT_EQ(t.Line, 13);
+    EXPECT_EQ(t.Column, 3);
+
+    t = lex.Next();
+    EXPECT_EQ(t.Type, Antomic::TokenType::NumberInteger);
+    EXPECT_EQ(t.Value, "12");
+    EXPECT_EQ(t.Line, 13);
+    EXPECT_EQ(t.Column, 5);
+
+    t = lex.Next();
+    EXPECT_EQ(t.Type, Antomic::TokenType::OpAdd);
+    EXPECT_EQ(t.Line, 13);
+    EXPECT_EQ(t.Column, 8);
+
+    t = lex.Next();
+    EXPECT_EQ(t.Type, Antomic::TokenType::NumberInteger);
+    EXPECT_EQ(t.Value, "32");
+    EXPECT_EQ(t.Line, 14);
+    EXPECT_EQ(t.Column, 5);
 }

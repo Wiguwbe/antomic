@@ -32,7 +32,7 @@ namespace Antomic
     void Lexer::ProcessComment()
     {
         StartToken(TokenType::Comment);
-        while (mReader->Peek() != '\n' && !mReader->IsEOF())
+        while (PeekNextChar() != '\n' && !mReader->IsEOF())
         {
             mState.CurrentToken.Value += ReadNextChar();
         }
@@ -47,7 +47,7 @@ namespace Antomic
             We if we find double single quotes in a row we might be dealing
             with docstrings
         */
-        if (start == '\'' && mReader->Peek() == '\'')
+        if (start == '\'' && PeekNextChar() == '\'')
         {
             auto next = ReadNextChar();
 
@@ -58,7 +58,7 @@ namespace Antomic
                 return;
             }
 
-            if (mReader->Peek() != '\'')
+            if (PeekNextChar() != '\'')
             {
                 // Only one quote founded it was an empty string
                 StartToken(TokenType::String);
@@ -115,42 +115,42 @@ namespace Antomic
     {
         StartToken();
         ReadNextChar();
-        EndToken(TokenType::DelimParentesesOpen);
+        EndToken(TokenType::SymbolParentesesOpen);
     }
 
     void Lexer::ProcessCloseParenteses()
     {
         StartToken();
         ReadNextChar();
-        EndToken(TokenType::DelimParentesesClose);
+        EndToken(TokenType::SymbolParentesesClose);
     }
 
     void Lexer::ProcessOpenBrackets()
     {
         StartToken();
         ReadNextChar();
-        EndToken(TokenType::DelimBracketOpen);
+        EndToken(TokenType::SymbolBracketOpen);
     }
 
     void Lexer::ProcessCloseBrackets()
     {
         StartToken();
         ReadNextChar();
-        EndToken(TokenType::DelimBracketClose);
+        EndToken(TokenType::SymbolBracketClose);
     }
 
     void Lexer::ProcessOpenBraces()
     {
         StartToken();
         ReadNextChar();
-        EndToken(TokenType::DelimBraceOpen);
+        EndToken(TokenType::SymbolBraceOpen);
     }
 
     void Lexer::ProcessCloseBraces()
     {
         StartToken();
         ReadNextChar();
-        EndToken(TokenType::DelimBraceClose);
+        EndToken(TokenType::SymbolBraceClose);
     }
 
     void Lexer::ProcessAdd()
@@ -237,7 +237,7 @@ namespace Antomic
     {
         StartToken();
         ReadNextChar();
-        EndToken(TokenType::DelimPeriod);
+        EndToken(TokenType::SymbolPeriod);
     }
 
     void Lexer::ProcessComma()
@@ -249,21 +249,21 @@ namespace Antomic
             ProcessDecimalNumber();
             return;
         }
-        EndToken(TokenType::DelimComma);
+        EndToken(TokenType::SymbolComma);
     }
 
     void Lexer::ProcessColon()
     {
         StartToken();
         ReadNextChar();
-        EndToken(TokenType::DelimColon);
+        EndToken(TokenType::SymbolColon);
     }
 
     void Lexer::ProcessSemicolon()
     {
         StartToken();
         ReadNextChar();
-        EndToken(TokenType::DelimSemiColon);
+        EndToken(TokenType::SymbolSemiColon);
     }
 
     void Lexer::ProcessMod()
@@ -283,7 +283,7 @@ namespace Antomic
     {
         StartToken();
         ReadNextChar();
-        EndToken(TokenType::DelimAt);
+        EndToken(TokenType::SymbolAt);
     }
 
     void Lexer::ProcessGreatThen()
@@ -749,6 +749,18 @@ namespace Antomic
 
             switch (c)
             {
+            case '\\':
+                // Escape next new line
+                ReadNextChar();
+                if (PeekNextChar() != '\n')
+                {
+                    StartToken(TokenType::Invalid);
+                    return mState.CurrentToken;
+                }
+                mState.MultiLine = true;
+                ReadNextChar();
+                NextLine();
+                continue;
             case '#':
                 ProcessComment();
                 return mState.CurrentToken;
@@ -759,24 +771,47 @@ namespace Antomic
                 ProcessString();
                 return mState.CurrentToken;
             case ' ':
-                StartToken(TokenType::Space);
-                while (mReader->Peek() == ' ' && !mReader->IsEOF())
+                // comming from a multiline string, spaces are ignored
+                if (mState.MultiLine || mState.CurrentColumn > 1)
+                {
+                    while (PeekNextChar() == ' ' && !mReader->IsEOF())
+                    {
+                        ReadNextChar();
+                    }
+                    continue;
+                }
+
+                // Not a multiline string and we are in the beginning, spaces are indentation in python
+                StartToken(TokenType::Identation);
+                while (PeekNextChar() == ' ' && !mReader->IsEOF())
                 {
                     mState.CurrentToken.Value += ReadNextChar();
                 }
                 return mState.CurrentToken;
+
             case '\t':
-                StartToken(TokenType::Tab);
-                while (mReader->Peek() == '\t' && !mReader->IsEOF())
+                // comming from a multiline string, tabs are ignored
+                if (mState.MultiLine || mState.CurrentColumn > 1)
+                {
+                    while (PeekNextChar() == '\t' && !mReader->IsEOF())
+                    {
+                        ReadNextChar();
+                    }
+                    continue;
+                }
+
+                // Not a multiline string, tabs are indentation in python
+                StartToken(TokenType::Identation);
+                while (PeekNextChar() == '\t' && !mReader->IsEOF())
                 {
                     mState.CurrentToken.Value += ReadNextChar();
                 }
                 return mState.CurrentToken;
             case '\n':
-                StartToken(TokenType::NewLine);
+                mState.MultiLine = false;
                 ReadNextChar();
                 NextLine();
-                return mState.CurrentToken;
+                continue;
             case '(':
                 ProcessOpenParenteses();
                 return mState.CurrentToken;
@@ -852,9 +887,6 @@ namespace Antomic
             case 'f':
                 ProcessFormatedString();
                 return mState.CurrentToken;
-            case '\\':
-                // Multiline
-                continue;
             default:
                 break;
             }

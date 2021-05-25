@@ -23,9 +23,7 @@ namespace Antomic
     {
         Invalid,
         End,
-        NewLine,
-        Space,
-        Tab,
+        Identation,
 
         Comment,
         Identifier,
@@ -103,17 +101,17 @@ namespace Antomic
         OpShiftRightAssign,
         OpExpAssign,
 
-        DelimBraceOpen,
-        DelimBraceClose,
-        DelimComma,
-        DelimColon,
-        DelimPeriod,
-        DelimSemiColon,
-        DelimBracketOpen,
-        DelimBracketClose,
-        DelimParentesesOpen,
-        DelimParentesesClose,
-        DelimAt,
+        SymbolBraceOpen,
+        SymbolBraceClose,
+        SymbolComma,
+        SymbolColon,
+        SymbolPeriod,
+        SymbolSemiColon,
+        SymbolBracketOpen,
+        SymbolBracketClose,
+        SymbolParentesesOpen,
+        SymbolParentesesClose,
+        SymbolAt,
     };
 
     struct Token
@@ -132,10 +130,10 @@ namespace Antomic
         uint32_t CurrentLine;
         uint32_t CurrentColumn;
         Token CurrentToken;
-        uint32_t SpacesCount;
+        bool MultiLine;
 
-        LexerState() : CurrentLine(1), CurrentColumn(1), CurrentToken({TokenType::Invalid, ""}) {}
-        LexerState(uint32_t line, uint32_t column, Token token) : CurrentLine(line), CurrentColumn(column), CurrentToken(token) {}
+        LexerState() : CurrentLine(1), CurrentColumn(1), CurrentToken({TokenType::Invalid, ""}), MultiLine(false) {}
+        LexerState(uint32_t line, uint32_t column, Token token) : CurrentLine(line), CurrentColumn(column), CurrentToken(token), MultiLine(false) {}
     };
 
     class Lexer

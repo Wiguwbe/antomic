@@ -14,9 +14,9 @@
    limitations under the License.
 */
 #include "gtest/gtest.h"
-#include "Python/Parser/Lexer.h"
+#include "Script/Parser/Lexer.h"
 
-TEST(AntomicCoreTest, PythonTests)
+TEST(AntomicCoreTest, ScriptTests)
 {
     Antomic::Lexer lex("tests/files/lexer_test.py");
 

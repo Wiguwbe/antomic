@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Test ASDL Generator",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/tools/asdl/asdl_cpp.py",
+            "args": ["-h","engine/Script/Parser/ScriptAst.h","-c","engine/Script/Parser/ScriptAst.cpp","engine/Script/Parser/python.asdl"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "(Windows) Antomic Launcher",
             "type": "cppvsdbg",
             "request": "launch",
@@ -60,10 +69,10 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "(Windows) Antomic Python Tests",
+            "name": "(Windows) Antomic Script Tests",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/Debug/AntomicPythonTests.exe",
+            "program": "${workspaceFolder}/bin/Debug/AntomicScriptTests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -166,10 +175,10 @@
             ],
         },
         {
-            "name": "(Linux) Antomic Python Tests",
+            "name": "(Linux) Antomic Script Tests",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicPythonTests",
+            "program": "${workspaceFolder}/bin/AntomicScriptTests",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

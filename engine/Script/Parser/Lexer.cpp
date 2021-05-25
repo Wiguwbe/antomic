@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Python/Parser/Lexer.h"
+#include "Script/Parser/Lexer.h"
 
 static std::map<std::string, Antomic::TokenType> sKeywordsMaps{
     {"and", Antomic::TokenType::KeywordAnd},

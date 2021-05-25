@@ -15,7 +15,7 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Python/Parser/Reader.h"
+#include "Script/Parser/Reader.h"
 
 namespace Antomic
 {

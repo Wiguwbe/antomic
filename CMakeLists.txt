@@ -157,10 +157,10 @@ if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
         COMMAND "${PROJECT_NAME}RendererTests"
     ) 
 
-    # Add test Engine Python Tests
+    # Add test Engine Script Tests
     add_test(
-        NAME "${PROJECT_NAME}PythonTests" 
-        COMMAND "${PROJECT_NAME}PythonTests"
+        NAME "${PROJECT_NAME}ScriptTests" 
+        COMMAND "${PROJECT_NAME}ScriptTests"
     ) 
 
 endif() 

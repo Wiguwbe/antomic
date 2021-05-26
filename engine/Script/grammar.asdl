@@ -5,14 +5,12 @@ module Antomic
 {
     mod = Module(stmt* body)
         | Expression(expr body)
-        | FunctionType(expr* argtypes, expr returns)
 
     stmt = FunctionDef(identifier name, arguments args,
                        stmt* body)
 
           | ClassDef(identifier name,
-             expr* bases,
-             keyword* keywords,
+             baseclasses bases,
              stmt* body)
           | Return(expr? value)
 
@@ -20,7 +18,6 @@ module Antomic
           | Assign(expr* targets, expr value)
           | AugAssign(expr target, operator op, expr value)
 
-          -- use 'orelse' because else is a keyword in target languages
           | For(expr target, expr iter, stmt* body, stmt* orelse)
           | While(expr test, stmt* body, stmt* orelse)
           | If(expr test, stmt* body, stmt* orelse)
@@ -51,24 +48,26 @@ module Antomic
          -- need sequences for compare to distinguish between
          -- x < 4 < 3 and (x < 4) < 3
          | Compare(expr left, cmpop* ops, expr* comparators)
-         | Call(expr func, expr* args, keyword* keywords)
+         | Call(expr func, expr* args)
          | FormattedValue(expr value, int? conversion, expr? format_spec)
          | JoinedStr(expr* values)
          | Constant(constant value, string? kind)
 
          -- the following expression can appear in assignment context
-         | Attribute(expr value, identifier attrRead)
-         | Subscript(expr value, expr sliceRead)
-         | Starred(expr valueRead)
-         | Name(identifier idRead)
-         | List(expr* eltsRead)
-         | Tuple(expr* eltsRead)
+         | Attribute(expr value, identifier attrRead, expr_context ctx)
+         | Subscript(expr value, expr sliceRead, expr_context ctx)
+         | Starred(expr valueRead, expr_context ctx)
+         | Name(identifier idRead, expr_context ctx)
+         | List(expr* eltsRead, expr_context ctx)
+         | Tuple(expr* eltsRead, expr_context ctx)
 
          -- can appear only in Subscript
          | Slice(expr? lower, expr? upper, expr? step)
 
           -- col_offset is the byte offset in the utf8 string the parser uses
           attributes (int lineno, int col_offset)
+
+    expr_context = Load | Store | Del
 
     boolop = And | Or
 
@@ -82,15 +81,14 @@ module Antomic
     excepthandler = ExceptHandler(expr? type, identifier? name, stmt* body)
                     attributes (int lineno, int col_offset)
 
-    arguments = (arg* posonlyargs, arg* args, arg? vararg, arg* kwonlyargs,
-                 expr* kw_defaults, arg? kwarg, expr* defaults)
+    arguments = (arg* args)
 
-    arg = (identifier arg, expr? annotation)
+    arg = (identifier arg, identifier type)
            attributes (int lineno, int col_offset)
 
-    -- keyword arguments supplied to call (NULL identifier for **kwargs)
-    keyword = (identifier? arg, expr value)
-               attributes (int lineno, int col_offset)
+    baseclasses = (baseclass* base)
+    
+    baseclass = (identifier base)
 
     -- import name with optional 'as' alias.
     alias = (identifier name, identifier? asname)

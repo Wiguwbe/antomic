@@ -117,8 +117,6 @@ namespace Antomic
                 return TryWhile();
             case TokenType::KeywordIf:
                 return TryIf();
-            case TokenType::KeywordWith:
-                return TryWith();
             case TokenType::KeywordRaise:
                 return TryRaise();
             case TokenType::KeywordTry:
@@ -292,72 +290,80 @@ namespace Antomic
 
     stmt_t Parser::TryReturn()
     {
-        return nullptr;
+        Token t;
+        AssertToken(t, "return");
+        auto expr = TryExpression();
+        return Return(expr, t.Line, t.Column);
     }
 
     stmt_t Parser::TryDelete()
     {
-        return nullptr;
-    }
-
-    stmt_t Parser::TryAssign()
-    {
-        return nullptr;
-    }
-
-    stmt_t Parser::TryAugAssign()
-    {
-        return nullptr;
+        Token t;
+        AssertToken(t, "del");
+        auto expr = TryExpression();
+        return Delete(expr, t.Line, t.Column);
     }
 
     stmt_t Parser::TryFor()
     {
+        Token t;
+        AssertToken(t, "for");
         return nullptr;
     }
 
     stmt_t Parser::TryWhile()
     {
+        Token t;
+        AssertToken(t, "while");
         return nullptr;
     }
 
     stmt_t Parser::TryIf()
     {
-        return nullptr;
-    }
-
-    stmt_t Parser::TryWith()
-    {
+        Token t;
+        AssertToken(t, "if");
         return nullptr;
     }
 
     stmt_t Parser::TryRaise()
     {
+        Token t;
+        AssertToken(t, "raise");
         return nullptr;
     }
 
     stmt_t Parser::TryTry()
     {
+        Token t;
+        AssertToken(t, "try");
         return nullptr;
     }
 
     stmt_t Parser::TryAssert()
     {
+        Token t;
+        AssertToken(t, "assert");
         return nullptr;
     }
 
     stmt_t Parser::TryImport()
     {
+        Token t;
+        AssertToken(t, "import");
         return nullptr;
     }
 
     stmt_t Parser::TryImportFrom()
     {
+        Token t;
+        AssertToken(t, "from");
         return nullptr;
     }
 
     stmt_t Parser::TryExpr()
     {
         Token t;
+        expr_t expr;
         TryIdentifier(t, identifier);
 
         for (;;)
@@ -373,7 +379,7 @@ namespace Antomic
             {
             case TokenType::SymbolPeriod:
             case TokenType::SymbolParentesesOpen:
-                auto expr = TryCall();
+                expr = TryCall();
                 if (!expr)
                 {
                     return nullptr;
@@ -392,13 +398,14 @@ namespace Antomic
             case TokenType::OpShiftLeftAssign:
             case TokenType::OpShiftRightAssign:
             case TokenType::OpExpAssign:
-                auto expr = TryAssignOp();
+                expr = TryAssign();
                 if (!expr)
                 {
                     return nullptr;
                 }
                 return Expr(expr, expr->lineno, expr->col_offset);
             default:
+                expr = nullptr;
                 ANTOMIC_ERROR("Unexpected token on line {0}, column {1}: {2}", t.Line, t.Column, t.Value);
                 return nullptr;
             }
@@ -408,17 +415,23 @@ namespace Antomic
 
     stmt_t Parser::TryPass()
     {
-        return nullptr;
+        Token t;
+        AssertToken(t, "pass");
+        return Pass(t.Line, t.Column);
     }
 
     stmt_t Parser::TryBreak()
     {
-        return nullptr;
+        Token t;
+        AssertToken(t, "pass");
+        return Break(t.Line, t.Column);
     }
 
     stmt_t Parser::TryContinue()
     {
-        return nullptr;
+        Token t;
+        AssertToken(t, "pass");
+        return Continue(t.Line, t.Column);
     }
 
     arguments_t Parser::TryArguments()
@@ -541,12 +554,7 @@ namespace Antomic
         return baseclasses(bases);
     }
 
-    expr_t Parser::TryAssignOp()
-    {
-        return nullptr;
-    }
-
-    expr_t Parser::TryCall()
+    expr_t Parser::TryAssign()
     {
         return nullptr;
     }
@@ -608,6 +616,21 @@ namespace Antomic
 
     expr_t Parser::TryConstant()
     {
+        auto t = PeekNextToken();
+        switch (t.Type)
+        {
+        case TokenType::NumberFloat:
+            return Constant(constant(std::stod(t.Value)), "float", t.Line, t.Column);
+        case TokenType::NumberInteger:
+            return Constant(constant(std::stoi(t.Value)), "int", t.Line, t.Column);
+        case TokenType::NumberHex:
+            return Constant(constant(t.Value), "hex", t.Line, t.Column);
+        case TokenType::String:
+            return Constant(constant(t.Value), "string", t.Line, t.Column);
+        default:
+            ANTOMIC_ERROR("Unexpected token on line {0}, column {1}: {2}", t.Line, t.Column, t.Value);
+            return nullptr;
+        }
         return nullptr;
     }
 

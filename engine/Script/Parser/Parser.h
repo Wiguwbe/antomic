@@ -41,12 +41,9 @@ namespace Antomic
         stmt_t TryClassDef();
         stmt_t TryReturn();
         stmt_t TryDelete();
-        stmt_t TryAssign();
-        stmt_t TryAugAssign();
         stmt_t TryFor();
         stmt_t TryWhile();
         stmt_t TryIf();
-        stmt_t TryWith();
         stmt_t TryRaise();
         stmt_t TryTry();
         stmt_t TryAssert();
@@ -61,10 +58,8 @@ namespace Antomic
         baseclasses_t TryBaseClasses();
         
         
-        expr_t TryAssignOp();
-        expr_t TryCall();
-
-
+        expr_t TryAssign();
+        expr_t TryExpression();
         expr_t TryBoolOp();
         expr_t TryBinOp();
         expr_t TryUnaryOp();

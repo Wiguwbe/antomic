@@ -6,22 +6,16 @@ module Antomic
     mod = Module(stmt* body)
         | Expression(expr body)
 
-    stmt = FunctionDef(identifier name, arguments args,
-                       stmt* body)
+    stmt = FunctionDef(identifier name, arguments args, stmt* body)
 
-          | ClassDef(identifier name,
-             baseclasses bases,
-             stmt* body)
+          | ClassDef(identifier name, baseclasses bases, stmt* body)
           | Return(expr? value)
 
-          | Delete(expr* targets)
-          | Assign(expr* targets, expr value)
-          | AugAssign(expr target, operator op, expr value)
+          | Delete(expr target)
 
           | For(expr target, expr iter, stmt* body, stmt* orelse)
           | While(expr test, stmt* body, stmt* orelse)
           | If(expr test, stmt* body, stmt* orelse)
-          | With(withitem* items, stmt* body)
 
           | Raise(expr? exc, expr? cause)
           | Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)

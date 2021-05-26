@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/tools/asdl/asdl_cpp.py",
-            "args": ["-h","engine/Script/Parser/ScriptAst.h","-c","engine/Script/Parser/ScriptAst.cpp","engine/Script/Parser/python.asdl"],
+            "args": ["-h","engine/Script/Parser/Ast.h","-c","engine/Script/Parser/Ast.cpp","engine/Script/grammar.asdl"],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
         },

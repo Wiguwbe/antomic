@@ -118,6 +118,7 @@ namespace Antomic
         uint32_t Line;
         uint32_t Column;
 
+        Token() : Type(TokenType::Invalid), Value(""), Line(0), Column(0) {}
         Token(TokenType type, const std::string &value) : Type(type), Value(value), Line(0), Column(0) {}
         Token(TokenType type, uint32_t line, uint32_t column, const std::string &value) : Type(type), Value(value), Line(line), Column(column) {}
     };

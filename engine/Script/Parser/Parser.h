@@ -60,28 +60,31 @@ namespace Antomic
         arguments_t TryArguments();
         baseclasses_t TryBaseClasses();
         
-        expr_t TryExpression();
-        void TryBoolOp(){};
-        void TryNamedExpr(){};
-        void TryBinOp(){};
-        void TryUnaryOp(){};
-        void TryLambda(){};
-        void TryIfExp(){};
-        void TryDict(){};
-        void TrySet(){};
-        void TryCompare(){};
-        void TryCall(){};
-        void TryFormattedValue(){};
-        void TryJoinedStr(){};
-        void TryConstant(){};
-        void TryAttribute(){};
-        void TrySubscript(){};
-        void TryStarred(){};
-        void TryName(){};
-        void TryList(){};
-        void TryTuple(){};
-        void TrySlice(){};
-        void TryExpr_Context(){};
+        
+        expr_t TryAssignOp();
+        expr_t TryCall();
+
+
+        expr_t TryBoolOp();
+        expr_t TryBinOp();
+        expr_t TryUnaryOp();
+        expr_t TryLambda();
+        expr_t TryIfExp();
+        expr_t TryDict();
+        expr_t TrySet();
+        expr_t TryCompare();
+        expr_t TryCall();
+        expr_t TryFormattedValue();
+        expr_t TryJoinedStr();
+        expr_t TryConstant();
+        expr_t TryAttribute();
+        expr_t TrySubscript();
+        expr_t TryStarred();
+        expr_t TryName();
+        expr_t TryList();
+        expr_t TryTuple();
+        expr_t TrySlice();
+
         void TryBoolop(){};
         void TryOperator(){};
         void TryUnaryop(){};

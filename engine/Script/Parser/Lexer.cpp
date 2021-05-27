@@ -24,6 +24,7 @@ static std::map<std::string, Antomic::TokenType> sKeywordsMaps{
     {"continue", Antomic::TokenType::KeywordContinue},
     {"def", Antomic::TokenType::KeywordDef},
     {"del", Antomic::TokenType::KeywordDel},
+    {"return", Antomic::TokenType::KeywordReturn},
     {"elif", Antomic::TokenType::KeywordElIf},
     {"else", Antomic::TokenType::KeywordElse},
     {"except", Antomic::TokenType::KeywordExcept},
@@ -32,7 +33,6 @@ static std::map<std::string, Antomic::TokenType> sKeywordsMaps{
     {"finally", Antomic::TokenType::KeywordFinally},
     {"for", Antomic::TokenType::KeywordFor},
     {"from", Antomic::TokenType::KeywordFrom},
-    {"global", Antomic::TokenType::KeywordGlobal},
     {"if", Antomic::TokenType::KeywordIf},
     {"import", Antomic::TokenType::KeywordImport},
     {"in", Antomic::TokenType::KeywordIn},
@@ -43,11 +43,9 @@ static std::map<std::string, Antomic::TokenType> sKeywordsMaps{
     {"or", Antomic::TokenType::KeywordOr},
     {"pass", Antomic::TokenType::KeywordPass},
     {"raise", Antomic::TokenType::KeywordRaise},
-    {"def", Antomic::TokenType::KeywordReturn},
     {"True", Antomic::TokenType::KeywordTrue},
     {"try", Antomic::TokenType::KeywordTry},
     {"while", Antomic::TokenType::KeywordWhile},
-    {"with", Antomic::TokenType::KeywordWith},
 };
 
 namespace Antomic
@@ -71,6 +69,11 @@ namespace Antomic
         {
             mState.CurrentToken.Value += ReadNextChar();
         }
+        if (mReader->IsEOF()) {
+            return;
+        }
+        ReadNextChar();
+        NextLine();
     }
 
     void Lexer::ProcessString()
@@ -682,9 +685,22 @@ namespace Antomic
                 {
                     mState.CurrentToken.Value += ReadNextChar();
                 }
+                // Empty spaces with no text, skip it
+                if (PeekNextChar() == '\n')
+                {
+                    NewToken();
+                    continue;
+                }
                 return mState.CurrentToken;
             case '\n':
                 mState.MultiLine = false;
+                if (mState.CurrentColumn > 1)
+                {
+                    StartToken(TokenType::NewLine);
+                    ReadNextChar();
+                    NextLine();
+                    return mState.CurrentToken;
+                }
                 ReadNextChar();
                 NextLine();
                 continue;

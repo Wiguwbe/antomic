@@ -38,3 +38,9 @@ add_custom_command(
         COMMAND ${CMAKE_COMMAND} -E copy
                 ${CMAKE_SOURCE_DIR}/tests/files/lexer_test.py
                 ${CMAKE_BINARY_DIR}/tests/files/lexer_test.py)
+
+add_custom_command(
+        TARGET "${PROJECT_NAME}ScriptTests" POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_SOURCE_DIR}/tests/files/parser_test.py
+                ${CMAKE_BINARY_DIR}/tests/files/parser_test.py)                

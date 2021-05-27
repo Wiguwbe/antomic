@@ -41,8 +41,14 @@ namespace Antomic
         stmt_t TryClassDef();
         stmt_t TryReturn();
         stmt_t TryDelete();
+        expr_t TryDeleteExpr();
+        stmt_t TryAssign(expr_t target);
+        stmt_t TryAugAssign(expr_t target);
         stmt_t TryFor();
+        expr_t TryForTarget();
+        expr_t TryForIter();
         stmt_t TryWhile();
+        expr_t TryWhileTest();
         stmt_t TryIf();
         stmt_t TryRaise();
         stmt_t TryTry();
@@ -56,23 +62,24 @@ namespace Antomic
 
         arguments_t TryArguments();
         baseclasses_t TryBaseClasses();
-        
-        
-        expr_t TryAssign();
+        baseclass_t TryBaseClass();
+
         expr_t TryExpression();
-        expr_t TryBoolOp();
-        expr_t TryBinOp();
+        expr_t TryBoolOp(expr_t left);
+        expr_t TryBinOp(expr_t left);
+
         expr_t TryUnaryOp();
         expr_t TryLambda();
         expr_t TryIfExp();
         expr_t TryDict();
         expr_t TrySet();
-        expr_t TryCompare();
-        expr_t TryCall();
+        expr_t TryCompare(expr_t left);
+        expr_t TryCall(expr_t func);
+        expr_t TryCallArg();
         expr_t TryFormattedValue();
         expr_t TryJoinedStr();
         expr_t TryConstant();
-        expr_t TryAttribute();
+        expr_t TryAttribute(expr_t value);
         expr_t TrySubscript();
         expr_t TryStarred();
         expr_t TryName();
@@ -80,15 +87,9 @@ namespace Antomic
         expr_t TryTuple();
         expr_t TrySlice();
 
-        void TryBoolop(){};
-        void TryOperator(){};
-        void TryUnaryop(){};
-        void TryCmpop(){};
-        void TryExceptHandler(){};
-        void TryArg(){};
-        void TryKeyword(){};
-        void TryAlias(){};
-        void TryWithitem(){};
+        excepthandler_t TryExceptHandler();
+        arg_t TryArg();
+        alias_t TryAlias();
 
     private:
         inline Token ReadNextToken()
@@ -108,19 +109,22 @@ namespace Antomic
 
         inline void PopIdentation()
         {
+            if (mState.IdentationStack.empty())
+            {
+                return;
+            }
             mState.IdentationStack.pop();
         }
 
         inline uint8_t CurrentIdentation()
         {
-            if ( mState.IdentationStack.empty() )
+            if (mState.IdentationStack.empty())
             {
                 return 0;
             }
 
             return mState.IdentationStack.top();
         }
-
 
     private:
         Ref<Lexer> mLexer = nullptr;

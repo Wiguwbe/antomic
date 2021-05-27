@@ -23,6 +23,7 @@ namespace Antomic
     {
         Invalid,
         End,
+        NewLine,
         Identation,
 
         Comment,
@@ -49,7 +50,6 @@ namespace Antomic
         KeywordFinally,
         KeywordFor,
         KeywordFrom,
-        KeywordGlobal,
         KeywordIf,
         KeywordImport,
         KeywordIn,
@@ -64,7 +64,6 @@ namespace Antomic
         KeywordTrue,
         KeywordTry,
         KeywordWhile,
-        KeywordWith,
 
         OpAdd,
         OpSub,

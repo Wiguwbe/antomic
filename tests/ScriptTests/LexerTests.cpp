@@ -16,7 +16,7 @@
 #include "gtest/gtest.h"
 #include "Script/Parser/Lexer.h"
 
-TEST(AntomicCoreTest, ScriptTests)
+TEST(AntomicCoreTest, LexerTests)
 {
     Antomic::Lexer lex("tests/files/lexer_test.py");
 
@@ -44,6 +44,9 @@ TEST(AntomicCoreTest, ScriptTests)
     EXPECT_EQ(t.Column, 5);
 
     t = lex.Read();
+    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
+
+    t = lex.Read();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
     EXPECT_EQ(t.Value, "print");
     EXPECT_EQ(t.Line, 3);
@@ -66,6 +69,9 @@ TEST(AntomicCoreTest, ScriptTests)
     EXPECT_EQ(t.Column, 9);
 
     t = lex.Read();
+    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
+
+    t = lex.Read();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
     EXPECT_EQ(t.Value, "b");
     EXPECT_EQ(t.Line, 6);
@@ -81,6 +87,9 @@ TEST(AntomicCoreTest, ScriptTests)
     EXPECT_EQ(t.Value, "another string");
     EXPECT_EQ(t.Line, 6);
     EXPECT_EQ(t.Column, 3);
+
+    t = lex.Read();
+    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
 
     t = lex.Read();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
@@ -103,6 +112,9 @@ TEST(AntomicCoreTest, ScriptTests)
     EXPECT_EQ(t.Type, Antomic::TokenType::SymbolParentesesClose);
     EXPECT_EQ(t.Line, 8);
     EXPECT_EQ(t.Column, 8);
+
+    t = lex.Read();
+    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
 
     t = lex.Read();
     EXPECT_EQ(t.Type, Antomic::TokenType::KeywordFor);
@@ -148,6 +160,9 @@ TEST(AntomicCoreTest, ScriptTests)
     EXPECT_EQ(t.Column, 18);
 
     t = lex.Read();
+    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
+
+    t = lex.Read();
     EXPECT_EQ(t.Type, Antomic::TokenType::Identation);
     EXPECT_EQ(t.Value.size(), 4);
     EXPECT_EQ(t.Line, 11);
@@ -171,6 +186,9 @@ TEST(AntomicCoreTest, ScriptTests)
     EXPECT_EQ(t.Column, 9);
 
     t = lex.Read();
+    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
+    t = lex.Read();
+
     EXPECT_EQ(t.Type, Antomic::TokenType::Identifier);
     EXPECT_EQ(t.Value, "c");
     EXPECT_EQ(t.Line, 13);
@@ -197,4 +215,7 @@ TEST(AntomicCoreTest, ScriptTests)
     EXPECT_EQ(t.Value, "0x32");
     EXPECT_EQ(t.Line, 14);
     EXPECT_EQ(t.Column, 5);
+
+    t = lex.Read();
+    EXPECT_EQ(t.Type, Antomic::TokenType::NewLine);
 }

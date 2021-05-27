@@ -43,7 +43,7 @@ using namespace Antomic;
 //   }
 // };
 
-TEST(AntomicCoreTest, AsdlTests)
+TEST(AntomicCoreTest, AstTests)
 {
     // TODO: Write more tests
     auto expr = Expression(

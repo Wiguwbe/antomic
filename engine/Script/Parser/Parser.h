@@ -27,6 +27,16 @@ namespace Antomic
         ParserState() {}
     };
 
+    struct IdentifierTupleInfo
+    {
+        identifier Identifier;
+        uint32_t Line;
+        uint32_t Column;
+
+        IdentifierTupleInfo() : Identifier(""), Line(0), Column(0) {}
+        IdentifierTupleInfo(const identifier &i, uint32_t l, uint32_t c) : Identifier(i), Line(l), Column(c) {}
+    };
+
     class Parser
     {
     public:
@@ -64,27 +74,28 @@ namespace Antomic
         baseclasses_t TryBaseClasses();
         baseclass_t TryBaseClass();
 
-        expr_t TryExpression();
-        expr_t TryBoolOp(expr_t left);
-        expr_t TryBinOp(expr_t left);
+        expr_t TryExpression(bool callArgs = false);
+        expr_t TryBoolOp(expr_t left, bool callArgs = false);
+        expr_t TryBinOp(expr_t left, bool callArgs = false);
 
         expr_t TryUnaryOp();
         expr_t TryLambda();
         expr_t TryIfExp();
         expr_t TryDict();
         expr_t TrySet();
-        expr_t TryCompare(expr_t left);
+        expr_t TryCompare(expr_t left, bool callArgs = false);
         expr_t TryCall(expr_t func);
         expr_t TryCallArg();
+        expr_t TryCallArgName();
         expr_t TryFormattedValue();
-        expr_t TryJoinedStr();
         expr_t TryConstant();
         expr_t TryAttribute(expr_t value);
         expr_t TrySubscript();
         expr_t TryStarred();
-        expr_t TryName();
+        expr_t TryName(bool callArgs = false);
         expr_t TryList();
-        expr_t TryTuple();
+        expr_t TryTupleNames(identifier first, uint32_t line, uint32_t column);
+        expr_t TryTuple(expr_t first);
         expr_t TrySlice();
 
         excepthandler_t TryExceptHandler();

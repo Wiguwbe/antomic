@@ -56,6 +56,12 @@ namespace Antomic
         mState = {1, 1, {TokenType::Invalid, ""}};
     }
 
+    Lexer::Lexer(const std::string &expression, const std::string &name)
+    {
+        mReader = Reader::FromString(expression, name);
+        mState = {1, 1, {TokenType::Invalid, ""}};
+    }
+
     Lexer::Lexer(const Ref<Reader> reader)
     {
         mReader = reader;
@@ -69,7 +75,8 @@ namespace Antomic
         {
             mState.CurrentToken.Value += ReadNextChar();
         }
-        if (mReader->IsEOF()) {
+        if (mReader->IsEOF())
+        {
             return;
         }
         ReadNextChar();
@@ -265,6 +272,7 @@ namespace Antomic
             {
                 EndToken(TokenType::OpExp);
             }
+            break;
         default:
             EndToken(TokenType::OpMul);
             break;
@@ -275,6 +283,11 @@ namespace Antomic
     {
         StartToken();
         mState.CurrentToken.Value += ReadNextChar();
+        if (PeekNextChar() >= '0' && PeekNextChar() <= '9')
+        {
+            ProcessDecimalNumber();
+            return;
+        }
         EndToken(TokenType::SymbolPeriod);
     }
 
@@ -282,11 +295,6 @@ namespace Antomic
     {
         StartToken();
         mState.CurrentToken.Value += ReadNextChar();
-        if (PeekNextChar() >= '0' && PeekNextChar() <= '9')
-        {
-            ProcessDecimalNumber();
-            return;
-        }
         EndToken(TokenType::SymbolComma);
     }
 
@@ -314,7 +322,7 @@ namespace Antomic
             EndToken(TokenType::OpModAssign);
             return;
         }
-        EndToken(TokenType::OpAdd);
+        EndToken(TokenType::OpMod);
     }
 
     void Lexer::ProcessGreatThen()
@@ -415,6 +423,7 @@ namespace Antomic
             EndToken(TokenType::Invalid);
             return;
         }
+        mState.CurrentToken.Value += ReadNextChar();
         EndToken(TokenType::OpNotEqual);
     }
 
@@ -491,13 +500,13 @@ namespace Antomic
 
             if (!IsDigit(c) && c != '.')
             {
-                if (IsLetter(c) && c != 'f')
+                if (IsLetter(c))
                 {
                     EndToken(TokenType::Invalid);
                     return;
                 }
 
-                if (decimal || (IsLetter(c) && c == 'g'))
+                if (decimal)
                 {
                     EndToken(TokenType::NumberFloat);
                     return;
@@ -593,6 +602,11 @@ namespace Antomic
             return token;
         }
 
+        if (mReader->IsEOF())
+        {
+            return Token(TokenType::End, "");
+        }
+
         return ParseNext();
     }
 
@@ -600,6 +614,10 @@ namespace Antomic
     {
         if (mQueue.empty())
         {
+            if (mReader->IsEOF())
+            {
+                return Token(TokenType::End, "");
+            }
             mQueue.push(ParseNext());
         }
 

@@ -137,6 +137,7 @@ namespace Antomic
     {
     public:
         Lexer(const std::string &name);
+        Lexer(const std::string &expression, const std::string &name);
         Lexer(const Ref<Reader> reader);
         ~Lexer() = default;
 

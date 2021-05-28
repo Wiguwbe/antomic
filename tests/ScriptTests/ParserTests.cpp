@@ -18,26 +18,26 @@
 
 TEST(AntomicCoreTest, ParserTests)
 {
-    std::string expression1 = "b+(a+c+(a+b))";
-    std::string expression2 = "a and b and ( d or c )";
+    // std::string expression1 = "b+(a+c+(a+b))";
+    // std::string expression2 = "a and b and ( d or c )";
     Antomic::Parser parser;
-    auto expr1 = parser.FromExpression(expression1);
-    auto expr2 = parser.FromExpression(expression2);
+    // auto expr1 = parser.FromExpression(expression1);
+    // auto expr2 = parser.FromExpression(expression2);
 
-    if (expr1)
-    {
-        std::cout << Antomic::to_string(expr1) << std::endl;
-    }
-    if (expr2)
-    {
-        std::cout << Antomic::to_string(expr2) << std::endl;
-    }
+    // if (expr1)
+    // {
+    //     std::cout << Antomic::to_string(expr1) << std::endl;
+    // }
+    // if (expr2)
+    // {
+    //     std::cout << Antomic::to_string(expr2) << std::endl;
+    // }
 
-    auto mod1 = parser.FromFile("tests/files/parser_test.py");
+    // auto mod1 = parser.FromFile("tests/files/parser_test.py");
 
-    if (mod1)
-    {
-        std::cout << Antomic::to_string(mod1) << std::endl;
-    }
+    // if (mod1)
+    // {
+    //     std::cout << Antomic::to_string(mod1) << std::endl;
+    // }
 
 }

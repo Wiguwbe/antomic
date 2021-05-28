@@ -51,6 +51,7 @@ module Antomic
          -- the following expression can appear in assignment context
          | Attribute(expr value, identifier name, expr_context ctx)
          | Subscript(expr value, expr sliceRead, expr_context ctx)
+         | Index(expr value)
          | Starred(expr valueRead, expr_context ctx)
          | Name(identifier idRead, expr_context ctx)
          | List(expr* eltsRead, expr_context ctx)

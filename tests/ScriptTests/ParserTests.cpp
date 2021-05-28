@@ -33,11 +33,11 @@ TEST(AntomicCoreTest, ParserTests)
     //     std::cout << Antomic::to_string(expr2) << std::endl;
     // }
 
-    // auto mod1 = parser.FromFile("tests/files/parser_test.py");
+    auto mod1 = parser.FromFile("tests/files/parser_test.py");
 
-    // if (mod1)
-    // {
-    //     std::cout << Antomic::to_string(mod1) << std::endl;
-    // }
+    if (mod1)
+    {
+        std::cout << Antomic::to_string(mod1) << std::endl;
+    }
 
 }

@@ -56,7 +56,6 @@ namespace Antomic
         stmt_t TryAugAssign(expr_t target);
         stmt_t TryFor();
         expr_t TryForTarget();
-        expr_t TryForIter();
         stmt_t TryWhile();
         expr_t TryWhileTest();
         stmt_t TryIf();
@@ -74,29 +73,30 @@ namespace Antomic
         baseclasses_t TryBaseClasses();
         baseclass_t TryBaseClass();
 
-        expr_t TryExpression(bool callArgs = false);
-        expr_t TryBoolOp(expr_t left, bool callArgs = false);
-        expr_t TryBinOp(expr_t left, bool callArgs = false);
+        expr_t TryExpression(bool noAssign = false, bool allowColon = false);
+        expr_t TryBoolOp(expr_t left, bool noAssign = false, bool allowColon = false);
+        expr_t TryBinOp(expr_t left, bool noAssign = false, bool allowColon = false);
 
         expr_t TryUnaryOp();
         expr_t TryLambda();
         expr_t TryIfExp();
         expr_t TryDict();
         expr_t TrySet();
-        expr_t TryCompare(expr_t left, bool callArgs = false);
+        expr_t TryCompare(expr_t left, bool noAssign = false);
         expr_t TryCall(expr_t func);
         expr_t TryCallArg();
         expr_t TryCallArgName();
         expr_t TryFormattedValue();
         expr_t TryConstant();
         expr_t TryAttribute(expr_t value);
-        expr_t TrySubscript();
+        expr_t TrySubscript(expr_t value);
         expr_t TryStarred();
-        expr_t TryName(bool callArgs = false);
+        expr_t TryName(bool noAssign = false);
         expr_t TryList();
         expr_t TryTupleNames(identifier first, uint32_t line, uint32_t column);
         expr_t TryTuple(expr_t first);
-        expr_t TrySlice();
+        expr_t TryIndex();
+        expr_t TrySlice(expr_t first);
 
         excepthandler_t TryExceptHandler();
         arg_t TryArg();

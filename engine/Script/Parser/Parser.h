@@ -23,6 +23,8 @@ namespace Antomic
     struct ParserState
     {
         std::stack<uint8_t> IdentationStack;
+        std::stack<If_t> IfStack;
+        std::stack<Try_t> TryStack;
 
         ParserState() {}
     };
@@ -58,9 +60,9 @@ namespace Antomic
         expr_t TryForTarget();
         stmt_t TryWhile();
         expr_t TryWhileTest();
-        stmt_t TryIf();
+        stmt_t TryIfElse();
         stmt_t TryRaise();
-        stmt_t TryTry();
+        stmt_t TryTryExceptFinaly();
         stmt_t TryAssert();
         stmt_t TryImport();
         stmt_t TryImportFrom();
@@ -73,16 +75,15 @@ namespace Antomic
         baseclasses_t TryBaseClasses();
         baseclass_t TryBaseClass();
 
-        expr_t TryExpression(bool noAssign = false, bool allowColon = false);
-        expr_t TryBoolOp(expr_t left, bool noAssign = false, bool allowColon = false);
-        expr_t TryBinOp(expr_t left, bool noAssign = false, bool allowColon = false);
+        expr_t TryExpression(bool noAssign, bool callArgs, bool allowColon);
+        expr_t TryBoolOp(expr_t left);
+        expr_t TryBinOp(expr_t left);
 
         expr_t TryUnaryOp();
         expr_t TryLambda();
         expr_t TryIfExp();
         expr_t TryDict();
-        expr_t TrySet();
-        expr_t TryCompare(expr_t left, bool noAssign = false);
+        expr_t TryCompare(expr_t left);
         expr_t TryCall(expr_t func);
         expr_t TryCallArg();
         expr_t TryCallArgName();
@@ -90,8 +91,7 @@ namespace Antomic
         expr_t TryConstant();
         expr_t TryAttribute(expr_t value);
         expr_t TrySubscript(expr_t value);
-        expr_t TryStarred();
-        expr_t TryName(bool noAssign = false);
+        expr_t TryName(bool noAssign, bool ignoreComma);
         expr_t TryList();
         expr_t TryTupleNames(identifier first, uint32_t line, uint32_t column);
         expr_t TryTuple(expr_t first);
@@ -115,6 +115,15 @@ namespace Antomic
 
         inline void PushIdentation(uint8_t i)
         {
+            if (mState.IdentationStack.empty())
+            {
+                mState.IdentationStack.push(i);
+                return;
+            }
+
+            if (i == mState.IdentationStack.top())
+                return;
+
             mState.IdentationStack.push(i);
         }
 
@@ -136,6 +145,8 @@ namespace Antomic
 
             return mState.IdentationStack.top();
         }
+
+        bool TryBody(const std::string &name, std::vector<stmt_t> &body, bool allowEmpty = false);
 
     private:
         Ref<Lexer> mLexer = nullptr;

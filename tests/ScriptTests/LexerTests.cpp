@@ -207,8 +207,10 @@ TEST(AntomicCoreTest, LexerFromFileTests)
 
     // # A commment
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::Comment, "# A commment", 1, 1);
+    TEST_TOKEN(lex, Antomic::TokenType::NewLine);
 
     // a = "a string"
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::Identifier, "a", 2, 1);
     TEST_TOKEN_LC(lex, Antomic::TokenType::OpAssign, 2, 3);
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::String, "a string", 2, 5);
@@ -216,6 +218,7 @@ TEST(AntomicCoreTest, LexerFromFileTests)
 
     // print(" a multiline string \
     //     asd")
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::Identifier, "print", 3, 1);
     TEST_TOKEN_LC(lex, Antomic::TokenType::SymbolParentesesOpen, 3, 6);
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::String, " a multiline string \n    asd", 3, 7);
@@ -223,12 +226,14 @@ TEST(AntomicCoreTest, LexerFromFileTests)
     TEST_NEWLINE(lex);
 
     // b='another string'
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::Identifier, "b", 6, 1);
     TEST_TOKEN_LC(lex, Antomic::TokenType::OpAssign, 6, 2);
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::String, "another string", 6, 3);
     TEST_NEWLINE(lex);
 
     // print(b)
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::Identifier, "print", 8, 1);
     TEST_TOKEN_LC(lex, Antomic::TokenType::SymbolParentesesOpen, 8, 6);
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::Identifier, "b", 8, 7);
@@ -237,6 +242,7 @@ TEST(AntomicCoreTest, LexerFromFileTests)
 
     // for a in range(1):
     //     b = a
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN(lex, Antomic::TokenType::KeywordFor);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "a");
     TEST_TOKEN(lex, Antomic::TokenType::KeywordIn);
@@ -254,6 +260,7 @@ TEST(AntomicCoreTest, LexerFromFileTests)
 
     // c = 12.0 + \
     //     0x32
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "c");
     TEST_TOKEN(lex, Antomic::TokenType::OpAssign);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::NumberFloat, "12.0");
@@ -263,6 +270,7 @@ TEST(AntomicCoreTest, LexerFromFileTests)
 
     // def method():
     //     pass
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN(lex, Antomic::TokenType::KeywordDef);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "method");
     TEST_TOKEN(lex, Antomic::TokenType::SymbolParentesesOpen);
@@ -274,10 +282,12 @@ TEST(AntomicCoreTest, LexerFromFileTests)
     TEST_NEWLINE(lex);
 
     // .9
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::NumberFloat, ".9");
     TEST_NEWLINE(lex);
 
     // c = method()
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "c");
     TEST_TOKEN(lex, Antomic::TokenType::OpAssign);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "method");
@@ -287,6 +297,7 @@ TEST(AntomicCoreTest, LexerFromFileTests)
 
     // def method(a,b,c):
     //     pass
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN(lex, Antomic::TokenType::KeywordDef);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "method");
     TEST_TOKEN(lex, Antomic::TokenType::SymbolParentesesOpen);
@@ -303,6 +314,7 @@ TEST(AntomicCoreTest, LexerFromFileTests)
     TEST_NEWLINE(lex);
 
     // method(1,2,a)
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "method");
     TEST_TOKEN(lex, Antomic::TokenType::SymbolParentesesOpen);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::NumberInteger, "1");
@@ -314,6 +326,7 @@ TEST(AntomicCoreTest, LexerFromFileTests)
     TEST_NEWLINE(lex);
 
     // (a,b) = (2,3)
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN(lex, Antomic::TokenType::SymbolParentesesOpen);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "a");
     TEST_TOKEN(lex, Antomic::TokenType::SymbolComma);
@@ -333,6 +346,7 @@ TEST(AntomicCoreTest, LexerFromFileTests)
     //     "c" : True,
     //     "d" : False
     // }
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "a");
     TEST_TOKEN(lex, Antomic::TokenType::OpAssign);
     TEST_TOKEN(lex, Antomic::TokenType::SymbolBraceOpen);
@@ -365,10 +379,12 @@ TEST(AntomicCoreTest, LexerFromFileTests)
     TEST_TOKEN(lex, Antomic::TokenType::KeywordFalse);
     TEST_NEWLINE(lex);
 
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN(lex, Antomic::TokenType::SymbolBraceClose);
     TEST_NEWLINE(lex);
 
     // b = [ 1, "a", None, True, False, (1000,2000) ]
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "b");
     TEST_TOKEN(lex, Antomic::TokenType::OpAssign);
     TEST_TOKEN(lex, Antomic::TokenType::SymbolBracketOpen);
@@ -393,6 +409,7 @@ TEST(AntomicCoreTest, LexerFromFileTests)
     // class A(base1, base2):
     //     def __init__(self):
     //         pass
+    TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN(lex, Antomic::TokenType::KeywordClass);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "A");
     TEST_TOKEN(lex, Antomic::TokenType::SymbolParentesesOpen);

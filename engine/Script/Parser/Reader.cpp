@@ -15,19 +15,20 @@
    limitations under the License.
 */
 #include "Script/Parser/Reader.h"
+#include "Core/Log.h"
 
 namespace Antomic
 {
 
     char TextReader::Peek()
     {
-        ANTOMIC_ASSERT(mStream.is_open(),"Stream is not open!");
+        ANTOMIC_ASSERT(!mStream.bad(),"Stream is bad!");
         return mStream.peek();
     }
 
     char TextReader::Read()
     {
-        ANTOMIC_ASSERT(mStream.is_open(),"Stream is not open!");
+        ANTOMIC_ASSERT(!mStream.bad(),"Stream is bad!");
         char c;
         mStream.read(&c, 1);
         return c;
@@ -42,13 +43,13 @@ namespace Antomic
 
     char FileReader::Peek()
     {
-        ANTOMIC_ASSERT(mStream.is_open(),"Stream is not open!");
+        ANTOMIC_ASSERT(!mStream.bad(),"Stream is bad");
         return mStream.peek();
     }
 
     char FileReader::Read()
     {
-        ANTOMIC_ASSERT(mStream.is_open(),"Stream is not open!");
+        ANTOMIC_ASSERT(!mStream.bad(),"Stream is bad!");
         char c;
         mStream.read(&c, 1);
         return c;

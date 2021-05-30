@@ -19,7 +19,7 @@ module Antomic
           | While(expr test, stmt* body)
           | If(expr test, stmt* body, stmt* orelse)
 
-          | Raise(expr? exc, expr? cause)
+          | Raise(expr exc)
           | Try(stmt* body, excepthandler* handlers, stmt* finalbody)
           | Assert(expr test, expr? msg)
 
@@ -42,7 +42,7 @@ module Antomic
          | Set(expr* elts)
          -- need sequences for compare to distinguish between
          -- x < 4 < 3 and (x < 4) < 3
-         | Compare(expr left, cmpop* ops, expr* comparators)
+         | Compare(expr left, cmpop ops, expr right)
          | Call(expr func, expr* args)
          | FormattedValue(expr value, int? conversion, expr? format_spec)
          | JoinedStr(expr* values)
@@ -74,7 +74,7 @@ module Antomic
 
     cmpop = Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn
 
-    excepthandler = ExceptHandler(expr? type, identifier? name, stmt* body)
+    excepthandler = ExceptHandler(expr type, identifier name, stmt* body)
                     attributes (int lineno, int col_offset)
 
     arguments = (arg* args)

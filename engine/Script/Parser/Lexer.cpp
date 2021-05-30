@@ -79,8 +79,6 @@ namespace Antomic
         {
             return;
         }
-        ReadNextChar();
-        NextLine();
     }
 
     void Lexer::ProcessString()
@@ -607,7 +605,19 @@ namespace Antomic
             return Token(TokenType::End, "");
         }
 
-        return ParseNext();
+        auto t = ParseNext();
+        mQueue.push(t);
+        if (t.Type == TokenType::NewLine)
+        {
+            auto next = ParseNext();
+            if (next.Type != TokenType::Identation)
+            {
+                mQueue.push({TokenType::Identation, ""});
+            }
+            mQueue.push(next);
+        }
+
+        return Read();
     }
 
     Token Lexer::Peek()
@@ -618,10 +628,20 @@ namespace Antomic
             {
                 return Token(TokenType::End, "");
             }
-            mQueue.push(ParseNext());
+            auto t = ParseNext();
+            mQueue.push(t);
+            if (t.Type == TokenType::NewLine)
+            {
+                auto next = ParseNext();
+                if (next.Type != TokenType::Identation)
+                {
+                    mQueue.push({TokenType::Identation, ""});
+                }
+                mQueue.push(next);
+            }
         }
 
-        return mQueue.back();
+        return mQueue.front();
     }
 
     Token Lexer::ParseNext()
@@ -681,6 +701,8 @@ namespace Antomic
                 // Empty spaces with no text, skip it
                 if (PeekNextChar() == '\n')
                 {
+                    ReadNextChar();
+                    NextLine();
                     NewToken();
                     continue;
                 }
@@ -706,6 +728,8 @@ namespace Antomic
                 // Empty spaces with no text, skip it
                 if (PeekNextChar() == '\n')
                 {
+                    ReadNextChar();
+                    NextLine();
                     NewToken();
                     continue;
                 }

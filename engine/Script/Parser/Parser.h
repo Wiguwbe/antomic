@@ -58,6 +58,7 @@ namespace Antomic
         stmt_t TryAugAssign(expr_t target);
         stmt_t TryFor();
         expr_t TryForTarget();
+
         stmt_t TryWhile();
         expr_t TryWhileTest();
         stmt_t TryIfElse();
@@ -75,25 +76,28 @@ namespace Antomic
         baseclasses_t TryBaseClasses();
         baseclass_t TryBaseClass();
 
-        expr_t TryExpression(bool noAssign, bool callArgs, bool allowColon);
-        expr_t TryBoolOp(expr_t left);
-        expr_t TryBinOp(expr_t left);
+        expr_t TryExpression();
+        expr_t TryExpressionOperand();
+        expr_t TryExpressionOperator(expr_t left = nullptr);
+        expr_t TryBoolOp(Token t, expr_t left, expr_t right);
+        expr_t TryBinOp(Token t, expr_t left, expr_t right);
+        expr_t TryUnaryOp(Token t, expr_t operand);
+        expr_t TryCompare(Token t, expr_t left, expr_t right);
 
-        expr_t TryUnaryOp();
         expr_t TryLambda();
         expr_t TryIfExp();
         expr_t TryDict();
-        expr_t TryCompare(expr_t left);
         expr_t TryCall(expr_t func);
+        void TryCallArgs(std::vector<expr_t> &args);
         expr_t TryCallArg();
-        expr_t TryCallArgName();
+        expr_t TryCallArgOperand();
+        expr_t TryCallArgOperator(expr_t left = nullptr);
         expr_t TryFormattedValue();
         expr_t TryConstant();
         expr_t TryAttribute(expr_t value);
         expr_t TrySubscript(expr_t value);
-        expr_t TryName(bool noAssign, bool ignoreComma);
+        expr_t TryName();
         expr_t TryList();
-        expr_t TryTupleNames(identifier first, uint32_t line, uint32_t column);
         expr_t TryTuple(expr_t first);
         expr_t TryIndex();
         expr_t TrySlice(expr_t first);

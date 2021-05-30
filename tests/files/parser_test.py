@@ -1,4 +1,4 @@
-# # A comment
+# A comment
 import sys as s, os
 from mylib import test as t, test1 as b
 
@@ -49,6 +49,7 @@ b.range(1)
 range(1,2,a.b()+1)
 
 (a,b,c) = 1,2,3
+a,b,c = 1,2,3
 b = [
     1,2,None,True,False
     ]
@@ -68,7 +69,8 @@ print(b)
 
 if a: print(a)
 
-raise Exception("e")
+if c == 1 and (c > 2 or c != "a"):
+    raise Exception("e")
 
 assert(a,"test")
 assert(a)
@@ -83,4 +85,6 @@ finally:
 
 if "a" in ("a","b"): print("a")
 
-a = -(1+2)
+a = -(1+2)+1
+
+if "a" not in ("a","b"): print("a")

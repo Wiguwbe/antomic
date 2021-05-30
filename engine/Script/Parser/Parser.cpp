@@ -1466,14 +1466,4 @@ namespace Antomic
 
         return nullptr;
     }
-
-    excepthandler_t Parser::TryExceptHandler()
-    {
-        return nullptr;
-    }
-
-    alias_t Parser::TryAlias()
-    {
-        return nullptr;
-    }
 }

@@ -97,10 +97,7 @@ namespace Antomic
         expr_t TryTuple(expr_t first);
         expr_t TryIndex();
         expr_t TrySlice(expr_t first);
-
-        excepthandler_t TryExceptHandler();
         arg_t TryArg();
-        alias_t TryAlias();
 
     private:
         inline Token ReadNextToken()

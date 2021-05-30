@@ -82,3 +82,5 @@ finally:
 
 
 if "a" in ("a","b"): print("a")
+
+a = -(1+2)

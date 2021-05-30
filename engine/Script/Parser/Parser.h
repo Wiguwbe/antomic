@@ -50,12 +50,17 @@ namespace Antomic
     private:
         stmt_t TryStatement();
         stmt_t TryFunctionDef();
+
         stmt_t TryClassDef();
+        baseclasses_t TryBaseClasses();
+        baseclass_t TryBaseClass();
+
         stmt_t TryReturn();
         stmt_t TryDelete();
         expr_t TryDeleteExpr();
         stmt_t TryAssign(expr_t target);
         stmt_t TryAugAssign(expr_t target);
+
         stmt_t TryFor();
         expr_t TryForTarget();
 
@@ -73,35 +78,38 @@ namespace Antomic
         stmt_t TryContinue();
 
         arguments_t TryArguments();
-        baseclasses_t TryBaseClasses();
-        baseclass_t TryBaseClass();
+        arg_t TryArg();
 
         expr_t TryExpression();
         expr_t TryExpressionOperand();
         expr_t TryExpressionOperator(expr_t left = nullptr);
+
+        void TryCallArgs(std::vector<expr_t> &args);
+        expr_t TryCallArg();
+        expr_t TryCallArgOperand();
+        expr_t TryCallArgOperator(expr_t left = nullptr);
+
         expr_t TryBoolOp(Token t, expr_t left, expr_t right);
         expr_t TryBinOp(Token t, expr_t left, expr_t right);
         expr_t TryUnaryOp(Token t, expr_t operand);
         expr_t TryCompare(Token t, expr_t left, expr_t right);
 
         expr_t TryLambda();
-        expr_t TryIfExp();
+        arguments_t TryLambdaArguments();
+
         expr_t TryDict();
         expr_t TryCall(expr_t func);
-        void TryCallArgs(std::vector<expr_t> &args);
-        expr_t TryCallArg();
-        expr_t TryCallArgOperand();
-        expr_t TryCallArgOperator(expr_t left = nullptr);
+
         expr_t TryFormattedValue();
-        expr_t TryConstant();
+        expr_t TryConstant(std::string signal = "");
         expr_t TryAttribute(expr_t value);
         expr_t TrySubscript(expr_t value);
+
         expr_t TryName();
         expr_t TryList();
         expr_t TryTuple(expr_t first);
         expr_t TryIndex();
         expr_t TrySlice(expr_t first);
-        arg_t TryArg();
 
     private:
         inline Token ReadNextToken()

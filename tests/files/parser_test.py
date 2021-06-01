@@ -74,7 +74,7 @@ print(b)
 if a:
     print(a)
 
-if c == 1 and (c > 2 or c != "a"):
+if c == 1 and (c > 2 or (c != "a")):
     raise Exception("e")
 
 assert(a, "test")

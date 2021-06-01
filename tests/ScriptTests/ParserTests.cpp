@@ -61,6 +61,7 @@ std::string ToString(Antomic::arg_t node);
 std::string ToString(Antomic::alias_t node);
 std::string ToString(const std::vector<Antomic::expr_t> &list);
 std::string ToString(const std::vector<Antomic::alias_t> &list);
+std::string ToString(const std::vector<Antomic::excepthandler_t> &list);
 
 std::string ToString(Antomic::mod_t node)
 {
@@ -90,7 +91,7 @@ std::string ToString(Antomic::stmt_t node)
     case Antomic::stmt_::StmtKind::kAssert:
     {
         auto stmt = dynamic_cast<Antomic::Assert_t>(node);
-        return IDENTATION() + "Assert(" + ToString(stmt->test) + "," + ToString(stmt->msg) + ")" + NEWLINE();
+        return IDENTATION() + "Assert(" + ToString(stmt->test) + (stmt->msg ? "," + ToString(stmt->msg) : "") + ")" + NEWLINE();
     }
     case Antomic::stmt_::StmtKind::kAssign:
     {
@@ -145,33 +146,64 @@ std::string ToString(Antomic::stmt_t node)
     }
     case Antomic::stmt_::StmtKind::kIf:
     {
-        return "";
+        auto stmt = dynamic_cast<Antomic::If_t>(node);
+        auto result = IDENTATION() + "If(" + ToString(stmt->test) + "):" + NEWLINE();
+        INDENT();
+        List(stmt->body, result);
+        DEDENT();
+        if (stmt->orelse.size() > 0)
+        {
+            result += IDENTATION() + "OrElse():" + NEWLINE();
+            INDENT();
+            List(stmt->orelse, result);
+            DEDENT();
+        }
+        return result;
     }
+
     case Antomic::stmt_::StmtKind::kImport:
     {
         auto stmt = dynamic_cast<Antomic::Import_t>(node);
-        return IDENTATION() + "import " + ToString(stmt->names) + NEWLINE();
+        return IDENTATION() + "Import(" + ToString(stmt->names) + ")" + NEWLINE();
     }
     case Antomic::stmt_::StmtKind::kImportFrom:
     {
         auto stmt = dynamic_cast<Antomic::ImportFrom_t>(node);
-        return IDENTATION() + "from " + stmt->module + " import " + ToString(stmt->names) + NEWLINE();
+        return IDENTATION() + "ImportFrom(" + stmt->module + "," + ToString(stmt->names) + ")" + NEWLINE();
     }
     case Antomic::stmt_::StmtKind::kPass:
     {
-        return IDENTATION() + "pass" + NEWLINE();
+        return IDENTATION() + "Pass()" + NEWLINE();
     }
     case Antomic::stmt_::StmtKind::kRaise:
     {
-        return "";
+        auto stmt = dynamic_cast<Antomic::Raise_t>(node);
+        return IDENTATION() + "Raise(" + ToString(stmt->exc) + ")" + NEWLINE();
     }
     case Antomic::stmt_::StmtKind::kReturn:
     {
-        return "";
+        auto stmt = dynamic_cast<Antomic::Return_t>(node);
+        return IDENTATION() + "Return(" + (stmt->value ? ToString(stmt->value) : "") + ")" + NEWLINE();
     }
     case Antomic::stmt_::StmtKind::kTry:
     {
-        return "";
+        auto stmt = dynamic_cast<Antomic::Try_t>(node);
+        auto result = IDENTATION() + "Try():" + NEWLINE();
+        INDENT();
+        List(stmt->body, result);
+        DEDENT();
+        if (stmt->handlers.size() > 0)
+        {
+            List(stmt->handlers, result);
+        }
+        if (stmt->finalbody.size() > 0)
+        {
+            result += IDENTATION() + "Finally():" + NEWLINE();
+            INDENT();
+            List(stmt->finalbody, result);
+            DEDENT();
+        }
+        return result;
     }
     case Antomic::stmt_::StmtKind::kWhile:
     {
@@ -208,7 +240,7 @@ std::string ToString(Antomic::expr_t node)
     case Antomic::expr_::ExprKind::kCall:
     {
         auto expr = dynamic_cast<Antomic::Call_t>(node);
-        return "Call(" + ToString(expr->func) + "," + ToString(expr->args) + ")";
+        return "Call(" + ToString(expr->func) + ",Args(" + ToString(expr->args) + "))";
     }
     case Antomic::expr_::ExprKind::kCompare:
     {
@@ -275,12 +307,12 @@ std::string ToString(Antomic::expr_t node)
     case Antomic::expr_::ExprKind::kSlice:
     {
         auto expr = dynamic_cast<Antomic::Slice_t>(node);
-        return "Slice(" + (expr->lower ? ToString(expr->lower) : "") + (expr->upper ? "," + ToString(expr->upper) : "") + (expr->step ? "," + ToString(expr->step) : "") + ")";
+        return "Slice(Lower(" + (expr->lower ? ToString(expr->lower) : "") + "),Upper(" + (expr->upper ? ToString(expr->upper) : "") + "),Step(" + (expr->step ? ToString(expr->step) : "") + "))";
     }
     case Antomic::expr_::ExprKind::kSubscript:
     {
         auto expr = dynamic_cast<Antomic::Subscript_t>(node);
-        return "Subscript(" + ToString(expr->value) + ToString(expr->sliceRead) + ")";
+        return "Subscript(" + ToString(expr->value) + "," + ToString(expr->sliceRead) + ")";
     }
     case Antomic::expr_::ExprKind::kTuple:
     {
@@ -393,12 +425,17 @@ std::string ToString(Antomic::cmpop_t op)
 
 std::string ToString(Antomic::excepthandler_t node)
 {
-    return "";
+    auto ex = dynamic_cast<Antomic::ExceptHandler_t>(node);
+    auto result = IDENTATION() + std::string("Except(") + ToString(ex->type) + "," + ex->name + "):" + NEWLINE();
+    INDENT();
+    List(ex->body, result);
+    DEDENT();
+    return result;
 }
 
 std::string ToString(Antomic::arguments_t node)
 {
-    auto result = std::string("");
+    auto result = std::string("Args(");
     bool first = true;
     for (auto arg : node->args)
     {
@@ -409,30 +446,35 @@ std::string ToString(Antomic::arguments_t node)
         result += ToString(arg);
         first = false;
     }
-    return "";
+    return result + ")";
 }
 
 std::string ToString(Antomic::arg_t node)
 {
+    auto result = std::string("Arg(") + node->arg;
     switch (node->kind)
     {
     case Antomic::kind_t::kFloat:
-        return node->arg + ":float";
+        result += ",Float";
+        break;
     case Antomic::kind_t::kInt:
-        return node->arg + ":int";
+        result += ",Int";
+        break;
     case Antomic::kind_t::kObject:
-        return node->arg + ":object";
+        result += ",Object";
+        break;
     case Antomic::kind_t::kString:
-        return node->arg + ":list";
+        result += ":String";
+        break;
     default:
         break;
     }
-    return "";
+    return result + ")";
 }
 
 std::string ToString(Antomic::alias_t node)
 {
-    return node->name + (node->asname == "" ? "" : ("as" + node->asname));
+    return "Alias(" + node->name + (node->asname == "" ? "" : ("," + node->asname)) + ")";
 }
 
 std::string ToString(const std::vector<Antomic::expr_t> &list)
@@ -446,6 +488,13 @@ std::string ToString(const std::vector<Antomic::alias_t> &list)
 {
     std::string result = "";
     ListWithComma(list, result);
+    return result;
+}
+
+std::string ToString(const std::vector<Antomic::excepthandler_t> &list)
+{
+    std::string result = "";
+    List(list, result);
     return result;
 }
 
@@ -467,10 +516,10 @@ TEST(AntomicCoreTest, ParserTests)
     TEST_EXPRESSION("(a*b)+c", "BinOp(BinOp(a,*,b),+,c)");
     TEST_EXPRESSION("a+(b*c)", "BinOp(a,+,BinOp(b,*,c))");
 
-    TEST_EXPRESSION("range(1)", "Call(range,1)");
-    TEST_EXPRESSION("a.range(1)", "Call(Attribute(range,a),1)");
+    TEST_EXPRESSION("range(1)", "Call(range,Args(1))");
+    TEST_EXPRESSION("a.range(1)", "Call(Attribute(range,a),Args(1))");
 
-    TEST_EXPRESSION("color(0xf)", "Call(color,15)");
+    TEST_EXPRESSION("color(0xf)", "Call(color,Args(15))");
 
     Antomic::Parser parser;
     auto mod1 = parser.FromFile("tests/files/parser_test.py");

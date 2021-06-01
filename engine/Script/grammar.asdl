@@ -8,7 +8,7 @@ module Antomic
 
     stmt = FunctionDef(identifier name, arguments args, stmt* body)
 
-          | ClassDef(identifier name, baseclasses bases, stmt* body)
+          | ClassDef(identifier name, expr* bases, stmt* body)
           | Return(expr? value)
 
           | Delete(expr target)
@@ -36,10 +36,10 @@ module Antomic
          | UnaryOp(unaryop op, expr operand)
          | Lambda(arguments args, expr body)
          | Dict(expr* keys, expr* values)
-         | Compare(expr left, cmpop ops, expr right)
+         | Compare(expr left, cmpop op, expr right)
          | Call(expr func, expr* args)
          | FormattedValue(expr value, int? conversion, expr? format_spec)
-         | Constant(constant value, string? kind)
+         | Constant(constant value, kind kind)
 
          | Attribute(expr value, identifier name, expr_context ctx)
          | Subscript(expr value, expr sliceRead, expr_context ctx)
@@ -55,6 +55,8 @@ module Antomic
 
     expr_context = Load | Store | Del
 
+    kind = Int | Float | String | Object 
+
     boolop = And | Or
 
     operator = Add | Sub | Mult | MatMult | Div | Mod | Pow | LShift
@@ -69,13 +71,8 @@ module Antomic
 
     arguments = (arg* args)
 
-    arg = (identifier arg, identifier type)
+    arg = (identifier arg, kind kind)
            attributes (int lineno, int colno)
-
-    baseclasses = (baseclass* base)
-
-    baseclass = (identifier base)
-                 attributes (int lineno, int colno)
 
     -- import name with optional 'as' alias.
     alias = (identifier name, identifier? asname)

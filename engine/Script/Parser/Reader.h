@@ -40,7 +40,10 @@ namespace Antomic
         TextReader(const std::string &string, const std::string &name) : mStream(string), mName(name) {}
         virtual ~TextReader() = default;
 
-        virtual bool IsEOF() override { return mStream.eof(); }
+        virtual bool IsEOF() override 
+        {   
+            return mStream.peek() == EOF; 
+        }
         virtual char Peek() override;
         virtual char Read() override;
         virtual char Read(std::string &out) override;

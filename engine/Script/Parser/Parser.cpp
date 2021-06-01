@@ -16,6 +16,13 @@
 #include "Script/Parser/Parser.h"
 #include "Core/Log.h"
 
+static std::map<std::string, Antomic::kind_t> sTypesMap{
+    {"string", Antomic::kind_t::kString},
+    {"int", Antomic::kind_t::kInt},
+    {"float", Antomic::kind_t::kFloat},
+    {"object", Antomic::kind_t::kObject},
+};
+
 #define AssertTokenValue(x, y) \
     x = ReadNextToken();       \
     ANTOMIC_ASSERT(x.Value == y, "Wrong token");
@@ -290,49 +297,31 @@ namespace Antomic
         PinPosition(t, lineno, colno);
         TryIdentifier(t, identifier);
         TryToken(t, TokenType::SymbolParentesesOpen);
-        TryParsingAuto(baseclasses, nullptr, TryBaseClasses);
-        TryToken(t, TokenType::SymbolColon);
-        TryToken(t, TokenType::NewLine);
-        New(stmt, ClassDef_t, ClassDef, identifier, baseclasses, EmptyStmtBody, lineno, colno);
-        HaveBody(identifier, stmt->body);
-        return stmt;
-    }
-
-    baseclasses_t Parser::TryBaseClasses()
-    {
-        std::vector<baseclass_t> bases;
-
+        New(stmt, ClassDef_t, ClassDef, identifier, EmptyExprList, EmptyStmtBody, lineno, colno);
         for (;;)
         {
             auto t = PeekNextToken();
-
             switch (t.Type)
             {
-            case TokenType::End:
-            case TokenType::NewLine:
-            case TokenType::SymbolColon:
-                ExpectedToken(t, ')', nullptr);
-            case TokenType::SymbolParentesesClose:
-                ReadNextToken();
-                return baseclasses(bases);
             case TokenType::SymbolComma:
+                ReadNextToken();
                 continue;
+            case TokenType::Identifier:
+            {
+                TryIdentifier(t, identifier);
+                stmt->bases.push_back(Name(identifier, expr_context_t::kLoad, t.Line, t.Column));
+                continue;
+            }
             default:
-                TryParsingAuto(base, nullptr, TryBaseClass);
-                bases.push_back(base);
                 break;
             }
+            break;
         }
-
-        return baseclasses(bases);
-    }
-
-    baseclass_t Parser::TryBaseClass()
-    {
-        Token t;
-        PinPosition(t, lineno, colno);
-        TryIdentifier(t, identifier);
-        return baseclass(identifier, lineno, colno);
+        TryToken(t, TokenType::SymbolParentesesClose);
+        TryToken(t, TokenType::SymbolColon);
+        TryToken(t, TokenType::NewLine);
+        HaveBody(identifier, stmt->body);
+        return stmt;
     }
 
     stmt_t Parser::TryReturn()
@@ -873,9 +862,13 @@ namespace Antomic
         {
             ReadNextToken();
             TryIdentifier(t, type);
-            return arg(identifier, type, lineno, colno);
+            if (sTypesMap.find(type) == sTypesMap.end())
+            {
+                UnexpectedToken(t, nullptr);
+            }
+            return arg(identifier, sTypesMap.at(type), lineno, colno);
         }
-        return arg(identifier, "object", lineno, colno);
+        return arg(identifier, kind_t::kObject, lineno, colno);
     }
 
     expr_t Parser::TryExpression()
@@ -1092,7 +1085,7 @@ namespace Antomic
                 ReadNextToken();
                 TryParsingAuto(right, nullptr, TryExpressionOperand);
                 TryParsingAuto(op, nullptr, TryCompare, t, left, right);
-                dynamic_cast<Compare_t>(op)->ops = cmpop_t::kNotIn;
+                dynamic_cast<Compare_t>(op)->op = cmpop_t::kNotIn;
                 return op;
             }
             TryParsingAuto(right, nullptr, TryExpressionOperand);
@@ -1108,7 +1101,7 @@ namespace Antomic
                 ReadNextToken();
                 TryParsingAuto(right, nullptr, TryExpressionOperand);
                 TryParsingAuto(op, nullptr, TryCompare, t, left, right);
-                dynamic_cast<Compare_t>(op)->ops = cmpop_t::kIsNot;
+                dynamic_cast<Compare_t>(op)->op = cmpop_t::kIsNot;
                 return op;
             }
             TryParsingAuto(right, nullptr, TryExpressionOperand);
@@ -1194,7 +1187,7 @@ namespace Antomic
         default:
             UnexpectedToken(t, nullptr);
         }
-        return BinOp(left, operator_t::kAdd, right, lineno, colno);
+        return BinOp(left, op, right, lineno, colno);
     }
 
     expr_t Parser::TryUnaryOp(Token t, expr_t operand)
@@ -1285,7 +1278,7 @@ namespace Antomic
             case TokenType::Identifier:
             {
                 TryIdentifier(t, identifier);
-                args.push_back(arg(identifier, "object", t.Line, t.Column));
+                args.push_back(arg(identifier, kind_t::kObject, t.Line, t.Column));
                 break;
             }
             default:
@@ -1706,13 +1699,13 @@ namespace Antomic
         switch (t.Type)
         {
         case TokenType::NumberFloat:
-            return Constant(constant(std::stod(signal + t.Value)), "float", t.Line, t.Column);
-        case TokenType::NumberInteger:
-            return Constant(constant(std::stoi(signal + t.Value)), "int", t.Line, t.Column);
+            return Constant(constant(std::stod(signal + t.Value)), kind_t::kFloat, t.Line, t.Column);
         case TokenType::NumberHex:
-            return Constant(constant(t.Value), "hex", t.Line, t.Column);
+            return Constant(constant(std::stoi(signal + t.Value, 0, 16)), kind_t::kInt, t.Line, t.Column);
+        case TokenType::NumberInteger:
+            return Constant(constant(std::stoi(signal + t.Value)), kind_t::kInt, t.Line, t.Column);
         case TokenType::String:
-            return Constant(constant(t.Value), "string", t.Line, t.Column);
+            return Constant(constant(t.Value), kind_t::kString, t.Line, t.Column);
         default:
             ANTOMIC_ERROR("Unexpected token on line {0}, column {1}: {2}", t.Line, t.Column, t.Value);
             return nullptr;

@@ -15,29 +15,468 @@
 */
 #include "gtest/gtest.h"
 #include "Script/Parser/Parser.h"
+#include "Script/Parser/Ast.h"
+
+#define TEST_EXPRESSION(x, y)                 \
+    {                                         \
+        Antomic::Parser parser;               \
+        auto expr = parser.FromExpression(x); \
+        EXPECT_EQ(y, ToString(expr));         \
+    }
+
+static uint32_t currentIdentation = 0;
+
+#define INDENT() currentIdentation += 4
+#define DEDENT() currentIdentation -= 4
+#define IDENTATION() std::string(currentIdentation, ' ')
+#define NEWLINE() std::string(1, '\n')
+#define ListWithComma(x, y) \
+    bool first = true;      \
+    for (auto e : x)        \
+    {                       \
+        if (!first)         \
+        {                   \
+            y += ",";       \
+        }                   \
+        y += ToString(e);   \
+        first = false;      \
+    }
+#define List(x, y)        \
+    for (auto e : x)      \
+    {                     \
+        y += ToString(e); \
+    }
+
+std::string ToString(Antomic::mod_t node);
+std::string ToString(Antomic::stmt_t node);
+std::string ToString(Antomic::expr_t node);
+std::string ToString(Antomic::expr_context_t node);
+std::string ToString(Antomic::boolop_t node);
+std::string ToString(Antomic::operator_t node);
+std::string ToString(Antomic::unaryop_t node);
+std::string ToString(Antomic::cmpop_t node);
+std::string ToString(Antomic::excepthandler_t node);
+std::string ToString(Antomic::arguments_t node);
+std::string ToString(Antomic::arg_t node);
+std::string ToString(Antomic::alias_t node);
+std::string ToString(const std::vector<Antomic::expr_t> &list);
+std::string ToString(const std::vector<Antomic::alias_t> &list);
+
+std::string ToString(Antomic::mod_t node)
+{
+    switch (node->mod_kind)
+    {
+    case Antomic::mod_::ModKind::kModule:
+    {
+        auto result = std::string("");
+        auto mod = dynamic_cast<Antomic::Module_t>(node);
+        List(mod->body, result);
+        return result;
+    }
+    case Antomic::mod_::ModKind::kExpression:
+    {
+        auto result = std::string("");
+        auto expr = dynamic_cast<Antomic::Expression_t>(node);
+        return ToString(expr->body);
+    }
+    }
+    return "";
+}
+
+std::string ToString(Antomic::stmt_t node)
+{
+    switch (node->stmt_kind)
+    {
+    case Antomic::stmt_::StmtKind::kAssert:
+    {
+        auto stmt = dynamic_cast<Antomic::Assert_t>(node);
+        return IDENTATION() + "Assert(" + ToString(stmt->test) + "," + ToString(stmt->msg) + ")" + NEWLINE();
+    }
+    case Antomic::stmt_::StmtKind::kAssign:
+    {
+        auto stmt = dynamic_cast<Antomic::Assign_t>(node);
+        return IDENTATION() + "Assign(" + ToString(stmt->target) + "," + ToString(stmt->value) + ")" + NEWLINE();
+    }
+    case Antomic::stmt_::StmtKind::kAugAssign:
+    {
+        auto stmt = dynamic_cast<Antomic::AugAssign_t>(node);
+        return IDENTATION() + "AssignAug(" + ToString(stmt->target) + "," + ToString(stmt->op) + "," + ToString(stmt->value) + ")" + NEWLINE();
+    }
+    case Antomic::stmt_::StmtKind::kBreak:
+        return IDENTATION() + "Break" + NEWLINE();
+    case Antomic::stmt_::StmtKind::kClassDef:
+    {
+        auto stmt = dynamic_cast<Antomic::ClassDef_t>(node);
+        auto result = IDENTATION() + "Class(" + stmt->name + "," + ToString(stmt->bases) + "):" + NEWLINE();
+        INDENT();
+        List(stmt->body, result);
+        DEDENT();
+        return result;
+    }
+    case Antomic::stmt_::StmtKind::kContinue:
+        return IDENTATION() + "Continue" + NEWLINE();
+    case Antomic::stmt_::StmtKind::kDelete:
+    {
+        auto stmt = dynamic_cast<Antomic::Delete_t>(node);
+        return IDENTATION() + "Delete(" + ToString(stmt->target) + ")" + NEWLINE();
+    }
+    case Antomic::stmt_::StmtKind::kExpr:
+    {
+        auto stmt = dynamic_cast<Antomic::Expr_t>(node);
+        return IDENTATION() + "Expr(" + ToString(stmt->value) + ")" + NEWLINE();
+    }
+    case Antomic::stmt_::StmtKind::kFor:
+    {
+        auto stmt = dynamic_cast<Antomic::For_t>(node);
+        auto result = IDENTATION() + "For(" + ToString(stmt->target) + "," + ToString(stmt->iter) + "):" + NEWLINE();
+        INDENT();
+        List(stmt->body, result);
+        DEDENT();
+        return result;
+    }
+    case Antomic::stmt_::StmtKind::kFunctionDef:
+    {
+        auto stmt = dynamic_cast<Antomic::FunctionDef_t>(node);
+        auto result = IDENTATION() + "FunctionDef(" + stmt->name + "," + ToString(stmt->args) + "):" + NEWLINE();
+        INDENT();
+        List(stmt->body, result);
+        DEDENT();
+        return result;
+    }
+    case Antomic::stmt_::StmtKind::kIf:
+    {
+        return "";
+    }
+    case Antomic::stmt_::StmtKind::kImport:
+    {
+        auto stmt = dynamic_cast<Antomic::Import_t>(node);
+        return IDENTATION() + "import " + ToString(stmt->names) + NEWLINE();
+    }
+    case Antomic::stmt_::StmtKind::kImportFrom:
+    {
+        auto stmt = dynamic_cast<Antomic::ImportFrom_t>(node);
+        return IDENTATION() + "from " + stmt->module + " import " + ToString(stmt->names) + NEWLINE();
+    }
+    case Antomic::stmt_::StmtKind::kPass:
+    {
+        return IDENTATION() + "pass" + NEWLINE();
+    }
+    case Antomic::stmt_::StmtKind::kRaise:
+    {
+        return "";
+    }
+    case Antomic::stmt_::StmtKind::kReturn:
+    {
+        return "";
+    }
+    case Antomic::stmt_::StmtKind::kTry:
+    {
+        return "";
+    }
+    case Antomic::stmt_::StmtKind::kWhile:
+    {
+        return "";
+    }
+    }
+    return "";
+}
+
+std::string ToString(Antomic::expr_t node)
+{
+    if (!node)
+    {
+        return "";
+    }
+
+    switch (node->expr_kind)
+    {
+    case Antomic::expr_::ExprKind::kAttribute:
+    {
+        auto expr = dynamic_cast<Antomic::Attribute_t>(node);
+        return "Attribute(" + expr->name + "," + ToString(expr->value) + ")";
+    }
+    case Antomic::expr_::ExprKind::kBinOp:
+    {
+        auto expr = dynamic_cast<Antomic::BinOp_t>(node);
+        return "BinOp(" + ToString(expr->left) + "," + ToString(expr->op) + "," + ToString(expr->right) + ")";
+    }
+    case Antomic::expr_::ExprKind::kBoolOp:
+    {
+        auto expr = dynamic_cast<Antomic::BoolOp_t>(node);
+        return "BoolOp(" + ToString(expr->left) + "," + ToString(expr->op) + "," + ToString(expr->right) + ")";
+    }
+    case Antomic::expr_::ExprKind::kCall:
+    {
+        auto expr = dynamic_cast<Antomic::Call_t>(node);
+        return "Call(" + ToString(expr->func) + "," + ToString(expr->args) + ")";
+    }
+    case Antomic::expr_::ExprKind::kCompare:
+    {
+        auto expr = dynamic_cast<Antomic::Compare_t>(node);
+        return "Compare(" + ToString(expr->left) + "," + ToString(expr->op) + "," + ToString(expr->right) + ")";
+    }
+    case Antomic::expr_::ExprKind::kConstant:
+    {
+        auto expr = dynamic_cast<Antomic::Constant_t>(node);
+        switch (expr->kind)
+        {
+        case Antomic::kind_t::kFloat:
+            return std::to_string(std::any_cast<float>(expr->value));
+        case Antomic::kind_t::kInt:
+            return std::to_string(std::any_cast<int>(expr->value));
+        case Antomic::kind_t::kString:
+            return "\"" + std::any_cast<std::string>(expr->value) + "\"";
+        case Antomic::kind_t::kObject:
+            return "<object>";
+        default:
+            break;
+        }
+        return "";
+    }
+    case Antomic::expr_::ExprKind::kDict:
+    {
+        auto expr = dynamic_cast<Antomic::Dict_t>(node);
+        std::string result = "Dict(";
+        for (int i = 0; i < expr->keys.size(); i++)
+        {
+            if (i)
+            {
+                result += ",";
+            }
+            result += "KeyValue(" + ToString(expr->keys[i]) + "," + ToString(expr->values[i]) + ")";
+        }
+        result += ")";
+        return result;
+    }
+    case Antomic::expr_::ExprKind::kFormattedValue:
+    {
+        return "";
+    }
+    case Antomic::expr_::ExprKind::kIndex:
+    {
+        auto expr = dynamic_cast<Antomic::Index_t>(node);
+        return "Index(" + ToString(expr->value) + ")";
+    }
+    case Antomic::expr_::ExprKind::kLambda:
+    {
+        auto expr = dynamic_cast<Antomic::Lambda_t>(node);
+        return "Lambda(" + ToString(expr->args) + "," + ToString(expr->body) + ")";
+    }
+    case Antomic::expr_::ExprKind::kList:
+    {
+        auto expr = dynamic_cast<Antomic::List_t>(node);
+        return "List(" + ToString(expr->eltsRead) + ")";
+    }
+    case Antomic::expr_::ExprKind::kName:
+    {
+        auto expr = dynamic_cast<Antomic::Name_t>(node);
+        return expr->idRead;
+    }
+    case Antomic::expr_::ExprKind::kSlice:
+    {
+        auto expr = dynamic_cast<Antomic::Slice_t>(node);
+        return "Slice(" + (expr->lower ? ToString(expr->lower) : "") + (expr->upper ? "," + ToString(expr->upper) : "") + (expr->step ? "," + ToString(expr->step) : "") + ")";
+    }
+    case Antomic::expr_::ExprKind::kSubscript:
+    {
+        auto expr = dynamic_cast<Antomic::Subscript_t>(node);
+        return "Subscript(" + ToString(expr->value) + ToString(expr->sliceRead) + ")";
+    }
+    case Antomic::expr_::ExprKind::kTuple:
+    {
+        auto expr = dynamic_cast<Antomic::Tuple_t>(node);
+        return "Tuple(" + ToString(expr->eltsRead) + ")";
+    }
+    case Antomic::expr_::ExprKind::kUnaryOp:
+    {
+        auto expr = dynamic_cast<Antomic::UnaryOp_t>(node);
+        return "UnaryOp(" + ToString(expr->op) + "," + ToString(expr->operand) + ")";
+    }
+    }
+    return "";
+}
+
+std::string ToString(Antomic::expr_context_t node)
+{
+    return "";
+}
+
+std::string ToString(Antomic::boolop_t op)
+{
+    switch (op)
+    {
+    case Antomic::boolop_t::kAnd:
+        return "and";
+    case Antomic::boolop_t::kOr:
+        return "or";
+    }
+    return "";
+}
+
+std::string ToString(Antomic::operator_t op)
+{
+    switch (op)
+    {
+    case Antomic::operator_t::kAdd:
+        return "+";
+    case Antomic::operator_t::kSub:
+        return "-";
+    case Antomic::operator_t::kMult:
+        return "*";
+    case Antomic::operator_t::kMatMult:
+        return "*";
+    case Antomic::operator_t::kDiv:
+        return "/";
+    case Antomic::operator_t::kMod:
+        return "%";
+    case Antomic::operator_t::kPow:
+        return "**";
+    case Antomic::operator_t::kLShift:
+        return "<<";
+    case Antomic::operator_t::kRShift:
+        return ">>";
+    case Antomic::operator_t::kBitOr:
+        return "|";
+    case Antomic::operator_t::kBitXor:
+        return "^";
+    case Antomic::operator_t::kBitAnd:
+        return "&";
+    case Antomic::operator_t::kFloorDiv:
+        return "//";
+    }
+    return "";
+}
+
+std::string ToString(Antomic::unaryop_t op)
+{
+    switch (op)
+    {
+    case Antomic::unaryop_t::kInvert:
+        return "~";
+    case Antomic::unaryop_t::kNot:
+        return "not";
+    case Antomic::unaryop_t::kUAdd:
+        return "+";
+    case Antomic::unaryop_t::kUSub:
+        return "-";
+    }
+    return "";
+}
+
+std::string ToString(Antomic::cmpop_t op)
+{
+    switch (op)
+    {
+    case Antomic::cmpop_t::kEq:
+        return "==";
+    case Antomic::cmpop_t::kGt:
+        return ">";
+    case Antomic::cmpop_t::kGtE:
+        return ">=";
+    case Antomic::cmpop_t::kIn:
+        return "in";
+    case Antomic::cmpop_t::kIs:
+        return "is";
+    case Antomic::cmpop_t::kIsNot:
+        return "is not";
+    case Antomic::cmpop_t::kLt:
+        return "<";
+    case Antomic::cmpop_t::kLtE:
+        return "<=";
+    case Antomic::cmpop_t::kNotEq:
+        return "!=";
+    case Antomic::cmpop_t::kNotIn:
+        return "not in";
+    }
+    return "";
+}
+
+std::string ToString(Antomic::excepthandler_t node)
+{
+    return "";
+}
+
+std::string ToString(Antomic::arguments_t node)
+{
+    auto result = std::string("");
+    bool first = true;
+    for (auto arg : node->args)
+    {
+        if (!first)
+        {
+            result += ",";
+        }
+        result += ToString(arg);
+        first = false;
+    }
+    return "";
+}
+
+std::string ToString(Antomic::arg_t node)
+{
+    switch (node->kind)
+    {
+    case Antomic::kind_t::kFloat:
+        return node->arg + ":float";
+    case Antomic::kind_t::kInt:
+        return node->arg + ":int";
+    case Antomic::kind_t::kObject:
+        return node->arg + ":object";
+    case Antomic::kind_t::kString:
+        return node->arg + ":list";
+    default:
+        break;
+    }
+    return "";
+}
+
+std::string ToString(Antomic::alias_t node)
+{
+    return node->name + (node->asname == "" ? "" : ("as" + node->asname));
+}
+
+std::string ToString(const std::vector<Antomic::expr_t> &list)
+{
+    std::string result = "";
+    ListWithComma(list, result);
+    return result;
+}
+
+std::string ToString(const std::vector<Antomic::alias_t> &list)
+{
+    std::string result = "";
+    ListWithComma(list, result);
+    return result;
+}
 
 TEST(AntomicCoreTest, ParserTests)
 {
-    // std::string expression1 = "b+(a+c+(a+b))";
-    // std::string expression2 = "a and b and ( d or c )";
+    TEST_EXPRESSION("a+b", "BinOp(a,+,b)");
+    TEST_EXPRESSION("(a+b)+c", "BinOp(BinOp(a,+,b),+,c)");
+    TEST_EXPRESSION("a+(b+c)", "BinOp(a,+,BinOp(b,+,c))");
+    TEST_EXPRESSION("(a+b)+c", "BinOp(BinOp(a,+,b),+,c)");
+
+    TEST_EXPRESSION("a*b", "BinOp(a,*,b)");
+    TEST_EXPRESSION("(a*b)*c", "BinOp(BinOp(a,*,b),*,c)");
+    TEST_EXPRESSION("a*(b*c)", "BinOp(a,*,BinOp(b,*,c))");
+    TEST_EXPRESSION("(a*b)*c", "BinOp(BinOp(a,*,b),*,c)");
+
+    TEST_EXPRESSION("(a+b)*c", "BinOp(BinOp(a,+,b),*,c)");
+    TEST_EXPRESSION("a*(b+c)", "BinOp(a,*,BinOp(b,+,c))");
+
+    TEST_EXPRESSION("(a*b)+c", "BinOp(BinOp(a,*,b),+,c)");
+    TEST_EXPRESSION("a+(b*c)", "BinOp(a,+,BinOp(b,*,c))");
+
+    TEST_EXPRESSION("range(1)", "Call(range,1)");
+    TEST_EXPRESSION("a.range(1)", "Call(Attribute(range,a),1)");
+
+    TEST_EXPRESSION("color(0xf)", "Call(color,15)");
+
     Antomic::Parser parser;
-    // auto expr1 = parser.FromExpression(expression1);
-    // auto expr2 = parser.FromExpression(expression2);
-
-    // if (expr1)
-    // {
-    //     std::cout << Antomic::to_string(expr1) << std::endl;
-    // }
-    // if (expr2)
-    // {
-    //     std::cout << Antomic::to_string(expr2) << std::endl;
-    // }
-
     auto mod1 = parser.FromFile("tests/files/parser_test.py");
 
     if (mod1)
     {
-        std::cout << Antomic::to_string(mod1) << std::endl;
+        std::cout << ToString(mod1);
     }
-
 }

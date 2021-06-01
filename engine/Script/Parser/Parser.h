@@ -50,14 +50,9 @@ namespace Antomic
     private:
         stmt_t TryStatement();
         stmt_t TryFunctionDef();
-
         stmt_t TryClassDef();
-        baseclasses_t TryBaseClasses();
-        baseclass_t TryBaseClass();
-
         stmt_t TryReturn();
         stmt_t TryDelete();
-        expr_t TryDeleteExpr();
         stmt_t TryAssign(expr_t target);
         stmt_t TryAugAssign(expr_t target);
 

@@ -39,7 +39,7 @@ namespace Antomic
         virtual void Update(const uint32_t &time) override;
         // Serialization
         virtual void Serialize(nlohmann::json &json) override;
-        virtual void Deserialize(const nlohmann::json &json) override;
+        static Ref<Scene> Deserialize(const nlohmann::json &json);
         
     protected:
         virtual const Ref<Drawable> GetDrawable() const override { return nullptr; }

@@ -18,7 +18,7 @@
 int main()
 {
     Antomic::Game game;
-    game.LoadMainScene("main.asc");
+    game.LoadMainScene("scene.json");
     game.Run();
     return 0;
 }

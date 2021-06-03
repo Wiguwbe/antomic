@@ -5,59 +5,79 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(Windows) Antomic Launcher",
-            "type": "cppdbg",
+            "name": "Test ASDL Generator",
+            "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicLauncher.exe",
+            "program": "${workspaceFolder}/tools/asdl/asdl_cpp.py",
+            "args": ["-h","engine/Script/Parser/Ast.h","-c","engine/Script/Parser/Ast.cpp","engine/Script/grammar.asdl"],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "(Windows) Antomic Launcher",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/Debug/AntomicLauncher.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": false
+            "console": "integratedTerminal"
         },
         {
             "name": "(Windows) Antomic Editor",
-            "type": "cppdbg",
+            "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicEditor.exe",
+            "program": "${workspaceFolder}/bin/Debug/AntomicEditor.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": false
+            "console": "integratedTerminal"
         },
         {
             "name": "(Windows) Antomic Core Tests",
-            "type": "cppdbg",
+            "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicCoreTests.exe",
+            "program": "${workspaceFolder}/bin/Debug/AntomicCoreTests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": false
+            "console": "integratedTerminal"
         },
         {
             "name": "(Windows) Antomic Graph Tests",
-            "type": "cppdbg",
+            "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicGraphTests.exe",
+            "program": "${workspaceFolder}/bin/Debug/AntomicGraphTests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": false
+            "console": "integratedTerminal"
         },
         {
             "name": "(Windows) Antomic Renderer Tests",
-            "type": "cppdbg",
+            "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/AntomicRendererTests.exe",
+            "program": "${workspaceFolder}/bin/Debug/AntomicRendererTests.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": false
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "(Windows) Antomic Script Tests",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/Debug/AntomicScriptTests.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "integratedTerminal"
         },
         {
             "name": "(Linux) Antomic Launcher",
@@ -153,6 +173,25 @@
                     "ignoreFailures": true
                 }
             ],
-        },  
+        },
+        {
+            "name": "(Linux) Antomic Script Tests",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/AntomicScriptTests",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable automatic reformating for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+        },
     ]
 }

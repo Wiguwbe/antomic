@@ -35,7 +35,7 @@ namespace Antomic
     public:
         // Serialization
         virtual void Serialize(nlohmann::json &json) override;
-        virtual void Deserialize(const nlohmann::json &json) override;
+        static Ref<SpriteNode> Deserialize(const nlohmann::json &json);
 
     protected:
         virtual const Ref<Drawable> GetDrawable() const override { return mSprite; };

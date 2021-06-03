@@ -25,7 +25,7 @@ namespace Antomic
         scene->Serialize(json);
         std::ofstream o(file);
         o << std::setw(4) << json << std::endl;
-        o.flush();            
+        o.flush();
     }
 
     Ref<Scene> Serialization::Load(const std::string& file)

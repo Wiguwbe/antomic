@@ -1,3 +1,4 @@
+
 /*
    Copyright 2020 Alexandre Pires (c.alexandre.pires@gmail.com)
 
@@ -25,6 +26,7 @@
 #include "Renderer/RendererWorker.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include <nlohmann/json.hpp>
 
 namespace Antomic
 {

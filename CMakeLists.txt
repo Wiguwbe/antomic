@@ -5,6 +5,7 @@ project(Antomic)
 project(${PROJECT_NAME} CXX C)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/asdl)
 
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 0)
@@ -37,6 +38,9 @@ else()
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W3")
 endif()
 
+# Tool for ASDL files
+find_package(ASDL)
+
 # Specify build paths
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
@@ -57,7 +61,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # SDL - Simple DirectMedia Layer
 # https://www.libsdl.org/
-if(NOT DEFINED ENV{ANTOMIC_NO_SDL})
+if(DEFINED ENV{ANTOMIC_SDL})
     set(SDL_SUPPORT true)
     find_package(SDL2 REQUIRED)
     add_definitions(-DANTOMIC_SDL_PLATFORM)
@@ -152,6 +156,13 @@ if(NOT DEFINED ENV{ANTOMIC_NO_TESTS})
         NAME "${PROJECT_NAME}RendererTests" 
         COMMAND "${PROJECT_NAME}RendererTests"
     ) 
+
+    # Add test Engine Script Tests
+    add_test(
+        NAME "${PROJECT_NAME}ScriptTests" 
+        COMMAND "${PROJECT_NAME}ScriptTests"
+    ) 
+
 endif() 
 
 file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX})

@@ -13,9 +13,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Renderer/Sprite.h"
+#include "gtest/gtest.h"
+#include "Core/Log.h"
 
-namespace Antomic
-{
-
-} // namespace Antomic
+int main(int argc, char **argv) {
+    Antomic::Log::Init();
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}

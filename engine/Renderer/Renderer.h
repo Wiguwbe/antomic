@@ -41,7 +41,7 @@ namespace Antomic
     {
     public:
         Renderer(const RendererViewport &viewport);
-        ~Renderer() = default;
+        ~Renderer();
 
     public:
         // Scene Operations

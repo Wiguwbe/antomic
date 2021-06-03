@@ -1,0 +1,80 @@
+-- ASDL's 4 builtin types are:
+-- identifier, int, string, constant
+
+module Antomic
+{
+    mod = Module(stmt* body)
+        | Expression(expr body)
+
+    stmt = FunctionDef(identifier name, arguments args, stmt* body)
+
+          | ClassDef(identifier name, expr* bases, stmt* body)
+          | Return(expr? value)
+
+          | Delete(expr target)
+          | Assign(expr target, expr value)
+          | AugAssign(expr target, operator op, expr value)
+
+          | For(expr target, expr iter, stmt* body)
+          | While(expr test, stmt* body)
+          | If(expr test, stmt* body, stmt* orelse)
+
+          | Raise(expr exc)
+          | Try(stmt* body, excepthandler* handlers, stmt* finalbody)
+          | Assert(expr test, expr? msg)
+
+          | Import(alias* names)
+          | ImportFrom(identifier? module, alias* names)
+
+          | Expr(expr value)
+          | Pass | Break | Continue
+
+          attributes (int lineno, int colno)
+
+    expr = BoolOp(expr left, boolop op, expr right)
+         | BinOp(expr left, operator op, expr right)
+         | UnaryOp(unaryop op, expr operand)
+         | Lambda(arguments args, expr body)
+         | Dict(expr* keys, expr* values)
+         | Compare(expr left, cmpop op, expr right)
+         | Call(expr func, expr* args)
+         | FormattedValue(expr value, int? conversion, expr? format_spec)
+         | Constant(constant value, kind kind)
+
+         | Attribute(expr value, identifier name, expr_context ctx)
+         | Subscript(expr value, expr sliceRead, expr_context ctx)
+         | Index(expr value)
+         | Name(identifier idRead, expr_context ctx)
+         | List(expr* eltsRead, expr_context ctx)
+         | Tuple(expr* eltsRead, expr_context ctx)
+
+         -- can appear only in Subscript
+         | Slice(expr? lower, expr? upper, expr? step)
+
+          attributes (int lineno, int colno)
+
+    expr_context = Load | Store | Del
+
+    kind = Int | Float | String | Object 
+
+    boolop = And | Or
+
+    operator = Add | Sub | Mult | MatMult | Div | Mod | Pow | LShift
+                 | RShift | BitOr | BitXor | BitAnd | FloorDiv
+
+    unaryop = Invert | Not | UAdd | USub
+
+    cmpop = Eq | NotEq | Lt | LtE | Gt | GtE | Is | IsNot | In | NotIn
+
+    excepthandler = ExceptHandler(expr type, identifier name, stmt* body)
+                    attributes (int lineno, int colno)
+
+    arguments = (arg* args)
+
+    arg = (identifier arg, kind kind)
+           attributes (int lineno, int colno)
+
+    -- import name with optional 'as' alias.
+    alias = (identifier name, identifier? asname)
+             attributes (int lineno, int colno)
+}

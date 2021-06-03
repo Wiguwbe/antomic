@@ -17,6 +17,7 @@
 #include "Core/Application.h"
 #include "Renderer/Camera.h"
 #include "Renderer/RenderCommand.h"
+#include "Renderer/Render2d.h"
 #include "Renderer/Drawable.h"
 #include "Renderer/RendererFrame.h"
 #include "Renderer/RendererWorker.h"
@@ -39,7 +40,13 @@ namespace Antomic
             mCameraBuffer = UniformBuffer::Create(cameraBufferLayout, 0);
         }
 
+        Render2d::Init();
         SetViewport(viewport);
+    }
+
+    Renderer::~Renderer()
+    {
+        Render2d::Shutdown();
     }
 
     const Ref<Scene> &Renderer::GetCurrentScene()

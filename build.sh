@@ -75,7 +75,7 @@ function level_build_dependencies() {
             [ "${MISSING_PACKAGES}" == "build-essentials" ] && MISSING_PACKAGES=""
 
             # If there are any packages to install compose the installation command
-            if [ ! -z $MISSING_PACKAGES ]; then 
+            if [ ! -z "$MISSING_PACKAGES" ]; then 
                 sudo apt update;
                 sudo apt-get -y install ${MISSING_PACKAGES};
             fi

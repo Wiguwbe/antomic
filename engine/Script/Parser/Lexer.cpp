@@ -92,7 +92,7 @@ namespace Antomic
         */
         if (start == '\'' && PeekNextChar() == '\'')
         {
-            auto next = ReadNextChar();
+            ReadNextChar();
 
             if (mReader->IsEOF())
             {

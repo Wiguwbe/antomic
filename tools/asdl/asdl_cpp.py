@@ -330,7 +330,7 @@ class InheritanceVisitor(EmitVisitor):
                              for atype, aname, opt in field_args])
         superstr = ", ".join(["%s_" % aname
                               for atype, aname, opt in attr_args])
-        initstr = ("%s, %s_(%s)" % (initstr, sname, superstr) if initstr else
+        initstr = ("%s_(%s), %s" % (sname, superstr,initstr) if initstr else
                    "%s_(%s)" % (sname, superstr))
         self.emit("%s_(%s) : %s {" % (cons.name, argstr, initstr), depth + 1)
         self.emit("%s_kind = %s_::%sKind::k%s;" %
@@ -615,7 +615,6 @@ def main(srcfile, output_header, output_file):
                         BaseVisitorVistor(f),
                         InheritanceVisitor(f),
                         PrototypeVisitor(f),
-                        ToStringPrototypeVisitor(f),
                         )
     c.visit(mod)
     f.write("}\n")
@@ -630,8 +629,6 @@ def main(srcfile, output_header, output_file):
     c = ChainOfVisitors(
                         NamespaceVisitor(f),
                         FunctionVisitor(f),
-                        ToStringVisitorVisitor(f),
-                        ToStringFunctionVisitor(f),
                        )
     c.visit(mod)
     f.write("}\n")

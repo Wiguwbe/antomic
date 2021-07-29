@@ -118,10 +118,10 @@ static std::map<std::string, Antomic::kind_t> sTypesMap{
         return x;         \
     }
 
-#define HaveBody(x, y, ...)          \
-    if (!TryBody(x, y, __VA_ARGS__)) \
-    {                                \
-        return nullptr;              \
+#define HaveBody(x, y)  \
+    if (!TryBody(x, y)) \
+    {                   \
+        return nullptr; \
     }
 
 #define EmptyStmtBody \
@@ -554,6 +554,8 @@ namespace Antomic
             }
             return orelse;
         }
+        default:
+            break;
         }
         UnexpectedToken(t, nullptr);
     }
@@ -609,6 +611,8 @@ namespace Antomic
             HaveBody("finally", stmt->finalbody);
             return stmt;
         }
+        default:
+            break;
         }
         UnexpectedToken(t, nullptr);
     }
@@ -756,6 +760,8 @@ namespace Antomic
                 case TokenType::SymbolParentesesOpen:
                     TryParsing(expr, nullptr, TryCall, expr);
                     continue;
+                default:
+                    break;
                 }
                 continue;
             case TokenType::NumberFloat:
@@ -954,6 +960,8 @@ namespace Antomic
                 case TokenType::SymbolParentesesOpen:
                     TryParsing(operand, nullptr, TryCall, operand);
                     return operand;
+                default:
+                    break;
                 }
                 return operand;
             }
@@ -1138,6 +1146,8 @@ namespace Antomic
         case TokenType::KeywordOr:
             op = boolop_t::kOr;
             break;
+        default:
+            UnexpectedToken(t, nullptr);
         }
         return BoolOp(left, op, right, lineno, colno);
     }
@@ -1541,6 +1551,8 @@ namespace Antomic
                 case TokenType::SymbolParentesesOpen:
                     TryParsing(operand, nullptr, TryCall, operand);
                     return operand;
+                default:
+                    break;
                 }
                 return operand;
             }

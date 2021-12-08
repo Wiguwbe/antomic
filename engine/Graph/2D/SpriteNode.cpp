@@ -76,4 +76,10 @@ namespace Antomic
 		return sprite;
 	}
 
+	void SpriteNode::CleanUp() {
+
+		mSprite = nullptr;
+		Node::CleanUp();
+	} 
+
 }

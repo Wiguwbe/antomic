@@ -118,10 +118,10 @@ static std::map<std::string, Antomic::kind_t> sTypesMap{
         return x;         \
     }
 
-#define HaveBody(x, y)  \
-    if (!TryBody(x, y)) \
-    {                   \
-        return nullptr; \
+#define HaveBodyNoEmpty(x, y) \
+    if (!TryBody(x, y))       \
+    {                         \
+        return nullptr;       \
     }
 
 #define EmptyStmtBody \
@@ -148,7 +148,7 @@ namespace Antomic
         mLexer = CreateRef<Lexer>(name);
         std::vector<stmt_t> body;
         New(mod, Module_t, Module, EmptyStmtBody);
-        HaveBody(name, mod->body);
+        HaveBodyNoEmpty(name, mod->body);
         ClearStack(mState.IfStack);
         ClearStack(mState.TryStack);
         return mod;
@@ -286,7 +286,7 @@ namespace Antomic
         TryToken(t, TokenType::SymbolColon);
         TryToken(t, TokenType::NewLine);
         New(stmt, FunctionDef_t, FunctionDef, identifier, args, EmptyStmtBody, lineno, colno);
-        HaveBody(identifier, stmt->body);
+        HaveBodyNoEmpty(identifier, stmt->body);
         return stmt;
     }
 
@@ -320,7 +320,7 @@ namespace Antomic
         TryToken(t, TokenType::SymbolParentesesClose);
         TryToken(t, TokenType::SymbolColon);
         TryToken(t, TokenType::NewLine);
-        HaveBody(identifier, stmt->body);
+        HaveBodyNoEmpty(identifier, stmt->body);
         return stmt;
     }
 
@@ -411,7 +411,7 @@ namespace Antomic
         case TokenType::NewLine:
         {
             ReadNextToken();
-            HaveBody("for", stmt->body);
+            HaveBodyNoEmpty("for", stmt->body);
             break;
         }
         default:
@@ -473,7 +473,7 @@ namespace Antomic
         case TokenType::NewLine:
         {
             ReadNextToken();
-            HaveBody("while", stmt->body);
+            HaveBodyNoEmpty("while", stmt->body);
         }
         default:
         {
@@ -501,7 +501,7 @@ namespace Antomic
             {
             case TokenType::NewLine:
                 ReadNextToken();
-                HaveBody("if", stmt->body);
+                HaveBodyNoEmpty("if", stmt->body);
                 mState.IfStack.push(stmt);
                 break;
             default:
@@ -521,7 +521,7 @@ namespace Antomic
             {
             case TokenType::NewLine:
                 ReadNextToken();
-                HaveBody("else", stmt->orelse);
+                HaveBodyNoEmpty("else", stmt->orelse);
                 break;
             default:
                 TryParsingAuto(body, nullptr, TryStatement);
@@ -545,7 +545,7 @@ namespace Antomic
             {
             case TokenType::NewLine:
                 ReadNextToken();
-                HaveBody("elif", orelse->body);
+                HaveBodyNoEmpty("elif", orelse->body);
                 break;
             default:
                 TryParsingAuto(body, nullptr, TryStatement);
@@ -582,7 +582,7 @@ namespace Antomic
             EndOrNewLine(t);
             New(stmt, Try_t, Try, EmptyStmtBody, EmptyHandlers, EmptyStmtBody, lineno, colno);
             mState.TryStack.push(stmt);
-            HaveBody("try", stmt->body);
+            HaveBodyNoEmpty("try", stmt->body);
             return stmt;
         }
         case TokenType::KeywordExcept:
@@ -597,7 +597,7 @@ namespace Antomic
             EndOrNewLine(t);
             auto stmt = dynamic_cast<Try_t>(mState.TryStack.top());
             New(handler, ExceptHandler_t, ExceptHandler, type, name, EmptyStmtBody, lineno, colno);
-            HaveBody("except", handler->body);
+            HaveBodyNoEmpty("except", handler->body);
             stmt->handlers.push_back(handler);
             return stmt;
         }
@@ -608,7 +608,7 @@ namespace Antomic
             TryToken(t, TokenType::SymbolColon);
             EndOrNewLine(t);
             auto stmt = dynamic_cast<Try_t>(mState.TryStack.top());
-            HaveBody("finally", stmt->finalbody);
+            HaveBodyNoEmpty("finally", stmt->finalbody);
             return stmt;
         }
         default:
@@ -761,7 +761,7 @@ namespace Antomic
                     TryParsing(expr, nullptr, TryCall, expr);
                     continue;
                 default:
-                    break;
+                    continue;
                 }
                 continue;
             case TokenType::NumberFloat:
@@ -1147,7 +1147,7 @@ namespace Antomic
             op = boolop_t::kOr;
             break;
         default:
-            UnexpectedToken(t, nullptr);
+            break;
         }
         return BoolOp(left, op, right, lineno, colno);
     }

@@ -39,7 +39,8 @@ namespace Antomic
 
     protected:
         virtual const Ref<Drawable> GetDrawable() const override { return mSprite; };
-
+        virtual void CleanUp() override;
+        
     private:
         std::string mUrl;
         Ref<Sprite> mSprite;

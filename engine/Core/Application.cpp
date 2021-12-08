@@ -85,9 +85,9 @@ namespace Antomic
             mRunning = false;
 #endif
         }
-
-        ANTOMIC_PROFILE_END_SESSION();
-
+        
+        ANTOMIC_PROFILE_END_SESSION();        
+        mRenderer->Shutdown();
         Platform::WindowClose();
     }
 

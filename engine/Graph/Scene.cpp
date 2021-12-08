@@ -24,7 +24,7 @@
 
 namespace Antomic
 {
-	void Scene::Update(const uint32_t& time)
+	void Scene::Update(const uint32_t &time)
 	{
 		ANTOMIC_PROFILE_FUNCTION("Graph");
 
@@ -54,9 +54,9 @@ namespace Antomic
 		ANTOMIC_PROFILE_FUNCTION("Graph");
 
 		// For now hardcoded
-		CameraFrustum f = { 0.1f, 100.f };
+		CameraFrustum f = {0.1f, 100.f};
 		mActiveCamera = CreateRef<PerspetiveCamera>(f, 45.0f);
-		mActiveCamera->SetPosition({ 0, 0, 3 });
+		mActiveCamera->SetPosition({0, 0, 3});
 		mViewMatrix = glm::lookAt(
 			mActiveCamera->GetPosition(),
 			glm::vec3(0, 0, 2),
@@ -66,15 +66,16 @@ namespace Antomic
 	void Scene::Unload()
 	{
 		ANTOMIC_PROFILE_FUNCTION("Graph");
+		CleanUp();
 	}
 
 	// Serialization
-	void Scene::Serialize(nlohmann::json& json)
+	void Scene::Serialize(nlohmann::json &json)
 	{
 		Node::Serialize(json["scene"]);
 	}
 
-	Ref<Scene> Scene::Deserialize(const nlohmann::json& json)
+	Ref<Scene> Scene::Deserialize(const nlohmann::json &json)
 	{
 		auto scene = CreateRef<Scene>();
 

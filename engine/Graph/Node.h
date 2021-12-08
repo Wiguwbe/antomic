@@ -60,6 +60,7 @@ namespace Antomic
         inline bool IsDirty() { return mDirty; }
         inline void ClearDirty() { mDirty = false; }
         virtual void UpdateSpatialInformation() = 0;
+        virtual void CleanUp();
 
     private:
         Ref<Node> mParent = nullptr;

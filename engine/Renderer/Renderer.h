@@ -41,7 +41,7 @@ namespace Antomic
     {
     public:
         Renderer(const RendererViewport &viewport);
-        ~Renderer();
+        ~Renderer() = default;
 
     public:
         // Scene Operations
@@ -56,6 +56,7 @@ namespace Antomic
         void RenderFrame();
         inline const Ref<RendererFrame> GetLastFrame() const { return mLastFrame; }
         const uint64_t GetLastFrameTime();
+        void Shutdown();
 
     private:
         void UpdateProjectionMatrix();

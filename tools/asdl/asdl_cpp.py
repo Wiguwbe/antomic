@@ -615,6 +615,7 @@ def main(srcfile, output_header, output_file):
                         BaseVisitorVistor(f),
                         InheritanceVisitor(f),
                         PrototypeVisitor(f),
+                        ToStringPrototypeVisitor(f),
                         )
     c.visit(mod)
     f.write("}\n")
@@ -625,10 +626,13 @@ def main(srcfile, output_header, output_file):
     f.write(auto_gen_msg)
     f.write('#include <set>\n')
     f.write('#include <sstream>\n\n')
+    f.write('#include <string.h>\n\n')
     f.write('#include "%s"\n\n' % output_header)
     c = ChainOfVisitors(
                         NamespaceVisitor(f),
                         FunctionVisitor(f),
+                        ToStringVisitorVisitor(f),
+                        ToStringFunctionVisitor(f),
                        )
     c.visit(mod)
     f.write("}\n")

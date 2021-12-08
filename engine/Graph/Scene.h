@@ -40,10 +40,10 @@ namespace Antomic
         // Serialization
         virtual void Serialize(nlohmann::json &json) override;
         static Ref<Scene> Deserialize(const nlohmann::json &json);
-        
+
     protected:
         virtual const Ref<Drawable> GetDrawable() const override { return nullptr; }
-    virtual void UpdateSpatialInformation() override {}
+        virtual void UpdateSpatialInformation() override {}
 
     private:
         glm::mat4 mViewMatrix;

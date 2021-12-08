@@ -22,7 +22,7 @@
 
 namespace Antomic
 {
-	void Node::AddChild(const Ref<Node>& node)
+	void Node::AddChild(const Ref<Node> &node)
 	{
 		ANTOMIC_ASSERT(node != nullptr, "Node::AddChild: Child cannot be null");
 		ANTOMIC_ASSERT(node->mParent.get() != this, "Node::AddChild: Already child of this node");
@@ -48,7 +48,7 @@ namespace Antomic
 		mChildren.push_back(node);
 	}
 
-	void Node::RemoveChild(const Ref<Node>& node)
+	void Node::RemoveChild(const Ref<Node> &node)
 	{
 		ANTOMIC_ASSERT(node != nullptr, "Node: Child cannot be null");
 		ANTOMIC_ASSERT(node->mParent.get() == this, "Node: Not a child of this node");
@@ -66,7 +66,15 @@ namespace Antomic
 		}
 	}
 
-	void Node::Update(const uint32_t& time)
+	void Node::CleanUp()
+	{
+		for (auto child : mChildren)
+		{
+			child->CleanUp();
+		}
+	}
+
+	void Node::Update(const uint32_t &time)
 	{
 		// Requests all childs to update
 		UpdateSpatialInformation();
@@ -76,7 +84,7 @@ namespace Antomic
 		}
 	}
 
-	void Node::SubmitDrawables(const Ref<RendererFrame>& frame)
+	void Node::SubmitDrawables(const Ref<RendererFrame> &frame)
 	{
 		// TODO: Optimize in order only to send drawables that are inside the view
 
@@ -95,7 +103,7 @@ namespace Antomic
 		}
 	}
 
-	void Node::Serialize(nlohmann::json& json)
+	void Node::Serialize(nlohmann::json &json)
 	{
 		for (auto child : mChildren)
 		{
@@ -105,12 +113,13 @@ namespace Antomic
 		}
 	}
 
-	Ref<Node> Node::Deserialize(const nlohmann::json& json)
+	Ref<Node> Node::Deserialize(const nlohmann::json &json)
 	{
 		Ref<Node> nodeRef = nullptr;
 
 		auto nodeClass = json["class"].get<std::string>();
-		if (nodeClass == "SpriteNode") {
+		if (nodeClass == "SpriteNode")
+		{
 			nodeRef = SpriteNode::Deserialize(json);
 		}
 

@@ -216,8 +216,6 @@ TEST(AntomicCoreTest, LexerFromFileTests)
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::String, "a string", 2, 5);
     TEST_NEWLINE(lex);
 
-    // print(" a multiline string \
-    //     asd")
     TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::Identifier, "print", 3, 1);
     TEST_TOKEN_LC(lex, Antomic::TokenType::SymbolParentesesOpen, 3, 6);
@@ -258,7 +256,7 @@ TEST(AntomicCoreTest, LexerFromFileTests)
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "a");
     TEST_NEWLINE(lex);
 
-    // c = 12.0 + \
+    // c = 12.0 + 
     //     0x32
     TEST_TOKEN(lex, Antomic::TokenType::Identation);
     TEST_TOKEN_VALUE(lex, Antomic::TokenType::Identifier, "c");

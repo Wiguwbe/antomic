@@ -44,8 +44,16 @@ namespace Antomic
         SetViewport(viewport);
     }
 
-    Renderer::~Renderer()
+    void Renderer::Shutdown()
     {
+        // Let's make sure we remove our scene if we have one
+        if (mScene != nullptr ) {
+            mScene->Unload();
+        }
+
+        // Destroy the camera buffer
+        mCameraBuffer = nullptr;
+
         Render2d::Shutdown();
     }
 

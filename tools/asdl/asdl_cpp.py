@@ -330,7 +330,7 @@ class InheritanceVisitor(EmitVisitor):
                              for atype, aname, opt in field_args])
         superstr = ", ".join(["%s_" % aname
                               for atype, aname, opt in attr_args])
-        initstr = ("%s, %s_(%s)" % (initstr, sname, superstr) if initstr else
+        initstr = ("%s_(%s), %s" % (sname, superstr,initstr) if initstr else
                    "%s_(%s)" % (sname, superstr))
         self.emit("%s_(%s) : %s {" % (cons.name, argstr, initstr), depth + 1)
         self.emit("%s_kind = %s_::%sKind::k%s;" %
@@ -626,6 +626,7 @@ def main(srcfile, output_header, output_file):
     f.write(auto_gen_msg)
     f.write('#include <set>\n')
     f.write('#include <sstream>\n\n')
+    f.write('#include <string.h>\n\n')
     f.write('#include "%s"\n\n' % output_header)
     c = ChainOfVisitors(
                         NamespaceVisitor(f),

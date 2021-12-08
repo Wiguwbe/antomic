@@ -269,7 +269,7 @@ std::string ToString(Antomic::expr_t node)
     {
         auto expr = dynamic_cast<Antomic::Dict_t>(node);
         std::string result = "Dict(";
-        for (int i = 0; i < expr->keys.size(); i++)
+        for (size_t i = 0; i < expr->keys.size(); i++)
         {
             if (i)
             {

@@ -84,6 +84,8 @@ namespace Antomic
 
     void Render2d::Shutdown()
     {
-        // For now we do nothing
+        // CleanUp our vertex array and shader
+        sVertexArray = nullptr;
+        sShader = nullptr;
     }
 }

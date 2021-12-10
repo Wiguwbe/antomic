@@ -18,58 +18,75 @@
 
 namespace Antomic
 {
-    class Reader
-    {
-    public:
-        virtual ~Reader() = default;
+	class Reader
+	{
+	public:
+		virtual ~Reader() = default;
 
-        virtual bool IsEOF() = 0;
-        virtual char Peek() = 0;
-        virtual char Read() = 0;
-        virtual char Read(std::string &out) = 0;
-        virtual const std::string &GetFileName() const = 0;
+		virtual bool IsEOF() = 0;
+		virtual char Peek() = 0;
+		virtual char Read() = 0;
+		virtual char Read(std::string& out) = 0;
+		virtual const std::string& GetFileName() const = 0;
 
-    public:
-        static Ref<Reader> FromFile(const std::string &name);
-        static Ref<Reader> FromString(const std::string &string, const std::string &name);
-    };
+	public:
+		static Ref<Reader> FromFile(const std::string& name);
+		static Ref<Reader> FromString(const std::string& string, const std::string& name);
+	};
 
-    class TextReader : public Reader
-    {
-    public:
-        TextReader(const std::string &string, const std::string &name) : mStream(string), mName(name) {}
-        virtual ~TextReader() = default;
+	class TextReader : public Reader
+	{
+	public:
+		TextReader(const std::string& string, const std::string& name)
+			: mStream(string)
+			, mName(name)
+		{ }
+		virtual ~TextReader() = default;
 
-        virtual bool IsEOF() override 
-        {   
-            return mStream.peek() == EOF; 
-        }
-        virtual char Peek() override;
-        virtual char Read() override;
-        virtual char Read(std::string &out) override;
-        virtual const std::string &GetFileName() const { return mName; }
+		virtual bool IsEOF() override
+		{
+			return mStream.peek() == EOF;
+		}
+		virtual char Peek() override;
+		virtual char Read() override;
+		virtual char Read(std::string& out) override;
+		virtual const std::string& GetFileName() const
+		{
+			return mName;
+		}
 
-    private:
-        std::stringstream mStream;
-        std::string mName;
-    };
+	private:
+		std::stringstream mStream;
+		std::string mName;
+	};
 
-    class FileReader : public Reader
-    {
-    public:
-        FileReader(const std::string &name) : mStream(name) {}
-        virtual ~FileReader() { mStream.close(); }
+	class FileReader : public Reader
+	{
+	public:
+		FileReader(const std::string& name)
+			: mStream(name)
+		{ }
+		virtual ~FileReader()
+		{
+			mStream.close();
+		}
 
-        virtual bool IsEOF() override { return mStream.peek() == EOF; }
-        virtual char Peek() override;
-        virtual char Read() override;
-        virtual char Read(std::string &out) override;
-        virtual const std::string &GetFileName() const { return mName; }
+		virtual bool IsEOF() override
+		{
+			return mStream.peek() == EOF;
+		}
+		virtual char Peek() override;
+		virtual char Read() override;
+		virtual char Read(std::string& out) override;
+		virtual const std::string& GetFileName() const
+		{
+			return mName;
+		}
 
-    private:
-        std::ifstream mStream;
-        std::string mName;
-        bool mEof = false;
-    };
+	private:
+		std::ifstream mStream;
+		std::string mName;
+		bool mEof = false;
+	};
 
-}
+} // namespace Antomic

@@ -19,25 +19,32 @@
 
 namespace Antomic
 {
-    class LayerStack
-    {
+	class LayerStack
+	{
 
-    public:
-        LayerStack();
-        ~LayerStack();
+	public:
+		LayerStack();
+		~LayerStack();
 
-        void PushFront(Ref<Layer> l);
-        void PushBack(Ref<Layer> l);
-        void PopFront();
-        void PopBack();
-        void Remove(Ref<Layer> l);
-        void Update(const uint32_t& time);
-        void Submit();
-        void OnEvent(Event &e);
+		void PushFront(Ref<Layer> l);
+		void PushBack(Ref<Layer> l);
+		void PopFront();
+		void PopBack();
+		void Remove(Ref<Layer> l);
+		void Update(const uint32_t& time);
+		void Submit();
+		void OnEvent(Event& e);
 
-        inline int Empty() const { return mStack.empty(); }
-        inline size_t Count() const { return mStack.size(); }
-    protected:
-        std::vector<Ref<Layer>> mStack;
-    };
+		inline int Empty() const
+		{
+			return mStack.empty();
+		}
+		inline size_t Count() const
+		{
+			return mStack.size();
+		}
+
+	protected:
+		std::vector<Ref<Layer>> mStack;
+	};
 } // namespace Antomic

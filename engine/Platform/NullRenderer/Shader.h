@@ -19,24 +19,24 @@
 
 namespace Antomic
 {
-    class NullShader : public Shader
-    {
-    public:
-        NullShader(const std::string &vertexSrc, const std::string &fragmentSrc) {}
-        virtual ~NullShader() override {}
+	class NullShader : public Shader
+	{
+	public:
+		NullShader(const std::string& vertexSrc, const std::string& fragmentSrc) { }
+		virtual ~NullShader() override { }
 
-    public:
-        // Bind/Unbind commands
-        virtual void Bind() const override {}
-        virtual void Unbind() const override {}
+	public:
+		// Bind/Unbind commands
+		virtual void Bind() const override { }
+		virtual void Unbind() const override { }
 
-        // Uniform Commands
-        virtual void SetUniformValue(const std::string& name, float value) override {}
-        virtual void SetUniformValue(const std::string& name, const glm::vec2 &value) override {}
-        virtual void SetUniformValue(const std::string& name, const glm::vec3 &value) override {}
-        virtual void SetUniformValue(const std::string& name, const glm::vec4 &value) override {}
-        virtual void SetUniformValue(const std::string& name, const glm::mat3 &value) override {}
-        virtual void SetUniformValue(const std::string& name, const glm::mat4 &value) override {}
-    };
+		// Uniform Commands
+		virtual void SetUniformValue(const std::string& name, float value) override { }
+		virtual void SetUniformValue(const std::string& name, const glm::vec2& value) override { }
+		virtual void SetUniformValue(const std::string& name, const glm::vec3& value) override { }
+		virtual void SetUniformValue(const std::string& name, const glm::vec4& value) override { }
+		virtual void SetUniformValue(const std::string& name, const glm::mat3& value) override { }
+		virtual void SetUniformValue(const std::string& name, const glm::mat4& value) override { }
+	};
 
 } // namespace Antomic

@@ -18,86 +18,83 @@
 
 namespace Antomic
 {
-    LayerStack::LayerStack()
-    {
-    }
+	LayerStack::LayerStack() { }
 
-    LayerStack::~LayerStack()
-    {
-    }
+	LayerStack::~LayerStack() { }
 
-    void LayerStack::PushBack(Ref<Layer> l)
-    {
-        if (mStack.empty())
-        {
-            PushFront(l);
-            return;
-        }
+	void LayerStack::PushBack(Ref<Layer> l)
+	{
+		if(mStack.empty())
+		{
+			PushFront(l);
+			return;
+		}
 
-        l->OnAttach();
-        mStack.insert(mStack.begin(), l);
-    }
+		l->OnAttach();
+		mStack.insert(mStack.begin(), l);
+	}
 
-    void LayerStack::PushFront(Ref<Layer> l)
-    {
-        l->OnAttach();
-        mStack.push_back(l);
-    }
+	void LayerStack::PushFront(Ref<Layer> l)
+	{
+		l->OnAttach();
+		mStack.push_back(l);
+	}
 
-    void LayerStack::PopBack()
-    {
-        if (mStack.empty())
-            return;
-        mStack.back()->OnDetach();
-        mStack.pop_back();
-    }
+	void LayerStack::PopBack()
+	{
+		if(mStack.empty())
+			return;
+		mStack.back()->OnDetach();
+		mStack.pop_back();
+	}
 
-    void LayerStack::PopFront()
-    {
-        if (mStack.empty())
-            return;
-        mStack.back()->OnDetach();
-        mStack.erase(mStack.begin());
-    }
+	void LayerStack::PopFront()
+	{
+		if(mStack.empty())
+			return;
+		mStack.back()->OnDetach();
+		mStack.erase(mStack.begin());
+	}
 
-    void LayerStack::Remove(Ref<Layer> l)
-    {
-        auto it = std::find(mStack.begin(), mStack.end(), l);
-        if (it != mStack.end())
-        {
-            (*it)->OnDetach();
-            mStack.erase(it);
-        }
-    }
+	void LayerStack::Remove(Ref<Layer> l)
+	{
+		auto it = std::find(mStack.begin(), mStack.end(), l);
+		if(it != mStack.end())
+		{
+			(*it)->OnDetach();
+			mStack.erase(it);
+		}
+	}
 
-    void LayerStack::Update(const uint32_t &time)
-    {
-        for (auto it = mStack.begin(); it != mStack.end(); ++it)
-        {
-            if ((*it)->IsEnabled())
-                (*it)->Update(time);
-        }
-    }
+	void LayerStack::Update(const uint32_t& time)
+	{
+		for(auto it = mStack.begin(); it != mStack.end(); ++it)
+		{
+			if((*it)->IsEnabled())
+				(*it)->Update(time);
+		}
+	}
 
-    void LayerStack::Submit()
-    {
-        for (auto it = mStack.begin(); it != mStack.end(); ++it)
-        {
-            if ((*it)->IsEnabled())
-                (*it)->Submit();
-        }
-    }
+	void LayerStack::Submit()
+	{
+		for(auto it = mStack.begin(); it != mStack.end(); ++it)
+		{
+			if((*it)->IsEnabled())
+				(*it)->Submit();
+		}
+	}
 
-    void LayerStack::OnEvent(Event &e)
-    {
-        for (auto it = mStack.rbegin(); it != mStack.rend(); ++it)
-        {
-            if ((*it)->IsEnabled()) {
-                (*it)->OnEvent(e);
-                if (e.IsHandled())
-                    return;
-            }
-        }
-    }
+	void LayerStack::OnEvent(Event& e)
+	{
+		for(auto it = mStack.rbegin(); it != mStack.rend(); ++it)
+		{
+			if((*it)->IsEnabled())
+			{
+				(*it)->OnEvent(e);
+				if(e.IsHandled())
+					return;
+			}
+		}
+	}
 
 } // namespace Antomic

@@ -159,7 +159,6 @@ namespace Antomic
 		};
 	};
 
-
 	class Input
 	{
 	public:

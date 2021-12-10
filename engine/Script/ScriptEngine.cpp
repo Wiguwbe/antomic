@@ -13,19 +13,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#pragma once
-#include "Core/Base.h"
+#include "ScriptEngine.h"
 
 namespace Antomic
 {
-	class RendererWorker
-	{
-	public:
-		RendererWorker() = default;
-		~RendererWorker() = default;
 
-	public:
-		void Run();
-	};
-
-} // namespace Antomic
+}

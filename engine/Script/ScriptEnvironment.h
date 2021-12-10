@@ -14,18 +14,14 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
 
 namespace Antomic
 {
-	class RendererWorker
+	class ScriptEnvironment
 	{
-	public:
-		RendererWorker() = default;
-		~RendererWorker() = default;
 
 	public:
-		void Run();
+		ScriptEnvironment();
+		~ScriptEnvironment();
 	};
-
 } // namespace Antomic

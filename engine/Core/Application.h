@@ -15,60 +15,91 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Platform/Platform.h"
 #include "Core/LayerStack.h"
 #include "Platform/Input.h"
+#include "Platform/Platform.h"
 #include "glm/glm.hpp"
 
 namespace Antomic
 {
-    class Application
-    {
+	class Application
+	{
 
-    public:
-        Application() : Application("Application", 640, 480){};
-        Application(const std::string &title) : Application(title, 640, 480){};
-        Application(const std::string &title, uint32_t width, uint32_t height, RenderAPIDialect api = RenderAPIDialect::OPENGL);
-        virtual ~Application() = default;
+	public:
+		Application()
+			: Application("Application", 640, 480){};
+		Application(const std::string& title)
+			: Application(title, 640, 480){};
+		Application(const std::string& title,
+					uint32_t width,
+					uint32_t height,
+					RenderAPIDialect api = RenderAPIDialect::OPENGL);
+		virtual ~Application() = default;
 
-    public:
-        // Control Operations
-        void ToggleFullscreen(bool value);
-        void Run();
+	public:
+		// Control Operations
+		void ToggleFullscreen(bool value);
+		void Run();
 
-        // Windows attributes
-        inline uint32_t GetWidth() const { return Platform::GetWindowWidth(); }
-        inline uint32_t GetHeight() const { return Platform::GetWindowHeight(); }
+		// Windows attributes
+		inline uint32_t GetWidth() const
+		{
+			return Platform::GetWindowWidth();
+		}
+		inline uint32_t GetHeight() const
+		{
+			return Platform::GetWindowHeight();
+		}
 
-        // Events
-        void OnEvent(Event &event);
+		// Events
+		void OnEvent(Event& event);
 
-        // Windows Events
-        virtual bool OnWindowClose(WindowCloseEvent &event);
-        virtual bool OnWindowResize(WindowResizeEvent &event);
+		// Windows Events
+		virtual bool OnWindowClose(WindowCloseEvent& event);
+		virtual bool OnWindowResize(WindowResizeEvent& event);
 
-        // Keys Events
-        virtual bool OnKeyPressed(KeyPressedEvent &event) { return true; }
-        virtual bool OnKeyReleased(KeyReleasedEvent &event) { return true; }
+		// Keys Events
+		virtual bool OnKeyPressed(KeyPressedEvent& event)
+		{
+			return true;
+		}
+		virtual bool OnKeyReleased(KeyReleasedEvent& event)
+		{
+			return true;
+		}
 
-        // Mouse Events
-        virtual bool OnMouseMoved(MouseMovedEvent &event) { return true; }
-        virtual bool OnMouseScrolled(MouseScrolledEvent &event) { return true; }
-        virtual bool OnMouseButtonPressed(MouseButtonPressedEvent &event) { return true; }
-        virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent &event) { return true; }
+		// Mouse Events
+		virtual bool OnMouseMoved(MouseMovedEvent& event)
+		{
+			return true;
+		}
+		virtual bool OnMouseScrolled(MouseScrolledEvent& event)
+		{
+			return true;
+		}
+		virtual bool OnMouseButtonPressed(MouseButtonPressedEvent& event)
+		{
+			return true;
+		}
+		virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent& event)
+		{
+			return true;
+		}
 
-        // Scene 
-        void SetScene(const Ref<Scene>& scene);
-        void LoadScene(const std::string& name);
+		// Scene
+		void SetScene(const Ref<Scene>& scene);
+		void LoadScene(const std::string& name);
 
-    public:
-        static Application &Current() { return *sInstance; }
+	public:
+		static Application& Current()
+		{
+			return *sInstance;
+		}
 
-    private:
-        static Application *sInstance;
-        bool mRunning;
-        glm::mat4 mProjMatrix;
-        Ref<Renderer> mRenderer;
-
-    };
+	private:
+		static Application* sInstance;
+		bool mRunning;
+		glm::mat4 mProjMatrix;
+		Ref<Renderer> mRenderer;
+	};
 } // namespace Antomic

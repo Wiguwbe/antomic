@@ -16,7 +16,7 @@
 #include "Platform/Input.h"
 namespace Antomic
 {
-    uint8_t Input::sKeyForwardMap[256];
-    uint8_t Input::sKeyReverseMap[256];
+	uint8_t Input::sKeyForwardMap[256];
+	uint8_t Input::sKeyReverseMap[256];
 
 } // namespace Antomic

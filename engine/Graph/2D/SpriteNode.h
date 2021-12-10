@@ -21,28 +21,37 @@
 
 namespace Antomic
 {
-    class SpriteNode : public Node2d
-    {
-    public:
-        SpriteNode(const std::string name);
-        virtual ~SpriteNode() = default;
+	class SpriteNode : public Node2d
+	{
+	public:
+		SpriteNode(const std::string name);
+		virtual ~SpriteNode() = default;
 
-    public:
-        // Object attributes
-        inline const glm::vec4 &GetColor() const { return mSprite->GetSpriteColor(); }
-        inline void SetColor(const glm::vec4 &color) { mSprite->SetSpriteColor(color); }
+	public:
+		// Object attributes
+		inline const glm::vec4& GetColor() const
+		{
+			return mSprite->GetSpriteColor();
+		}
+		inline void SetColor(const glm::vec4& color)
+		{
+			mSprite->SetSpriteColor(color);
+		}
 
-    public:
-        // Serialization
-        virtual void Serialize(nlohmann::json &json) override;
-        static Ref<SpriteNode> Deserialize(const nlohmann::json &json);
+	public:
+		// Serialization
+		virtual void Serialize(nlohmann::json& json) override;
+		static Ref<SpriteNode> Deserialize(const nlohmann::json& json);
 
-    protected:
-        virtual const Ref<Drawable> GetDrawable() const override { return mSprite; };
-        virtual void CleanUp() override;
-        
-    private:
-        std::string mUrl;
-        Ref<Sprite> mSprite;
-    };
+	protected:
+		virtual const Ref<Drawable> GetDrawable() const override
+		{
+			return mSprite;
+		};
+		virtual void CleanUp() override;
+
+	private:
+		std::string mUrl;
+		Ref<Sprite> mSprite;
+	};
 } // namespace Antomic

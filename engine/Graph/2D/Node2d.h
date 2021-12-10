@@ -20,48 +20,66 @@
 
 namespace Antomic
 {
-    class Node2d : public Node
-    {
-    public:
-        virtual ~Node2d() = default;
+	class Node2d : public Node
+	{
+	public:
+		virtual ~Node2d() = default;
 
-    public:
-        // Graph operations
-        virtual NodeType GetType() override { return NodeType::NODE_2D; };
+	public:
+		// Graph operations
+		virtual NodeType GetType() override
+		{
+			return NodeType::NODE_2D;
+		};
 
-        // Spatial Information
-        const glm::mat3 &GetWorldMatrix();
-        const glm::mat3 &GetLocalMatrix();
-        
-        inline const glm::vec2 &GetPosition() const { return mPosition; }
-        inline const glm::vec2 &GetSize() const { return mSize; }
-        inline const float &GetRotation() const { return mRotation; }
-        inline const glm::vec2 &GetAnchor() const { return mAnchor; }
-        inline int GetZOrder() { return mZOrder; }
+		// Spatial Information
+		const glm::mat3& GetWorldMatrix();
+		const glm::mat3& GetLocalMatrix();
 
-        void SetPosition(const glm::vec2 &position);
-        void SetSize(const glm::vec2 &size);
-        void SetRotation(float rotation);
-        void SetAnchor(const glm::vec2 &anchor);
-        void SetZOrder(int zorder);
+		inline const glm::vec2& GetPosition() const
+		{
+			return mPosition;
+		}
+		inline const glm::vec2& GetSize() const
+		{
+			return mSize;
+		}
+		inline const float& GetRotation() const
+		{
+			return mRotation;
+		}
+		inline const glm::vec2& GetAnchor() const
+		{
+			return mAnchor;
+		}
+		inline int GetZOrder()
+		{
+			return mZOrder;
+		}
 
-        // Serialization
-        virtual void Serialize(nlohmann::json &json) override;
+		void SetPosition(const glm::vec2& position);
+		void SetSize(const glm::vec2& size);
+		void SetRotation(float rotation);
+		void SetAnchor(const glm::vec2& anchor);
+		void SetZOrder(int zorder);
 
-    protected:
-        virtual void UpdateSpatialInformation() override;
+		// Serialization
+		virtual void Serialize(nlohmann::json& json) override;
+
+	protected:
+		virtual void UpdateSpatialInformation() override;
 
 #ifdef ANTOMIC_TESTS
-    protected:
+	protected:
 #else
-    private:
+	private:
 #endif
-        glm::mat3 mLocal = glm::mat3(1.f);
-        glm::mat3 mWorld = glm::mat3(1.f);
-        glm::vec2 mPosition = glm::vec2(0, 0);
-        glm::vec2 mSize = glm::vec2(1, 1);
-        glm::vec2 mAnchor = glm::vec2(0.5f, 0.5f);
-        float mRotation = 0.f;
-        int mZOrder = 0;
-    };
+		glm::mat3 mLocal = glm::mat3(1.f);
+		glm::mat3 mWorld = glm::mat3(1.f);
+		glm::vec2 mPosition = glm::vec2(0, 0);
+		glm::vec2 mSize = glm::vec2(1, 1);
+		glm::vec2 mAnchor = glm::vec2(0.5f, 0.5f);
+		float mRotation = 0.f;
+		int mZOrder = 0;
+	};
 } // namespace Antomic

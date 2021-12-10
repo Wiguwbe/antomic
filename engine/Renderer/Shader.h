@@ -20,42 +20,43 @@
 
 namespace Antomic
 {
-    enum class ShaderDataType
-    {
-        Float,
-        Vec2,
-        Vec3,
-        Vec4,
-        Mat3,
-        Mat4,
-        Int,
-        Int2,
-        Int3,
-        Int4,
-        Bool
-    };
+	enum class ShaderDataType
+	{
+		Float,
+		Vec2,
+		Vec3,
+		Vec4,
+		Mat3,
+		Mat4,
+		Int,
+		Int2,
+		Int3,
+		Int4,
+		Bool
+	};
 
-    uint32_t ShaderDataTypeSize(ShaderDataType t);
-    uint32_t ShaderDataTypeAlignment(ShaderDataType t);
+	uint32_t ShaderDataTypeSize(ShaderDataType t);
+	uint32_t ShaderDataTypeAlignment(ShaderDataType t);
 
-    class Shader : public Bindable
-    {
-    public:
-        virtual ~Shader() = default;
+	class Shader : public Bindable
+	{
+	public:
+		virtual ~Shader() = default;
 
-    public:
+	public:
+		// Uniform Commands
+		virtual void SetUniformValue(const std::string& name, float value) = 0;
+		virtual void SetUniformValue(const std::string& name, const glm::vec2& value) = 0;
+		virtual void SetUniformValue(const std::string& name, const glm::vec3& value) = 0;
+		virtual void SetUniformValue(const std::string& name, const glm::vec4& value) = 0;
+		virtual void SetUniformValue(const std::string& name, const glm::mat3& value) = 0;
+		virtual void SetUniformValue(const std::string& name, const glm::mat4& value) = 0;
 
-        // Uniform Commands
-        virtual void SetUniformValue(const std::string& name, float value) = 0;
-        virtual void SetUniformValue(const std::string& name, const glm::vec2 &value) = 0;
-        virtual void SetUniformValue(const std::string& name, const glm::vec3 &value) = 0;
-        virtual void SetUniformValue(const std::string& name, const glm::vec4 &value) = 0;
-        virtual void SetUniformValue(const std::string& name, const glm::mat3 &value) = 0;
-        virtual void SetUniformValue(const std::string& name, const glm::mat4 &value) = 0;
-
-    public:
-        static Ref<Shader> CreateFromFile(const std::string &vertexSrcPath, const std::string &pixelSrcPath);
-        static Ref<Shader> CreateFromSource(const std::string &vertexSrc, const std::string &pixelSrc);
-    };
+	public:
+		static Ref<Shader> CreateFromFile(const std::string& vertexSrcPath,
+										  const std::string& pixelSrcPath);
+		static Ref<Shader> CreateFromSource(const std::string& vertexSrc,
+											const std::string& pixelSrc);
+	};
 
 } // namespace Antomic

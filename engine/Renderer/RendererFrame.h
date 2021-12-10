@@ -20,23 +20,32 @@
 
 namespace Antomic
 {
-    class RendererFrame
-    {
-    public:
-        RendererFrame(const RendererViewport &viewport, const glm::mat4 &view) : mViewport(viewport), mViewMatrix(view) {}
-        virtual ~RendererFrame() = default;
+	class RendererFrame
+	{
+	public:
+		RendererFrame(const RendererViewport& viewport, const glm::mat4& view)
+			: mViewport(viewport)
+			, mViewMatrix(view)
+		{ }
+		virtual ~RendererFrame() = default;
 
-        void QueueDrawable(const Ref<Drawable> &drawable);
-        void Draw();
+		void QueueDrawable(const Ref<Drawable>& drawable);
+		void Draw();
 
-        const RendererViewport &GetViewport() const { return mViewport; }
-        const glm::mat4 &GetViewMatrix() const { return mViewMatrix; }
+		const RendererViewport& GetViewport() const
+		{
+			return mViewport;
+		}
+		const glm::mat4& GetViewMatrix() const
+		{
+			return mViewMatrix;
+		}
 
-    private:
-        QueueRef<Drawable> mSpriteQueue;
-        QueueRef<Drawable> mMeshQueue;
-        RendererViewport mViewport;
-        glm::mat4 mViewMatrix;
-    };
+	private:
+		QueueRef<Drawable> mSpriteQueue;
+		QueueRef<Drawable> mMeshQueue;
+		RendererViewport mViewport;
+		glm::mat4 mViewMatrix;
+	};
 
 } // namespace Antomic

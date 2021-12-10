@@ -14,18 +14,33 @@
    limitations under the License.
 */
 #pragma once
-#include "Core/Base.h"
 
 namespace Antomic
 {
-	class RendererWorker
-	{
-	public:
-		RendererWorker() = default;
-		~RendererWorker() = default;
 
-	public:
-		void Run();
+	enum class ScriptObjectType
+	{
+		String,
+		Float,
+		Vec2,
+		Vec3,
+		Vec4,
+		Mat3,
+		Mat4,
+		Int,
+		Int2,
+		Int3,
+		Int4,
+		Bool
 	};
 
+	class ScriptObject
+	{
+
+	public:
+		virtual ~ScriptObject() = default;
+
+	public:
+		virtual ScriptObjectType GetType() = 0;
+	};
 } // namespace Antomic

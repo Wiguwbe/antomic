@@ -16,12 +16,12 @@
 */
 #include "Core/Application.h"
 #include "Core/Log.h"
-#include "Platform/Platform.h"
 #include "Events/ApplicationEvent.h"
-#include "Events/WindowEvent.h"
-#include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
+#include "Events/WindowEvent.h"
 #include "Graph/Scene.h"
+#include "Platform/Platform.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererWorker.h"
 #include "glm/glm.hpp"
@@ -30,119 +30,121 @@
 
 namespace Antomic
 {
-    Application *Application::sInstance = nullptr;
+	Application* Application::sInstance = nullptr;
 
-    Application::Application(const std::string &title, uint32_t width, uint32_t height, RenderAPIDialect api)
-    {
-        ANTOMIC_ASSERT(!sInstance, "Application: Application already running!");
-        Log::Init();
+	Application::Application(const std::string& title,
+							 uint32_t width,
+							 uint32_t height,
+							 RenderAPIDialect api)
+	{
+		ANTOMIC_ASSERT(!sInstance, "Application: Application already running!");
+		Log::Init();
 
-        sInstance = this;
-        mRunning = false;
+		sInstance = this;
+		mRunning = false;
 
-        auto _width = width;
-        auto _height = height;
-        auto _api = api;
+		auto _width = width;
+		auto _height = height;
+		auto _api = api;
 
-        if (std::filesystem::exists("settings.json"))
-        {
-            std::ifstream settingsFile("settings.json");
-            nlohmann::json settingsJSON;
-            settingsFile >> settingsJSON;
+		if(std::filesystem::exists("settings.json"))
+		{
+			std::ifstream settingsFile("settings.json");
+			nlohmann::json settingsJSON;
+			settingsFile >> settingsJSON;
 
-            _width = settingsJSON["width"];
-            _height = settingsJSON["height"];
-            std::string api_str = settingsJSON["api"];
-            _api = RenderAPIFromStr(api_str);
-        }
+			_width = settingsJSON["width"];
+			_height = settingsJSON["height"];
+			std::string api_str = settingsJSON["api"];
+			_api = RenderAPIFromStr(api_str);
+		}
 
-        if (!Platform::SetupPlatform(_width, _height, title, _api))
-        {
-            ANTOMIC_INFO("Error creating initializing platform");
-            exit(1);
-        }
+		if(!Platform::SetupPlatform(_width, _height, title, _api))
+		{
+			ANTOMIC_INFO("Error creating initializing platform");
+			exit(1);
+		}
 
-        Platform::SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
-        RendererViewport viewport = {0, 0, _width, _height};
-        mRenderer = CreateRef<Renderer>(viewport);
-    }
+		Platform::SetEventHandler(ANTOMIC_BIND_EVENT_FN(Application::OnEvent));
+		RendererViewport viewport = {0, 0, _width, _height};
+		mRenderer = CreateRef<Renderer>(viewport);
+	}
 
-    void Application::Run()
-    {
-        if (mRunning)
-            return;
+	void Application::Run()
+	{
+		if(mRunning)
+			return;
 
-        mRunning = true;
+		mRunning = true;
 
-        ANTOMIC_PROFILE_BEGIN_SESSION();
+		ANTOMIC_PROFILE_BEGIN_SESSION();
 
-        while (mRunning)
-        {
-            Platform::ProcessEvents();
-            mRenderer->RenderFrame();
+		while(mRunning)
+		{
+			Platform::ProcessEvents();
+			mRenderer->RenderFrame();
 #if ANTOMIC_PROFILE
-            // Since we are profiling we just render one frame
-            mRunning = false;
+			// Since we are profiling we just render one frame
+			mRunning = false;
 #endif
-        }
-        
-        ANTOMIC_PROFILE_END_SESSION();        
-        mRenderer->Shutdown();
-        Platform::WindowClose();
-    }
+		}
 
-    void Application::ToggleFullscreen(bool value)
-    {
-    }
+		ANTOMIC_PROFILE_END_SESSION();
+		mRenderer->Shutdown();
+		Platform::WindowClose();
+	}
 
-    void Application::SetScene(const Ref<Scene> &scene)
-    {
-        auto oldscene = mRenderer->GetCurrentScene();
+	void Application::ToggleFullscreen(bool value) { }
 
-        scene->Load();
-        mRenderer->SetCurrentScene(scene);
+	void Application::SetScene(const Ref<Scene>& scene)
+	{
+		auto oldscene = mRenderer->GetCurrentScene();
 
-        if (oldscene != nullptr)
-        {
-            oldscene->Unload();
-        }
-    }
+		scene->Load();
+		mRenderer->SetCurrentScene(scene);
 
-    void Application::LoadScene(const std::string &name)
-    {
-    }
+		if(oldscene != nullptr)
+		{
+			oldscene->Unload();
+		}
+	}
 
-    void Application::OnEvent(Event &event)
-    {
-        EventDispatcher dispatcher(event);
+	void Application::LoadScene(const std::string& name) { }
 
-        // Dispatch Windows Events
-        dispatcher.Dispatch<WindowCloseEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowClose));
-        dispatcher.Dispatch<WindowResizeEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowResize));
+	void Application::OnEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
 
-        // Dispatch key events to be handled by the application
-        dispatcher.Dispatch<KeyPressedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnKeyPressed));
-        dispatcher.Dispatch<KeyReleasedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnKeyReleased));
+		// Dispatch Windows Events
+		dispatcher.Dispatch<WindowCloseEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnWindowResize));
 
-        // Dispatch mouse events to be handled by the application
-        dispatcher.Dispatch<MouseMovedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnMouseMoved));
-        dispatcher.Dispatch<MouseScrolledEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnMouseScrolled));
-        dispatcher.Dispatch<MouseButtonPressedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnMouseButtonPressed));
-        dispatcher.Dispatch<MouseButtonReleasedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnMouseButtonReleased));
-    }
+		// Dispatch key events to be handled by the application
+		dispatcher.Dispatch<KeyPressedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnKeyPressed));
+		dispatcher.Dispatch<KeyReleasedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnKeyReleased));
 
-    bool Application::OnWindowClose(WindowCloseEvent &event)
-    {
-        mRunning = false;
-        return true;
-    }
+		// Dispatch mouse events to be handled by the application
+		dispatcher.Dispatch<MouseMovedEvent>(ANTOMIC_BIND_EVENT_FN(Application::OnMouseMoved));
+		dispatcher.Dispatch<MouseScrolledEvent>(
+			ANTOMIC_BIND_EVENT_FN(Application::OnMouseScrolled));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(
+			ANTOMIC_BIND_EVENT_FN(Application::OnMouseButtonPressed));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(
+			ANTOMIC_BIND_EVENT_FN(Application::OnMouseButtonReleased));
+	}
 
-    bool Application::OnWindowResize(WindowResizeEvent &event)
-    {
-        ANTOMIC_ASSERT(mRenderer, "Application: Renderer not available");
-        RendererViewport viewport = {0, 0, event.GetWidth(), event.GetHeight()};
-        mRenderer->SetViewport(viewport);
-        return true;
-    }
+	bool Application::OnWindowClose(WindowCloseEvent& event)
+	{
+		mRunning = false;
+		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& event)
+	{
+		ANTOMIC_ASSERT(mRenderer, "Application: Renderer not available");
+		RendererViewport viewport = {0, 0, event.GetWidth(), event.GetHeight()};
+		mRenderer->SetViewport(viewport);
+		return true;
+	}
 
 } // namespace Antomic

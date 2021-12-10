@@ -20,19 +20,21 @@
 
 namespace Antomic
 {
-    class Mesh : public Drawable
-    {
-    public:
-        Mesh(const Ref<VertexArray> &vertexArray, const Ref<Material> &material);
-        virtual ~Mesh() override {};
+	class Mesh : public Drawable
+	{
+	public:
+		Mesh(const Ref<VertexArray>& vertexArray, const Ref<Material>& material);
+		virtual ~Mesh() override{};
 
-    public:
-        virtual const DrawableType GetType() override { return DrawableType::MESH; }
-        virtual void Draw() override;
-        
+	public:
+		virtual const DrawableType GetType() override
+		{
+			return DrawableType::MESH;
+		}
+		virtual void Draw() override;
 
-    private:
-        Ref<VertexArray> mVertexArray;
-        Ref<Material> mMaterial;
-    };
-}
+	private:
+		Ref<VertexArray> mVertexArray;
+		Ref<Material> mMaterial;
+	};
+} // namespace Antomic

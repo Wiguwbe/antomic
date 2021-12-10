@@ -20,91 +20,130 @@
 
 namespace Antomic
 {
-    struct CameraFrustum
-    {
-        float Near;
-        float Far;
-    };
+	struct CameraFrustum
+	{
+		float Near;
+		float Far;
+	};
 
-    enum class CameraType
-    {
-        NONE,
-        ORTOGRAPHIC,
-        PERSPECTIVE,
-    };
+	enum class CameraType
+	{
+		NONE,
+		ORTOGRAPHIC,
+		PERSPECTIVE,
+	};
 
-    /*************************************************************
+	/*************************************************************
      * Camera Implementation
      *************************************************************/
 
-    class Camera
-    {
-    public:
-        Camera() = default;
-        virtual ~Camera() = default;
+	class Camera
+	{
+	public:
+		Camera() = default;
+		virtual ~Camera() = default;
 
-    public:
-        virtual CameraType GetType() const { return CameraType::NONE; }
-        virtual const CameraFrustum GetFrustum() const { return {1.f, 1.f}; }
-        const glm::vec3 &GetPosition() const { return mPosition; }
-        void SetPosition(const glm::vec3 &position) { mPosition = position; }
-        virtual const glm::mat4 GetProjectionMatrix(const RendererViewport &viewport) { return glm::mat4(1.f); }
+	public:
+		virtual CameraType GetType() const
+		{
+			return CameraType::NONE;
+		}
+		virtual const CameraFrustum GetFrustum() const
+		{
+			return {1.f, 1.f};
+		}
+		const glm::vec3& GetPosition() const
+		{
+			return mPosition;
+		}
+		void SetPosition(const glm::vec3& position)
+		{
+			mPosition = position;
+		}
+		virtual const glm::mat4 GetProjectionMatrix(const RendererViewport& viewport)
+		{
+			return glm::mat4(1.f);
+		}
 
-    private:
-        glm::vec3 mPosition;
-    };
+	private:
+		glm::vec3 mPosition;
+	};
 
-    /*************************************************************
+	/*************************************************************
      * OrthographicCamera Implementation
      *************************************************************/
 
-    class OrthographicCamera : public Camera
-    {
-    public:
-        OrthographicCamera() = default;
-        virtual ~OrthographicCamera() = default;
+	class OrthographicCamera : public Camera
+	{
+	public:
+		OrthographicCamera() = default;
+		virtual ~OrthographicCamera() = default;
 
-    public:
-        virtual CameraType GetType() const override { return CameraType::ORTOGRAPHIC; }
-        virtual const glm::mat4 GetProjectionMatrix(const RendererViewport &viewport) override
-        {
-            return OrthographicCamera::GetProjectionMatrix(viewport);
-        }
+	public:
+		virtual CameraType GetType() const override
+		{
+			return CameraType::ORTOGRAPHIC;
+		}
+		virtual const glm::mat4 GetProjectionMatrix(const RendererViewport& viewport) override
+		{
+			return OrthographicCamera::GetProjectionMatrix(viewport);
+		}
 
-        inline static const glm::mat4 ProjectionMatrix(const RendererViewport &viewport)
-        {
-            return glm::ortho((float)viewport.Left, (float)viewport.Right, (float)viewport.Bottom, (float)viewport.Top, -1.f, 1.f);
-        }
+		inline static const glm::mat4 ProjectionMatrix(const RendererViewport& viewport)
+		{
+			return glm::ortho((float)viewport.Left,
+							  (float)viewport.Right,
+							  (float)viewport.Bottom,
+							  (float)viewport.Top,
+							  -1.f,
+							  1.f);
+		}
+	};
 
-    };
-
-    /*************************************************************
+	/*************************************************************
      * PerspetiveCamera Implementation
      *************************************************************/
 
-    class PerspetiveCamera : public Camera
-    {
-    public:
-        PerspetiveCamera(const CameraFrustum &frustum, float fov) : mFrustum(frustum), mFoV(fov) {}
-        virtual ~PerspetiveCamera() = default;
+	class PerspetiveCamera : public Camera
+	{
+	public:
+		PerspetiveCamera(const CameraFrustum& frustum, float fov)
+			: mFrustum(frustum)
+			, mFoV(fov)
+		{ }
+		virtual ~PerspetiveCamera() = default;
 
-    public:
-        virtual CameraType GetType() const override { return CameraType::PERSPECTIVE; }
-        void SetFrustum(const CameraFrustum &frustum) { mFrustum = frustum; }
-        float GetFoV() const { return mFoV; }
-        virtual const glm::mat4 GetProjectionMatrix(const RendererViewport &viewport) override
-        {
-            return PerspetiveCamera::ProjectionMatrix(mFoV, viewport, mFrustum);
-        }
+	public:
+		virtual CameraType GetType() const override
+		{
+			return CameraType::PERSPECTIVE;
+		}
+		void SetFrustum(const CameraFrustum& frustum)
+		{
+			mFrustum = frustum;
+		}
+		float GetFoV() const
+		{
+			return mFoV;
+		}
+		virtual const glm::mat4 GetProjectionMatrix(const RendererViewport& viewport) override
+		{
+			return PerspetiveCamera::ProjectionMatrix(mFoV, viewport, mFrustum);
+		}
 
-        inline static const glm::mat4 ProjectionMatrix(float fov, const RendererViewport &viewport, const CameraFrustum &frustum) 
-        {
-            return glm::perspective(glm::radians(fov), (float)(viewport.Right - viewport.Left) / (float)(viewport.Bottom - viewport.Top), frustum.Near, frustum.Far);
-        }
+		inline static const glm::mat4
+		ProjectionMatrix(float fov, const RendererViewport& viewport, const CameraFrustum& frustum)
+		{
+			return glm::perspective(glm::radians(fov),
+									(float)(viewport.Right - viewport.Left) /
+										(float)(viewport.Bottom - viewport.Top),
+									frustum.Near,
+									frustum.Far);
+		}
 
-    private:
-        CameraFrustum mFrustum;
-        float mFoV;
-    };
+	private:
+		CameraFrustum mFrustum;
+		float mFoV;
+	};
 
 } // namespace Antomic

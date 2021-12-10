@@ -14,11 +14,15 @@
    limitations under the License.
 */
 #ifdef ANTOMIC_SDL_PLATFORM
-#pragma once
-#include "Core/Base.h"
-#include "SDL2/SDL.h"
+#	pragma once
+#	include "Core/Base.h"
+#	include "SDL2/SDL.h"
 
-namespace Antomic {
-    inline uint32_t GetCurrentTime() { return SDL_GetTicks(); }
-}
+namespace Antomic
+{
+	inline uint32_t GetCurrentTime()
+	{
+		return SDL_GetTicks();
+	}
+} // namespace Antomic
 #endif

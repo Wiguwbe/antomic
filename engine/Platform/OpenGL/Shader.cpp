@@ -20,205 +20,205 @@
 
 namespace Antomic
 {
-    GLenum ShaderDataTypeGLEnum(ShaderDataType t)
-    {
-        switch (t)
-        {
-        case ShaderDataType::Float:
-        case ShaderDataType::Vec2:
-        case ShaderDataType::Vec3:
-        case ShaderDataType::Vec4:
-        case ShaderDataType::Mat3:
-        case ShaderDataType::Mat4:
-            return GL_FLOAT;
-        case ShaderDataType::Int:
-        case ShaderDataType::Int2:
-        case ShaderDataType::Int3:
-        case ShaderDataType::Int4:
-            return GL_INT;
-        case ShaderDataType::Bool:
-            return GL_UNSIGNED_SHORT;
-        }
+	GLenum ShaderDataTypeGLEnum(ShaderDataType t)
+	{
+		switch(t)
+		{
+		case ShaderDataType::Float:
+		case ShaderDataType::Vec2:
+		case ShaderDataType::Vec3:
+		case ShaderDataType::Vec4:
+		case ShaderDataType::Mat3:
+		case ShaderDataType::Mat4:
+			return GL_FLOAT;
+		case ShaderDataType::Int:
+		case ShaderDataType::Int2:
+		case ShaderDataType::Int3:
+		case ShaderDataType::Int4:
+			return GL_INT;
+		case ShaderDataType::Bool:
+			return GL_UNSIGNED_SHORT;
+		}
 
-        ANTOMIC_ASSERT(false, "ShaderDataTypeGLEnum: Unknown data type")
-        return GL_UNSIGNED_SHORT;
-    }
+		ANTOMIC_ASSERT(false, "ShaderDataTypeGLEnum: Unknown data type")
+		return GL_UNSIGNED_SHORT;
+	}
 
-    GLint ShaderDataTypeGLSize(ShaderDataType t)
-    {
-        switch (t)
-        {
-        case ShaderDataType::Float:
-            return 1;
-        case ShaderDataType::Vec2:
-            return 2;
-        case ShaderDataType::Vec3:
-            return 3;
-        case ShaderDataType::Vec4:
-            return 4;
-        case ShaderDataType::Mat3:
-            return 9;
-        case ShaderDataType::Mat4:
-            return 16;
-        case ShaderDataType::Int:
-            return 1;
-        case ShaderDataType::Int2:
-            return 2;
-        case ShaderDataType::Int3:
-            return 3;
-        case ShaderDataType::Int4:
-            return 4;
-        case ShaderDataType::Bool:
-            return 1;
-        }
+	GLint ShaderDataTypeGLSize(ShaderDataType t)
+	{
+		switch(t)
+		{
+		case ShaderDataType::Float:
+			return 1;
+		case ShaderDataType::Vec2:
+			return 2;
+		case ShaderDataType::Vec3:
+			return 3;
+		case ShaderDataType::Vec4:
+			return 4;
+		case ShaderDataType::Mat3:
+			return 9;
+		case ShaderDataType::Mat4:
+			return 16;
+		case ShaderDataType::Int:
+			return 1;
+		case ShaderDataType::Int2:
+			return 2;
+		case ShaderDataType::Int3:
+			return 3;
+		case ShaderDataType::Int4:
+			return 4;
+		case ShaderDataType::Bool:
+			return 1;
+		}
 
-        ANTOMIC_ASSERT(false, "ShaderDataTypeGLSize: Unknown data type")
-        return GL_UNSIGNED_SHORT;
-    }
+		ANTOMIC_ASSERT(false, "ShaderDataTypeGLSize: Unknown data type")
+		return GL_UNSIGNED_SHORT;
+	}
 
-    OpenGLShader::OpenGLShader(const std::string &vertexSrc, const std::string &fragmentSrc)
-    {
-        GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        const GLchar *source = vertexSrc.c_str();
-        glShaderSource(vertexShader, 1, &source, 0);
+	OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
+	{
+		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		const GLchar* source = vertexSrc.c_str();
+		glShaderSource(vertexShader, 1, &source, 0);
 
-        glCompileShader(vertexShader);
-        GLint isCompiled = 0;
-        glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
-        if (isCompiled == GL_FALSE)
-        {
-            GLint maxLength = 0;
-            glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
+		glCompileShader(vertexShader);
+		GLint isCompiled = 0;
+		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &isCompiled);
+		if(isCompiled == GL_FALSE)
+		{
+			GLint maxLength = 0;
+			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
 
-            std::vector<GLchar> infoLog(maxLength);
-            glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
+			std::vector<GLchar> infoLog(maxLength);
+			glGetShaderInfoLog(vertexShader, maxLength, &maxLength, &infoLog[0]);
 
-            glDeleteShader(vertexShader);
-            ANTOMIC_ERROR("{0}", infoLog.data());
-            ANTOMIC_ASSERT(false, "Vertex shader compilation error!");
-            return;
-        }
+			glDeleteShader(vertexShader);
+			ANTOMIC_ERROR("{0}", infoLog.data());
+			ANTOMIC_ASSERT(false, "Vertex shader compilation error!");
+			return;
+		}
 
-        GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        source = fragmentSrc.c_str();
-        glShaderSource(fragmentShader, 1, &source, 0);
+		GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+		source = fragmentSrc.c_str();
+		glShaderSource(fragmentShader, 1, &source, 0);
 
-        glCompileShader(fragmentShader);
-        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
-        if (isCompiled == GL_FALSE)
-        {
-            GLint maxLength = 0;
-            glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
+		glCompileShader(fragmentShader);
+		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
+		if(isCompiled == GL_FALSE)
+		{
+			GLint maxLength = 0;
+			glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
 
-            std::vector<GLchar> infoLog(maxLength);
-            glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
+			std::vector<GLchar> infoLog(maxLength);
+			glGetShaderInfoLog(fragmentShader, maxLength, &maxLength, &infoLog[0]);
 
-            glDeleteShader(fragmentShader);
-            glDeleteShader(vertexShader);
+			glDeleteShader(fragmentShader);
+			glDeleteShader(vertexShader);
 
-            ANTOMIC_ERROR("{0}", infoLog.data());
-            ANTOMIC_ASSERT(false, "Fragment shader compilation error!");
-            return;
-        }
+			ANTOMIC_ERROR("{0}", infoLog.data());
+			ANTOMIC_ASSERT(false, "Fragment shader compilation error!");
+			return;
+		}
 
-        mRendererId = glCreateProgram();
+		mRendererId = glCreateProgram();
 
-        glAttachShader(mRendererId, vertexShader);
-        glAttachShader(mRendererId, fragmentShader);
+		glAttachShader(mRendererId, vertexShader);
+		glAttachShader(mRendererId, fragmentShader);
 
-        glLinkProgram(mRendererId);
+		glLinkProgram(mRendererId);
 
-        GLint isLinked = 0;
-        glGetProgramiv(mRendererId, GL_LINK_STATUS, (int *)&isLinked);
-        if (isLinked == GL_FALSE)
-        {
-            GLint maxLength = 0;
-            glGetProgramiv(mRendererId, GL_INFO_LOG_LENGTH, &maxLength);
+		GLint isLinked = 0;
+		glGetProgramiv(mRendererId, GL_LINK_STATUS, (int*)&isLinked);
+		if(isLinked == GL_FALSE)
+		{
+			GLint maxLength = 0;
+			glGetProgramiv(mRendererId, GL_INFO_LOG_LENGTH, &maxLength);
 
-            std::vector<GLchar> infoLog(maxLength);
-            glGetProgramInfoLog(mRendererId, maxLength, &maxLength, &infoLog[0]);
+			std::vector<GLchar> infoLog(maxLength);
+			glGetProgramInfoLog(mRendererId, maxLength, &maxLength, &infoLog[0]);
 
-            glDeleteProgram(mRendererId);
-            glDeleteShader(vertexShader);
-            glDeleteShader(fragmentShader);
+			glDeleteProgram(mRendererId);
+			glDeleteShader(vertexShader);
+			glDeleteShader(fragmentShader);
 
-            ANTOMIC_ERROR("{0}", infoLog.data());
-            ANTOMIC_ASSERT(false, "Shader Program link  error!");
-            return;
-        }
+			ANTOMIC_ERROR("{0}", infoLog.data());
+			ANTOMIC_ASSERT(false, "Shader Program link  error!");
+			return;
+		}
 
-        // Always detach shaders after a successful link.
-        glDetachShader(mRendererId, vertexShader);
-        glDetachShader(mRendererId, fragmentShader);
-    }
+		// Always detach shaders after a successful link.
+		glDetachShader(mRendererId, vertexShader);
+		glDetachShader(mRendererId, fragmentShader);
+	}
 
-    OpenGLShader::~OpenGLShader()
-    {
-        glDeleteProgram(mRendererId);
-    }
+	OpenGLShader::~OpenGLShader()
+	{
+		glDeleteProgram(mRendererId);
+	}
 
-    void OpenGLShader::Bind() const
-    {
-        glUseProgram(mRendererId);
-    }
+	void OpenGLShader::Bind() const
+	{
+		glUseProgram(mRendererId);
+	}
 
-    void OpenGLShader::Unbind() const
-    {
-        glUseProgram(0);
-    }
+	void OpenGLShader::Unbind() const
+	{
+		glUseProgram(0);
+	}
 
-    void OpenGLShader::SetUniformValue(const std::string &name, float value)
-    {
-        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
-        if (loc != -1)
-        {
-            glUniform1f(loc, value);
-        }
-    }
+	void OpenGLShader::SetUniformValue(const std::string& name, float value)
+	{
+		GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+		if(loc != -1)
+		{
+			glUniform1f(loc, value);
+		}
+	}
 
-    void OpenGLShader::SetUniformValue(const std::string &name, const glm::vec2 &value)
-    {
-        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
-        if (loc != -1)
-        {
-            glUniform2f(loc, value.x, value.y);
-        }
-    }
+	void OpenGLShader::SetUniformValue(const std::string& name, const glm::vec2& value)
+	{
+		GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+		if(loc != -1)
+		{
+			glUniform2f(loc, value.x, value.y);
+		}
+	}
 
-    void OpenGLShader::SetUniformValue(const std::string &name, const glm::vec3 &value)
-    {
-        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
-        if (loc != -1)
-        {
-            glUniform3f(loc, value.x, value.y, value.z);
-        }
-    }
+	void OpenGLShader::SetUniformValue(const std::string& name, const glm::vec3& value)
+	{
+		GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+		if(loc != -1)
+		{
+			glUniform3f(loc, value.x, value.y, value.z);
+		}
+	}
 
-    void OpenGLShader::SetUniformValue(const std::string &name, const glm::vec4 &value)
-    {
-        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
-        if (loc != -1)
-        {
-            glUniform4f(loc, value.x, value.y, value.z, value.w);
-        }
-    }
+	void OpenGLShader::SetUniformValue(const std::string& name, const glm::vec4& value)
+	{
+		GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+		if(loc != -1)
+		{
+			glUniform4f(loc, value.x, value.y, value.z, value.w);
+		}
+	}
 
-    void OpenGLShader::SetUniformValue(const std::string &name, const glm::mat3 &value)
-    {
-        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
-        if (loc != -1)
-        {
-            glUniformMatrix3fv(loc, 1, GL_FALSE, glm::value_ptr(value));
-        }
-    }
+	void OpenGLShader::SetUniformValue(const std::string& name, const glm::mat3& value)
+	{
+		GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+		if(loc != -1)
+		{
+			glUniformMatrix3fv(loc, 1, GL_FALSE, glm::value_ptr(value));
+		}
+	}
 
-    void OpenGLShader::SetUniformValue(const std::string &name, const glm::mat4 &value)
-    {
-        GLint loc = glGetUniformLocation(mRendererId, name.c_str());
-        if (loc != -1)
-        {
-            glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(value));
-        }
-    }
+	void OpenGLShader::SetUniformValue(const std::string& name, const glm::mat4& value)
+	{
+		GLint loc = glGetUniformLocation(mRendererId, name.c_str());
+		if(loc != -1)
+		{
+			glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(value));
+		}
+	}
 
 } // namespace Antomic

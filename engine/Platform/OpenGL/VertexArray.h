@@ -17,25 +17,32 @@
 #include "Core/Base.h"
 #include "Renderer/VertexArray.h"
 
-namespace Antomic {
+namespace Antomic
+{
 
-    class OpenGLVertexArray : public VertexArray
-    {
-    public:
-        OpenGLVertexArray();
-        virtual ~OpenGLVertexArray() override;
+	class OpenGLVertexArray : public VertexArray
+	{
+	public:
+		OpenGLVertexArray();
+		virtual ~OpenGLVertexArray() override;
 
-    public:
-        virtual void Bind() const override;
-        virtual void Unbind() const override;
-        virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) override;
-        virtual void SetIndexBuffer(const Ref<IndexBuffer> &buffer) override;
-        virtual const std::vector<Ref<VertexBuffer>> &GetVertexBuffers() const override { return mVertextBuffers; };
-        virtual const Ref<IndexBuffer> &GetIndexBuffer() const override { return mIndexBuffer; };
-        
-    private:
-        uint32_t mRendererId;
-        std::vector<Ref<VertexBuffer>> mVertextBuffers;
-        Ref<IndexBuffer> mIndexBuffer;
-    };
-}
+	public:
+		virtual void Bind() const override;
+		virtual void Unbind() const override;
+		virtual void AddVertexBuffer(const Ref<VertexBuffer>& buffer) override;
+		virtual void SetIndexBuffer(const Ref<IndexBuffer>& buffer) override;
+		virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const override
+		{
+			return mVertextBuffers;
+		};
+		virtual const Ref<IndexBuffer>& GetIndexBuffer() const override
+		{
+			return mIndexBuffer;
+		};
+
+	private:
+		uint32_t mRendererId;
+		std::vector<Ref<VertexBuffer>> mVertextBuffers;
+		Ref<IndexBuffer> mIndexBuffer;
+	};
+} // namespace Antomic

@@ -20,19 +20,19 @@
 
 namespace Antomic
 {
-    class OpenGLTexture : public Texture
-    {
-    public:
-        OpenGLTexture(uint32_t width, uint32_t height, unsigned char* data);
-        virtual ~OpenGLTexture();
+	class OpenGLTexture : public Texture
+	{
+	public:
+		OpenGLTexture(uint32_t width, uint32_t height, unsigned char* data);
+		virtual ~OpenGLTexture();
 
-    public:
-        // Bind/Unbind commands
-        virtual void Bind() const override;
-        virtual void Unbind() const override;
+	public:
+		// Bind/Unbind commands
+		virtual void Bind() const override;
+		virtual void Unbind() const override;
 
-    private:
-        GLuint mRendererID;
-    };
-    
+	private:
+		GLuint mRendererID;
+	};
+
 } // namespace Antomic

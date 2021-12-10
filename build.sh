@@ -86,7 +86,7 @@ function level_build_dependencies() {
             # probably in the future we need to look back into this
             sudo swupd bundle-add games-dev
             ;;
-        MINGW64)
+        MINGW64*)
             echo "System: Windows - MingGW 54"
             PACKAGES=(
                 "mingw-w64-x86_64-toolchain"
@@ -104,6 +104,10 @@ function level_build_dependencies() {
             done
 
             pacman -S ${MISSING_PACKAGES};
+            ;;
+        Manjaro*)
+            echo "Manjaro Arch"
+            pamac install base-devel
             ;;
         *)
             printf "Distro not supported yet (%s)\n" ${DISTRO}

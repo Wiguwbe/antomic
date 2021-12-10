@@ -16,32 +16,32 @@
 #include "Platform/OpenGL/Texture.h"
 namespace Antomic
 {
-    OpenGLTexture::OpenGLTexture(uint32_t width, uint32_t height, unsigned char *data)
-    {
-        glGenTextures(1, &mRendererID);
-        glBindTexture(GL_TEXTURE_2D, mRendererID);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+	OpenGLTexture::OpenGLTexture(uint32_t width, uint32_t height, unsigned char* data)
+	{
+		glGenTextures(1, &mRendererID);
+		glBindTexture(GL_TEXTURE_2D, mRendererID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
-    OpenGLTexture::~OpenGLTexture()
-    {
-        glDeleteTextures(1, &mRendererID);
-    }
+	OpenGLTexture::~OpenGLTexture()
+	{
+		glDeleteTextures(1, &mRendererID);
+	}
 
-    void OpenGLTexture::Bind() const
-    {
-        glBindTexture(GL_TEXTURE_2D, mRendererID);
-    }
+	void OpenGLTexture::Bind() const
+	{
+		glBindTexture(GL_TEXTURE_2D, mRendererID);
+	}
 
-    void OpenGLTexture::Unbind() const
-    {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+	void OpenGLTexture::Unbind() const
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
-} // namespace Anatomic
+} // namespace Antomic

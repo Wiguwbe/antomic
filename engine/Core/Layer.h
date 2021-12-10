@@ -18,26 +18,38 @@
 
 namespace Antomic
 {
-    class Layer
-    {
+	class Layer
+	{
 
-    public:
-        Layer(const std::string &name = "layer");
-        virtual ~Layer();
-        
-        virtual void OnAttach() {}
-        virtual void OnDetach() {}
-        virtual void Update(const uint32_t &time) {}
-        virtual void Submit() {}
-        virtual void OnEvent(Event &e) {}
+	public:
+		Layer(const std::string& name = "layer");
+		virtual ~Layer();
 
-        inline const void Disable() { mEnabled=false; }
-        inline const void Enable() { mEnabled=true; }
-        inline const bool &IsEnabled() const { return mEnabled; }
-        inline const std::string &GetName() const { return mName; }
+		virtual void OnAttach() { }
+		virtual void OnDetach() { }
+		virtual void Update(const uint32_t& time) { }
+		virtual void Submit() { }
+		virtual void OnEvent(Event& e) { }
 
-    protected:
-        std::string mName;
-        bool mEnabled;
-    };
+		inline const void Disable()
+		{
+			mEnabled = false;
+		}
+		inline const void Enable()
+		{
+			mEnabled = true;
+		}
+		inline const bool& IsEnabled() const
+		{
+			return mEnabled;
+		}
+		inline const std::string& GetName() const
+		{
+			return mName;
+		}
+
+	protected:
+		std::string mName;
+		bool mEnabled;
+	};
 } // namespace Antomic

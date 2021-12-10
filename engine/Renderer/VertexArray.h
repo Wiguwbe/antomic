@@ -15,23 +15,24 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include "Renderer/Buffers.h"
 #include "Renderer/Bindable.h"
+#include "Renderer/Buffers.h"
 
-namespace Antomic {
+namespace Antomic
+{
 
-    class VertexArray : public Bindable
-    {
-    public:
-        virtual ~VertexArray() = default;
+	class VertexArray : public Bindable
+	{
+	public:
+		virtual ~VertexArray() = default;
 
-    public:
-        virtual void AddVertexBuffer(const Ref<VertexBuffer> &buffer) = 0;
-        virtual void SetIndexBuffer(const Ref<IndexBuffer> &buffer) = 0;
-        virtual const std::vector<Ref<VertexBuffer>> &GetVertexBuffers() const = 0;
-        virtual const Ref<IndexBuffer> &GetIndexBuffer() const = 0;
+	public:
+		virtual void AddVertexBuffer(const Ref<VertexBuffer>& buffer) = 0;
+		virtual void SetIndexBuffer(const Ref<IndexBuffer>& buffer) = 0;
+		virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const = 0;
+		virtual const Ref<IndexBuffer>& GetIndexBuffer() const = 0;
 
-    public:
-        static Ref<VertexArray> Create();
-    };
-}
+	public:
+		static Ref<VertexArray> Create();
+	};
+} // namespace Antomic

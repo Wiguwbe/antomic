@@ -14,15 +14,15 @@
    limitations under the License.
 */
 #include "Graph/Node.h"
+#include "Core/Log.h"
 #include "Graph/2D/SpriteNode.h"
+#include "Profiling/Instrumentor.h"
 #include "Renderer/Drawable.h"
 #include "Renderer/RendererFrame.h"
-#include "Core/Log.h"
-#include "Profiling/Instrumentor.h"
 
 namespace Antomic
 {
-	void Node::AddChild(const Ref<Node> &node)
+	void Node::AddChild(const Ref<Node>& node)
 	{
 		ANTOMIC_ASSERT(node != nullptr, "Node::AddChild: Child cannot be null");
 		ANTOMIC_ASSERT(node->mParent.get() != this, "Node::AddChild: Already child of this node");
@@ -31,14 +31,14 @@ namespace Antomic
 		// Node2d only accepts Node2d
 		// Node3d only accepts Node3d
 
-		if (GetType() == NodeType::SCENE)
+		if(GetType() == NodeType::SCENE)
 		{
 			node->mParent = shared_from_this();
 			mChildren.push_back(node);
 			return;
 		}
 
-		if (node->GetType() != GetType())
+		if(node->GetType() != GetType())
 		{
 			ANTOMIC_INFO("Node::AddChild: Invalid node type. must be of the same type");
 			return;
@@ -48,7 +48,7 @@ namespace Antomic
 		mChildren.push_back(node);
 	}
 
-	void Node::RemoveChild(const Ref<Node> &node)
+	void Node::RemoveChild(const Ref<Node>& node)
 	{
 		ANTOMIC_ASSERT(node != nullptr, "Node: Child cannot be null");
 		ANTOMIC_ASSERT(node->mParent.get() == this, "Node: Not a child of this node");
@@ -60,7 +60,7 @@ namespace Antomic
 	void Node::MakeDirty()
 	{
 		mDirty = true;
-		for (auto child : mChildren)
+		for(auto child : mChildren)
 		{
 			child->MakeDirty();
 		}
@@ -68,44 +68,44 @@ namespace Antomic
 
 	void Node::CleanUp()
 	{
-		for (auto child : mChildren)
+		for(auto child : mChildren)
 		{
 			child->CleanUp();
 		}
 	}
 
-	void Node::Update(const uint32_t &time)
+	void Node::Update(const uint32_t& time)
 	{
 		// Requests all childs to update
 		UpdateSpatialInformation();
-		for (auto child : mChildren)
+		for(auto child : mChildren)
 		{
 			child->Update(time);
 		}
 	}
 
-	void Node::SubmitDrawables(const Ref<RendererFrame> &frame)
+	void Node::SubmitDrawables(const Ref<RendererFrame>& frame)
 	{
 		// TODO: Optimize in order only to send drawables that are inside the view
 
 		ANTOMIC_PROFILE_FUNCTION("Graph");
 
 		// Submit any existing drawable if it exists
-		if (GetDrawable() != nullptr)
+		if(GetDrawable() != nullptr)
 		{
 			frame->QueueDrawable(GetDrawable());
 		}
 
 		// Asks children to submit their drawables to frame
-		for (auto child : mChildren)
+		for(auto child : mChildren)
 		{
 			child->SubmitDrawables(frame);
 		}
 	}
 
-	void Node::Serialize(nlohmann::json &json)
+	void Node::Serialize(nlohmann::json& json)
 	{
-		for (auto child : mChildren)
+		for(auto child : mChildren)
 		{
 			auto node = nlohmann::json();
 			child->Serialize(node);
@@ -113,19 +113,19 @@ namespace Antomic
 		}
 	}
 
-	Ref<Node> Node::Deserialize(const nlohmann::json &json)
+	Ref<Node> Node::Deserialize(const nlohmann::json& json)
 	{
 		Ref<Node> nodeRef = nullptr;
 
 		auto nodeClass = json["class"].get<std::string>();
-		if (nodeClass == "SpriteNode")
+		if(nodeClass == "SpriteNode")
 		{
 			nodeRef = SpriteNode::Deserialize(json);
 		}
 
-		if (nodeRef != nullptr && json.contains("nodes"))
+		if(nodeRef != nullptr && json.contains("nodes"))
 		{
-			for (auto node : json["nodes"])
+			for(auto node : json["nodes"])
 			{
 				nodeRef->AddChild(Node::Deserialize(node));
 			}
@@ -133,4 +133,4 @@ namespace Antomic
 
 		return nodeRef;
 	}
-}
+} // namespace Antomic

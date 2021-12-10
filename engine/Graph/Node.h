@@ -20,51 +20,63 @@
 
 namespace Antomic
 {
-    enum class NodeType
-    {
-        SCENE,
-        NODE_3D,
-        NODE_2D
-    };
+	enum class NodeType
+	{
+		SCENE,
+		NODE_3D,
+		NODE_2D
+	};
 
-    class Node : public std::enable_shared_from_this<Node>
-    {
-    public:
-        virtual ~Node() = default;
+	class Node : public std::enable_shared_from_this<Node>
+	{
+	public:
+		virtual ~Node() = default;
 
-    public:
-        // Graph Operations
-        inline const VectorRef<Node> &GetChildren() const { return mChildren; }
-        inline const Ref<Node> &GetParent() const { return mParent; }
-        void AddChild(const Ref<Node> &node);
-        void RemoveChild(const Ref<Node> &node);
-        virtual NodeType GetType() = 0;
+	public:
+		// Graph Operations
+		inline const VectorRef<Node>& GetChildren() const
+		{
+			return mChildren;
+		}
+		inline const Ref<Node>& GetParent() const
+		{
+			return mParent;
+		}
+		void AddChild(const Ref<Node>& node);
+		void RemoveChild(const Ref<Node>& node);
+		virtual NodeType GetType() = 0;
 
-        // Render Operations
-        virtual void SubmitDrawables(const Ref<RendererFrame> &frame);
+		// Render Operations
+		virtual void SubmitDrawables(const Ref<RendererFrame>& frame);
 
-        // State Operations
-        virtual void Update(const uint32_t &time);
+		// State Operations
+		virtual void Update(const uint32_t& time);
 
-        // Serialization
-        virtual void Serialize(nlohmann::json &json);
-        
-        static Ref<Node> Deserialize(const nlohmann::json &json);
+		// Serialization
+		virtual void Serialize(nlohmann::json& json);
 
-    protected:
-        // Render Operations
-        virtual const Ref<Drawable> GetDrawable() const = 0;
+		static Ref<Node> Deserialize(const nlohmann::json& json);
 
-        // State operations
-        virtual void MakeDirty();
-        inline bool IsDirty() { return mDirty; }
-        inline void ClearDirty() { mDirty = false; }
-        virtual void UpdateSpatialInformation() = 0;
-        virtual void CleanUp();
+	protected:
+		// Render Operations
+		virtual const Ref<Drawable> GetDrawable() const = 0;
 
-    private:
-        Ref<Node> mParent = nullptr;
-        VectorRef<Node> mChildren;
-        bool mDirty = true;
-    };
+		// State operations
+		virtual void MakeDirty();
+		inline bool IsDirty()
+		{
+			return mDirty;
+		}
+		inline void ClearDirty()
+		{
+			mDirty = false;
+		}
+		virtual void UpdateSpatialInformation() = 0;
+		virtual void CleanUp();
+
+	private:
+		Ref<Node> mParent = nullptr;
+		VectorRef<Node> mChildren;
+		bool mDirty = true;
+	};
 } // namespace Antomic

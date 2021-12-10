@@ -17,13 +17,14 @@
 
 namespace Antomic
 {
-    BasicMaterial::BasicMaterial() 
-    {
-        mShader = Shader::CreateFromFile("assets/shaders/materials/vs_basic.glsl", "assets/shaders/materials/fs_basic.glsl");
-    }
+	BasicMaterial::BasicMaterial()
+	{
+		mShader = Shader::CreateFromFile("assets/shaders/materials/vs_basic.glsl",
+										 "assets/shaders/materials/fs_basic.glsl");
+	}
 
-    void BasicMaterial::Bind() const
-    {
-        mShader->Bind();
-    }
-}
+	void BasicMaterial::Bind() const
+	{
+		mShader->Bind();
+	}
+} // namespace Antomic

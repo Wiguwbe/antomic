@@ -20,18 +20,24 @@
 
 namespace Antomic
 {
-    class BasicMaterial : public Material
-    {
-        public:
-            BasicMaterial();
-            virtual ~BasicMaterial() = default;
+	class BasicMaterial : public Material
+	{
+	public:
+		BasicMaterial();
+		virtual ~BasicMaterial() = default;
 
-        public:
-            virtual void Bind() const;
-            virtual void Unbind() const { mShader->Unbind(); }
-            virtual const Ref<Shader> &GetShader() const { return mShader; };
-        
-        private:
-            Ref<Shader> mShader;
-    };
+	public:
+		virtual void Bind() const;
+		virtual void Unbind() const
+		{
+			mShader->Unbind();
+		}
+		virtual const Ref<Shader>& GetShader() const
+		{
+			return mShader;
+		};
+
+	private:
+		Ref<Shader> mShader;
+	};
 } //namespace Antomic

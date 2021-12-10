@@ -14,12 +14,12 @@ c       http://www.apache.org/licenses/LICENSE-2.0
    limitations under the License.
 */
 #include "Graph/2D/Node2d.h"
-#include "Renderer/Sprite.h"
+#include "Core/Log.h"
+#include "Core/Serialization.h"
+#include "Profiling/Instrumentor.h"
 #include "Renderer/Drawable.h"
 #include "Renderer/RendererFrame.h"
-#include "Core/Log.h"
-#include "Profiling/Instrumentor.h"
-#include "Core/Serialization.h"
+#include "Renderer/Sprite.h"
 
 #include <glm/gtx/matrix_transform_2d.hpp>
 namespace Antomic
@@ -67,7 +67,7 @@ namespace Antomic
 
 	void Node2d::UpdateSpatialInformation()
 	{
-		if (!IsDirty())
+		if(!IsDirty())
 		{
 			return;
 		}
@@ -76,7 +76,7 @@ namespace Antomic
 		mLocal = glm::mat4(1.0f);
 		mLocal = glm::translate(mLocal, mPosition);
 		mLocal = glm::rotate(mLocal, glm::radians(mRotation));
-		mLocal = glm::translate(mLocal, { mSize.x * -abs(mAnchor.x), mSize.y * -abs(mAnchor.y) });
+		mLocal = glm::translate(mLocal, {mSize.x * -abs(mAnchor.x), mSize.y * -abs(mAnchor.y)});
 		mLocal = glm::scale(mLocal, mSize);
 
 		// Update World Matrix
@@ -85,11 +85,10 @@ namespace Antomic
 
 		// Update Model Matrix
 		// Convert the 3x3 matrix to a 4x4 matrix
-		GetDrawable()->SetModelMatrix(glm::mat4(
-			glm::vec4(glm::vec2(mWorld[0]), 0, 0),
-			glm::vec4(glm::vec2(mWorld[1]), 0, 0),
-			glm::vec4(0, 0, 1, 0),
-			glm::vec4(glm::vec2(mWorld[2]), 0, 1)));
+		GetDrawable()->SetModelMatrix(glm::mat4(glm::vec4(glm::vec2(mWorld[0]), 0, 0),
+												glm::vec4(glm::vec2(mWorld[1]), 0, 0),
+												glm::vec4(0, 0, 1, 0),
+												glm::vec4(glm::vec2(mWorld[2]), 0, 1)));
 
 		ClearDirty();
 	}
@@ -105,4 +104,4 @@ namespace Antomic
 		json["zorder"] = mZOrder;
 		Node::Serialize(json);
 	}
-}
+} // namespace Antomic

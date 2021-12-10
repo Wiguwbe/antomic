@@ -45,4 +45,4 @@ namespace Antomic
 		EVENT_CLASS_TYPE(AppRender)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
-} 
+} // namespace Antomic

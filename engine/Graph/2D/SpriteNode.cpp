@@ -14,13 +14,13 @@
    limitations under the License.
 */
 #include "Graph/2D/SpriteNode.h"
+#include "Core/Serialization.h"
+#include "Profiling/Instrumentor.h"
+#include "Renderer/RendererFrame.h"
 #include "Renderer/Sprite.h"
 #include "Renderer/Texture.h"
-#include "Renderer/RendererFrame.h"
-#include "Core/Serialization.h"
 #include "stb_image.h"
 #include <glm/gtx/matrix_transform_2d.hpp>
-#include "Profiling/Instrumentor.h"
 
 namespace Antomic
 {
@@ -33,7 +33,7 @@ namespace Antomic
 			// load and generate the texture
 			int width, height, nrChannels;
 			unsigned char* data = stbi_load(name.c_str(), &width, &height, &nrChannels, 0);
-			if (data)
+			if(data)
 			{
 				Ref<Texture> texture = Texture::CreateTexture(width, height, data);
 				mSprite->AddBindable(texture);
@@ -76,10 +76,11 @@ namespace Antomic
 		return sprite;
 	}
 
-	void SpriteNode::CleanUp() {
+	void SpriteNode::CleanUp()
+	{
 
 		mSprite = nullptr;
 		Node::CleanUp();
-	} 
+	}
 
-}
+} // namespace Antomic

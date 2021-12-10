@@ -19,205 +19,254 @@
 
 namespace Antomic
 {
-    enum class TokenType
-    {
-        Invalid,
-        End,
-        NewLine,
-        Identation,
+	enum class TokenType
+	{
+		Invalid,
+		End,
+		NewLine,
+		Identation,
 
-        Comment,
-        Identifier,
-        NumberFloat,
-        NumberInteger,
-        NumberHex,
-        String,
-        FormatedString,
+		Comment,
+		Identifier,
+		NumberFloat,
+		NumberInteger,
+		NumberHex,
+		String,
+		FormatedString,
 
-        KeywordAnd,
-        KeywordAs,
-        KeywordAssert,
-        KeywordBreak,
-        KeywordClass,
-        KeywordContinue,
-        KeywordDef,
-        KeywordDel,
-        KeywordElIf,
-        KeywordElse,
-        KeywordExcept,
-        KeywordExec,
-        KeywordFalse,
-        KeywordFinally,
-        KeywordFor,
-        KeywordFrom,
-        KeywordIf,
-        KeywordImport,
-        KeywordIn,
-        KeywordIs,
-        KeywordLambda,
-        KeywordNone,
-        KeywordNot,
-        KeywordOr,
-        KeywordPass,
-        KeywordRaise,
-        KeywordReturn,
-        KeywordTrue,
-        KeywordTry,
-        KeywordWhile,
+		KeywordAnd,
+		KeywordAs,
+		KeywordAssert,
+		KeywordBreak,
+		KeywordClass,
+		KeywordContinue,
+		KeywordDef,
+		KeywordDel,
+		KeywordElIf,
+		KeywordElse,
+		KeywordExcept,
+		KeywordExec,
+		KeywordFalse,
+		KeywordFinally,
+		KeywordFor,
+		KeywordFrom,
+		KeywordIf,
+		KeywordImport,
+		KeywordIn,
+		KeywordIs,
+		KeywordLambda,
+		KeywordNone,
+		KeywordNot,
+		KeywordOr,
+		KeywordPass,
+		KeywordRaise,
+		KeywordReturn,
+		KeywordTrue,
+		KeywordTry,
+		KeywordWhile,
 
-        OpAdd,
-        OpSub,
-        OpMul,
-        OpDiv,
-        OpExp,
-        OpMod,
-        OpAnd,
-        OpOr,
-        OpXor,
-        OpFloorDiv,
-        OpInv,
-        OpShiftLeft,
-        OpShiftRight,
-        OpEqual,
-        OpNotEqual,
-        OpGreatEqual,
-        OpLessEqual,
-        OpGreat,
-        OpLess,
-        OpAssign,
-        OpAddAssign,
-        OpSubAssign,
-        OpMulAssign,
-        OpDivAssign,
-        OpFloorDivAssign,
-        OpModAssign,
-        OpAndAssign,
-        OpOrAssign,
-        OpXorAssign,
-        OpShiftLeftAssign,
-        OpShiftRightAssign,
-        OpExpAssign,
+		OpAdd,
+		OpSub,
+		OpMul,
+		OpDiv,
+		OpExp,
+		OpMod,
+		OpAnd,
+		OpOr,
+		OpXor,
+		OpFloorDiv,
+		OpInv,
+		OpShiftLeft,
+		OpShiftRight,
+		OpEqual,
+		OpNotEqual,
+		OpGreatEqual,
+		OpLessEqual,
+		OpGreat,
+		OpLess,
+		OpAssign,
+		OpAddAssign,
+		OpSubAssign,
+		OpMulAssign,
+		OpDivAssign,
+		OpFloorDivAssign,
+		OpModAssign,
+		OpAndAssign,
+		OpOrAssign,
+		OpXorAssign,
+		OpShiftLeftAssign,
+		OpShiftRightAssign,
+		OpExpAssign,
 
-        SymbolBraceOpen,
-        SymbolBraceClose,
-        SymbolComma,
-        SymbolColon,
-        SymbolPeriod,
-        SymbolSemiColon,
-        SymbolBracketOpen,
-        SymbolBracketClose,
-        SymbolParentesesOpen,
-        SymbolParentesesClose,
-    };
+		SymbolBraceOpen,
+		SymbolBraceClose,
+		SymbolComma,
+		SymbolColon,
+		SymbolPeriod,
+		SymbolSemiColon,
+		SymbolBracketOpen,
+		SymbolBracketClose,
+		SymbolParentesesOpen,
+		SymbolParentesesClose,
+	};
 
-    struct Token
-    {
-        TokenType Type;
-        std::string Value;
-        uint32_t Line;
-        uint32_t Column;
+	struct Token
+	{
+		TokenType Type;
+		std::string Value;
+		uint32_t Line;
+		uint32_t Column;
 
-        Token() : Type(TokenType::Invalid), Value(""), Line(0), Column(0) {}
-        Token(TokenType type, const std::string &value) : Type(type), Value(value), Line(0), Column(0) {}
-        Token(TokenType type, uint32_t line, uint32_t column, const std::string &value) : Type(type), Value(value), Line(line), Column(column) {}
-    };
+		Token()
+			: Type(TokenType::Invalid)
+			, Value("")
+			, Line(0)
+			, Column(0)
+		{ }
+		Token(TokenType type, const std::string& value)
+			: Type(type)
+			, Value(value)
+			, Line(0)
+			, Column(0)
+		{ }
+		Token(TokenType type, uint32_t line, uint32_t column, const std::string& value)
+			: Type(type)
+			, Value(value)
+			, Line(line)
+			, Column(column)
+		{ }
+	};
 
-    struct LexerState
-    {
-        uint32_t CurrentLine;
-        uint32_t CurrentColumn;
-        Token CurrentToken;
-        bool MultiLine;
+	struct LexerState
+	{
+		uint32_t CurrentLine;
+		uint32_t CurrentColumn;
+		Token CurrentToken;
+		bool MultiLine;
 
-        LexerState() : CurrentLine(1), CurrentColumn(1), CurrentToken({TokenType::Invalid, ""}), MultiLine(false) {}
-        LexerState(uint32_t line, uint32_t column, Token token) : CurrentLine(line), CurrentColumn(column), CurrentToken(token), MultiLine(false) {}
-    };
+		LexerState()
+			: CurrentLine(1)
+			, CurrentColumn(1)
+			, CurrentToken({TokenType::Invalid, ""})
+			, MultiLine(false)
+		{ }
+		LexerState(uint32_t line, uint32_t column, Token token)
+			: CurrentLine(line)
+			, CurrentColumn(column)
+			, CurrentToken(token)
+			, MultiLine(false)
+		{ }
+	};
 
-    class Lexer
-    {
-    public:
-        Lexer(const std::string &name);
-        Lexer(const std::string &expression, const std::string &name);
-        Lexer(const Ref<Reader> reader);
-        ~Lexer() = default;
+	class Lexer
+	{
+	public:
+		Lexer(const std::string& name);
+		Lexer(const std::string& expression, const std::string& name);
+		Lexer(const Ref<Reader> reader);
+		~Lexer() = default;
 
-        Token Read();
-        Token Peek();
+		Token Read();
+		Token Peek();
 
-    private:
-        Token ParseNext();
-        void ProcessComment();
-        void ProcessString();
-        void ProcessOpenParenteses();
-        void ProcessCloseParenteses();
-        void ProcessOpenBrackets();
-        void ProcessCloseBrackets();
-        void ProcessOpenBraces();
-        void ProcessCloseBraces();
-        void ProcessAdd();
-        void ProcessSub();
-        void ProcessDiv();
-        void ProcessMul();
-        void ProcessPeriod();
-        void ProcessComma();
-        void ProcessColon();
-        void ProcessSemicolon();
-        void ProcessMod();
-        void ProcessGreatThen();
-        void ProcessLessThen();
-        void ProcessAssign();
-        void ProcessXor();
-        void ProcessNot();
-        void ProcessNotEqual();
-        void ProcessAnd();
-        void ProcessOr();
-        void ProcessFormatedString();
-        void ProcessDocString();
-        void ProcessNumber();
-        void ProcessDecimalNumber();
-        void ProcessHexNumber();
-        void ProcessName();
+	private:
+		Token ParseNext();
+		void ProcessComment();
+		void ProcessString();
+		void ProcessOpenParenteses();
+		void ProcessCloseParenteses();
+		void ProcessOpenBrackets();
+		void ProcessCloseBrackets();
+		void ProcessOpenBraces();
+		void ProcessCloseBraces();
+		void ProcessAdd();
+		void ProcessSub();
+		void ProcessDiv();
+		void ProcessMul();
+		void ProcessPeriod();
+		void ProcessComma();
+		void ProcessColon();
+		void ProcessSemicolon();
+		void ProcessMod();
+		void ProcessGreatThen();
+		void ProcessLessThen();
+		void ProcessAssign();
+		void ProcessXor();
+		void ProcessNot();
+		void ProcessNotEqual();
+		void ProcessAnd();
+		void ProcessOr();
+		void ProcessFormatedString();
+		void ProcessDocString();
+		void ProcessNumber();
+		void ProcessDecimalNumber();
+		void ProcessHexNumber();
+		void ProcessName();
 
-    private:
-        inline void NextLine()
-        {
-            mState.CurrentLine++;
-            mState.CurrentColumn = 1;
-        }
+	private:
+		inline void NextLine()
+		{
+			mState.CurrentLine++;
+			mState.CurrentColumn = 1;
+		}
 
-        inline void StartToken()
-        {
-            mState.CurrentToken.Line = mState.CurrentLine;
-            mState.CurrentToken.Column = mState.CurrentColumn;
-        }
+		inline void StartToken()
+		{
+			mState.CurrentToken.Line = mState.CurrentLine;
+			mState.CurrentToken.Column = mState.CurrentColumn;
+		}
 
-        inline void StartToken(TokenType type)
-        {
-            mState.CurrentToken.Type = type;
-            mState.CurrentToken.Line = mState.CurrentLine;
-            mState.CurrentToken.Column = mState.CurrentColumn;
-        }
+		inline void StartToken(TokenType type)
+		{
+			mState.CurrentToken.Type = type;
+			mState.CurrentToken.Line = mState.CurrentLine;
+			mState.CurrentToken.Column = mState.CurrentColumn;
+		}
 
-        inline char ReadNextChar()
-        {
-            char c = mReader->Read();
-            mState.CurrentColumn++;
-            return c;
-        }
+		inline char ReadNextChar()
+		{
+			char c = mReader->Read();
+			mState.CurrentColumn++;
+			return c;
+		}
 
-        inline void NewToken() { mState.CurrentToken = {TokenType::Invalid, ""}; }
-        inline void EndToken(TokenType type) { mState.CurrentToken.Type = type; }
-        inline char PeekNextChar() { return mReader->Peek(); }
+		inline void NewToken()
+		{
+			mState.CurrentToken = {TokenType::Invalid, ""};
+		}
+		inline void EndToken(TokenType type)
+		{
+			mState.CurrentToken.Type = type;
+		}
+		inline char PeekNextChar()
+		{
+			return mReader->Peek();
+		}
 
-        inline bool IsDigit(const char &c) { return c >= '0' && c <= '9'; }
-        inline bool IsLetter(const char &c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'); }
-        inline bool IsAlphaNumeric(const char &c) { return IsDigit(c) || IsLetter(c); }
-        inline bool IsHexadecimalDigit(const char &c) { return IsDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'); }
-        inline bool IsWhiteSpace(const char &c) { return c == ' ' || c == '\n' || c == '\t'; }
+		inline bool IsDigit(const char& c)
+		{
+			return c >= '0' && c <= '9';
+		}
+		inline bool IsLetter(const char& c)
+		{
+			return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+		}
+		inline bool IsAlphaNumeric(const char& c)
+		{
+			return IsDigit(c) || IsLetter(c);
+		}
+		inline bool IsHexadecimalDigit(const char& c)
+		{
+			return IsDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+		}
+		inline bool IsWhiteSpace(const char& c)
+		{
+			return c == ' ' || c == '\n' || c == '\t';
+		}
 
-    private:
-        Ref<Reader> mReader = nullptr;
-        LexerState mState;
-        std::queue<Token> mQueue;
-    };
-}
+	private:
+		Ref<Reader> mReader = nullptr;
+		LexerState mState;
+		std::queue<Token> mQueue;
+	};
+} // namespace Antomic

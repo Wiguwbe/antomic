@@ -20,42 +20,57 @@
 
 namespace Antomic
 {
-    class Node3d : public Node
-    {
-    public:
-        Node3d() = default;
-        virtual ~Node3d() = default;
+	class Node3d : public Node
+	{
+	public:
+		Node3d() = default;
+		virtual ~Node3d() = default;
 
-    public:
-        // Graph Operations
-        virtual NodeType GetType() override { return NodeType::NODE_3D; };
+	public:
+		// Graph Operations
+		virtual NodeType GetType() override
+		{
+			return NodeType::NODE_3D;
+		};
 
-        // Spatial Operations
-        const glm::mat4 &GetWorldMatrix();
-        inline const glm::mat4 &GetLocalMatrix() { return mLocal; }
-        void SetLocalMatrix(const glm::mat4 &matrix);
+		// Spatial Operations
+		const glm::mat4& GetWorldMatrix();
+		inline const glm::mat4& GetLocalMatrix()
+		{
+			return mLocal;
+		}
+		void SetLocalMatrix(const glm::mat4& matrix);
 
-        // Spatial Operation
-        inline const glm::vec3 &GetPosition() const { return mPosition; }
-        inline const glm::vec3 &GetSize() const { return mSize; }
-        inline const glm::vec3 &GetRotation() const { return mRotation; }
+		// Spatial Operation
+		inline const glm::vec3& GetPosition() const
+		{
+			return mPosition;
+		}
+		inline const glm::vec3& GetSize() const
+		{
+			return mSize;
+		}
+		inline const glm::vec3& GetRotation() const
+		{
+			return mRotation;
+		}
 
-        void SetPosition(const glm::vec3 &position);
-        void SetSize(const glm::vec3 &size);
-        void SetRotation(const glm::vec3 &rotation);
- 
-    protected:
-        virtual void UpdateSpatialInformation() override;
+		void SetPosition(const glm::vec3& position);
+		void SetSize(const glm::vec3& size);
+		void SetRotation(const glm::vec3& rotation);
+
+	protected:
+		virtual void UpdateSpatialInformation() override;
 
 #ifdef ANTOMIC_TESTS
-    protected:
+	protected:
 #else
-    private:
+	private:
 #endif
-        glm::mat4 mLocal = glm::mat4(1.0f);
-        glm::mat4 mWorld = glm::mat4(1.0f);
-        glm::vec3 mPosition = {0,0,0};
-        glm::vec3 mSize = {1,1,1};
-        glm::vec3 mRotation = {0,0,0};
-    };
+		glm::mat4 mLocal = glm::mat4(1.0f);
+		glm::mat4 mWorld = glm::mat4(1.0f);
+		glm::vec3 mPosition = {0, 0, 0};
+		glm::vec3 mSize = {1, 1, 1};
+		glm::vec3 mRotation = {0, 0, 0};
+	};
 } // namespace Antomic

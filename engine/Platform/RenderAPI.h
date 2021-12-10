@@ -21,28 +21,31 @@
 
 namespace Antomic
 {
-    enum class RenderAPIDialect
-    {
-        NONE = 0,
-        OPENGL = 1
-    };
+	enum class RenderAPIDialect
+	{
+		NONE = 0,
+		OPENGL = 1
+	};
 
-    RenderAPIDialect RenderAPIFromStr(const std::string &api);
-    std::string const RenderAPIToStr(RenderAPIDialect api);
+	RenderAPIDialect RenderAPIFromStr(const std::string& api);
+	std::string const RenderAPIToStr(RenderAPIDialect api);
 
-    class RenderAPI
-    {
-    public:
-        virtual ~RenderAPI() = default;
+	class RenderAPI
+	{
+	public:
+		virtual ~RenderAPI() = default;
 
-    public:
-        virtual void SetViewport(const uint32_t &x, const uint32_t &y, uint32_t const &width, uint32_t const &height) = 0;
-        virtual void SetClearColor(glm::vec4 color) = 0;
-        virtual void Clear() = 0;
-        virtual void DrawIndexed(const Ref<VertexArray> vertexArray) = 0;
+	public:
+		virtual void SetViewport(const uint32_t& x,
+								 const uint32_t& y,
+								 uint32_t const& width,
+								 uint32_t const& height) = 0;
+		virtual void SetClearColor(glm::vec4 color) = 0;
+		virtual void Clear() = 0;
+		virtual void DrawIndexed(const Ref<VertexArray> vertexArray) = 0;
 
-    public:
-        static Scope<RenderAPI> Create(RenderAPIDialect api = RenderAPIDialect::OPENGL);
-    };
+	public:
+		static Scope<RenderAPI> Create(RenderAPIDialect api = RenderAPIDialect::OPENGL);
+	};
 
 } // namespace Antomic

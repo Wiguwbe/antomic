@@ -13,28 +13,28 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#include "Core/Log.h"
-#include "Renderer/Buffers.h"
-#include "Platform/RenderAPI.h"
 #include "Platform/NullRenderer/VertexArray.h"
+#include "Core/Log.h"
 #include "Platform/Platform.h"
+#include "Platform/RenderAPI.h"
+#include "Renderer/Buffers.h"
 #ifdef ANTOMIC_GL_RENDERER
-#include "Platform/OpenGL/VertexArray.h"
+#	include "Platform/OpenGL/VertexArray.h"
 #endif
 
 namespace Antomic
 {
-    Ref<VertexArray> VertexArray::Create()
-    {
-        switch (Platform::GetRenderAPIDialect())
-        {
+	Ref<VertexArray> VertexArray::Create()
+	{
+		switch(Platform::GetRenderAPIDialect())
+		{
 #ifdef ANTOMIC_GL_RENDERER
-        case RenderAPIDialect::OPENGL:
-            return CreateRef<OpenGLVertexArray>();
+		case RenderAPIDialect::OPENGL:
+			return CreateRef<OpenGLVertexArray>();
 #endif
-        default:
-            return CreateRef<NullVertexArray>();
-        }
-    }
+		default:
+			return CreateRef<NullVertexArray>();
+		}
+	}
 
-}
+} // namespace Antomic

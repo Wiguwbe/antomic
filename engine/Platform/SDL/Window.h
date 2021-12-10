@@ -14,41 +14,58 @@
    limitations under the License.
 */
 #ifdef ANTOMIC_SDL_PLATFORM
-#pragma once
-#include "Platform/Window.h"
-#include "Platform/RenderAPI.h"
-#include "SDL2/SDL.h"
+#	pragma once
+#	include "Platform/RenderAPI.h"
+#	include "Platform/Window.h"
+#	include "SDL2/SDL.h"
 
 namespace Antomic
 {
-    class SDLWindow : public Window
-    {
-    public:
-        SDLWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api);
-        virtual ~SDLWindow() override;
+	class SDLWindow : public Window
+	{
+	public:
+		SDLWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api);
+		virtual ~SDLWindow() override;
 
-    public:
-        virtual uint32_t GetWidth() const override { return mData.Width; };
-        virtual uint32_t GetHeight() const override { return mData.Height; };
-        virtual const std::string &GetTitle() const override { return mData.Title; };
-        virtual void SetTitle(const std::string &title) override;
-        virtual bool IsValid() const override { return mWindow != nullptr; };
-        virtual void SetEventHandler(const EventHandler &handler) override { mData.Handler = handler; } 
-        virtual void SwapBuffer() override;
-        virtual void ProcessEvents() override;
-        virtual void ToggleFullscreen() override;
-        virtual void SetMouseLock(bool lock) override;
-        virtual void* GetNativeWindow() const override { return mWindow; }
-        virtual void Close() override;
+	public:
+		virtual uint32_t GetWidth() const override
+		{
+			return mData.Width;
+		};
+		virtual uint32_t GetHeight() const override
+		{
+			return mData.Height;
+		};
+		virtual const std::string& GetTitle() const override
+		{
+			return mData.Title;
+		};
+		virtual void SetTitle(const std::string& title) override;
+		virtual bool IsValid() const override
+		{
+			return mWindow != nullptr;
+		};
+		virtual void SetEventHandler(const EventHandler& handler) override
+		{
+			mData.Handler = handler;
+		}
+		virtual void SwapBuffer() override;
+		virtual void ProcessEvents() override;
+		virtual void ToggleFullscreen() override;
+		virtual void SetMouseLock(bool lock) override;
+		virtual void* GetNativeWindow() const override
+		{
+			return mWindow;
+		}
+		virtual void Close() override;
 
-    private:
-        SDL_Window *mWindow;
-#ifdef ANTOMIC_GL_RENDERER
-        SDL_GLContext mGLContext;
-#endif
-        WindowData mData;
-
-    };
+	private:
+		SDL_Window* mWindow;
+#	ifdef ANTOMIC_GL_RENDERER
+		SDL_GLContext mGLContext;
+#	endif
+		WindowData mData;
+	};
 
 } // namespace Antomic
 #endif

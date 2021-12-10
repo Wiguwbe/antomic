@@ -20,70 +20,85 @@
 
 namespace Antomic
 {
-    class KeyEvent : public Event
-    {
-    public:
-        Key::Enum GetKeyCode() const { return mKeyCode; }
-        uint8_t GetKeyModifiers() const { return mModifiers; }
+	class KeyEvent : public Event
+	{
+	public:
+		Key::Enum GetKeyCode() const
+		{
+			return mKeyCode;
+		}
+		uint8_t GetKeyModifiers() const
+		{
+			return mModifiers;
+		}
 
-        EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
-    protected:
-        KeyEvent(Key::Enum keycode, uint8_t modifiers)
-            : mKeyCode(keycode), mModifiers(modifiers) {}
+		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
+	protected:
+		KeyEvent(Key::Enum keycode, uint8_t modifiers)
+			: mKeyCode(keycode)
+			, mModifiers(modifiers)
+		{ }
 
-        Key::Enum mKeyCode;
-        uint8_t mModifiers;
-    };
+		Key::Enum mKeyCode;
+		uint8_t mModifiers;
+	};
 
-    class KeyPressedEvent : public KeyEvent
-    {
-    public:
-        KeyPressedEvent(Key::Enum keycode, uint8_t modifiers, int repeat)
-            : KeyEvent(keycode, modifiers), mRepeat(repeat) {}
+	class KeyPressedEvent : public KeyEvent
+	{
+	public:
+		KeyPressedEvent(Key::Enum keycode, uint8_t modifiers, int repeat)
+			: KeyEvent(keycode, modifiers)
+			, mRepeat(repeat)
+		{ }
 
-        int GetRepeatCount() const { return mRepeat; }
+		int GetRepeatCount() const
+		{
+			return mRepeat;
+		}
 
-        std::string ToString() const override
-        {
-            std::stringstream ss;
-            ss << "KeyPressedEvent: " << mKeyCode << " ( repeat:" << mRepeat << ")";
-            return ss.str();
-        }
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyPressedEvent: " << mKeyCode << " ( repeat:" << mRepeat << ")";
+			return ss.str();
+		}
 
-        EVENT_CLASS_TYPE(KeyPressed)
-    private:
-        bool mRepeat;
-    };
+		EVENT_CLASS_TYPE(KeyPressed)
+	private:
+		bool mRepeat;
+	};
 
-    class KeyReleasedEvent : public KeyEvent
-    {
-    public:
-        KeyReleasedEvent(Key::Enum keycode, uint8_t modifiers)
-            : KeyEvent(keycode, modifiers) {}
+	class KeyReleasedEvent : public KeyEvent
+	{
+	public:
+		KeyReleasedEvent(Key::Enum keycode, uint8_t modifiers)
+			: KeyEvent(keycode, modifiers)
+		{ }
 
-        std::string ToString() const override
-        {
-            std::stringstream ss;
-            ss << "KeyReleasedEvent: " << mKeyCode;
-            return ss.str();
-        }
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyReleasedEvent: " << mKeyCode;
+			return ss.str();
+		}
 
-        EVENT_CLASS_TYPE(KeyReleased)
-    };
+		EVENT_CLASS_TYPE(KeyReleased)
+	};
 
-    class KeyTypedEvent : public KeyEvent
-    {
-    public:
-        KeyTypedEvent(Key::Enum keycode, uint8_t modifiers)
-            : KeyEvent(keycode, modifiers) {}
+	class KeyTypedEvent : public KeyEvent
+	{
+	public:
+		KeyTypedEvent(Key::Enum keycode, uint8_t modifiers)
+			: KeyEvent(keycode, modifiers)
+		{ }
 
-        std::string ToString() const override
-        {
-            std::stringstream ss;
-            ss << "KeyTypedEvent: " << mKeyCode;
-            return ss.str();
-        }
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyTypedEvent: " << mKeyCode;
+			return ss.str();
+		}
 
-        EVENT_CLASS_TYPE(KeyTyped)
-    };
+		EVENT_CLASS_TYPE(KeyTyped)
+	};
 } // namespace Antomic

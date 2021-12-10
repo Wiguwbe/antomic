@@ -20,56 +20,56 @@
 namespace Antomic
 {
 
-    char TextReader::Peek()
-    {
-        ANTOMIC_ASSERT(!mStream.bad(),"Stream is bad!");
-        return mStream.peek();
-    }
+	char TextReader::Peek()
+	{
+		ANTOMIC_ASSERT(!mStream.bad(), "Stream is bad!");
+		return mStream.peek();
+	}
 
-    char TextReader::Read()
-    {
-        ANTOMIC_ASSERT(!mStream.bad(),"Stream is bad!");
-        char c;
-        mStream.read(&c, 1);
-        return c;
-    }
+	char TextReader::Read()
+	{
+		ANTOMIC_ASSERT(!mStream.bad(), "Stream is bad!");
+		char c;
+		mStream.read(&c, 1);
+		return c;
+	}
 
-    char TextReader::Read(std::string &out)
-    {
-        auto c = Read();
-        out += c;
-        return c;
-    }
+	char TextReader::Read(std::string& out)
+	{
+		auto c = Read();
+		out += c;
+		return c;
+	}
 
-    char FileReader::Peek()
-    {
-        ANTOMIC_ASSERT(!mStream.bad(),"Stream is bad");
-        return mStream.peek();
-    }
+	char FileReader::Peek()
+	{
+		ANTOMIC_ASSERT(!mStream.bad(), "Stream is bad");
+		return mStream.peek();
+	}
 
-    char FileReader::Read()
-    {
-        ANTOMIC_ASSERT(!mStream.bad(),"Stream is bad!");
-        char c;
-        mStream.read(&c, 1);
-        return c;
-    }
+	char FileReader::Read()
+	{
+		ANTOMIC_ASSERT(!mStream.bad(), "Stream is bad!");
+		char c;
+		mStream.read(&c, 1);
+		return c;
+	}
 
-    char FileReader::Read(std::string &out)
-    {
-        auto c = Read();
-        out += c;
-        return c;
-    }
+	char FileReader::Read(std::string& out)
+	{
+		auto c = Read();
+		out += c;
+		return c;
+	}
 
-    Ref<Reader> Reader::FromFile(const std::string &name)
-    {
-        return CreateRef<FileReader>(name);
-    }
+	Ref<Reader> Reader::FromFile(const std::string& name)
+	{
+		return CreateRef<FileReader>(name);
+	}
 
-    Ref<Reader> Reader::FromString(const std::string &string, const std::string &name)
-    {
-        return CreateRef<TextReader>(string, name);
-    }
+	Ref<Reader> Reader::FromString(const std::string& string, const std::string& name)
+	{
+		return CreateRef<TextReader>(string, name);
+	}
 
-}
+} // namespace Antomic

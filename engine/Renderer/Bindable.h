@@ -17,13 +17,13 @@
 
 namespace Antomic
 {
-    class Bindable
-    {
-    public:
-        virtual ~Bindable() = default;
+	class Bindable
+	{
+	public:
+		virtual ~Bindable() = default;
 
-    public:
-        virtual void Bind() const = 0;
-        virtual void Unbind() const = 0;        
-    };
+	public:
+		virtual void Bind() const = 0;
+		virtual void Unbind() const = 0;
+	};
 } // namespace Antomic

@@ -15,17 +15,18 @@
 */
 #pragma once
 #include "Core/Base.h"
+#include "Parser/Parser.h"
+#include "ScriptObject.h"
 
 namespace Antomic
 {
-	class RendererWorker
+
+	class ScriptEngine
 	{
-	public:
-		RendererWorker() = default;
-		~RendererWorker() = default;
 
-	public:
-		void Run();
+		ScriptEngine();
+		~ScriptEngine();
+
+		static void Eval(const std::string& expr);
 	};
-
 } // namespace Antomic

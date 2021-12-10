@@ -19,54 +19,75 @@
 
 namespace Antomic
 {
-    struct RendererViewport
-    {
-        uint32_t Left;
-        uint32_t Top;
-        uint32_t Right;
-        uint32_t Bottom;
-        glm::vec4 Color;
+	struct RendererViewport
+	{
+		uint32_t Left;
+		uint32_t Top;
+		uint32_t Right;
+		uint32_t Bottom;
+		glm::vec4 Color;
 
-        RendererViewport(uint32_t left, uint32_t top, uint32_t right, uint32_t bottom)
-            : Left(left), Top(top), Right(right), Bottom(bottom), Color(0.0f, 0.f, 0.f, 1.f) {}
+		RendererViewport(uint32_t left, uint32_t top, uint32_t right, uint32_t bottom)
+			: Left(left)
+			, Top(top)
+			, Right(right)
+			, Bottom(bottom)
+			, Color(0.0f, 0.f, 0.f, 1.f)
+		{ }
 
-        RendererViewport(uint32_t right, uint32_t bottom)
-            : Left(0), Top(0), Right(right), Bottom(bottom), Color(0.0f, 0.f, 0.f, 1.f) {}
+		RendererViewport(uint32_t right, uint32_t bottom)
+			: Left(0)
+			, Top(0)
+			, Right(right)
+			, Bottom(bottom)
+			, Color(0.0f, 0.f, 0.f, 1.f)
+		{ }
 
-        RendererViewport()
-            : Left(0), Top(0), Right(0), Bottom(0), Color(0.0f, 0.f, 0.f, 1.f) {}
-    };
+		RendererViewport()
+			: Left(0)
+			, Top(0)
+			, Right(0)
+			, Bottom(0)
+			, Color(0.0f, 0.f, 0.f, 1.f)
+		{ }
+	};
 
-    class Renderer
-    {
-    public:
-        Renderer(const RendererViewport &viewport);
-        ~Renderer() = default;
+	class Renderer
+	{
+	public:
+		Renderer(const RendererViewport& viewport);
+		~Renderer() = default;
 
-    public:
-        // Scene Operations
-        const Ref<Scene> &GetCurrentScene();
-        void SetCurrentScene(const Ref<Scene> &scene);
+	public:
+		// Scene Operations
+		const Ref<Scene>& GetCurrentScene();
+		void SetCurrentScene(const Ref<Scene>& scene);
 
-        // Viewport Operations
-        inline const RendererViewport &GetViewport() const { return mViewport; }
-        void SetViewport(const RendererViewport &viewport);
+		// Viewport Operations
+		inline const RendererViewport& GetViewport() const
+		{
+			return mViewport;
+		}
+		void SetViewport(const RendererViewport& viewport);
 
-        // Frame Operations
-        void RenderFrame();
-        inline const Ref<RendererFrame> GetLastFrame() const { return mLastFrame; }
-        const uint64_t GetLastFrameTime();
-        void Shutdown();
+		// Frame Operations
+		void RenderFrame();
+		inline const Ref<RendererFrame> GetLastFrame() const
+		{
+			return mLastFrame;
+		}
+		const uint64_t GetLastFrameTime();
+		void Shutdown();
 
-    private:
-        void UpdateProjectionMatrix();
+	private:
+		void UpdateProjectionMatrix();
 
-    private:
-        Ref<RendererFrame> mLastFrame;
-        uint64_t mLastFrameTime;
-        Ref<Scene> mScene;
-        RendererViewport mViewport;
-        glm::mat4 mProjectionMatrix;
-        Ref<UniformBuffer> mCameraBuffer;
-    };
+	private:
+		Ref<RendererFrame> mLastFrame;
+		uint64_t mLastFrameTime;
+		Ref<Scene> mScene;
+		RendererViewport mViewport;
+		glm::mat4 mProjectionMatrix;
+		Ref<UniformBuffer> mCameraBuffer;
+	};
 } // namespace Antomic

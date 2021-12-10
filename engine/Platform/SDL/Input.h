@@ -14,9 +14,9 @@
    limitations under the License.
 */
 #ifdef ANTOMIC_SDL_PLATFORM
-#pragma once
-#include "Platform/Input.h"
-#include "SDL2/SDL.h"
+#	pragma once
+#	include "Platform/Input.h"
+#	include "SDL2/SDL.h"
 
 namespace Antomic
 {
@@ -25,7 +25,7 @@ namespace Antomic
 		KeyState()
 			: Modifiers(0)
 		{
-			for (uint32_t i = 0; i < Key::Count; ++i)
+			for(uint32_t i = 0; i < Key::Count; ++i)
 			{
 				Keys[i] = false;
 			}
@@ -37,9 +37,11 @@ namespace Antomic
 	struct MouseState
 	{
 		MouseState()
-			: X(0), Y(0), Z(0)
+			: X(0)
+			, Y(0)
+			, Z(0)
 		{
-			for (uint32_t i = 0; i < MouseButton::Count; ++i)
+			for(uint32_t i = 0; i < MouseButton::Count; ++i)
 			{
 				Buttons[i] = false;
 			}
@@ -55,7 +57,7 @@ namespace Antomic
 	{
 		GamepadState()
 		{
-			for (uint32_t i = 0; i < GamepadAxis::Count; ++i)
+			for(uint32_t i = 0; i < GamepadAxis::Count; ++i)
 			{
 				maxis[i] = 0;
 			}
@@ -64,23 +66,23 @@ namespace Antomic
 		int32_t maxis[GamepadAxis::Count];
 	};
 
-    class InputSDL : public Input
-    {
-    public:
-        InputSDL() = default;
-        virtual ~InputSDL() override = default;
+	class InputSDL : public Input
+	{
+	public:
+		InputSDL() = default;
+		virtual ~InputSDL() override = default;
 
-    public:
-        virtual bool IsKeyPressed(Key::Enum key) override;
-        virtual bool IsMouseButtonPressed(MouseButton::Enum button) override;
-        virtual uint8_t GetKeyModifiers() override;
-        virtual glm::vec3 GetMousePosition() override;
+	public:
+		virtual bool IsKeyPressed(Key::Enum key) override;
+		virtual bool IsMouseButtonPressed(MouseButton::Enum button) override;
+		virtual uint8_t GetKeyModifiers() override;
+		virtual glm::vec3 GetMousePosition() override;
 
-    public:
-        static void InitMappings();
-        static uint8_t TranslateKeyModifiers(uint16_t key);
-        static uint8_t TranslateKeyModifierPress(uint16_t _key);
-    };
+	public:
+		static void InitMappings();
+		static uint8_t TranslateKeyModifiers(uint16_t key);
+		static uint8_t TranslateKeyModifierPress(uint16_t _key);
+	};
 
 } // namespace Antomic
 #endif

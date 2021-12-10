@@ -14,39 +14,57 @@
    limitations under the License.
 */
 #ifdef ANTOMIC_GLFW_PLATFORM
-#pragma once
-#include "Platform/Window.h"
-#include "Platform/RenderAPI.h"
-#ifdef ANTOMIC_GL_RENDERER
-#include "glad/glad.h"
-#endif
-#include "GLFW/glfw3.h"
+#	pragma once
+#	include "Platform/RenderAPI.h"
+#	include "Platform/Window.h"
+#	ifdef ANTOMIC_GL_RENDERER
+#		include "glad/glad.h"
+#	endif
+#	include "GLFW/glfw3.h"
 
 namespace Antomic
 {
-    class GLFWWindow : public Window
-    {
-    public:
-        GLFWWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api);
-        virtual ~GLFWWindow() override;
+	class GLFWWindow : public Window
+	{
+	public:
+		GLFWWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api);
+		virtual ~GLFWWindow() override;
 
-    public:
-        virtual uint32_t GetWidth() const override { return mData.Width; };
-        virtual uint32_t GetHeight() const override { return mData.Height; };
-        virtual const std::string &GetTitle() const override { return mData.Title; };
-        virtual void SetTitle(const std::string &title) override;
-        virtual bool IsValid() const override { return mWindow != nullptr; };
-        virtual void SetEventHandler(const EventHandler &handler) override { mData.Handler = handler; } 
-        virtual void SwapBuffer() override;
-        virtual void ProcessEvents() override;
-        virtual void ToggleFullscreen() override;
-        virtual void SetMouseLock(bool lock) override;
-        virtual void* GetNativeWindow() const override { return mWindow; }
-        virtual void Close() override;
+	public:
+		virtual uint32_t GetWidth() const override
+		{
+			return mData.Width;
+		};
+		virtual uint32_t GetHeight() const override
+		{
+			return mData.Height;
+		};
+		virtual const std::string& GetTitle() const override
+		{
+			return mData.Title;
+		};
+		virtual void SetTitle(const std::string& title) override;
+		virtual bool IsValid() const override
+		{
+			return mWindow != nullptr;
+		};
+		virtual void SetEventHandler(const EventHandler& handler) override
+		{
+			mData.Handler = handler;
+		}
+		virtual void SwapBuffer() override;
+		virtual void ProcessEvents() override;
+		virtual void ToggleFullscreen() override;
+		virtual void SetMouseLock(bool lock) override;
+		virtual void* GetNativeWindow() const override
+		{
+			return mWindow;
+		}
+		virtual void Close() override;
 
-    private:
-        GLFWwindow *mWindow;  
-        WindowData mData;
-    };
-} // namspace Antomic
+	private:
+		GLFWwindow* mWindow;
+		WindowData mData;
+	};
+} // namespace Antomic
 #endif

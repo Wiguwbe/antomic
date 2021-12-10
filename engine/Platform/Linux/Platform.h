@@ -14,29 +14,33 @@
    limitations under the License.
 */
 #ifdef ANTOMIC_PLATFORM_LINUX
-#pragma once
-#include "Platform/Platform.h"
+#	pragma once
+#	include "Platform/Platform.h"
 
 namespace Antomic
 {
-    class LinuxPlatform : public Platform
-    {
-    public:
-        LinuxPlatform();
-        virtual ~LinuxPlatform() override = default;
+	class LinuxPlatform : public Platform
+	{
+	public:
+		LinuxPlatform();
+		virtual ~LinuxPlatform() override = default;
 
-    public:
-        // Windows Operations
-        virtual Scope<Window> CreateWindow(uint32_t width, uint32_t height, std::string title, RenderAPIDialect api = RenderAPIDialect::OPENGL) override;
-        virtual Scope<Input> CreateInput() override;
+	public:
+		// Windows Operations
+		virtual Scope<Window>
+		CreateWindow(uint32_t width,
+					 uint32_t height,
+					 std::string title,
+					 RenderAPIDialect api = RenderAPIDialect::OPENGL) override;
+		virtual Scope<Input> CreateInput() override;
 
-        // Time Operations
-        virtual uint64_t GetTicks() const override;
+		// Time Operations
+		virtual uint64_t GetTicks() const override;
 
-    private:
-#ifdef ANTOMIC_CHRONO_SUPPORT
-        std::chrono::time_point<std::chrono::high_resolution_clock> mPlatformStart;
-#endif
-    };
+	private:
+#	ifdef ANTOMIC_CHRONO_SUPPORT
+		std::chrono::time_point<std::chrono::high_resolution_clock> mPlatformStart;
+#	endif
+	};
 } // namespace Antomic
 #endif

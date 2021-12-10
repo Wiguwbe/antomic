@@ -18,18 +18,18 @@
 
 namespace Antomic
 {
-    void Serialization::Save(const Ref<Scene>& scene, const std::string& file)
-    {
-        nlohmann::json json;
+	void Serialization::Save(const Ref<Scene>& scene, const std::string& file)
+	{
+		nlohmann::json json;
 
-        scene->Serialize(json);
-        std::ofstream o(file);
-        o << std::setw(4) << json << std::endl;
-        o.flush();
-    }
+		scene->Serialize(json);
+		std::ofstream o(file);
+		o << std::setw(4) << json << std::endl;
+		o.flush();
+	}
 
-    Ref<Scene> Serialization::Load(const std::string& file)
-    {
-        return nullptr;
-    }
-}
+	Ref<Scene> Serialization::Load(const std::string& file)
+	{
+		return nullptr;
+	}
+} // namespace Antomic

@@ -15,21 +15,24 @@
 */
 #pragma once
 #include "Core/Base.h"
-#include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
+#include <spdlog/spdlog.h>
 
 namespace Antomic
 {
 
-    class Log
-    {
-    public:
-        static void Init();
-        static Ref<spdlog::logger> &GetLogger() { return sLogger; }
+	class Log
+	{
+	public:
+		static void Init();
+		static Ref<spdlog::logger>& GetLogger()
+		{
+			return sLogger;
+		}
 
-    private:
-        static Ref<spdlog::logger> sLogger;
-    };
+	private:
+		static Ref<spdlog::logger> sLogger;
+	};
 
 } // namespace Antomic
 

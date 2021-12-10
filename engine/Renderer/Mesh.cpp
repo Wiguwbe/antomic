@@ -15,28 +15,28 @@
 */
 #include "Renderer/Mesh.h"
 #include "Renderer/Bindable.h"
+#include "Renderer/RenderCommand.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Texture.h"
-#include "Renderer/RenderCommand.h"
 
 namespace Antomic
 {
-    Mesh::Mesh(const Ref<VertexArray> &vertexArray, const Ref<Material> &material)
-        : mVertexArray(vertexArray), mMaterial(material)
-    {
-    }
+	Mesh::Mesh(const Ref<VertexArray>& vertexArray, const Ref<Material>& material)
+		: mVertexArray(vertexArray)
+		, mMaterial(material)
+	{ }
 
-    void Mesh::Draw()
-    {
-        for (auto bindable : GetBindables())
-        {
-            bindable->Bind();
-        }
+	void Mesh::Draw()
+	{
+		for(auto bindable : GetBindables())
+		{
+			bindable->Bind();
+		}
 
-        auto shader = mMaterial->GetShader();
-        shader->SetUniformValue("m_model", GetModelMatrix());
-        shader->Bind();
-        RenderCommand::DrawIndexed(mVertexArray);
-    }
+		auto shader = mMaterial->GetShader();
+		shader->SetUniformValue("m_model", GetModelMatrix());
+		shader->Bind();
+		RenderCommand::DrawIndexed(mVertexArray);
+	}
 
 } // namespace Antomic

@@ -19,13 +19,13 @@
 
 namespace Antomic
 {
-    class Texture : public Bindable
-    {
-    public:
-        virtual ~Texture() = default;
+	class Texture : public Bindable
+	{
+	public:
+		virtual ~Texture() = default;
 
-    public:
-        static Ref<Texture> CreateTexture(uint32_t width, uint32_t height, unsigned char* data);
-    };
-    
+	public:
+		static Ref<Texture> CreateTexture(uint32_t width, uint32_t height, unsigned char* data);
+	};
+
 } // namespace Antomic

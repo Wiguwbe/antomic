@@ -14,17 +14,17 @@
    limitations under the License.
 */
 #include "Graph/Scene.h"
-#include "Renderer/Camera.h"
-#include "Renderer/RendererWorker.h"
-#include "Renderer/RendererFrame.h"
-#include "Platform/Platform.h"
 #include "Core/Log.h"
-#include <glm/gtc/matrix_transform.hpp>
+#include "Platform/Platform.h"
 #include "Profiling/Instrumentor.h"
+#include "Renderer/Camera.h"
+#include "Renderer/RendererFrame.h"
+#include "Renderer/RendererWorker.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Antomic
 {
-	void Scene::Update(const uint32_t &time)
+	void Scene::Update(const uint32_t& time)
 	{
 		ANTOMIC_PROFILE_FUNCTION("Graph");
 
@@ -41,10 +41,7 @@ namespace Antomic
 		auto lookat = cPosition - glm::vec3(0, 0, 1);
 
 		mActiveCamera->SetPosition(cPosition);
-		mViewMatrix = glm::lookAt(
-			mActiveCamera->GetPosition(),
-			lookat,
-			glm::vec3(0, 1, 0));
+		mViewMatrix = glm::lookAt(mActiveCamera->GetPosition(), lookat, glm::vec3(0, 1, 0));
 
 		Node::Update(time);
 	}
@@ -57,10 +54,8 @@ namespace Antomic
 		CameraFrustum f = {0.1f, 100.f};
 		mActiveCamera = CreateRef<PerspetiveCamera>(f, 45.0f);
 		mActiveCamera->SetPosition({0, 0, 3});
-		mViewMatrix = glm::lookAt(
-			mActiveCamera->GetPosition(),
-			glm::vec3(0, 0, 2),
-			glm::vec3(0, 1, 0));
+		mViewMatrix =
+			glm::lookAt(mActiveCamera->GetPosition(), glm::vec3(0, 0, 2), glm::vec3(0, 1, 0));
 	}
 
 	void Scene::Unload()
@@ -70,20 +65,20 @@ namespace Antomic
 	}
 
 	// Serialization
-	void Scene::Serialize(nlohmann::json &json)
+	void Scene::Serialize(nlohmann::json& json)
 	{
 		Node::Serialize(json["scene"]);
 	}
 
-	Ref<Scene> Scene::Deserialize(const nlohmann::json &json)
+	Ref<Scene> Scene::Deserialize(const nlohmann::json& json)
 	{
 		auto scene = CreateRef<Scene>();
 
-		for (auto node : json["nodes"])
+		for(auto node : json["nodes"])
 		{
 			scene->AddChild(Node::Deserialize(node));
 		}
 
 		return scene;
 	}
-}
+} // namespace Antomic

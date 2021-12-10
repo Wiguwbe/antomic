@@ -23,10 +23,18 @@ namespace Antomic
 	{
 	public:
 		WindowResizeEvent(uint32_t width, uint32_t height)
-			: mWidth(width), mHeight(height) {}
+			: mWidth(width)
+			, mHeight(height)
+		{ }
 
-		uint32_t GetWidth() const { return mWidth; }
-		uint32_t GetHeight() const { return mHeight; }
+		uint32_t GetWidth() const
+		{
+			return mWidth;
+		}
+		uint32_t GetHeight() const
+		{
+			return mHeight;
+		}
 
 		std::string ToString() const override
 		{
@@ -50,4 +58,4 @@ namespace Antomic
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-} 
+} // namespace Antomic

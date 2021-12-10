@@ -18,25 +18,29 @@
 
 namespace Antomic
 {
-    void OpenGLRenderAPI::SetViewport(const uint32_t &x, const uint32_t &y, uint32_t const &width, uint32_t const &height)
-    {
-        glViewport(x, y, width, height);
-    }
+	void OpenGLRenderAPI::SetViewport(const uint32_t& x,
+									  const uint32_t& y,
+									  uint32_t const& width,
+									  uint32_t const& height)
+	{
+		glViewport(x, y, width, height);
+	}
 
-    void OpenGLRenderAPI::SetClearColor(glm::vec4 color)
-    {
-        glClearColor(color.r, color.g, color.b, color.a);
-    }
+	void OpenGLRenderAPI::SetClearColor(glm::vec4 color)
+	{
+		glClearColor(color.r, color.g, color.b, color.a);
+	}
 
-    void OpenGLRenderAPI::Clear()
-    {
-        glClear(GL_COLOR_BUFFER_BIT);
-    }
+	void OpenGLRenderAPI::Clear()
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
 
-    void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray> vertexArray)
-    {
-        vertexArray->Bind();
-        glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->Count(), GL_UNSIGNED_INT, nullptr);
-    }
+	void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray> vertexArray)
+	{
+		vertexArray->Bind();
+		glDrawElements(
+			GL_TRIANGLES, vertexArray->GetIndexBuffer()->Count(), GL_UNSIGNED_INT, nullptr);
+	}
 
 } // namespace Antomic

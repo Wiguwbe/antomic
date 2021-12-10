@@ -19,13 +19,13 @@
 
 namespace Antomic
 {
-    class Render2d
-    {
-    public:
-        static void Init();
-        static void Shutdown();
+	class Render2d
+	{
+	public:
+		static void Init();
+		static void Shutdown();
 
-        static void DrawSprite(const Ref<Sprite> &sprite);
-        static void DrawSprite(const Sprite &sprite);
-    };
-}
+		static void DrawSprite(const Ref<Sprite>& sprite);
+		static void DrawSprite(const Sprite& sprite);
+	};
+} // namespace Antomic

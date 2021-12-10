@@ -19,12 +19,27 @@
 
 namespace Antomic
 {
-    class RenderCommand
-    {
-    public:
-        inline static void SetViewport(const uint32_t &x, const uint32_t &y, uint32_t const &width, uint32_t const &height) { Platform::GetRenderAPI()->SetViewport(x, y, width, height); }
-        inline static void SetClearColor(glm::vec4 color) { Platform::GetRenderAPI()->SetClearColor(color); }
-        inline static void Clear() { Platform::GetRenderAPI()->Clear(); }
-        inline static void DrawIndexed(const Ref<VertexArray> vertexArray) { Platform::GetRenderAPI()->DrawIndexed(vertexArray); };
-    };
+	class RenderCommand
+	{
+	public:
+		inline static void SetViewport(const uint32_t& x,
+									   const uint32_t& y,
+									   uint32_t const& width,
+									   uint32_t const& height)
+		{
+			Platform::GetRenderAPI()->SetViewport(x, y, width, height);
+		}
+		inline static void SetClearColor(glm::vec4 color)
+		{
+			Platform::GetRenderAPI()->SetClearColor(color);
+		}
+		inline static void Clear()
+		{
+			Platform::GetRenderAPI()->Clear();
+		}
+		inline static void DrawIndexed(const Ref<VertexArray> vertexArray)
+		{
+			Platform::GetRenderAPI()->DrawIndexed(vertexArray);
+		};
+	};
 } // namespace Antomic

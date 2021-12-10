@@ -14,25 +14,25 @@
    limitations under the License.
 */
 #include "Renderer/Texture.h"
+#include "Platform/NullRenderer/Texture.h"
 #include "Platform/Platform.h"
 #include "Platform/RenderAPI.h"
-#include "Platform/NullRenderer/Texture.h"
 #ifdef ANTOMIC_GL_RENDERER
-#include "Platform/OpenGL/Texture.h"
+#	include "Platform/OpenGL/Texture.h"
 #endif
 
 namespace Antomic
 {
-    Ref<Texture> Texture::CreateTexture(uint32_t width, uint32_t height, unsigned char *data)
-    {
-        switch (Platform::GetRenderAPIDialect())
-        {
+	Ref<Texture> Texture::CreateTexture(uint32_t width, uint32_t height, unsigned char* data)
+	{
+		switch(Platform::GetRenderAPIDialect())
+		{
 #ifdef ANTOMIC_GL_RENDERER
-        case RenderAPIDialect::OPENGL:
-            return CreateRef<OpenGLTexture>(width, height, data);
+		case RenderAPIDialect::OPENGL:
+			return CreateRef<OpenGLTexture>(width, height, data);
 #endif
-        default:
-            return CreateRef<NullTexture>(width, height, data);
-        }
-    }
+		default:
+			return CreateRef<NullTexture>(width, height, data);
+		}
+	}
 } // namespace Antomic

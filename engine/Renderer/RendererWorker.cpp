@@ -14,22 +14,22 @@
    limitations under the License.
 */
 #include "Renderer/RendererWorker.h"
+#include "Core/Log.h"
 #include "Graph/Scene.h"
+#include "Platform/Platform.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/RendererFrame.h"
-#include "Platform/Platform.h"
-#include "Core/Log.h"
 
 namespace Antomic
 {
 
-    void RendererWorker::Run()
-    {
-        ANTOMIC_INFO("RendererWorker: Scene update worker started");
+	void RendererWorker::Run()
+	{
+		ANTOMIC_INFO("RendererWorker: Scene update worker started");
 
-        // TODO: Optmize render queue
+		// TODO: Optmize render queue
 
-        ANTOMIC_INFO("RendererWorker: Render worker stopped");
-    }
+		ANTOMIC_INFO("RendererWorker: Render worker stopped");
+	}
 
 } // namespace Antomic

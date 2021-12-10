@@ -19,12 +19,12 @@
 
 namespace Antomic
 {
-    class Material : public Bindable
-    {
-        public:
-            virtual ~Material() = default;
+	class Material : public Bindable
+	{
+	public:
+		virtual ~Material() = default;
 
-        public:
-            virtual const Ref<Shader> &GetShader() const = 0;            
-    };
+	public:
+		virtual const Ref<Shader>& GetShader() const = 0;
+	};
 } //namespace Antomic

@@ -115,7 +115,15 @@
     "cmake.environment": {
         "ANTOMIC_NO_SDL": "0"
     },
-    "cmakeExplorer.cmakeIntegration": true,
-    "cmakeExplorer.buildDir": "${workspaceFolder}/build",
-    "cmakeExplorer.buildConfig": "Debug",
+    "editor.formatOnSave": true,
+    "clang-format.executable": "/usr/bin/clang-format",
+    "clang-format.executable.linux": "/usr/bin/clang-format",
+    "clang-format.style": "file",
+    "clang-format.language.cpp.enable": true,
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.wordBasedSuggestions": false,
+        "editor.suggest.insertMode": "replace",
+        "editor.semanticHighlighting.enabled": true
+    }
 }

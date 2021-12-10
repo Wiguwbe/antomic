@@ -19,49 +19,51 @@
 
 namespace Antomic
 {
-    OpenGLVertexArray::OpenGLVertexArray()
-    {
-        glCreateVertexArrays(1, &mRendererId);
-    }
+	OpenGLVertexArray::OpenGLVertexArray()
+	{
+		glCreateVertexArrays(1, &mRendererId);
+	}
 
-    OpenGLVertexArray::~OpenGLVertexArray()
-    {
-        glDeleteVertexArrays(1, &mRendererId);
-    }
+	OpenGLVertexArray::~OpenGLVertexArray()
+	{
+		glDeleteVertexArrays(1, &mRendererId);
+	}
 
-    void OpenGLVertexArray::Bind() const
-    {
-        glBindVertexArray(mRendererId);
-    }
+	void OpenGLVertexArray::Bind() const
+	{
+		glBindVertexArray(mRendererId);
+	}
 
-    void OpenGLVertexArray::Unbind() const
-    {
-        glBindVertexArray(0);
-    }
+	void OpenGLVertexArray::Unbind() const
+	{
+		glBindVertexArray(0);
+	}
 
-    void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer> &buffer)
-    {
-        glBindVertexArray(mRendererId);
-        buffer->Bind();
-        auto const &layout = buffer->Layout();
-        uint32_t index = 0;
-        for (auto &element : layout.Elements())
-        {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(
-                index, ShaderDataTypeGLSize(element.Type),
-                ShaderDataTypeGLEnum(element.Type), element.Normalized ? GL_TRUE : GL_FALSE,
-                layout.Stride(), (const GLvoid *)((intptr_t)element.Offset));
-            index++;
-        }
-        mVertextBuffers.push_back(buffer);
-    }
-    
-    void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer> &buffer)
-    {
-        glBindVertexArray(mRendererId);
-        buffer->Bind();
-        mIndexBuffer = buffer;
-    }
+	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& buffer)
+	{
+		glBindVertexArray(mRendererId);
+		buffer->Bind();
+		auto const& layout = buffer->Layout();
+		uint32_t index = 0;
+		for(auto& element : layout.Elements())
+		{
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(index,
+								  ShaderDataTypeGLSize(element.Type),
+								  ShaderDataTypeGLEnum(element.Type),
+								  element.Normalized ? GL_TRUE : GL_FALSE,
+								  layout.Stride(),
+								  (const GLvoid*)((intptr_t)element.Offset));
+			index++;
+		}
+		mVertextBuffers.push_back(buffer);
+	}
 
-}
+	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& buffer)
+	{
+		glBindVertexArray(mRendererId);
+		buffer->Bind();
+		mIndexBuffer = buffer;
+	}
+
+} // namespace Antomic

@@ -14,14 +14,21 @@
    limitations under the License.
 */
 #pragma once
+#include "Script/ScriptObject.h"
 
 namespace Antomic
 {
-	class ScriptEnvironment
+	class Bool : public ScriptObject
 	{
 
 	public:
-		ScriptEnvironment();
-		~ScriptEnvironment();
+		Bool() = default;
+		virtual ~Bool() override = default;
+
+	public:
+		virtual ScriptObjectType GetType()
+		{
+			return ScriptObjectType::Bool;
+		}
 	};
 } // namespace Antomic

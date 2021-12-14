@@ -14,38 +14,21 @@
    limitations under the License.
 */
 #pragma once
+#include "Script/ScriptObject.h"
 
 namespace Antomic
 {
-
-	enum class ScriptObjectType
-	{
-		Module,
-		Function,
-		String,
-		Float,
-		Vec2,
-		Vec3,
-		Vec4,
-		Mat3,
-		Mat4,
-		Int,
-		Int2,
-		Int3,
-		Int4,
-		List,
-		Dict,
-		Bool,
-		None
-	};
-
-	class ScriptObject
+	class Int4 : public ScriptObject
 	{
 
 	public:
-		virtual ~ScriptObject() = default;
+		Int4() = default;
+		virtual ~Int4() override = default;
 
 	public:
-		virtual ScriptObjectType GetType() = 0;
+		virtual ScriptObjectType GetType()
+		{
+			return ScriptObjectType::Int4;
+		}
 	};
 } // namespace Antomic

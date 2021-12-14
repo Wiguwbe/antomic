@@ -14,38 +14,25 @@
    limitations under the License.
 */
 #pragma once
+#include "Core/Base.h"
+#include "ScriptObject.h"
 
 namespace Antomic
 {
-
-	enum class ScriptObjectType
+	class ScriptScope : public std::enable_shared_from_this<ScriptScope>
 	{
-		Module,
-		Function,
-		String,
-		Float,
-		Vec2,
-		Vec3,
-		Vec4,
-		Mat3,
-		Mat4,
-		Int,
-		Int2,
-		Int3,
-		Int4,
-		List,
-		Dict,
-		Bool,
-		None
-	};
-
-	class ScriptObject
-	{
+	public:
+		ScriptScope(const Ref<ScriptScope>& parent = nullptr);
+		~ScriptScope();
 
 	public:
-		virtual ~ScriptObject() = default;
+		Ref<ScriptObject> GetName(const std::string name);
+		void SetName(const std::string name, Ref<ScriptObject>& object);
+		Ref<ScriptScope> NewScope();
+		Ref<ScriptScope> CleanUp();
 
-	public:
-		virtual ScriptObjectType GetType() = 0;
+	private:
+		Ref<ScriptScope> mParent;
+		std::map<std::string, Ref<ScriptObject>> mNames;
 	};
 } // namespace Antomic

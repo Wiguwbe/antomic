@@ -56,24 +56,12 @@ namespace Antomic
 	};
 
 #define EVENT_CLASS_TYPE(type)                                                                     \
-	static EventType GetStaticType()                                                               \
-	{                                                                                              \
-		return EventType::type;                                                                    \
-	}                                                                                              \
-	virtual EventType GetEventType() const override                                                \
-	{                                                                                              \
-		return GetStaticType();                                                                    \
-	}                                                                                              \
-	virtual const char* GetName() const override                                                   \
-	{                                                                                              \
-		return #type;                                                                              \
-	}
+	static EventType GetStaticType() { return EventType::type; }                                   \
+	virtual EventType GetEventType() const override { return GetStaticType(); }                    \
+	virtual const char* GetName() const override { return #type; }
 
 #define EVENT_CLASS_CATEGORY(category)                                                             \
-	virtual int GetCategoryFlags() const override                                                  \
-	{                                                                                              \
-		return category;                                                                           \
-	}
+	virtual int GetCategoryFlags() const override { return category; }
 
 	class Event
 	{
@@ -81,25 +69,13 @@ namespace Antomic
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
 		virtual int GetCategoryFlags() const = 0;
-		virtual std::string ToString() const
-		{
-			return GetName();
-		}
+		virtual std::string ToString() const { return GetName(); }
 
-		bool IsCategory(EventCategory category)
-		{
-			return GetCategoryFlags() & category;
-		}
+		bool IsCategory(EventCategory category) { return GetCategoryFlags() & category; }
 
-		inline bool IsHandled() const
-		{
-			return mHandled;
-		}
+		inline bool IsHandled() const { return mHandled; }
 
-		inline void SetHandled(bool handled)
-		{
-			mHandled = handled;
-		}
+		inline void SetHandled(bool handled) { mHandled = handled; }
 
 	protected:
 		bool mHandled = false;
@@ -128,8 +104,5 @@ namespace Antomic
 		Event& mEvent;
 	};
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
-	{
-		return os << e.ToString();
-	}
+	inline std::ostream& operator<<(std::ostream& os, const Event& e) { return os << e.ToString(); }
 } // namespace Antomic

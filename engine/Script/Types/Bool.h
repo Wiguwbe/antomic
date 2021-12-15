@@ -26,9 +26,6 @@ namespace Antomic
 		virtual ~Bool() override = default;
 
 	public:
-		virtual ScriptObjectType GetType()
-		{
-			return ScriptObjectType::Bool;
-		}
+		virtual ScriptObjectType GetType() { return ScriptObjectType::Bool; }
 	};
 } // namespace Antomic

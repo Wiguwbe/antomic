@@ -29,11 +29,9 @@ namespace Antomic
 		switch(Platform::GetRenderAPIDialect())
 		{
 #ifdef ANTOMIC_GL_RENDERER
-		case RenderAPIDialect::OPENGL:
-			return CreateRef<OpenGLVertexArray>();
+			case RenderAPIDialect::OPENGL: return CreateRef<OpenGLVertexArray>();
 #endif
-		default:
-			return CreateRef<NullVertexArray>();
+			default: return CreateRef<NullVertexArray>();
 		}
 	}
 

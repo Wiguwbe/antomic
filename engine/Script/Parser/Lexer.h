@@ -230,39 +230,21 @@ namespace Antomic
 			return c;
 		}
 
-		inline void NewToken()
-		{
-			mState.CurrentToken = {TokenType::Invalid, ""};
-		}
-		inline void EndToken(TokenType type)
-		{
-			mState.CurrentToken.Type = type;
-		}
-		inline char PeekNextChar()
-		{
-			return mReader->Peek();
-		}
+		inline void NewToken() { mState.CurrentToken = {TokenType::Invalid, ""}; }
+		inline void EndToken(TokenType type) { mState.CurrentToken.Type = type; }
+		inline char PeekNextChar() { return mReader->Peek(); }
 
-		inline bool IsDigit(const char& c)
-		{
-			return c >= '0' && c <= '9';
-		}
+		inline bool IsDigit(const char& c) { return c >= '0' && c <= '9'; }
 		inline bool IsLetter(const char& c)
 		{
 			return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 		}
-		inline bool IsAlphaNumeric(const char& c)
-		{
-			return IsDigit(c) || IsLetter(c);
-		}
+		inline bool IsAlphaNumeric(const char& c) { return IsDigit(c) || IsLetter(c); }
 		inline bool IsHexadecimalDigit(const char& c)
 		{
 			return IsDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
 		}
-		inline bool IsWhiteSpace(const char& c)
-		{
-			return c == ' ' || c == '\n' || c == '\t';
-		}
+		inline bool IsWhiteSpace(const char& c) { return c == ' ' || c == '\n' || c == '\t'; }
 
 	private:
 		Ref<Reader> mReader = nullptr;

@@ -42,14 +42,8 @@ namespace Antomic
 		void Run();
 
 		// Windows attributes
-		inline uint32_t GetWidth() const
-		{
-			return Platform::GetWindowWidth();
-		}
-		inline uint32_t GetHeight() const
-		{
-			return Platform::GetWindowHeight();
-		}
+		inline uint32_t GetWidth() const { return Platform::GetWindowWidth(); }
+		inline uint32_t GetHeight() const { return Platform::GetWindowHeight(); }
 
 		// Events
 		void OnEvent(Event& event);
@@ -59,42 +53,21 @@ namespace Antomic
 		virtual bool OnWindowResize(WindowResizeEvent& event);
 
 		// Keys Events
-		virtual bool OnKeyPressed(KeyPressedEvent& event)
-		{
-			return true;
-		}
-		virtual bool OnKeyReleased(KeyReleasedEvent& event)
-		{
-			return true;
-		}
+		virtual bool OnKeyPressed(KeyPressedEvent& event) { return true; }
+		virtual bool OnKeyReleased(KeyReleasedEvent& event) { return true; }
 
 		// Mouse Events
-		virtual bool OnMouseMoved(MouseMovedEvent& event)
-		{
-			return true;
-		}
-		virtual bool OnMouseScrolled(MouseScrolledEvent& event)
-		{
-			return true;
-		}
-		virtual bool OnMouseButtonPressed(MouseButtonPressedEvent& event)
-		{
-			return true;
-		}
-		virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent& event)
-		{
-			return true;
-		}
+		virtual bool OnMouseMoved(MouseMovedEvent& event) { return true; }
+		virtual bool OnMouseScrolled(MouseScrolledEvent& event) { return true; }
+		virtual bool OnMouseButtonPressed(MouseButtonPressedEvent& event) { return true; }
+		virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent& event) { return true; }
 
 		// Scene
 		void SetScene(const Ref<Scene>& scene);
 		void LoadScene(const std::string& name);
 
 	public:
-		static Application& Current()
-		{
-			return *sInstance;
-		}
+		static Application& Current() { return *sInstance; }
 
 	private:
 		static Application* sInstance;

@@ -26,9 +26,6 @@ namespace Antomic
 		virtual ~Vec4() override = default;
 
 	public:
-		virtual ScriptObjectType GetType()
-		{
-			return ScriptObjectType::Vec4;
-		}
+		virtual ScriptObjectType GetType() { return ScriptObjectType::Vec4; }
 	};
 } // namespace Antomic

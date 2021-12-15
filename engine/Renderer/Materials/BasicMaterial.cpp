@@ -23,8 +23,5 @@ namespace Antomic
 										 "assets/shaders/materials/fs_basic.glsl");
 	}
 
-	void BasicMaterial::Bind() const
-	{
-		mShader->Bind();
-	}
+	void BasicMaterial::Bind() const { mShader->Bind(); }
 } // namespace Antomic

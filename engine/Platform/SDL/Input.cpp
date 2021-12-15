@@ -33,25 +33,16 @@ namespace Antomic
 
 		switch(button)
 		{
-		default:
-		case MouseButton::Left:
-			aButton = SDL_BUTTON_LEFT;
-			break;
-		case MouseButton::Middle:
-			aButton = SDL_BUTTON_MIDDLE;
-			break;
-		case MouseButton::Right:
-			aButton = SDL_BUTTON_RIGHT;
-			break;
+			default:
+			case MouseButton::Left: aButton = SDL_BUTTON_LEFT; break;
+			case MouseButton::Middle: aButton = SDL_BUTTON_MIDDLE; break;
+			case MouseButton::Right: aButton = SDL_BUTTON_RIGHT; break;
 		}
 
 		return sdlButton & SDL_BUTTON(aButton);
 	}
 
-	uint8_t InputSDL::GetKeyModifiers()
-	{
-		return 0;
-	}
+	uint8_t InputSDL::GetKeyModifiers() { return 0; }
 
 	glm::vec3 InputSDL::GetMousePosition()
 	{
@@ -168,42 +159,42 @@ namespace Antomic
 		uint8_t modifier;
 		switch(key)
 		{
-		case SDL_SCANCODE_LALT: {
-			modifier = Antomic::Modifier::LeftAlt;
-		}
-		break;
-		case SDL_SCANCODE_RALT: {
-			modifier = Antomic::Modifier::RightAlt;
-		}
-		break;
-		case SDL_SCANCODE_LCTRL: {
-			modifier = Antomic::Modifier::LeftCtrl;
-		}
-		break;
-		case SDL_SCANCODE_RCTRL: {
-			modifier = Antomic::Modifier::RightCtrl;
-		}
-		break;
-		case SDL_SCANCODE_LSHIFT: {
-			modifier = Antomic::Modifier::LeftShift;
-		}
-		break;
-		case SDL_SCANCODE_RSHIFT: {
-			modifier = Antomic::Modifier::RightShift;
-		}
-		break;
-		case SDL_SCANCODE_LGUI: {
-			modifier = Antomic::Modifier::LeftMeta;
-		}
-		break;
-		case SDL_SCANCODE_RGUI: {
-			modifier = Antomic::Modifier::RightMeta;
-		}
-		break;
-		default: {
-			modifier = 0;
-		}
-		break;
+			case SDL_SCANCODE_LALT: {
+				modifier = Antomic::Modifier::LeftAlt;
+			}
+			break;
+			case SDL_SCANCODE_RALT: {
+				modifier = Antomic::Modifier::RightAlt;
+			}
+			break;
+			case SDL_SCANCODE_LCTRL: {
+				modifier = Antomic::Modifier::LeftCtrl;
+			}
+			break;
+			case SDL_SCANCODE_RCTRL: {
+				modifier = Antomic::Modifier::RightCtrl;
+			}
+			break;
+			case SDL_SCANCODE_LSHIFT: {
+				modifier = Antomic::Modifier::LeftShift;
+			}
+			break;
+			case SDL_SCANCODE_RSHIFT: {
+				modifier = Antomic::Modifier::RightShift;
+			}
+			break;
+			case SDL_SCANCODE_LGUI: {
+				modifier = Antomic::Modifier::LeftMeta;
+			}
+			break;
+			case SDL_SCANCODE_RGUI: {
+				modifier = Antomic::Modifier::RightMeta;
+			}
+			break;
+			default: {
+				modifier = 0;
+			}
+			break;
 		}
 
 		return modifier;

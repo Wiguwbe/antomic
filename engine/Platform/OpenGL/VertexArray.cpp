@@ -19,25 +19,13 @@
 
 namespace Antomic
 {
-	OpenGLVertexArray::OpenGLVertexArray()
-	{
-		glCreateVertexArrays(1, &mRendererId);
-	}
+	OpenGLVertexArray::OpenGLVertexArray() { glCreateVertexArrays(1, &mRendererId); }
 
-	OpenGLVertexArray::~OpenGLVertexArray()
-	{
-		glDeleteVertexArrays(1, &mRendererId);
-	}
+	OpenGLVertexArray::~OpenGLVertexArray() { glDeleteVertexArrays(1, &mRendererId); }
 
-	void OpenGLVertexArray::Bind() const
-	{
-		glBindVertexArray(mRendererId);
-	}
+	void OpenGLVertexArray::Bind() const { glBindVertexArray(mRendererId); }
 
-	void OpenGLVertexArray::Unbind() const
-	{
-		glBindVertexArray(0);
-	}
+	void OpenGLVertexArray::Unbind() const { glBindVertexArray(0); }
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& buffer)
 	{

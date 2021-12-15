@@ -27,10 +27,7 @@ namespace Antomic
 		virtual ~Mesh() override{};
 
 	public:
-		virtual const DrawableType GetType() override
-		{
-			return DrawableType::MESH;
-		}
+		virtual const DrawableType GetType() override { return DrawableType::MESH; }
 		virtual void Draw() override;
 
 	private:

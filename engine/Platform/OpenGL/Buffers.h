@@ -36,10 +36,7 @@ namespace Antomic
 
 		// IndexBuffer commands
 		virtual void Upload(uint32_t* data, uint32_t size) const override;
-		virtual uint32_t Count() const override
-		{
-			return mCount;
-		};
+		virtual uint32_t Count() const override { return mCount; };
 
 	private:
 		GLuint mRendererId;
@@ -63,10 +60,7 @@ namespace Antomic
 
 		// VertexBuffer commands
 		virtual void Upload(uint32_t* data, uint32_t size) const override;
-		virtual const BufferLayout& Layout() const
-		{
-			return mLayout;
-		};
+		virtual const BufferLayout& Layout() const { return mLayout; };
 		virtual void SetLayout(const BufferLayout& layout) override;
 
 	private:
@@ -95,10 +89,7 @@ namespace Antomic
 		virtual void SetValue(const std::string& name, uint32_t data) override;
 		virtual void SetValue(const std::string& name, int data) override;
 		virtual void SetValue(const std::string& name, bool data) override;
-		virtual const UniformBufferLayout& Layout() const override
-		{
-			return mLayout;
-		}
+		virtual const UniformBufferLayout& Layout() const override { return mLayout; }
 
 	private:
 		GLuint mRendererId;

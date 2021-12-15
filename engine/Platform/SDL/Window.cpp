@@ -43,60 +43,62 @@ namespace Antomic
 		switch(api)
 		{
 #	ifdef ANTOMIC_GL_RENDERER
-		case RenderAPIDialect::OPENGL:
+			case RenderAPIDialect::OPENGL:
 
-			ANTOMIC_INFO("SDLWindow: Creating window {0},{1} with OpenGL support", width, height);
-			mWindow = SDL_CreateWindow(title.c_str(),
-									   SDL_WINDOWPOS_CENTERED,
-									   SDL_WINDOWPOS_CENTERED,
-									   width,
-									   height,
-									   SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+				ANTOMIC_INFO(
+					"SDLWindow: Creating window {0},{1} with OpenGL support", width, height);
+				mWindow =
+					SDL_CreateWindow(title.c_str(),
+									 SDL_WINDOWPOS_CENTERED,
+									 SDL_WINDOWPOS_CENTERED,
+									 width,
+									 height,
+									 SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
-			if(!mWindow)
-			{
-				ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
-				SDL_Quit();
-			}
+				if(!mWindow)
+				{
+					ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
+					SDL_Quit();
+				}
 
-			mGLContext = SDL_GL_CreateContext(mWindow);
-			if(!mGLContext)
-			{
-				ANTOMIC_TRACE("SDLWindow: Error creating OpenGL context");
-				SDL_DestroyWindow(mWindow);
-				mWindow = nullptr;
-				SDL_Quit();
-			}
+				mGLContext = SDL_GL_CreateContext(mWindow);
+				if(!mGLContext)
+				{
+					ANTOMIC_TRACE("SDLWindow: Error creating OpenGL context");
+					SDL_DestroyWindow(mWindow);
+					mWindow = nullptr;
+					SDL_Quit();
+				}
 
-			if(!gladLoadGL())
-			{
-				ANTOMIC_TRACE("SDLWindow: Error initializing Glad");
-				SDL_GL_DeleteContext(mGLContext);
-				SDL_DestroyWindow(mWindow);
-				mGLContext = nullptr;
-				mWindow = nullptr;
-				SDL_Quit();
-			}
+				if(!gladLoadGL())
+				{
+					ANTOMIC_TRACE("SDLWindow: Error initializing Glad");
+					SDL_GL_DeleteContext(mGLContext);
+					SDL_DestroyWindow(mWindow);
+					mGLContext = nullptr;
+					mWindow = nullptr;
+					SDL_Quit();
+				}
 
-			ANTOMIC_INFO("SDLWindow: Using OpenGL version {0}", glGetString(GL_VERSION));
+				ANTOMIC_INFO("SDLWindow: Using OpenGL version {0}", glGetString(GL_VERSION));
 
-			break;
+				break;
 #	endif
-		default:
-			ANTOMIC_INFO(
-				"SDLWindow: Creating window {0},{1} with no Render API support", width, height);
-			mWindow = SDL_CreateWindow(title.c_str(),
-									   SDL_WINDOWPOS_CENTERED,
-									   SDL_WINDOWPOS_CENTERED,
-									   width,
-									   height,
-									   SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-			if(!mWindow)
-			{
-				ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
-				SDL_Quit();
-			}
-			break;
+			default:
+				ANTOMIC_INFO(
+					"SDLWindow: Creating window {0},{1} with no Render API support", width, height);
+				mWindow = SDL_CreateWindow(title.c_str(),
+										   SDL_WINDOWPOS_CENTERED,
+										   SDL_WINDOWPOS_CENTERED,
+										   width,
+										   height,
+										   SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+				if(!mWindow)
+				{
+					ANTOMIC_TRACE("SDLWindow: Error creating SDL window: {0},{1}", width, height);
+					SDL_Quit();
+				}
+				break;
 		}
 
 		SDL_SysWMinfo wmi;
@@ -119,92 +121,84 @@ namespace Antomic
 				WindowData& data = *(WindowData*)userdata;
 				switch(currentEvent->type)
 				{
-				case SDL_WINDOWEVENT:
-					switch(currentEvent->window.event)
-					{
-					case SDL_WINDOWEVENT_RESIZED: {
-						data.Width = currentEvent->window.data1;
-						data.Height = currentEvent->window.data2;
-						WindowResizeEvent event(data.Width, data.Height);
+					case SDL_WINDOWEVENT:
+						switch(currentEvent->window.event)
+						{
+							case SDL_WINDOWEVENT_RESIZED: {
+								data.Width = currentEvent->window.data1;
+								data.Height = currentEvent->window.data2;
+								WindowResizeEvent event(data.Width, data.Height);
+								data.Handler(event);
+							}
+							break;
+							case SDL_WINDOWEVENT_CLOSE: {
+								WindowCloseEvent event;
+								data.Handler(event);
+							}
+							break;
+							default: break;
+						}
+					case SDL_MOUSEMOTION: {
+						const SDL_MouseMotionEvent& mev = currentEvent->motion;
+						MouseMovedEvent event(mev.x, mev.y);
 						data.Handler(event);
 					}
 					break;
-					case SDL_WINDOWEVENT_CLOSE: {
-						WindowCloseEvent event;
-						data.Handler(event);
-					}
-					break;
-					default:
-						break;
-					}
-				case SDL_MOUSEMOTION: {
-					const SDL_MouseMotionEvent& mev = currentEvent->motion;
-					MouseMovedEvent event(mev.x, mev.y);
-					data.Handler(event);
-				}
-				break;
-				case SDL_MOUSEBUTTONDOWN:
-				case SDL_MOUSEBUTTONUP: {
-					const SDL_MouseButtonEvent& mev = currentEvent->button;
-					MouseButton::Enum button;
-					switch(mev.button)
-					{
-					default:
-					case SDL_BUTTON_LEFT:
-						button = MouseButton::Left;
-						break;
-					case SDL_BUTTON_MIDDLE:
-						button = MouseButton::Middle;
-						break;
-					case SDL_BUTTON_RIGHT:
-						button = MouseButton::Right;
-						break;
-					}
+					case SDL_MOUSEBUTTONDOWN:
+					case SDL_MOUSEBUTTONUP: {
+						const SDL_MouseButtonEvent& mev = currentEvent->button;
+						MouseButton::Enum button;
+						switch(mev.button)
+						{
+							default:
+							case SDL_BUTTON_LEFT: button = MouseButton::Left; break;
+							case SDL_BUTTON_MIDDLE: button = MouseButton::Middle; break;
+							case SDL_BUTTON_RIGHT: button = MouseButton::Right; break;
+						}
 
-					switch(mev.state)
-					{
-					default:
-					case SDL_PRESSED: {
-						MouseButtonPressedEvent event(button);
+						switch(mev.state)
+						{
+							default:
+							case SDL_PRESSED: {
+								MouseButtonPressedEvent event(button);
+								data.Handler(event);
+							}
+							break;
+							case SDL_RELEASED: {
+								MouseButtonReleasedEvent event(button);
+								data.Handler(event);
+							}
+							break;
+						}
+					}
+					break;
+					case SDL_MOUSEWHEEL: {
+						const SDL_MouseWheelEvent& mev = currentEvent->wheel;
+						MouseScrolledEvent event(mev.x, mev.y);
 						data.Handler(event);
 					}
 					break;
-					case SDL_RELEASED: {
-						MouseButtonReleasedEvent event(button);
+					case SDL_KEYDOWN: {
+						const SDL_KeyboardEvent& kev = currentEvent->key;
+						uint8_t modifiers = InputSDL::TranslateKeyModifiers(kev.keysym.mod);
+						Key::Enum key = Input::ToKey(kev.keysym.scancode);
+						if(0 == key && 0 == modifiers)
+						{
+							modifiers = InputSDL::TranslateKeyModifierPress(kev.keysym.scancode);
+						}
+						KeyPressedEvent event(key, modifiers, kev.repeat);
 						data.Handler(event);
 					}
 					break;
+					case SDL_KEYUP: {
+						const SDL_KeyboardEvent& kev = currentEvent->key;
+						uint8_t modifiers = InputSDL::TranslateKeyModifiers(kev.keysym.mod);
+						Key::Enum key = Input::ToKey(kev.keysym.scancode);
+						KeyReleasedEvent event(key, modifiers);
+						data.Handler(event);
 					}
-				}
-				break;
-				case SDL_MOUSEWHEEL: {
-					const SDL_MouseWheelEvent& mev = currentEvent->wheel;
-					MouseScrolledEvent event(mev.x, mev.y);
-					data.Handler(event);
-				}
-				break;
-				case SDL_KEYDOWN: {
-					const SDL_KeyboardEvent& kev = currentEvent->key;
-					uint8_t modifiers = InputSDL::TranslateKeyModifiers(kev.keysym.mod);
-					Key::Enum key = Input::ToKey(kev.keysym.scancode);
-					if(0 == key && 0 == modifiers)
-					{
-						modifiers = InputSDL::TranslateKeyModifierPress(kev.keysym.scancode);
-					}
-					KeyPressedEvent event(key, modifiers, kev.repeat);
-					data.Handler(event);
-				}
-				break;
-				case SDL_KEYUP: {
-					const SDL_KeyboardEvent& kev = currentEvent->key;
-					uint8_t modifiers = InputSDL::TranslateKeyModifiers(kev.keysym.mod);
-					Key::Enum key = Input::ToKey(kev.keysym.scancode);
-					KeyReleasedEvent event(key, modifiers);
-					data.Handler(event);
-				}
-				break;
-				default:
 					break;
+					default: break;
 				}
 
 				return 0;

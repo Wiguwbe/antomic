@@ -26,9 +26,6 @@ namespace Antomic
 		virtual ~Float() override = default;
 
 	public:
-		virtual ScriptObjectType GetType()
-		{
-			return ScriptObjectType::Float;
-		}
+		virtual ScriptObjectType GetType() { return ScriptObjectType::Float; }
 	};
 } // namespace Antomic

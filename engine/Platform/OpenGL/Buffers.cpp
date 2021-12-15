@@ -34,20 +34,11 @@ namespace Antomic
 		mCount = size / sizeof(uint32_t);
 	}
 
-	OpenGLIndexBuffer::~OpenGLIndexBuffer()
-	{
-		glDeleteBuffers(1, &mRendererId);
-	}
+	OpenGLIndexBuffer::~OpenGLIndexBuffer() { glDeleteBuffers(1, &mRendererId); }
 
-	void OpenGLIndexBuffer::Bind() const
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mRendererId);
-	}
+	void OpenGLIndexBuffer::Bind() const { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mRendererId); }
 
-	void OpenGLIndexBuffer::Unbind() const
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
+	void OpenGLIndexBuffer::Unbind() const { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
 
 	void OpenGLIndexBuffer::Upload(uint32_t* data, uint32_t size) const
 	{
@@ -68,20 +59,11 @@ namespace Antomic
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	OpenGLVertexBuffer::~OpenGLVertexBuffer()
-	{
-		glDeleteBuffers(1, &mRendererId);
-	}
+	OpenGLVertexBuffer::~OpenGLVertexBuffer() { glDeleteBuffers(1, &mRendererId); }
 
-	void OpenGLVertexBuffer::Bind() const
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, mRendererId);
-	}
+	void OpenGLVertexBuffer::Bind() const { glBindBuffer(GL_ARRAY_BUFFER, mRendererId); }
 
-	void OpenGLVertexBuffer::Unbind() const
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
+	void OpenGLVertexBuffer::Unbind() const { glBindBuffer(GL_ARRAY_BUFFER, 0); }
 
 	void OpenGLVertexBuffer::Upload(uint32_t* data, uint32_t size) const
 	{
@@ -90,10 +72,7 @@ namespace Antomic
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void OpenGLVertexBuffer::SetLayout(const BufferLayout& layout)
-	{
-		mLayout = layout;
-	}
+	void OpenGLVertexBuffer::SetLayout(const BufferLayout& layout) { mLayout = layout; }
 
 	/*************************************************************
      * OpenGLVertexBuffer Implementation
@@ -110,10 +89,7 @@ namespace Antomic
 		glBindBufferBase(GL_UNIFORM_BUFFER, binding, mRendererId);
 	}
 
-	OpenGLUniformBuffer::~OpenGLUniformBuffer()
-	{
-		glDeleteBuffers(1, &mRendererId);
-	}
+	OpenGLUniformBuffer::~OpenGLUniformBuffer() { glDeleteBuffers(1, &mRendererId); }
 
 	void OpenGLUniformBuffer::SetValue(const std::string& name, const glm::mat4& data)
 	{

@@ -31,23 +31,11 @@ namespace Antomic
 		virtual ~GLFWWindow() override;
 
 	public:
-		virtual uint32_t GetWidth() const override
-		{
-			return mData.Width;
-		};
-		virtual uint32_t GetHeight() const override
-		{
-			return mData.Height;
-		};
-		virtual const std::string& GetTitle() const override
-		{
-			return mData.Title;
-		};
+		virtual uint32_t GetWidth() const override { return mData.Width; };
+		virtual uint32_t GetHeight() const override { return mData.Height; };
+		virtual const std::string& GetTitle() const override { return mData.Title; };
 		virtual void SetTitle(const std::string& title) override;
-		virtual bool IsValid() const override
-		{
-			return mWindow != nullptr;
-		};
+		virtual bool IsValid() const override { return mWindow != nullptr; };
 		virtual void SetEventHandler(const EventHandler& handler) override
 		{
 			mData.Handler = handler;
@@ -56,10 +44,7 @@ namespace Antomic
 		virtual void ProcessEvents() override;
 		virtual void ToggleFullscreen() override;
 		virtual void SetMouseLock(bool lock) override;
-		virtual void* GetNativeWindow() const override
-		{
-			return mWindow;
-		}
+		virtual void* GetNativeWindow() const override { return mWindow; }
 		virtual void Close() override;
 
 	private:

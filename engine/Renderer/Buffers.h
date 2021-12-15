@@ -85,14 +85,8 @@ namespace Antomic
 		~BufferLayout(){};
 
 	public:
-		inline const std::vector<BufferElement>& Elements() const
-		{
-			return mElements;
-		}
-		inline uint32_t Stride() const
-		{
-			return mStride;
-		}
+		inline const std::vector<BufferElement>& Elements() const { return mElements; }
+		inline uint32_t Stride() const { return mStride; }
 
 	private:
 		void Update();
@@ -114,14 +108,8 @@ namespace Antomic
 		~UniformBufferLayout(){};
 
 	public:
-		inline const std::vector<UniformBufferElement>& Elements() const
-		{
-			return mElements;
-		}
-		inline uint32_t Stride() const
-		{
-			return mStride;
-		}
+		inline const std::vector<UniformBufferElement>& Elements() const { return mElements; }
+		inline uint32_t Stride() const { return mStride; }
 		const UniformBufferElement& GetElement(const std::string& name);
 
 	private:

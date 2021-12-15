@@ -28,8 +28,5 @@ namespace Antomic
 		o.flush();
 	}
 
-	Ref<Scene> Serialization::Load(const std::string& file)
-	{
-		return nullptr;
-	}
+	Ref<Scene> Serialization::Load(const std::string& file) { return nullptr; }
 } // namespace Antomic

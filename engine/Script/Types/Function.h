@@ -26,9 +26,6 @@ namespace Antomic
 		virtual ~Function() override = default;
 
 	public:
-		virtual ScriptObjectType GetType()
-		{
-			return ScriptObjectType::Function;
-		}
+		virtual ScriptObjectType GetType() { return ScriptObjectType::Function; }
 	};
 } // namespace Antomic

@@ -31,10 +31,7 @@ namespace Antomic
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
-	void OpenGLRenderAPI::Clear()
-	{
-		glClear(GL_COLOR_BUFFER_BIT);
-	}
+	void OpenGLRenderAPI::Clear() { glClear(GL_COLOR_BUFFER_BIT); }
 
 	void OpenGLRenderAPI::DrawIndexed(const Ref<VertexArray> vertexArray)
 	{

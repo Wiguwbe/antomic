@@ -176,53 +176,50 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::End:
-				if(body.empty() && !allowEmpty)
-				{
-					MissingBody(t, name, false);
-				}
-				return true;
-			case TokenType::Identation:
-				if(t.Value.size() < CurrentIdentation())
-				{
+				case TokenType::End:
 					if(body.empty() && !allowEmpty)
 					{
 						MissingBody(t, name, false);
 					}
-
-					PopIdentation();
 					return true;
+				case TokenType::Identation:
+					if(t.Value.size() < CurrentIdentation())
+					{
+						if(body.empty() && !allowEmpty)
+						{
+							MissingBody(t, name, false);
+						}
+
+						PopIdentation();
+						return true;
+					}
+					if(t.Value.size() > CurrentIdentation() && !body.empty())
+					{
+						WrongIdentation(t, false);
+					}
+					ReadNextToken();
+					PushIdentation((uint8_t)t.Value.size());
+					continue;
+				case TokenType::Invalid: ParsingError(t, false);
+				case TokenType::NewLine:
+				case TokenType::Comment: ReadNextToken(); continue;
+				case TokenType::KeywordElse:
+				case TokenType::KeywordElIf: {
+					MustNotHave(mState.IfStack.empty(), t, false);
+					TryParsingAuto(stmt, false, TryStatement);
+					continue;
 				}
-				if(t.Value.size() > CurrentIdentation() && !body.empty())
-				{
-					WrongIdentation(t, false);
+				case TokenType::KeywordExcept:
+				case TokenType::KeywordFinally: {
+					MustNotHave(mState.TryStack.empty(), t, false);
+					TryParsingAuto(stmt, false, TryStatement);
+					continue;
 				}
-				ReadNextToken();
-				PushIdentation((uint8_t)t.Value.size());
-				continue;
-			case TokenType::Invalid:
-				ParsingError(t, false);
-			case TokenType::NewLine:
-			case TokenType::Comment:
-				ReadNextToken();
-				continue;
-			case TokenType::KeywordElse:
-			case TokenType::KeywordElIf: {
-				MustNotHave(mState.IfStack.empty(), t, false);
-				TryParsingAuto(stmt, false, TryStatement);
-				continue;
-			}
-			case TokenType::KeywordExcept:
-			case TokenType::KeywordFinally: {
-				MustNotHave(mState.TryStack.empty(), t, false);
-				TryParsingAuto(stmt, false, TryStatement);
-				continue;
-			}
-			default: {
-				TryParsingAuto(stmt, false, TryStatement);
-				body.push_back(stmt);
-				break;
-			}
+				default: {
+					TryParsingAuto(stmt, false, TryStatement);
+					body.push_back(stmt);
+					break;
+				}
 			}
 		}
 		return false;
@@ -235,42 +232,26 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::KeywordDef:
-				return TryFunctionDef();
-			case TokenType::KeywordClass:
-				return TryClassDef();
-			case TokenType::KeywordReturn:
-				return TryReturn();
-			case TokenType::KeywordDel:
-				return TryDelete();
-			case TokenType::KeywordFor:
-				return TryFor();
-			case TokenType::KeywordWhile:
-				return TryWhile();
-			case TokenType::KeywordIf:
-			case TokenType::KeywordElse:
-			case TokenType::KeywordElIf:
-				return TryIfElse();
-			case TokenType::KeywordRaise:
-				return TryRaise();
-			case TokenType::KeywordTry:
-			case TokenType::KeywordExcept:
-			case TokenType::KeywordFinally:
-				return TryTryExceptFinaly();
-			case TokenType::KeywordAssert:
-				return TryAssert();
-			case TokenType::KeywordImport:
-				return TryImport();
-			case TokenType::KeywordFrom:
-				return TryImportFrom();
-			case TokenType::KeywordPass:
-				return TryPass();
-			case TokenType::KeywordBreak:
-				return TryBreak();
-			case TokenType::KeywordContinue:
-				return TryContinue();
-			default:
-				return TryExpr();
+				case TokenType::KeywordDef: return TryFunctionDef();
+				case TokenType::KeywordClass: return TryClassDef();
+				case TokenType::KeywordReturn: return TryReturn();
+				case TokenType::KeywordDel: return TryDelete();
+				case TokenType::KeywordFor: return TryFor();
+				case TokenType::KeywordWhile: return TryWhile();
+				case TokenType::KeywordIf:
+				case TokenType::KeywordElse:
+				case TokenType::KeywordElIf: return TryIfElse();
+				case TokenType::KeywordRaise: return TryRaise();
+				case TokenType::KeywordTry:
+				case TokenType::KeywordExcept:
+				case TokenType::KeywordFinally: return TryTryExceptFinaly();
+				case TokenType::KeywordAssert: return TryAssert();
+				case TokenType::KeywordImport: return TryImport();
+				case TokenType::KeywordFrom: return TryImportFrom();
+				case TokenType::KeywordPass: return TryPass();
+				case TokenType::KeywordBreak: return TryBreak();
+				case TokenType::KeywordContinue: return TryContinue();
+				default: return TryExpr();
 			}
 		}
 
@@ -305,16 +286,14 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				continue;
-			case TokenType::Identifier: {
-				TryIdentifier(t, identifier);
-				stmt->bases.push_back(Name(identifier, expr_context_t::kLoad, t.Line, t.Column));
-				continue;
-			}
-			default:
-				break;
+				case TokenType::SymbolComma: ReadNextToken(); continue;
+				case TokenType::Identifier: {
+					TryIdentifier(t, identifier);
+					stmt->bases.push_back(
+						Name(identifier, expr_context_t::kLoad, t.Line, t.Column));
+					continue;
+				}
+				default: break;
 			}
 			break;
 		}
@@ -365,32 +344,31 @@ namespace Antomic
 
 		switch(t.Type)
 		{
-		case TokenType::OpAddAssign:
-			return AugAssign(target, operator_t::kAdd, expr, t.Line, t.Column);
-		case TokenType::OpSubAssign:
-			return AugAssign(target, operator_t::kSub, expr, t.Line, t.Column);
-		case TokenType::OpMulAssign:
-			return AugAssign(target, operator_t::kMult, expr, t.Line, t.Column);
-		case TokenType::OpDivAssign:
-			return AugAssign(target, operator_t::kDiv, expr, t.Line, t.Column);
-		case TokenType::OpFloorDivAssign:
-			return AugAssign(target, operator_t::kFloorDiv, expr, t.Line, t.Column);
-		case TokenType::OpModAssign:
-			return AugAssign(target, operator_t::kMod, expr, t.Line, t.Column);
-		case TokenType::OpAndAssign:
-			return AugAssign(target, operator_t::kBitAnd, expr, t.Line, t.Column);
-		case TokenType::OpOrAssign:
-			return AugAssign(target, operator_t::kBitOr, expr, t.Line, t.Column);
-		case TokenType::OpXorAssign:
-			return AugAssign(target, operator_t::kBitXor, expr, t.Line, t.Column);
-		case TokenType::OpShiftLeftAssign:
-			return AugAssign(target, operator_t::kLShift, expr, t.Line, t.Column);
-		case TokenType::OpShiftRightAssign:
-			return AugAssign(target, operator_t::kRShift, expr, t.Line, t.Column);
-		case TokenType::OpExpAssign:
-			return AugAssign(target, operator_t::kPow, expr, t.Line, t.Column);
-		default:
-			UnexpectedToken(t, nullptr);
+			case TokenType::OpAddAssign:
+				return AugAssign(target, operator_t::kAdd, expr, t.Line, t.Column);
+			case TokenType::OpSubAssign:
+				return AugAssign(target, operator_t::kSub, expr, t.Line, t.Column);
+			case TokenType::OpMulAssign:
+				return AugAssign(target, operator_t::kMult, expr, t.Line, t.Column);
+			case TokenType::OpDivAssign:
+				return AugAssign(target, operator_t::kDiv, expr, t.Line, t.Column);
+			case TokenType::OpFloorDivAssign:
+				return AugAssign(target, operator_t::kFloorDiv, expr, t.Line, t.Column);
+			case TokenType::OpModAssign:
+				return AugAssign(target, operator_t::kMod, expr, t.Line, t.Column);
+			case TokenType::OpAndAssign:
+				return AugAssign(target, operator_t::kBitAnd, expr, t.Line, t.Column);
+			case TokenType::OpOrAssign:
+				return AugAssign(target, operator_t::kBitOr, expr, t.Line, t.Column);
+			case TokenType::OpXorAssign:
+				return AugAssign(target, operator_t::kBitXor, expr, t.Line, t.Column);
+			case TokenType::OpShiftLeftAssign:
+				return AugAssign(target, operator_t::kLShift, expr, t.Line, t.Column);
+			case TokenType::OpShiftRightAssign:
+				return AugAssign(target, operator_t::kRShift, expr, t.Line, t.Column);
+			case TokenType::OpExpAssign:
+				return AugAssign(target, operator_t::kPow, expr, t.Line, t.Column);
+			default: UnexpectedToken(t, nullptr);
 		}
 
 		return nullptr;
@@ -409,16 +387,16 @@ namespace Antomic
 		t = PeekNextToken();
 		switch(t.Type)
 		{
-		case TokenType::NewLine: {
-			ReadNextToken();
-			HaveBodyNoEmpty("for", stmt->body);
-			break;
-		}
-		default: {
-			TryParsingAuto(body, nullptr, TryStatement);
-			stmt->body.push_back(body);
-			break;
-		}
+			case TokenType::NewLine: {
+				ReadNextToken();
+				HaveBodyNoEmpty("for", stmt->body);
+				break;
+			}
+			default: {
+				TryParsingAuto(body, nullptr, TryStatement);
+				stmt->body.push_back(body);
+				break;
+			}
 		}
 		return stmt;
 	}
@@ -431,25 +409,22 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::End:
-				ExpectedToken(t, "in", nullptr);
-			case TokenType::KeywordIn:
-				if(names.size() == 0)
-				{
-					ParsingError(t, nullptr);
+				case TokenType::End: ExpectedToken(t, "in", nullptr);
+				case TokenType::KeywordIn:
+					if(names.size() == 0)
+					{
+						ParsingError(t, nullptr);
+					}
+					return names.size() == 1
+							   ? names.front()
+							   : Tuple(names, expr_context_t::kStore, t.Line, t.Column);
+				case TokenType::SymbolComma: ReadNextToken(); continue;
+				case TokenType::Identifier: {
+					TryIdentifier(t, identifier);
+					names.push_back(Name(identifier, expr_context_t::kStore, t.Line, t.Column));
+					continue;
 				}
-				return names.size() == 1 ? names.front()
-										 : Tuple(names, expr_context_t::kStore, t.Line, t.Column);
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				continue;
-			case TokenType::Identifier: {
-				TryIdentifier(t, identifier);
-				names.push_back(Name(identifier, expr_context_t::kStore, t.Line, t.Column));
-				continue;
-			}
-			default:
-				ParsingError(t, nullptr);
+				default: ParsingError(t, nullptr);
 			}
 		}
 
@@ -469,15 +444,15 @@ namespace Antomic
 		t = PeekNextToken();
 		switch(t.Type)
 		{
-		case TokenType::NewLine: {
-			ReadNextToken();
-			HaveBodyNoEmpty("while", stmt->body);
-		}
-		default: {
-			TryParsingAuto(body, nullptr, TryStatement);
-			stmt->body.push_back(stmt);
-			break;
-		}
+			case TokenType::NewLine: {
+				ReadNextToken();
+				HaveBodyNoEmpty("while", stmt->body);
+			}
+			default: {
+				TryParsingAuto(body, nullptr, TryStatement);
+				stmt->body.push_back(stmt);
+				break;
+			}
 		}
 		return stmt;
 	}
@@ -488,68 +463,67 @@ namespace Antomic
 		PinPosition(t, lineno, colno);
 		switch(t.Type)
 		{
-		case TokenType::KeywordIf: {
-			TryParsingAuto(test, nullptr, TryExpression);
-			TryToken(t, TokenType::SymbolColon);
-			New(stmt, If_t, If, test, EmptyStmtBody, EmptyStmtBody, lineno, colno);
-			t = PeekNextToken();
-			switch(t.Type)
-			{
-			case TokenType::NewLine:
-				ReadNextToken();
-				HaveBodyNoEmpty("if", stmt->body);
-				mState.IfStack.push(stmt);
-				break;
-			default:
-				TryParsingAuto(body, nullptr, TryStatement);
-				stmt->body.push_back(body);
-				break;
+			case TokenType::KeywordIf: {
+				TryParsingAuto(test, nullptr, TryExpression);
+				TryToken(t, TokenType::SymbolColon);
+				New(stmt, If_t, If, test, EmptyStmtBody, EmptyStmtBody, lineno, colno);
+				t = PeekNextToken();
+				switch(t.Type)
+				{
+					case TokenType::NewLine:
+						ReadNextToken();
+						HaveBodyNoEmpty("if", stmt->body);
+						mState.IfStack.push(stmt);
+						break;
+					default:
+						TryParsingAuto(body, nullptr, TryStatement);
+						stmt->body.push_back(body);
+						break;
+				}
+				return stmt;
 			}
-			return stmt;
-		}
-		case TokenType::KeywordElse: {
-			MustNotHave(mState.IfStack.empty(), t, nullptr);
-			TryToken(t, TokenType::SymbolColon);
-			t = PeekNextToken();
-			auto stmt = dynamic_cast<If_t>(mState.IfStack.top());
-			switch(t.Type)
-			{
-			case TokenType::NewLine:
-				ReadNextToken();
-				HaveBodyNoEmpty("else", stmt->orelse);
-				break;
-			default:
-				TryParsingAuto(body, nullptr, TryStatement);
-				stmt->orelse.push_back(stmt);
-				break;
+			case TokenType::KeywordElse: {
+				MustNotHave(mState.IfStack.empty(), t, nullptr);
+				TryToken(t, TokenType::SymbolColon);
+				t = PeekNextToken();
+				auto stmt = dynamic_cast<If_t>(mState.IfStack.top());
+				switch(t.Type)
+				{
+					case TokenType::NewLine:
+						ReadNextToken();
+						HaveBodyNoEmpty("else", stmt->orelse);
+						break;
+					default:
+						TryParsingAuto(body, nullptr, TryStatement);
+						stmt->orelse.push_back(stmt);
+						break;
+				}
+				return stmt;
 			}
-			return stmt;
-		}
-		case TokenType::KeywordElIf: {
-			MustNotHave(mState.IfStack.empty(), t, nullptr);
-			TryParsingAuto(test, nullptr, TryExpression);
-			TryToken(t, TokenType::SymbolColon);
-			New(orelse, If_t, If, test, EmptyStmtBody, EmptyStmtBody, lineno, colno);
-			auto stmt = dynamic_cast<If_t>(mState.IfStack.top());
-			mState.IfStack.pop();
-			mState.IfStack.push(orelse);
-			stmt->orelse.push_back(orelse);
-			t = PeekNextToken();
-			switch(t.Type)
-			{
-			case TokenType::NewLine:
-				ReadNextToken();
-				HaveBodyNoEmpty("elif", orelse->body);
-				break;
-			default:
-				TryParsingAuto(body, nullptr, TryStatement);
-				orelse->body.push_back(body);
-				break;
+			case TokenType::KeywordElIf: {
+				MustNotHave(mState.IfStack.empty(), t, nullptr);
+				TryParsingAuto(test, nullptr, TryExpression);
+				TryToken(t, TokenType::SymbolColon);
+				New(orelse, If_t, If, test, EmptyStmtBody, EmptyStmtBody, lineno, colno);
+				auto stmt = dynamic_cast<If_t>(mState.IfStack.top());
+				mState.IfStack.pop();
+				mState.IfStack.push(orelse);
+				stmt->orelse.push_back(orelse);
+				t = PeekNextToken();
+				switch(t.Type)
+				{
+					case TokenType::NewLine:
+						ReadNextToken();
+						HaveBodyNoEmpty("elif", orelse->body);
+						break;
+					default:
+						TryParsingAuto(body, nullptr, TryStatement);
+						orelse->body.push_back(body);
+						break;
+				}
+				return orelse;
 			}
-			return orelse;
-		}
-		default:
-			break;
+			default: break;
 		}
 		UnexpectedToken(t, nullptr);
 	}
@@ -569,41 +543,47 @@ namespace Antomic
 		PinPosition(t, lineno, colno);
 		switch(t.Type)
 		{
-		case TokenType::KeywordTry: {
-			Token t;
-			TryToken(t, TokenType::SymbolColon);
-			EndOrNewLine(t);
-			New(stmt, Try_t, Try, EmptyStmtBody, EmptyHandlers, EmptyStmtBody, lineno, colno);
-			mState.TryStack.push(stmt);
-			HaveBodyNoEmpty("try", stmt->body);
-			return stmt;
-		}
-		case TokenType::KeywordExcept: {
-			Token t;
-			MustNotHave(mState.TryStack.empty(), t, nullptr);
-			TryIdentifier(t, identifier);
-			auto type = Name(identifier, expr_context_t::kLoad, t.Line, t.Column);
-			TryToken(t, TokenType::KeywordAs);
-			TryIdentifier(t, name);
-			TryToken(t, TokenType::SymbolColon);
-			EndOrNewLine(t);
-			auto stmt = dynamic_cast<Try_t>(mState.TryStack.top());
-			New(handler, ExceptHandler_t, ExceptHandler, type, name, EmptyStmtBody, lineno, colno);
-			HaveBodyNoEmpty("except", handler->body);
-			stmt->handlers.push_back(handler);
-			return stmt;
-		}
-		case TokenType::KeywordFinally: {
-			MustNotHave(mState.TryStack.empty(), t, nullptr);
-			Token t;
-			TryToken(t, TokenType::SymbolColon);
-			EndOrNewLine(t);
-			auto stmt = dynamic_cast<Try_t>(mState.TryStack.top());
-			HaveBodyNoEmpty("finally", stmt->finalbody);
-			return stmt;
-		}
-		default:
-			break;
+			case TokenType::KeywordTry: {
+				Token t;
+				TryToken(t, TokenType::SymbolColon);
+				EndOrNewLine(t);
+				New(stmt, Try_t, Try, EmptyStmtBody, EmptyHandlers, EmptyStmtBody, lineno, colno);
+				mState.TryStack.push(stmt);
+				HaveBodyNoEmpty("try", stmt->body);
+				return stmt;
+			}
+			case TokenType::KeywordExcept: {
+				Token t;
+				MustNotHave(mState.TryStack.empty(), t, nullptr);
+				TryIdentifier(t, identifier);
+				auto type = Name(identifier, expr_context_t::kLoad, t.Line, t.Column);
+				TryToken(t, TokenType::KeywordAs);
+				TryIdentifier(t, name);
+				TryToken(t, TokenType::SymbolColon);
+				EndOrNewLine(t);
+				auto stmt = dynamic_cast<Try_t>(mState.TryStack.top());
+				New(handler,
+					ExceptHandler_t,
+					ExceptHandler,
+					type,
+					name,
+					EmptyStmtBody,
+					lineno,
+					colno);
+				HaveBodyNoEmpty("except", handler->body);
+				stmt->handlers.push_back(handler);
+				return stmt;
+			}
+			case TokenType::KeywordFinally: {
+				MustNotHave(mState.TryStack.empty(), t, nullptr);
+				Token t;
+				TryToken(t, TokenType::SymbolColon);
+				EndOrNewLine(t);
+				auto stmt = dynamic_cast<Try_t>(mState.TryStack.top());
+				HaveBodyNoEmpty("finally", stmt->finalbody);
+				return stmt;
+			}
+			default: break;
 		}
 		UnexpectedToken(t, nullptr);
 	}
@@ -640,33 +620,32 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::NewLine:
-			case TokenType::End:
-				ReadNextToken();
-				if(name.size() != 0)
-				{
+				case TokenType::NewLine:
+				case TokenType::End:
+					ReadNextToken();
+					if(name.size() != 0)
+					{
+						names.push_back(alias(name, asName, t.Line, t.Column));
+					}
+					return Import(names, lineno, colno);
+				case TokenType::SymbolComma:
+					ReadNextToken();
 					names.push_back(alias(name, asName, t.Line, t.Column));
+					name = "";
+					asName = "";
+					continue;
+				case TokenType::KeywordAs: {
+					ReadNextToken();
+					TryIdentifier(t, identifier);
+					asName = identifier;
+					continue;
 				}
-				return Import(names, lineno, colno);
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				names.push_back(alias(name, asName, t.Line, t.Column));
-				name = "";
-				asName = "";
-				continue;
-			case TokenType::KeywordAs: {
-				ReadNextToken();
-				TryIdentifier(t, identifier);
-				asName = identifier;
-				continue;
-			}
-			case TokenType::Identifier: {
-				TryIdentifier(t, identifier);
-				name = identifier;
-				continue;
-			}
-			default:
-				ParsingError(t, nullptr);
+				case TokenType::Identifier: {
+					TryIdentifier(t, identifier);
+					name = identifier;
+					continue;
+				}
+				default: ParsingError(t, nullptr);
 			}
 		}
 		return nullptr;
@@ -687,33 +666,32 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::NewLine:
-			case TokenType::End:
-				ReadNextToken();
-				if(name.size() != 0)
-				{
+				case TokenType::NewLine:
+				case TokenType::End:
+					ReadNextToken();
+					if(name.size() != 0)
+					{
+						names.push_back(alias(name, asName, t.Line, t.Column));
+					}
+					return ImportFrom(identifier, names, lineno, colno);
+				case TokenType::SymbolComma:
+					ReadNextToken();
 					names.push_back(alias(name, asName, t.Line, t.Column));
+					name = "";
+					asName = "";
+					continue;
+				case TokenType::KeywordAs: {
+					ReadNextToken();
+					TryIdentifier(t, identifier);
+					asName = identifier;
+					continue;
 				}
-				return ImportFrom(identifier, names, lineno, colno);
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				names.push_back(alias(name, asName, t.Line, t.Column));
-				name = "";
-				asName = "";
-				continue;
-			case TokenType::KeywordAs: {
-				ReadNextToken();
-				TryIdentifier(t, identifier);
-				asName = identifier;
-				continue;
-			}
-			case TokenType::Identifier: {
-				TryIdentifier(t, identifier);
-				name = identifier;
-				continue;
-			}
-			default:
-				ParsingError(t, nullptr);
+				case TokenType::Identifier: {
+					TryIdentifier(t, identifier);
+					name = identifier;
+					continue;
+				}
+				default: ParsingError(t, nullptr);
 			}
 		}
 		return nullptr;
@@ -727,65 +705,58 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::NewLine:
-				ReadNextToken();
-			case TokenType::End:
-				MustHave(expr, t, nullptr);
-				return Expr(expr, expr->lineno, expr->colno);
-			case TokenType::Identifier:
-				MustNotHave(expr, t, nullptr);
-				TryParsing(expr, nullptr, TryName);
-				t = PeekNextToken();
-				switch(t.Type)
-				{
-				case TokenType::SymbolPeriod:
-					TryParsing(expr, nullptr, TryAttribute, expr);
+				case TokenType::NewLine: ReadNextToken();
+				case TokenType::End:
+					MustHave(expr, t, nullptr);
+					return Expr(expr, expr->lineno, expr->colno);
+				case TokenType::Identifier:
+					MustNotHave(expr, t, nullptr);
+					TryParsing(expr, nullptr, TryName);
+					t = PeekNextToken();
+					switch(t.Type)
+					{
+						case TokenType::SymbolPeriod:
+							TryParsing(expr, nullptr, TryAttribute, expr);
+							continue;
+						case TokenType::SymbolBracketOpen:
+							TryParsing(expr, nullptr, TrySubscript, expr);
+							continue;
+						case TokenType::SymbolParentesesOpen:
+							TryParsing(expr, nullptr, TryCall, expr);
+							continue;
+						default: continue;
+					}
 					continue;
-				case TokenType::SymbolBracketOpen:
-					TryParsing(expr, nullptr, TrySubscript, expr);
+				case TokenType::NumberFloat:
+				case TokenType::NumberInteger:
+				case TokenType::NumberHex:
+				case TokenType::String:
+					MustNotHave(expr, t, nullptr);
+					TryParsing(expr, nullptr, TryConstant);
 					continue;
 				case TokenType::SymbolParentesesOpen:
-					TryParsing(expr, nullptr, TryCall, expr);
+					ReadNextToken();
+					TryParsing(expr, nullptr, TryTuple, nullptr);
+					TryToken(t, TokenType::SymbolParentesesClose);
 					continue;
-				default:
+				case TokenType::SymbolComma:
+					ReadNextToken();
+					TryParsing(expr, nullptr, TryTuple, expr);
 					continue;
-				}
-				continue;
-			case TokenType::NumberFloat:
-			case TokenType::NumberInteger:
-			case TokenType::NumberHex:
-			case TokenType::String:
-				MustNotHave(expr, t, nullptr);
-				TryParsing(expr, nullptr, TryConstant);
-				continue;
-			case TokenType::SymbolParentesesOpen:
-				ReadNextToken();
-				TryParsing(expr, nullptr, TryTuple, nullptr);
-				TryToken(t, TokenType::SymbolParentesesClose);
-				continue;
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				TryParsing(expr, nullptr, TryTuple, expr);
-				continue;
-			case TokenType::OpAssign:
-				MustHave(expr, t, nullptr);
-				return TryAssign(expr);
-			case TokenType::OpAddAssign:
-			case TokenType::OpSubAssign:
-			case TokenType::OpMulAssign:
-			case TokenType::OpDivAssign:
-			case TokenType::OpFloorDivAssign:
-			case TokenType::OpModAssign:
-			case TokenType::OpAndAssign:
-			case TokenType::OpOrAssign:
-			case TokenType::OpXorAssign:
-			case TokenType::OpShiftLeftAssign:
-			case TokenType::OpShiftRightAssign:
-			case TokenType::OpExpAssign:
-				MustHave(expr, t, nullptr);
-				return TryAugAssign(expr);
-			default:
-				UnexpectedToken(t, nullptr);
+				case TokenType::OpAssign: MustHave(expr, t, nullptr); return TryAssign(expr);
+				case TokenType::OpAddAssign:
+				case TokenType::OpSubAssign:
+				case TokenType::OpMulAssign:
+				case TokenType::OpDivAssign:
+				case TokenType::OpFloorDivAssign:
+				case TokenType::OpModAssign:
+				case TokenType::OpAndAssign:
+				case TokenType::OpOrAssign:
+				case TokenType::OpXorAssign:
+				case TokenType::OpShiftLeftAssign:
+				case TokenType::OpShiftRightAssign:
+				case TokenType::OpExpAssign: MustHave(expr, t, nullptr); return TryAugAssign(expr);
+				default: UnexpectedToken(t, nullptr);
 			}
 		}
 		return nullptr;
@@ -825,19 +796,14 @@ namespace Antomic
 
 			switch(t.Type)
 			{
-			case TokenType::End:
-			case TokenType::NewLine:
-				ExpectedToken(t, ')', nullptr);
-			case TokenType::SymbolParentesesClose:
-				ReadNextToken();
-				return arguments(args);
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				continue;
-			default:
-				TryParsingAuto(arg, nullptr, TryArg);
-				args.push_back(arg);
-				break;
+				case TokenType::End:
+				case TokenType::NewLine: ExpectedToken(t, ')', nullptr);
+				case TokenType::SymbolParentesesClose: ReadNextToken(); return arguments(args);
+				case TokenType::SymbolComma: ReadNextToken(); continue;
+				default:
+					TryParsingAuto(arg, nullptr, TryArg);
+					args.push_back(arg);
+					break;
 			}
 		}
 
@@ -872,53 +838,50 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::Identifier:
-			case TokenType::NumberFloat:
-			case TokenType::NumberInteger:
-			case TokenType::NumberHex:
-			case TokenType::String:
-			case TokenType::SymbolParentesesOpen:
-			case TokenType::SymbolBracketOpen:
-			case TokenType::SymbolBraceOpen:
-				TryParsing(expr, nullptr, TryExpressionOperand);
-				break;
-			case TokenType::SymbolComma:
-				TryParsing(expr, nullptr, TryTuple, expr);
-				break;
-			case TokenType::OpInv:
-			case TokenType::OpAdd:
-			case TokenType::OpSub:
-			case TokenType::OpMul:
-			case TokenType::OpDiv:
-			case TokenType::OpExp:
-			case TokenType::OpMod:
-			case TokenType::OpXor:
-			case TokenType::OpFloorDiv:
-			case TokenType::OpShiftLeft:
-			case TokenType::OpShiftRight:
-			case TokenType::OpAnd:
-			case TokenType::OpOr:
-			case TokenType::KeywordAnd:
-			case TokenType::KeywordOr:
-			case TokenType::KeywordNot:
-			case TokenType::OpEqual:
-			case TokenType::OpNotEqual:
-			case TokenType::OpGreatEqual:
-			case TokenType::OpLessEqual:
-			case TokenType::OpGreat:
-			case TokenType::OpLess:
-			case TokenType::KeywordIs:
-			case TokenType::KeywordIn:
-				TryParsing(expr, nullptr, TryExpressionOperator, expr);
-				continue;
-			case TokenType::KeywordLambda:
-				return TryLambda();
-			default:
-				if(!expr)
-				{
-					UnexpectedToken(t, nullptr);
-				}
-				return expr;
+				case TokenType::Identifier:
+				case TokenType::NumberFloat:
+				case TokenType::NumberInteger:
+				case TokenType::NumberHex:
+				case TokenType::String:
+				case TokenType::SymbolParentesesOpen:
+				case TokenType::SymbolBracketOpen:
+				case TokenType::SymbolBraceOpen:
+					TryParsing(expr, nullptr, TryExpressionOperand);
+					break;
+				case TokenType::SymbolComma: TryParsing(expr, nullptr, TryTuple, expr); break;
+				case TokenType::OpInv:
+				case TokenType::OpAdd:
+				case TokenType::OpSub:
+				case TokenType::OpMul:
+				case TokenType::OpDiv:
+				case TokenType::OpExp:
+				case TokenType::OpMod:
+				case TokenType::OpXor:
+				case TokenType::OpFloorDiv:
+				case TokenType::OpShiftLeft:
+				case TokenType::OpShiftRight:
+				case TokenType::OpAnd:
+				case TokenType::OpOr:
+				case TokenType::KeywordAnd:
+				case TokenType::KeywordOr:
+				case TokenType::KeywordNot:
+				case TokenType::OpEqual:
+				case TokenType::OpNotEqual:
+				case TokenType::OpGreatEqual:
+				case TokenType::OpLessEqual:
+				case TokenType::OpGreat:
+				case TokenType::OpLess:
+				case TokenType::KeywordIs:
+				case TokenType::KeywordIn:
+					TryParsing(expr, nullptr, TryExpressionOperator, expr);
+					continue;
+				case TokenType::KeywordLambda: return TryLambda();
+				default:
+					if(!expr)
+					{
+						UnexpectedToken(t, nullptr);
+					}
+					return expr;
 			}
 		}
 		return nullptr;
@@ -932,79 +895,77 @@ namespace Antomic
 		{
 			switch(t.Type)
 			{
-			case TokenType::Identifier: {
-				TryParsingAuto(operand, nullptr, TryName);
-				auto t = PeekNextToken();
-				switch(t.Type)
-				{
-				case TokenType::SymbolPeriod:
-					TryParsing(operand, nullptr, TryAttribute, operand);
+				case TokenType::Identifier: {
+					TryParsingAuto(operand, nullptr, TryName);
+					auto t = PeekNextToken();
+					switch(t.Type)
+					{
+						case TokenType::SymbolPeriod:
+							TryParsing(operand, nullptr, TryAttribute, operand);
+							return operand;
+						case TokenType::SymbolBracketOpen:
+							TryParsing(operand, nullptr, TrySubscript, operand);
+							return operand;
+						case TokenType::SymbolParentesesOpen:
+							TryParsing(operand, nullptr, TryCall, operand);
+							return operand;
+						default: break;
+					}
 					return operand;
-				case TokenType::SymbolBracketOpen:
-					TryParsing(operand, nullptr, TrySubscript, operand);
-					return operand;
-				case TokenType::SymbolParentesesOpen:
-					TryParsing(operand, nullptr, TryCall, operand);
-					return operand;
-				default:
-					break;
 				}
-				return operand;
-			}
-			case TokenType::OpAdd:
-			case TokenType::OpSub: {
-				ReadNextToken();
-				auto op = t;
-				t = PeekNextToken();
-				if(t.Type == TokenType::SymbolParentesesOpen)
-				{
-					TryToken(t, TokenType::SymbolParentesesOpen);
+				case TokenType::OpAdd:
+				case TokenType::OpSub: {
+					ReadNextToken();
+					auto op = t;
+					t = PeekNextToken();
+					if(t.Type == TokenType::SymbolParentesesOpen)
+					{
+						TryToken(t, TokenType::SymbolParentesesOpen);
+						TryParsingAuto(operand, nullptr, TryExpression);
+						TryToken(t, TokenType::SymbolParentesesClose);
+						return TryUnaryOp(op, operand);
+					}
+					signal = op.Value;
+					continue;
+				}
+				case TokenType::NumberFloat:
+				case TokenType::NumberInteger: {
+					TryParsingAuto(operand, nullptr, TryConstant, signal);
+					return operand;
+				}
+				case TokenType::NumberHex:
+				case TokenType::String: {
+					TryParsingAuto(operand, nullptr, TryConstant);
+					return operand;
+				}
+				case TokenType::KeywordNone:
+					ReadNextToken();
+					return Name("None", expr_context_t::kLoad, t.Line, t.Column);
+				case TokenType::KeywordTrue:
+					ReadNextToken();
+					return Name("True", expr_context_t::kLoad, t.Line, t.Column);
+				case TokenType::KeywordFalse:
+					ReadNextToken();
+					return Name("False", expr_context_t::kLoad, t.Line, t.Column);
+				case TokenType::SymbolParentesesOpen: {
+					ReadNextToken();
 					TryParsingAuto(operand, nullptr, TryExpression);
 					TryToken(t, TokenType::SymbolParentesesClose);
-					return TryUnaryOp(op, operand);
+					return operand;
 				}
-				signal = op.Value;
-				continue;
-			}
-			case TokenType::NumberFloat:
-			case TokenType::NumberInteger: {
-				TryParsingAuto(operand, nullptr, TryConstant, signal);
-				return operand;
-			}
-			case TokenType::NumberHex:
-			case TokenType::String: {
-				TryParsingAuto(operand, nullptr, TryConstant);
-				return operand;
-			}
-			case TokenType::KeywordNone:
-				ReadNextToken();
-				return Name("None", expr_context_t::kLoad, t.Line, t.Column);
-			case TokenType::KeywordTrue:
-				ReadNextToken();
-				return Name("True", expr_context_t::kLoad, t.Line, t.Column);
-			case TokenType::KeywordFalse:
-				ReadNextToken();
-				return Name("False", expr_context_t::kLoad, t.Line, t.Column);
-			case TokenType::SymbolParentesesOpen: {
-				ReadNextToken();
-				TryParsingAuto(operand, nullptr, TryExpression);
-				TryToken(t, TokenType::SymbolParentesesClose);
-				return operand;
-			}
-			case TokenType::SymbolBracketOpen: {
-				ReadNextToken();
-				TryParsingAuto(operand, nullptr, TryList);
-				TryToken(t, TokenType::SymbolBracketClose);
-				return operand;
-			}
-			case TokenType::SymbolBraceOpen: {
-				ReadNextToken();
-				TryParsingAuto(operand, nullptr, TryDict);
-				TryToken(t, TokenType::SymbolBraceClose);
-				return operand;
-			}
-			default:
-				UnexpectedToken(t, nullptr);
+				case TokenType::SymbolBracketOpen: {
+					ReadNextToken();
+					TryParsingAuto(operand, nullptr, TryList);
+					TryToken(t, TokenType::SymbolBracketClose);
+					return operand;
+				}
+				case TokenType::SymbolBraceOpen: {
+					ReadNextToken();
+					TryParsingAuto(operand, nullptr, TryDict);
+					TryToken(t, TokenType::SymbolBraceClose);
+					return operand;
+				}
+				default: UnexpectedToken(t, nullptr);
 			}
 		}
 		return nullptr;
@@ -1015,94 +976,93 @@ namespace Antomic
 		auto t = PeekNextToken();
 		switch(t.Type)
 		{
-		case TokenType::OpInv: {
-			MustNotHave(left, t, nullptr);
-			ReadNextToken();
-			TryParsingAuto(operand, nullptr, TryExpressionOperand);
-			TryParsingAuto(op, nullptr, TryUnaryOp, t, operand);
-			return op;
-		}
-		case TokenType::OpAdd:
-		case TokenType::OpSub: {
-			if(!left)
-			{
-				return TryExpressionOperand();
-			}
-			ReadNextToken();
-			TryParsingAuto(right, nullptr, TryExpressionOperand);
-			return TryBinOp(t, left, right);
-		}
-		case TokenType::OpMul:
-		case TokenType::OpDiv:
-		case TokenType::OpExp:
-		case TokenType::OpMod:
-		case TokenType::OpXor:
-		case TokenType::OpFloorDiv:
-		case TokenType::OpShiftLeft:
-		case TokenType::OpShiftRight:
-		case TokenType::OpAnd:
-		case TokenType::OpOr: {
-			MustHave(left, t, nullptr);
-			ReadNextToken();
-			TryParsingAuto(right, nullptr, TryExpressionOperand);
-			return TryBinOp(t, left, right);
-		}
-		case TokenType::KeywordAnd:
-		case TokenType::KeywordOr: {
-			MustHave(left, t, nullptr);
-			ReadNextToken();
-			TryParsingAuto(right, nullptr, TryExpressionOperand);
-			return TryBoolOp(t, left, right);
-		}
-		case TokenType::KeywordNot: {
-			ReadNextToken();
-			if(!left)
-			{
+			case TokenType::OpInv: {
+				MustNotHave(left, t, nullptr);
+				ReadNextToken();
 				TryParsingAuto(operand, nullptr, TryExpressionOperand);
 				TryParsingAuto(op, nullptr, TryUnaryOp, t, operand);
 				return op;
 			}
-			t = PeekNextToken();
-			if(t.Type == TokenType::KeywordIn)
-			{
+			case TokenType::OpAdd:
+			case TokenType::OpSub: {
+				if(!left)
+				{
+					return TryExpressionOperand();
+				}
 				ReadNextToken();
 				TryParsingAuto(right, nullptr, TryExpressionOperand);
-				TryParsingAuto(op, nullptr, TryCompare, t, left, right);
-				dynamic_cast<Compare_t>(op)->op = cmpop_t::kNotIn;
-				return op;
+				return TryBinOp(t, left, right);
 			}
-			TryParsingAuto(right, nullptr, TryExpressionOperand);
-			return TryCompare(t, left, right);
-		}
-		case TokenType::KeywordIs: {
-			MustHave(left, t, nullptr);
-			ReadNextToken();
-			t = PeekNextToken();
-			if(t.Type == TokenType::KeywordNot)
-			{
+			case TokenType::OpMul:
+			case TokenType::OpDiv:
+			case TokenType::OpExp:
+			case TokenType::OpMod:
+			case TokenType::OpXor:
+			case TokenType::OpFloorDiv:
+			case TokenType::OpShiftLeft:
+			case TokenType::OpShiftRight:
+			case TokenType::OpAnd:
+			case TokenType::OpOr: {
+				MustHave(left, t, nullptr);
 				ReadNextToken();
 				TryParsingAuto(right, nullptr, TryExpressionOperand);
-				TryParsingAuto(op, nullptr, TryCompare, t, left, right);
-				dynamic_cast<Compare_t>(op)->op = cmpop_t::kIsNot;
-				return op;
+				return TryBinOp(t, left, right);
 			}
-			TryParsingAuto(right, nullptr, TryExpressionOperand);
-			return TryCompare(t, left, right);
-		}
-		case TokenType::OpEqual:
-		case TokenType::OpNotEqual:
-		case TokenType::OpGreatEqual:
-		case TokenType::OpLessEqual:
-		case TokenType::OpGreat:
-		case TokenType::OpLess:
-		case TokenType::KeywordIn: {
-			MustHave(left, t, nullptr);
-			ReadNextToken();
-			TryParsingAuto(right, nullptr, TryExpressionOperand);
-			return TryCompare(t, left, right);
-		}
-		default:
-			break;
+			case TokenType::KeywordAnd:
+			case TokenType::KeywordOr: {
+				MustHave(left, t, nullptr);
+				ReadNextToken();
+				TryParsingAuto(right, nullptr, TryExpressionOperand);
+				return TryBoolOp(t, left, right);
+			}
+			case TokenType::KeywordNot: {
+				ReadNextToken();
+				if(!left)
+				{
+					TryParsingAuto(operand, nullptr, TryExpressionOperand);
+					TryParsingAuto(op, nullptr, TryUnaryOp, t, operand);
+					return op;
+				}
+				t = PeekNextToken();
+				if(t.Type == TokenType::KeywordIn)
+				{
+					ReadNextToken();
+					TryParsingAuto(right, nullptr, TryExpressionOperand);
+					TryParsingAuto(op, nullptr, TryCompare, t, left, right);
+					dynamic_cast<Compare_t>(op)->op = cmpop_t::kNotIn;
+					return op;
+				}
+				TryParsingAuto(right, nullptr, TryExpressionOperand);
+				return TryCompare(t, left, right);
+			}
+			case TokenType::KeywordIs: {
+				MustHave(left, t, nullptr);
+				ReadNextToken();
+				t = PeekNextToken();
+				if(t.Type == TokenType::KeywordNot)
+				{
+					ReadNextToken();
+					TryParsingAuto(right, nullptr, TryExpressionOperand);
+					TryParsingAuto(op, nullptr, TryCompare, t, left, right);
+					dynamic_cast<Compare_t>(op)->op = cmpop_t::kIsNot;
+					return op;
+				}
+				TryParsingAuto(right, nullptr, TryExpressionOperand);
+				return TryCompare(t, left, right);
+			}
+			case TokenType::OpEqual:
+			case TokenType::OpNotEqual:
+			case TokenType::OpGreatEqual:
+			case TokenType::OpLessEqual:
+			case TokenType::OpGreat:
+			case TokenType::OpLess:
+			case TokenType::KeywordIn: {
+				MustHave(left, t, nullptr);
+				ReadNextToken();
+				TryParsingAuto(right, nullptr, TryExpressionOperand);
+				return TryCompare(t, left, right);
+			}
+			default: break;
 		}
 		UnexpectedToken(t, nullptr);
 	}
@@ -1113,14 +1073,9 @@ namespace Antomic
 		boolop_t op;
 		switch(t.Type)
 		{
-		case TokenType::KeywordAnd:
-			op = boolop_t::kAnd;
-			break;
-		case TokenType::KeywordOr:
-			op = boolop_t::kOr;
-			break;
-		default:
-			break;
+			case TokenType::KeywordAnd: op = boolop_t::kAnd; break;
+			case TokenType::KeywordOr: op = boolop_t::kOr; break;
+			default: break;
 		}
 		return BoolOp(left, op, right, lineno, colno);
 	}
@@ -1131,44 +1086,19 @@ namespace Antomic
 		operator_t op;
 		switch(t.Type)
 		{
-		case TokenType::OpAdd:
-			op = operator_t::kAdd;
-			break;
-		case TokenType::OpSub:
-			op = operator_t::kSub;
-			break;
-		case TokenType::OpMul:
-			op = operator_t::kMult;
-			break;
-		case TokenType::OpDiv:
-			op = operator_t::kDiv;
-			break;
-		case TokenType::OpExp:
-			op = operator_t::kPow;
-			break;
-		case TokenType::OpMod:
-			op = operator_t::kMod;
-			break;
-		case TokenType::OpXor:
-			op = operator_t::kBitXor;
-			break;
-		case TokenType::OpFloorDiv:
-			op = operator_t::kFloorDiv;
-			break;
-		case TokenType::OpShiftLeft:
-			op = operator_t::kLShift;
-			break;
-		case TokenType::OpShiftRight:
-			op = operator_t::kRShift;
-			break;
-		case TokenType::OpAnd:
-			op = operator_t::kBitAnd;
-			break;
-		case TokenType::OpOr:
-			op = operator_t::kBitOr;
-			break;
-		default:
-			UnexpectedToken(t, nullptr);
+			case TokenType::OpAdd: op = operator_t::kAdd; break;
+			case TokenType::OpSub: op = operator_t::kSub; break;
+			case TokenType::OpMul: op = operator_t::kMult; break;
+			case TokenType::OpDiv: op = operator_t::kDiv; break;
+			case TokenType::OpExp: op = operator_t::kPow; break;
+			case TokenType::OpMod: op = operator_t::kMod; break;
+			case TokenType::OpXor: op = operator_t::kBitXor; break;
+			case TokenType::OpFloorDiv: op = operator_t::kFloorDiv; break;
+			case TokenType::OpShiftLeft: op = operator_t::kLShift; break;
+			case TokenType::OpShiftRight: op = operator_t::kRShift; break;
+			case TokenType::OpAnd: op = operator_t::kBitAnd; break;
+			case TokenType::OpOr: op = operator_t::kBitOr; break;
+			default: UnexpectedToken(t, nullptr);
 		}
 		return BinOp(left, op, right, lineno, colno);
 	}
@@ -1179,20 +1109,11 @@ namespace Antomic
 		unaryop_t op;
 		switch(t.Type)
 		{
-		case TokenType::OpInv:
-			op = unaryop_t::kInvert;
-			break;
-		case TokenType::OpAdd:
-			op = unaryop_t::kUAdd;
-			break;
-		case TokenType::OpSub:
-			op = unaryop_t::kUSub;
-			break;
-		case TokenType::KeywordNot:
-			op = unaryop_t::kNot;
-			break;
-		default:
-			UnexpectedToken(t, nullptr);
+			case TokenType::OpInv: op = unaryop_t::kInvert; break;
+			case TokenType::OpAdd: op = unaryop_t::kUAdd; break;
+			case TokenType::OpSub: op = unaryop_t::kUSub; break;
+			case TokenType::KeywordNot: op = unaryop_t::kNot; break;
+			default: UnexpectedToken(t, nullptr);
 		}
 		return UnaryOp(op, operand, lineno, colno);
 	}
@@ -1202,32 +1123,15 @@ namespace Antomic
 		cmpop_t op;
 		switch(t.Type)
 		{
-		case TokenType::OpEqual:
-			op = cmpop_t::kEq;
-			break;
-		case TokenType::OpNotEqual:
-			op = cmpop_t::kNotEq;
-			break;
-		case TokenType::OpGreatEqual:
-			op = cmpop_t::kGtE;
-			break;
-		case TokenType::OpLessEqual:
-			op = cmpop_t::kLtE;
-			break;
-		case TokenType::OpGreat:
-			op = cmpop_t::kGt;
-			break;
-		case TokenType::OpLess:
-			op = cmpop_t::kLt;
-			break;
-		case TokenType::KeywordIs:
-			op = cmpop_t::kIs;
-			break;
-		case TokenType::KeywordIn:
-			op = cmpop_t::kIn;
-			break;
-		default:
-			UnexpectedToken(t, nullptr);
+			case TokenType::OpEqual: op = cmpop_t::kEq; break;
+			case TokenType::OpNotEqual: op = cmpop_t::kNotEq; break;
+			case TokenType::OpGreatEqual: op = cmpop_t::kGtE; break;
+			case TokenType::OpLessEqual: op = cmpop_t::kLtE; break;
+			case TokenType::OpGreat: op = cmpop_t::kGt; break;
+			case TokenType::OpLess: op = cmpop_t::kLt; break;
+			case TokenType::KeywordIs: op = cmpop_t::kIs; break;
+			case TokenType::KeywordIn: op = cmpop_t::kIn; break;
+			default: UnexpectedToken(t, nullptr);
 		}
 		return Compare(left, op, right, left->lineno, left->colno);
 	}
@@ -1253,18 +1157,14 @@ namespace Antomic
 
 			switch(t.Type)
 			{
-			case TokenType::SymbolColon:
-				return arguments(args);
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				continue;
-			case TokenType::Identifier: {
-				TryIdentifier(t, identifier);
-				args.push_back(arg(identifier, kind_t::kObject, t.Line, t.Column));
-				break;
-			}
-			default:
-				UnexpectedToken(t, nullptr);
+				case TokenType::SymbolColon: return arguments(args);
+				case TokenType::SymbolComma: ReadNextToken(); continue;
+				case TokenType::Identifier: {
+					TryIdentifier(t, identifier);
+					args.push_back(arg(identifier, kind_t::kObject, t.Line, t.Column));
+					break;
+				}
+				default: UnexpectedToken(t, nullptr);
 			}
 		}
 
@@ -1281,124 +1181,122 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::NewLine:
-			case TokenType::Identation:
-				ReadNextToken();
-				continue;
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				nextIsKey = true;
-				continue;
-			case TokenType::SymbolColon:
-				ReadNextToken();
-				nextIsKey = false;
-				continue;
-			case TokenType::KeywordNone: {
-				ReadNextToken();
-				auto expr = Name("None", expr_context_t::kLoad, t.Line, t.Column);
-				if(nextIsKey)
-				{
-					keys.push_back(expr);
+				case TokenType::NewLine:
+				case TokenType::Identation: ReadNextToken(); continue;
+				case TokenType::SymbolComma:
+					ReadNextToken();
+					nextIsKey = true;
+					continue;
+				case TokenType::SymbolColon:
+					ReadNextToken();
+					nextIsKey = false;
+					continue;
+				case TokenType::KeywordNone: {
+					ReadNextToken();
+					auto expr = Name("None", expr_context_t::kLoad, t.Line, t.Column);
+					if(nextIsKey)
+					{
+						keys.push_back(expr);
+					}
+					else
+					{
+						values.push_back(expr);
+					}
+					continue;
 				}
-				else
-				{
-					values.push_back(expr);
+				case TokenType::KeywordTrue: {
+					ReadNextToken();
+					auto expr = Name("True", expr_context_t::kLoad, t.Line, t.Column);
+					if(nextIsKey)
+					{
+						keys.push_back(expr);
+					}
+					else
+					{
+						values.push_back(expr);
+					}
+					continue;
 				}
-				continue;
-			}
-			case TokenType::KeywordTrue: {
-				ReadNextToken();
-				auto expr = Name("True", expr_context_t::kLoad, t.Line, t.Column);
-				if(nextIsKey)
-				{
-					keys.push_back(expr);
+				case TokenType::KeywordFalse: {
+					ReadNextToken();
+					auto expr = Name("False", expr_context_t::kLoad, t.Line, t.Column);
+					if(nextIsKey)
+					{
+						keys.push_back(expr);
+					}
+					else
+					{
+						values.push_back(expr);
+					}
+					continue;
 				}
-				else
-				{
-					values.push_back(expr);
+				case TokenType::NumberFloat:
+				case TokenType::NumberInteger:
+				case TokenType::NumberHex:
+				case TokenType::String: {
+					TryParsingAuto(expr, nullptr, TryConstant);
+					if(nextIsKey)
+					{
+						keys.push_back(expr);
+					}
+					else
+					{
+						values.push_back(expr);
+					}
+					continue;
 				}
-				continue;
-			}
-			case TokenType::KeywordFalse: {
-				ReadNextToken();
-				auto expr = Name("False", expr_context_t::kLoad, t.Line, t.Column);
-				if(nextIsKey)
-				{
-					keys.push_back(expr);
+				case TokenType::Identifier: {
+					TryIdentifier(t, identifier);
+					auto expr = Name(identifier, expr_context_t::kLoad, t.Line, t.Column);
+					if(nextIsKey)
+					{
+						keys.push_back(expr);
+					}
+					else
+					{
+						values.push_back(expr);
+					}
+					continue;
 				}
-				else
-				{
-					values.push_back(expr);
+				case TokenType::SymbolParentesesOpen: {
+					if(nextIsKey)
+					{
+						UnexpectedToken(t, nullptr);
+					}
+					ReadNextToken();
+					TryParsingAuto(tuple, nullptr, TryTuple, nullptr);
+					TryToken(t, TokenType::SymbolParentesesClose);
+					values.push_back(tuple);
+					continue;
 				}
-				continue;
-			}
-			case TokenType::NumberFloat:
-			case TokenType::NumberInteger:
-			case TokenType::NumberHex:
-			case TokenType::String: {
-				TryParsingAuto(expr, nullptr, TryConstant);
-				if(nextIsKey)
-				{
-					keys.push_back(expr);
+				case TokenType::SymbolBracketOpen: {
+					if(nextIsKey)
+					{
+						UnexpectedToken(t, nullptr);
+					}
+					ReadNextToken();
+					TryParsingAuto(list, nullptr, TryList);
+					TryToken(t, TokenType::SymbolBracketClose);
+					values.push_back(list);
+					continue;
 				}
-				else
-				{
-					values.push_back(expr);
+				case TokenType::SymbolBraceOpen: {
+					if(nextIsKey)
+					{
+						UnexpectedToken(t, nullptr);
+					}
+					ReadNextToken();
+					TryParsingAuto(dict, nullptr, TryDict);
+					TryToken(t, TokenType::SymbolBraceClose);
+					values.push_back(dict);
+					continue;
 				}
-				continue;
-			}
-			case TokenType::Identifier: {
-				TryIdentifier(t, identifier);
-				auto expr = Name(identifier, expr_context_t::kLoad, t.Line, t.Column);
-				if(nextIsKey)
-				{
-					keys.push_back(expr);
-				}
-				else
-				{
-					values.push_back(expr);
-				}
-				continue;
-			}
-			case TokenType::SymbolParentesesOpen: {
-				if(nextIsKey)
-				{
-					UnexpectedToken(t, nullptr);
-				}
-				ReadNextToken();
-				TryParsingAuto(tuple, nullptr, TryTuple, nullptr);
-				TryToken(t, TokenType::SymbolParentesesClose);
-				values.push_back(tuple);
-				continue;
-			}
-			case TokenType::SymbolBracketOpen: {
-				if(nextIsKey)
-				{
-					UnexpectedToken(t, nullptr);
-				}
-				ReadNextToken();
-				TryParsingAuto(list, nullptr, TryList);
-				TryToken(t, TokenType::SymbolBracketClose);
-				values.push_back(list);
-				continue;
-			}
-			case TokenType::SymbolBraceOpen: {
-				if(nextIsKey)
-				{
-					UnexpectedToken(t, nullptr);
-				}
-				ReadNextToken();
-				TryParsingAuto(dict, nullptr, TryDict);
-				TryToken(t, TokenType::SymbolBraceClose);
-				values.push_back(dict);
-				continue;
-			}
-			default:
-				if(keys.size() != values.size())
-				{
-					UnexpectedToken(t, nullptr);
-				}
-				return Dict(keys, values, t.Line, t.Column);
+				default:
+					if(keys.size() != values.size())
+					{
+						UnexpectedToken(t, nullptr);
+					}
+					return Dict(keys, values, t.Line, t.Column);
 			}
 		}
 
@@ -1423,15 +1321,12 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::SymbolParentesesClose:
-				return;
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				continue;
-			default: {
-				TryParsingAuto(arg, , TryCallArg);
-				args.push_back(arg);
-			}
+				case TokenType::SymbolParentesesClose: return;
+				case TokenType::SymbolComma: ReadNextToken(); continue;
+				default: {
+					TryParsingAuto(arg, , TryCallArg);
+					args.push_back(arg);
+				}
 			}
 		}
 	}
@@ -1444,48 +1339,48 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::Identifier:
-			case TokenType::NumberFloat:
-			case TokenType::NumberInteger:
-			case TokenType::NumberHex:
-			case TokenType::String:
-			case TokenType::SymbolParentesesOpen:
-			case TokenType::SymbolBracketOpen:
-			case TokenType::SymbolBraceOpen:
-				TryParsing(expr, nullptr, TryCallArgOperand);
-				break;
-			case TokenType::OpInv:
-			case TokenType::OpAdd:
-			case TokenType::OpSub:
-			case TokenType::OpMul:
-			case TokenType::OpDiv:
-			case TokenType::OpExp:
-			case TokenType::OpMod:
-			case TokenType::OpXor:
-			case TokenType::OpFloorDiv:
-			case TokenType::OpShiftLeft:
-			case TokenType::OpShiftRight:
-			case TokenType::OpAnd:
-			case TokenType::OpOr:
-			case TokenType::KeywordAnd:
-			case TokenType::KeywordOr:
-			case TokenType::KeywordNot:
-			case TokenType::OpEqual:
-			case TokenType::OpNotEqual:
-			case TokenType::OpGreatEqual:
-			case TokenType::OpLessEqual:
-			case TokenType::OpGreat:
-			case TokenType::OpLess:
-			case TokenType::KeywordIs:
-			case TokenType::KeywordIn:
-				TryParsing(expr, nullptr, TryCallArgOperator, expr);
-				continue;
-			default:
-				if(!expr)
-				{
-					UnexpectedToken(t, nullptr);
-				}
-				return expr;
+				case TokenType::Identifier:
+				case TokenType::NumberFloat:
+				case TokenType::NumberInteger:
+				case TokenType::NumberHex:
+				case TokenType::String:
+				case TokenType::SymbolParentesesOpen:
+				case TokenType::SymbolBracketOpen:
+				case TokenType::SymbolBraceOpen:
+					TryParsing(expr, nullptr, TryCallArgOperand);
+					break;
+				case TokenType::OpInv:
+				case TokenType::OpAdd:
+				case TokenType::OpSub:
+				case TokenType::OpMul:
+				case TokenType::OpDiv:
+				case TokenType::OpExp:
+				case TokenType::OpMod:
+				case TokenType::OpXor:
+				case TokenType::OpFloorDiv:
+				case TokenType::OpShiftLeft:
+				case TokenType::OpShiftRight:
+				case TokenType::OpAnd:
+				case TokenType::OpOr:
+				case TokenType::KeywordAnd:
+				case TokenType::KeywordOr:
+				case TokenType::KeywordNot:
+				case TokenType::OpEqual:
+				case TokenType::OpNotEqual:
+				case TokenType::OpGreatEqual:
+				case TokenType::OpLessEqual:
+				case TokenType::OpGreat:
+				case TokenType::OpLess:
+				case TokenType::KeywordIs:
+				case TokenType::KeywordIn:
+					TryParsing(expr, nullptr, TryCallArgOperator, expr);
+					continue;
+				default:
+					if(!expr)
+					{
+						UnexpectedToken(t, nullptr);
+					}
+					return expr;
 			}
 		}
 		return nullptr;
@@ -1499,79 +1394,77 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::Identifier: {
-				TryParsingAuto(operand, nullptr, TryName);
-				auto t = PeekNextToken();
-				switch(t.Type)
-				{
-				case TokenType::SymbolPeriod:
-					TryParsing(operand, nullptr, TryAttribute, operand);
+				case TokenType::Identifier: {
+					TryParsingAuto(operand, nullptr, TryName);
+					auto t = PeekNextToken();
+					switch(t.Type)
+					{
+						case TokenType::SymbolPeriod:
+							TryParsing(operand, nullptr, TryAttribute, operand);
+							return operand;
+						case TokenType::SymbolBracketOpen:
+							TryParsing(operand, nullptr, TrySubscript, operand);
+							return operand;
+						case TokenType::SymbolParentesesOpen:
+							TryParsing(operand, nullptr, TryCall, operand);
+							return operand;
+						default: break;
+					}
 					return operand;
-				case TokenType::SymbolBracketOpen:
-					TryParsing(operand, nullptr, TrySubscript, operand);
-					return operand;
-				case TokenType::SymbolParentesesOpen:
-					TryParsing(operand, nullptr, TryCall, operand);
-					return operand;
-				default:
-					break;
 				}
-				return operand;
-			}
-			case TokenType::OpAdd:
-			case TokenType::OpSub: {
-				ReadNextToken();
-				auto op = t;
-				t = PeekNextToken();
-				if(t.Type == TokenType::SymbolParentesesOpen)
-				{
-					TryToken(t, TokenType::SymbolParentesesOpen);
+				case TokenType::OpAdd:
+				case TokenType::OpSub: {
+					ReadNextToken();
+					auto op = t;
+					t = PeekNextToken();
+					if(t.Type == TokenType::SymbolParentesesOpen)
+					{
+						TryToken(t, TokenType::SymbolParentesesOpen);
+						TryParsingAuto(operand, nullptr, TryExpression);
+						TryToken(t, TokenType::SymbolParentesesClose);
+						return TryUnaryOp(op, operand);
+					}
+					signal = op.Value;
+					continue;
+				}
+				case TokenType::NumberFloat:
+				case TokenType::NumberInteger: {
+					TryParsingAuto(operand, nullptr, TryConstant, signal);
+					return operand;
+				}
+				case TokenType::NumberHex:
+				case TokenType::String: {
+					TryParsingAuto(operand, nullptr, TryConstant);
+					return operand;
+				}
+				case TokenType::KeywordNone:
+					ReadNextToken();
+					return Name("None", expr_context_t::kLoad, t.Line, t.Column);
+				case TokenType::KeywordTrue:
+					ReadNextToken();
+					return Name("True", expr_context_t::kLoad, t.Line, t.Column);
+				case TokenType::KeywordFalse:
+					ReadNextToken();
+					return Name("False", expr_context_t::kLoad, t.Line, t.Column);
+				case TokenType::SymbolParentesesOpen: {
+					ReadNextToken();
 					TryParsingAuto(operand, nullptr, TryExpression);
 					TryToken(t, TokenType::SymbolParentesesClose);
-					return TryUnaryOp(op, operand);
+					return operand;
 				}
-				signal = op.Value;
-				continue;
-			}
-			case TokenType::NumberFloat:
-			case TokenType::NumberInteger: {
-				TryParsingAuto(operand, nullptr, TryConstant, signal);
-				return operand;
-			}
-			case TokenType::NumberHex:
-			case TokenType::String: {
-				TryParsingAuto(operand, nullptr, TryConstant);
-				return operand;
-			}
-			case TokenType::KeywordNone:
-				ReadNextToken();
-				return Name("None", expr_context_t::kLoad, t.Line, t.Column);
-			case TokenType::KeywordTrue:
-				ReadNextToken();
-				return Name("True", expr_context_t::kLoad, t.Line, t.Column);
-			case TokenType::KeywordFalse:
-				ReadNextToken();
-				return Name("False", expr_context_t::kLoad, t.Line, t.Column);
-			case TokenType::SymbolParentesesOpen: {
-				ReadNextToken();
-				TryParsingAuto(operand, nullptr, TryExpression);
-				TryToken(t, TokenType::SymbolParentesesClose);
-				return operand;
-			}
-			case TokenType::SymbolBracketOpen: {
-				ReadNextToken();
-				TryParsingAuto(operand, nullptr, TryList);
-				TryToken(t, TokenType::SymbolBracketClose);
-				return operand;
-			}
-			case TokenType::SymbolBraceOpen: {
-				ReadNextToken();
-				TryParsingAuto(operand, nullptr, TryDict);
-				TryToken(t, TokenType::SymbolBraceClose);
-				return operand;
-			}
-			default:
-				UnexpectedToken(t, nullptr);
+				case TokenType::SymbolBracketOpen: {
+					ReadNextToken();
+					TryParsingAuto(operand, nullptr, TryList);
+					TryToken(t, TokenType::SymbolBracketClose);
+					return operand;
+				}
+				case TokenType::SymbolBraceOpen: {
+					ReadNextToken();
+					TryParsingAuto(operand, nullptr, TryDict);
+					TryToken(t, TokenType::SymbolBraceClose);
+					return operand;
+				}
+				default: UnexpectedToken(t, nullptr);
 			}
 		}
 	}
@@ -1581,99 +1474,96 @@ namespace Antomic
 		auto t = PeekNextToken();
 		switch(t.Type)
 		{
-		case TokenType::OpInv: {
-			MustNotHave(left, t, nullptr);
-			ReadNextToken();
-			TryParsingAuto(operand, nullptr, TryCallArgOperand);
-			TryParsingAuto(op, nullptr, TryUnaryOp, t, operand);
-			return op;
-		}
-		case TokenType::OpAdd:
-		case TokenType::OpSub: {
-			if(!left)
-			{
-				return TryCallArgOperand();
-			}
-			ReadNextToken();
-			TryParsingAuto(right, nullptr, TryCallArgOperand);
-			return TryBinOp(t, left, right);
-		}
-		case TokenType::OpMul:
-		case TokenType::OpDiv:
-		case TokenType::OpExp:
-		case TokenType::OpMod:
-		case TokenType::OpXor:
-		case TokenType::OpFloorDiv:
-		case TokenType::OpShiftLeft:
-		case TokenType::OpShiftRight:
-		case TokenType::OpAnd:
-		case TokenType::OpOr: {
-			MustHave(left, t, nullptr);
-			ReadNextToken();
-			TryParsingAuto(right, nullptr, TryCallArgOperand);
-			return TryBinOp(t, left, right);
-		}
-		case TokenType::KeywordAnd:
-		case TokenType::KeywordOr: {
-			MustHave(left, t, nullptr);
-			ReadNextToken();
-			TryParsingAuto(right, nullptr, TryCallArgOperand);
-			return TryBoolOp(t, left, right);
-		}
-		case TokenType::KeywordNot: {
-			ReadNextToken();
-			if(!left)
-			{
+			case TokenType::OpInv: {
+				MustNotHave(left, t, nullptr);
+				ReadNextToken();
 				TryParsingAuto(operand, nullptr, TryCallArgOperand);
 				TryParsingAuto(op, nullptr, TryUnaryOp, t, operand);
 				return op;
 			}
-			TryParsingAuto(right, nullptr, TryCallArgOperand);
-			return TryCompare(t, left, right);
-		}
-		case TokenType::OpEqual:
-		case TokenType::OpNotEqual:
-		case TokenType::OpGreatEqual:
-		case TokenType::OpLessEqual:
-		case TokenType::OpGreat:
-		case TokenType::OpLess:
-		case TokenType::KeywordIs:
-		case TokenType::KeywordIn: {
-			MustHave(left, t, nullptr);
-			ReadNextToken();
-			TryParsingAuto(right, nullptr, TryCallArgOperand);
-			return TryCompare(t, left, right);
-		}
-		default:
-			break;
+			case TokenType::OpAdd:
+			case TokenType::OpSub: {
+				if(!left)
+				{
+					return TryCallArgOperand();
+				}
+				ReadNextToken();
+				TryParsingAuto(right, nullptr, TryCallArgOperand);
+				return TryBinOp(t, left, right);
+			}
+			case TokenType::OpMul:
+			case TokenType::OpDiv:
+			case TokenType::OpExp:
+			case TokenType::OpMod:
+			case TokenType::OpXor:
+			case TokenType::OpFloorDiv:
+			case TokenType::OpShiftLeft:
+			case TokenType::OpShiftRight:
+			case TokenType::OpAnd:
+			case TokenType::OpOr: {
+				MustHave(left, t, nullptr);
+				ReadNextToken();
+				TryParsingAuto(right, nullptr, TryCallArgOperand);
+				return TryBinOp(t, left, right);
+			}
+			case TokenType::KeywordAnd:
+			case TokenType::KeywordOr: {
+				MustHave(left, t, nullptr);
+				ReadNextToken();
+				TryParsingAuto(right, nullptr, TryCallArgOperand);
+				return TryBoolOp(t, left, right);
+			}
+			case TokenType::KeywordNot: {
+				ReadNextToken();
+				if(!left)
+				{
+					TryParsingAuto(operand, nullptr, TryCallArgOperand);
+					TryParsingAuto(op, nullptr, TryUnaryOp, t, operand);
+					return op;
+				}
+				TryParsingAuto(right, nullptr, TryCallArgOperand);
+				return TryCompare(t, left, right);
+			}
+			case TokenType::OpEqual:
+			case TokenType::OpNotEqual:
+			case TokenType::OpGreatEqual:
+			case TokenType::OpLessEqual:
+			case TokenType::OpGreat:
+			case TokenType::OpLess:
+			case TokenType::KeywordIs:
+			case TokenType::KeywordIn: {
+				MustHave(left, t, nullptr);
+				ReadNextToken();
+				TryParsingAuto(right, nullptr, TryCallArgOperand);
+				return TryCompare(t, left, right);
+			}
+			default: break;
 		}
 		UnexpectedToken(t, nullptr);
 	}
 
-	expr_t Parser::TryFormattedValue()
-	{
-		return nullptr;
-	}
+	expr_t Parser::TryFormattedValue() { return nullptr; }
 
 	expr_t Parser::TryConstant(std::string signal)
 	{
 		auto t = ReadNextToken();
 		switch(t.Type)
 		{
-		case TokenType::NumberFloat:
-			return Constant(
-				constant(std::stod(signal + t.Value)), kind_t::kFloat, t.Line, t.Column);
-		case TokenType::NumberHex:
-			return Constant(
-				constant(std::stoi(signal + t.Value, 0, 16)), kind_t::kInt, t.Line, t.Column);
-		case TokenType::NumberInteger:
-			return Constant(constant(std::stoi(signal + t.Value)), kind_t::kInt, t.Line, t.Column);
-		case TokenType::String:
-			return Constant(constant(t.Value), kind_t::kString, t.Line, t.Column);
-		default:
-			ANTOMIC_ERROR(
-				"Unexpected token on line {0}, column {1}: {2}", t.Line, t.Column, t.Value);
-			return nullptr;
+			case TokenType::NumberFloat:
+				return Constant(
+					constant(std::stod(signal + t.Value)), kind_t::kFloat, t.Line, t.Column);
+			case TokenType::NumberHex:
+				return Constant(
+					constant(std::stoi(signal + t.Value, 0, 16)), kind_t::kInt, t.Line, t.Column);
+			case TokenType::NumberInteger:
+				return Constant(
+					constant(std::stoi(signal + t.Value)), kind_t::kInt, t.Line, t.Column);
+			case TokenType::String:
+				return Constant(constant(t.Value), kind_t::kString, t.Line, t.Column);
+			default:
+				ANTOMIC_ERROR(
+					"Unexpected token on line {0}, column {1}: {2}", t.Line, t.Column, t.Value);
+				return nullptr;
 		}
 		return nullptr;
 	}
@@ -1687,24 +1577,23 @@ namespace Antomic
 		t = PeekNextToken();
 		switch(t.Type)
 		{
-		case TokenType::OpAssign:
-		case TokenType::OpAddAssign:
-		case TokenType::OpSubAssign:
-		case TokenType::OpMulAssign:
-		case TokenType::OpDivAssign:
-		case TokenType::OpFloorDivAssign:
-		case TokenType::OpModAssign:
-		case TokenType::OpAndAssign:
-		case TokenType::OpOrAssign:
-		case TokenType::OpXorAssign:
-		case TokenType::OpShiftLeftAssign:
-		case TokenType::OpShiftRightAssign:
-		case TokenType::OpExpAssign:
-			return Attribute(value, attr, expr_context_t::kStore, lineno, colno);
-		case TokenType::SymbolParentesesOpen:
-			return TryCall(Attribute(value, attr, expr_context_t::kLoad, lineno, colno));
-		default:
-			return Attribute(value, attr, expr_context_t::kLoad, lineno, colno);
+			case TokenType::OpAssign:
+			case TokenType::OpAddAssign:
+			case TokenType::OpSubAssign:
+			case TokenType::OpMulAssign:
+			case TokenType::OpDivAssign:
+			case TokenType::OpFloorDivAssign:
+			case TokenType::OpModAssign:
+			case TokenType::OpAndAssign:
+			case TokenType::OpOrAssign:
+			case TokenType::OpXorAssign:
+			case TokenType::OpShiftLeftAssign:
+			case TokenType::OpShiftRightAssign:
+			case TokenType::OpExpAssign:
+				return Attribute(value, attr, expr_context_t::kStore, lineno, colno);
+			case TokenType::SymbolParentesesOpen:
+				return TryCall(Attribute(value, attr, expr_context_t::kLoad, lineno, colno));
+			default: return Attribute(value, attr, expr_context_t::kLoad, lineno, colno);
 		}
 
 		return nullptr;
@@ -1720,10 +1609,9 @@ namespace Antomic
 		t = PeekNextToken();
 		switch(t.Type)
 		{
-		case TokenType::SymbolBracketOpen:
-			return TrySubscript(Subscript(value, slice, expr_context_t::kStore, lineno, colno));
-		default:
-			return Subscript(value, slice, expr_context_t::kLoad, lineno, colno);
+			case TokenType::SymbolBracketOpen:
+				return TrySubscript(Subscript(value, slice, expr_context_t::kStore, lineno, colno));
+			default: return Subscript(value, slice, expr_context_t::kLoad, lineno, colno);
 		}
 	}
 
@@ -1735,22 +1623,21 @@ namespace Antomic
 		t = PeekNextToken();
 		switch(t.Type)
 		{
-		case TokenType::OpAssign:
-		case TokenType::OpAddAssign:
-		case TokenType::OpSubAssign:
-		case TokenType::OpMulAssign:
-		case TokenType::OpDivAssign:
-		case TokenType::OpFloorDivAssign:
-		case TokenType::OpModAssign:
-		case TokenType::OpAndAssign:
-		case TokenType::OpOrAssign:
-		case TokenType::OpXorAssign:
-		case TokenType::OpShiftLeftAssign:
-		case TokenType::OpShiftRightAssign:
-		case TokenType::OpExpAssign:
-			return Name(identifier, expr_context_t::kStore, lineno, colno);
-		default:
-			return Name(identifier, expr_context_t::kLoad, lineno, colno);
+			case TokenType::OpAssign:
+			case TokenType::OpAddAssign:
+			case TokenType::OpSubAssign:
+			case TokenType::OpMulAssign:
+			case TokenType::OpDivAssign:
+			case TokenType::OpFloorDivAssign:
+			case TokenType::OpModAssign:
+			case TokenType::OpAndAssign:
+			case TokenType::OpOrAssign:
+			case TokenType::OpXorAssign:
+			case TokenType::OpShiftLeftAssign:
+			case TokenType::OpShiftRightAssign:
+			case TokenType::OpExpAssign:
+				return Name(identifier, expr_context_t::kStore, lineno, colno);
+			default: return Name(identifier, expr_context_t::kLoad, lineno, colno);
 		}
 	}
 
@@ -1762,59 +1649,56 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::NewLine:
-			case TokenType::Identation:
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				continue;
-			case TokenType::KeywordNone:
-				ReadNextToken();
-				eltsRead.push_back(Name("None", expr_context_t::kLoad, t.Line, t.Column));
-				continue;
-			case TokenType::KeywordTrue:
-				ReadNextToken();
-				eltsRead.push_back(Name("True", expr_context_t::kLoad, t.Line, t.Column));
-				continue;
-			case TokenType::KeywordFalse:
-				ReadNextToken();
-				eltsRead.push_back(Name("False", expr_context_t::kLoad, t.Line, t.Column));
-				continue;
-			case TokenType::NumberFloat:
-			case TokenType::NumberInteger:
-			case TokenType::NumberHex:
-			case TokenType::String: {
-				TryParsingAuto(expr, nullptr, TryConstant);
-				eltsRead.push_back(expr);
-				continue;
-			}
-			case TokenType::Identifier: {
-				TryIdentifier(t, identifier);
-				eltsRead.push_back(Name(identifier, expr_context_t::kLoad, t.Line, t.Column));
-				continue;
-			}
-			case TokenType::SymbolBracketOpen: {
-				ReadNextToken();
-				TryParsingAuto(list, nullptr, TryList);
-				TryToken(t, TokenType::SymbolBracketClose);
-				eltsRead.push_back(list);
-				continue;
-			}
-			case TokenType::SymbolParentesesOpen: {
-				ReadNextToken();
-				TryParsingAuto(tuple, nullptr, TryTuple, nullptr);
-				TryToken(t, TokenType::SymbolParentesesClose);
-				eltsRead.push_back(tuple);
-				continue;
-			}
-			case TokenType::SymbolBraceOpen: {
-				ReadNextToken();
-				TryParsingAuto(dict, nullptr, TryDict);
-				TryToken(t, TokenType::SymbolBraceClose);
-				eltsRead.push_back(dict);
-				continue;
-			}
-			default:
-				return List(eltsRead, expr_context_t::kLoad, t.Line, t.Column);
+				case TokenType::NewLine:
+				case TokenType::Identation:
+				case TokenType::SymbolComma: ReadNextToken(); continue;
+				case TokenType::KeywordNone:
+					ReadNextToken();
+					eltsRead.push_back(Name("None", expr_context_t::kLoad, t.Line, t.Column));
+					continue;
+				case TokenType::KeywordTrue:
+					ReadNextToken();
+					eltsRead.push_back(Name("True", expr_context_t::kLoad, t.Line, t.Column));
+					continue;
+				case TokenType::KeywordFalse:
+					ReadNextToken();
+					eltsRead.push_back(Name("False", expr_context_t::kLoad, t.Line, t.Column));
+					continue;
+				case TokenType::NumberFloat:
+				case TokenType::NumberInteger:
+				case TokenType::NumberHex:
+				case TokenType::String: {
+					TryParsingAuto(expr, nullptr, TryConstant);
+					eltsRead.push_back(expr);
+					continue;
+				}
+				case TokenType::Identifier: {
+					TryIdentifier(t, identifier);
+					eltsRead.push_back(Name(identifier, expr_context_t::kLoad, t.Line, t.Column));
+					continue;
+				}
+				case TokenType::SymbolBracketOpen: {
+					ReadNextToken();
+					TryParsingAuto(list, nullptr, TryList);
+					TryToken(t, TokenType::SymbolBracketClose);
+					eltsRead.push_back(list);
+					continue;
+				}
+				case TokenType::SymbolParentesesOpen: {
+					ReadNextToken();
+					TryParsingAuto(tuple, nullptr, TryTuple, nullptr);
+					TryToken(t, TokenType::SymbolParentesesClose);
+					eltsRead.push_back(tuple);
+					continue;
+				}
+				case TokenType::SymbolBraceOpen: {
+					ReadNextToken();
+					TryParsingAuto(dict, nullptr, TryDict);
+					TryToken(t, TokenType::SymbolBraceClose);
+					eltsRead.push_back(dict);
+					continue;
+				}
+				default: return List(eltsRead, expr_context_t::kLoad, t.Line, t.Column);
 			}
 		}
 
@@ -1833,58 +1717,55 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::Identation:
-			case TokenType::SymbolComma:
-				ReadNextToken();
-				continue;
-			case TokenType::KeywordNone:
-				ReadNextToken();
-				eltsRead.push_back(Name("None", expr_context_t::kLoad, t.Line, t.Column));
-				continue;
-			case TokenType::KeywordTrue:
-				ReadNextToken();
-				eltsRead.push_back(Name("True", expr_context_t::kLoad, t.Line, t.Column));
-				continue;
-			case TokenType::KeywordFalse:
-				ReadNextToken();
-				eltsRead.push_back(Name("False", expr_context_t::kLoad, t.Line, t.Column));
-				continue;
-			case TokenType::NumberFloat:
-			case TokenType::NumberInteger:
-			case TokenType::NumberHex:
-			case TokenType::String: {
-				TryParsingAuto(expr, nullptr, TryConstant);
-				eltsRead.push_back(expr);
-			}
-				continue;
-			case TokenType::Identifier: {
-				TryIdentifier(t, identifier);
-				eltsRead.push_back(Name(identifier, expr_context_t::kLoad, t.Line, t.Column));
-				continue;
-			}
-			case TokenType::SymbolParentesesOpen: {
-				ReadNextToken();
-				TryParsingAuto(tuple, nullptr, TryTuple, nullptr);
-				TryToken(t, TokenType::SymbolParentesesClose);
-				eltsRead.push_back(tuple);
-				continue;
-			}
-			case TokenType::SymbolBracketOpen: {
-				ReadNextToken();
-				TryParsingAuto(list, nullptr, TryList);
-				TryToken(t, TokenType::SymbolBracketClose);
-				eltsRead.push_back(list);
-				continue;
-			}
-			case TokenType::SymbolBraceOpen: {
-				ReadNextToken();
-				TryParsingAuto(dict, nullptr, TryDict);
-				TryToken(t, TokenType::SymbolBraceClose);
-				eltsRead.push_back(dict);
-				continue;
-			}
-			default:
-				return Tuple(eltsRead, expr_context_t::kLoad, t.Line, t.Column);
+				case TokenType::Identation:
+				case TokenType::SymbolComma: ReadNextToken(); continue;
+				case TokenType::KeywordNone:
+					ReadNextToken();
+					eltsRead.push_back(Name("None", expr_context_t::kLoad, t.Line, t.Column));
+					continue;
+				case TokenType::KeywordTrue:
+					ReadNextToken();
+					eltsRead.push_back(Name("True", expr_context_t::kLoad, t.Line, t.Column));
+					continue;
+				case TokenType::KeywordFalse:
+					ReadNextToken();
+					eltsRead.push_back(Name("False", expr_context_t::kLoad, t.Line, t.Column));
+					continue;
+				case TokenType::NumberFloat:
+				case TokenType::NumberInteger:
+				case TokenType::NumberHex:
+				case TokenType::String: {
+					TryParsingAuto(expr, nullptr, TryConstant);
+					eltsRead.push_back(expr);
+				}
+					continue;
+				case TokenType::Identifier: {
+					TryIdentifier(t, identifier);
+					eltsRead.push_back(Name(identifier, expr_context_t::kLoad, t.Line, t.Column));
+					continue;
+				}
+				case TokenType::SymbolParentesesOpen: {
+					ReadNextToken();
+					TryParsingAuto(tuple, nullptr, TryTuple, nullptr);
+					TryToken(t, TokenType::SymbolParentesesClose);
+					eltsRead.push_back(tuple);
+					continue;
+				}
+				case TokenType::SymbolBracketOpen: {
+					ReadNextToken();
+					TryParsingAuto(list, nullptr, TryList);
+					TryToken(t, TokenType::SymbolBracketClose);
+					eltsRead.push_back(list);
+					continue;
+				}
+				case TokenType::SymbolBraceOpen: {
+					ReadNextToken();
+					TryParsingAuto(dict, nullptr, TryDict);
+					TryToken(t, TokenType::SymbolBraceClose);
+					eltsRead.push_back(dict);
+					continue;
+				}
+				default: return Tuple(eltsRead, expr_context_t::kLoad, t.Line, t.Column);
 			}
 		}
 
@@ -1900,37 +1781,35 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::SymbolBracketClose:
-				MustHave(index, t, nullptr);
-				return Index(index, index->lineno, index->colno);
-			case TokenType::Identifier: {
-				MustNotHave(index, t, nullptr);
-				TryIdentifier(t, identifier);
-				index = Name(identifier, expr_context_t::kLoad, t.Line, t.Column);
-				continue;
-			}
-			case TokenType::OpSub:
-			case TokenType::OpAdd: {
-				ReadNextToken();
-				signal = t.Value;
-				continue;
-			}
-			case TokenType::NumberInteger:
-			case TokenType::NumberFloat:
-			case TokenType::NumberHex:
-			case TokenType::String:
-				MustNotHave(index, t, nullptr);
-				TryParsing(index, nullptr, TryConstant, signal);
-				continue;
-			case TokenType::SymbolColon:
-				return TrySlice(index);
-			case TokenType::SymbolComma:
-				MustHave(index, t, nullptr);
-				ReadNextToken();
-				TryParsing(index, nullptr, TryTuple, index);
-				return Index(index, t.Line, t.Column);
-			default:
-				UnexpectedToken(t, nullptr);
+				case TokenType::SymbolBracketClose:
+					MustHave(index, t, nullptr);
+					return Index(index, index->lineno, index->colno);
+				case TokenType::Identifier: {
+					MustNotHave(index, t, nullptr);
+					TryIdentifier(t, identifier);
+					index = Name(identifier, expr_context_t::kLoad, t.Line, t.Column);
+					continue;
+				}
+				case TokenType::OpSub:
+				case TokenType::OpAdd: {
+					ReadNextToken();
+					signal = t.Value;
+					continue;
+				}
+				case TokenType::NumberInteger:
+				case TokenType::NumberFloat:
+				case TokenType::NumberHex:
+				case TokenType::String:
+					MustNotHave(index, t, nullptr);
+					TryParsing(index, nullptr, TryConstant, signal);
+					continue;
+				case TokenType::SymbolColon: return TrySlice(index);
+				case TokenType::SymbolComma:
+					MustHave(index, t, nullptr);
+					ReadNextToken();
+					TryParsing(index, nullptr, TryTuple, index);
+					return Index(index, t.Line, t.Column);
+				default: UnexpectedToken(t, nullptr);
 			}
 		}
 
@@ -1949,40 +1828,39 @@ namespace Antomic
 			auto t = PeekNextToken();
 			switch(t.Type)
 			{
-			case TokenType::SymbolBracketClose:
-				if(!lower && !upper && !step)
-				{
-					UnexpectedToken(t, nullptr);
-				}
-				return Slice(lower, upper, step, t.Line, t.Column);
-			case TokenType::SymbolColon:
-				if(colon == 2)
-				{
-					UnexpectedToken(t, nullptr);
-				}
-				ReadNextToken();
-				colon++;
-				continue;
-			case TokenType::OpSub:
-			case TokenType::OpAdd: {
-				ReadNextToken();
-				signal = t.Value;
-				continue;
-			}
-			case TokenType::NumberInteger: {
-				if(colon == 1)
-				{
-					TryParsing(upper, nullptr, TryConstant, signal);
+				case TokenType::SymbolBracketClose:
+					if(!lower && !upper && !step)
+					{
+						UnexpectedToken(t, nullptr);
+					}
+					return Slice(lower, upper, step, t.Line, t.Column);
+				case TokenType::SymbolColon:
+					if(colon == 2)
+					{
+						UnexpectedToken(t, nullptr);
+					}
+					ReadNextToken();
+					colon++;
+					continue;
+				case TokenType::OpSub:
+				case TokenType::OpAdd: {
+					ReadNextToken();
+					signal = t.Value;
 					continue;
 				}
-				if(colon == 2)
-				{
-					TryParsing(step, nullptr, TryConstant, signal);
-					continue;
+				case TokenType::NumberInteger: {
+					if(colon == 1)
+					{
+						TryParsing(upper, nullptr, TryConstant, signal);
+						continue;
+					}
+					if(colon == 2)
+					{
+						TryParsing(step, nullptr, TryConstant, signal);
+						continue;
+					}
 				}
-			}
-			default:
-				UnexpectedToken(t, nullptr);
+				default: UnexpectedToken(t, nullptr);
 			}
 		}
 		return nullptr;

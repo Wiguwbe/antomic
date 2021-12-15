@@ -27,35 +27,17 @@ namespace Antomic
 
 	public:
 		// Graph operations
-		virtual NodeType GetType() override
-		{
-			return NodeType::NODE_2D;
-		};
+		virtual NodeType GetType() override { return NodeType::NODE_2D; };
 
 		// Spatial Information
 		const glm::mat3& GetWorldMatrix();
 		const glm::mat3& GetLocalMatrix();
 
-		inline const glm::vec2& GetPosition() const
-		{
-			return mPosition;
-		}
-		inline const glm::vec2& GetSize() const
-		{
-			return mSize;
-		}
-		inline const float& GetRotation() const
-		{
-			return mRotation;
-		}
-		inline const glm::vec2& GetAnchor() const
-		{
-			return mAnchor;
-		}
-		inline int GetZOrder()
-		{
-			return mZOrder;
-		}
+		inline const glm::vec2& GetPosition() const { return mPosition; }
+		inline const glm::vec2& GetSize() const { return mSize; }
+		inline const float& GetRotation() const { return mRotation; }
+		inline const glm::vec2& GetAnchor() const { return mAnchor; }
+		inline int GetZOrder() { return mZOrder; }
 
 		void SetPosition(const glm::vec2& position);
 		void SetSize(const glm::vec2& size);

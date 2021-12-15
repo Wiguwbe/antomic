@@ -34,14 +34,8 @@ namespace Antomic
 
 	public:
 		// Graph Operations
-		inline const VectorRef<Node>& GetChildren() const
-		{
-			return mChildren;
-		}
-		inline const Ref<Node>& GetParent() const
-		{
-			return mParent;
-		}
+		inline const VectorRef<Node>& GetChildren() const { return mChildren; }
+		inline const Ref<Node>& GetParent() const { return mParent; }
 		void AddChild(const Ref<Node>& node);
 		void RemoveChild(const Ref<Node>& node);
 		virtual NodeType GetType() = 0;
@@ -63,14 +57,8 @@ namespace Antomic
 
 		// State operations
 		virtual void MakeDirty();
-		inline bool IsDirty()
-		{
-			return mDirty;
-		}
-		inline void ClearDirty()
-		{
-			mDirty = false;
-		}
+		inline bool IsDirty() { return mDirty; }
+		inline void ClearDirty() { mDirty = false; }
 		virtual void UpdateSpatialInformation() = 0;
 		virtual void CleanUp();
 

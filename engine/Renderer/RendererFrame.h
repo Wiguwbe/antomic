@@ -32,14 +32,8 @@ namespace Antomic
 		void QueueDrawable(const Ref<Drawable>& drawable);
 		void Draw();
 
-		const RendererViewport& GetViewport() const
-		{
-			return mViewport;
-		}
-		const glm::mat4& GetViewMatrix() const
-		{
-			return mViewMatrix;
-		}
+		const RendererViewport& GetViewport() const { return mViewport; }
+		const glm::mat4& GetViewMatrix() const { return mViewMatrix; }
 
 	private:
 		QueueRef<Drawable> mSpriteQueue;

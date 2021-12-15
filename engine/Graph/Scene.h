@@ -28,18 +28,9 @@ namespace Antomic
 
 	public:
 		// Scene Information
-		inline const glm::mat4& GetViewMatrix() const
-		{
-			return mViewMatrix;
-		}
-		inline const Ref<Camera>& GetActiveCamera() const
-		{
-			return mActiveCamera;
-		}
-		virtual NodeType GetType() override
-		{
-			return NodeType::SCENE;
-		};
+		inline const glm::mat4& GetViewMatrix() const { return mViewMatrix; }
+		inline const Ref<Camera>& GetActiveCamera() const { return mActiveCamera; }
+		virtual NodeType GetType() override { return NodeType::SCENE; };
 
 		// Load & Unloading
 		void Load();
@@ -51,10 +42,7 @@ namespace Antomic
 		static Ref<Scene> Deserialize(const nlohmann::json& json);
 
 	protected:
-		virtual const Ref<Drawable> GetDrawable() const override
-		{
-			return nullptr;
-		}
+		virtual const Ref<Drawable> GetDrawable() const override { return nullptr; }
 		virtual void UpdateSpatialInformation() override { }
 
 	private:

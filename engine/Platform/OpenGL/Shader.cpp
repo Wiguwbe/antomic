@@ -24,20 +24,17 @@ namespace Antomic
 	{
 		switch(t)
 		{
-		case ShaderDataType::Float:
-		case ShaderDataType::Vec2:
-		case ShaderDataType::Vec3:
-		case ShaderDataType::Vec4:
-		case ShaderDataType::Mat3:
-		case ShaderDataType::Mat4:
-			return GL_FLOAT;
-		case ShaderDataType::Int:
-		case ShaderDataType::Int2:
-		case ShaderDataType::Int3:
-		case ShaderDataType::Int4:
-			return GL_INT;
-		case ShaderDataType::Bool:
-			return GL_UNSIGNED_SHORT;
+			case ShaderDataType::Float:
+			case ShaderDataType::Vec2:
+			case ShaderDataType::Vec3:
+			case ShaderDataType::Vec4:
+			case ShaderDataType::Mat3:
+			case ShaderDataType::Mat4: return GL_FLOAT;
+			case ShaderDataType::Int:
+			case ShaderDataType::Int2:
+			case ShaderDataType::Int3:
+			case ShaderDataType::Int4: return GL_INT;
+			case ShaderDataType::Bool: return GL_UNSIGNED_SHORT;
 		}
 
 		ANTOMIC_ASSERT(false, "ShaderDataTypeGLEnum: Unknown data type")
@@ -48,28 +45,17 @@ namespace Antomic
 	{
 		switch(t)
 		{
-		case ShaderDataType::Float:
-			return 1;
-		case ShaderDataType::Vec2:
-			return 2;
-		case ShaderDataType::Vec3:
-			return 3;
-		case ShaderDataType::Vec4:
-			return 4;
-		case ShaderDataType::Mat3:
-			return 9;
-		case ShaderDataType::Mat4:
-			return 16;
-		case ShaderDataType::Int:
-			return 1;
-		case ShaderDataType::Int2:
-			return 2;
-		case ShaderDataType::Int3:
-			return 3;
-		case ShaderDataType::Int4:
-			return 4;
-		case ShaderDataType::Bool:
-			return 1;
+			case ShaderDataType::Float: return 1;
+			case ShaderDataType::Vec2: return 2;
+			case ShaderDataType::Vec3: return 3;
+			case ShaderDataType::Vec4: return 4;
+			case ShaderDataType::Mat3: return 9;
+			case ShaderDataType::Mat4: return 16;
+			case ShaderDataType::Int: return 1;
+			case ShaderDataType::Int2: return 2;
+			case ShaderDataType::Int3: return 3;
+			case ShaderDataType::Int4: return 4;
+			case ShaderDataType::Bool: return 1;
 		}
 
 		ANTOMIC_ASSERT(false, "ShaderDataTypeGLSize: Unknown data type")
@@ -152,20 +138,11 @@ namespace Antomic
 		glDetachShader(mRendererId, fragmentShader);
 	}
 
-	OpenGLShader::~OpenGLShader()
-	{
-		glDeleteProgram(mRendererId);
-	}
+	OpenGLShader::~OpenGLShader() { glDeleteProgram(mRendererId); }
 
-	void OpenGLShader::Bind() const
-	{
-		glUseProgram(mRendererId);
-	}
+	void OpenGLShader::Bind() const { glUseProgram(mRendererId); }
 
-	void OpenGLShader::Unbind() const
-	{
-		glUseProgram(0);
-	}
+	void OpenGLShader::Unbind() const { glUseProgram(0); }
 
 	void OpenGLShader::SetUniformValue(const std::string& name, float value)
 	{

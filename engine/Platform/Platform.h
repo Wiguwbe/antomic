@@ -46,82 +46,37 @@ namespace Antomic
 								  RenderAPIDialect api = RenderAPIDialect::OPENGL);
 
 		// Render API
-		inline static const Scope<RenderAPI>& GetRenderAPI()
-		{
-			return sRenderAPI;
-		}
-		inline static RenderAPIDialect GetRenderAPIDialect()
-		{
-			return sRenderAPIDialect;
-		}
+		inline static const Scope<RenderAPI>& GetRenderAPI() { return sRenderAPI; }
+		inline static RenderAPIDialect GetRenderAPIDialect() { return sRenderAPIDialect; }
 
 		// Input Operations & Handling
-		inline static const Scope<Input>& GetInput()
-		{
-			return sInput;
-		}
-		inline static bool IsKeyPressed(Key::Enum key)
-		{
-			return sInput->IsKeyPressed(key);
-		}
+		inline static const Scope<Input>& GetInput() { return sInput; }
+		inline static bool IsKeyPressed(Key::Enum key) { return sInput->IsKeyPressed(key); }
 		inline bool IsMouseButtonPressed(MouseButton::Enum button)
 		{
 			return sInput->IsMouseButtonPressed(button);
 		}
-		inline uint8_t GetKeyModifiers()
-		{
-			return sInput->GetKeyModifiers();
-		}
-		inline glm::vec3 GetMousePosition()
-		{
-			return sInput->GetMousePosition();
-		}
+		inline uint8_t GetKeyModifiers() { return sInput->GetKeyModifiers(); }
+		inline glm::vec3 GetMousePosition() { return sInput->GetMousePosition(); }
 
 		// Window Operations & Handling
-		inline static const Scope<Window>& GetWindow()
-		{
-			return sWindow;
-		}
-		inline static void SwapBuffer()
-		{
-			sWindow->SwapBuffer();
-		}
-		inline static uint32_t GetWindowWidth()
-		{
-			return sWindow->GetWidth();
-		}
-		inline static uint32_t GetWindowHeight()
-		{
-			return sWindow->GetHeight();
-		}
-		inline static const std::string& GetWindowTitle()
-		{
-			return sWindow->GetTitle();
-		}
-		inline static void SetWindowTitle(const std::string& title)
-		{
-			sWindow->SetTitle(title);
-		}
-		inline static void WindowClose()
-		{
-			sWindow->Close();
-		}
+		inline static const Scope<Window>& GetWindow() { return sWindow; }
+		inline static void SwapBuffer() { sWindow->SwapBuffer(); }
+		inline static uint32_t GetWindowWidth() { return sWindow->GetWidth(); }
+		inline static uint32_t GetWindowHeight() { return sWindow->GetHeight(); }
+		inline static const std::string& GetWindowTitle() { return sWindow->GetTitle(); }
+		inline static void SetWindowTitle(const std::string& title) { sWindow->SetTitle(title); }
+		inline static void WindowClose() { sWindow->Close(); }
 
 		// Events Handling
 		inline static void SetEventHandler(const EventHandler& handler)
 		{
 			sWindow->SetEventHandler(handler);
 		}
-		inline static void ProcessEvents()
-		{
-			sWindow->ProcessEvents();
-		}
+		inline static void ProcessEvents() { sWindow->ProcessEvents(); }
 
 		// Time Operations
-		inline static uint64_t GetCurrentTick()
-		{
-			return sPlatform->GetTicks();
-		}
+		inline static uint64_t GetCurrentTick() { return sPlatform->GetTicks(); }
 
 	private:
 		static Scope<Platform> sPlatform;

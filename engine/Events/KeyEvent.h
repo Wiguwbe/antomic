@@ -23,14 +23,8 @@ namespace Antomic
 	class KeyEvent : public Event
 	{
 	public:
-		Key::Enum GetKeyCode() const
-		{
-			return mKeyCode;
-		}
-		uint8_t GetKeyModifiers() const
-		{
-			return mModifiers;
-		}
+		Key::Enum GetKeyCode() const { return mKeyCode; }
+		uint8_t GetKeyModifiers() const { return mModifiers; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
@@ -51,10 +45,7 @@ namespace Antomic
 			, mRepeat(repeat)
 		{ }
 
-		int GetRepeatCount() const
-		{
-			return mRepeat;
-		}
+		int GetRepeatCount() const { return mRepeat; }
 
 		std::string ToString() const override
 		{

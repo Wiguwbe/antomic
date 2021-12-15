@@ -25,10 +25,7 @@ namespace Antomic
 	{
 	public:
 		static void Init();
-		static Ref<spdlog::logger>& GetLogger()
-		{
-			return sLogger;
-		}
+		static Ref<spdlog::logger>& GetLogger() { return sLogger; }
 
 	private:
 		static Ref<spdlog::logger> sLogger;

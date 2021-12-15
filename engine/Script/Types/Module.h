@@ -26,9 +26,6 @@ namespace Antomic
 		virtual ~Module() override = default;
 
 	public:
-		virtual ScriptObjectType GetType()
-		{
-			return ScriptObjectType::Module;
-		}
+		virtual ScriptObjectType GetType() { return ScriptObjectType::Module; }
 	};
 } // namespace Antomic

@@ -27,14 +27,8 @@ namespace Antomic
 			, mHeight(height)
 		{ }
 
-		uint32_t GetWidth() const
-		{
-			return mWidth;
-		}
-		uint32_t GetHeight() const
-		{
-			return mHeight;
-		}
+		uint32_t GetWidth() const { return mWidth; }
+		uint32_t GetHeight() const { return mHeight; }
 
 		std::string ToString() const override
 		{

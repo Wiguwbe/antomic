@@ -64,18 +64,12 @@ namespace Antomic
 		void SetCurrentScene(const Ref<Scene>& scene);
 
 		// Viewport Operations
-		inline const RendererViewport& GetViewport() const
-		{
-			return mViewport;
-		}
+		inline const RendererViewport& GetViewport() const { return mViewport; }
 		void SetViewport(const RendererViewport& viewport);
 
 		// Frame Operations
 		void RenderFrame();
-		inline const Ref<RendererFrame> GetLastFrame() const
-		{
-			return mLastFrame;
-		}
+		inline const Ref<RendererFrame> GetLastFrame() const { return mLastFrame; }
 		const uint64_t GetLastFrameTime();
 		void Shutdown();
 

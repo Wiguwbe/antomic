@@ -29,19 +29,10 @@ namespace Antomic
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	OpenGLTexture::~OpenGLTexture()
-	{
-		glDeleteTextures(1, &mRendererID);
-	}
+	OpenGLTexture::~OpenGLTexture() { glDeleteTextures(1, &mRendererID); }
 
-	void OpenGLTexture::Bind() const
-	{
-		glBindTexture(GL_TEXTURE_2D, mRendererID);
-	}
+	void OpenGLTexture::Bind() const { glBindTexture(GL_TEXTURE_2D, mRendererID); }
 
-	void OpenGLTexture::Unbind() const
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
+	void OpenGLTexture::Unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
 
 } // namespace Antomic

@@ -28,15 +28,11 @@ namespace Antomic
 
 		switch(drawable->GetType())
 		{
-		case DrawableType::SPRITE:
-			mSpriteQueue.push(drawable);
-			return;
-		case DrawableType::MESH:
-			mMeshQueue.push(drawable);
-			return;
-		default:
-			ANTOMIC_ASSERT(false, "RendererFrame::QueueDrawable: Type not handled");
-			return;
+			case DrawableType::SPRITE: mSpriteQueue.push(drawable); return;
+			case DrawableType::MESH: mMeshQueue.push(drawable); return;
+			default:
+				ANTOMIC_ASSERT(false, "RendererFrame::QueueDrawable: Type not handled");
+				return;
 		}
 	}
 

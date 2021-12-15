@@ -35,10 +35,7 @@ namespace Antomic
 		{
 			return mVertextBuffers;
 		};
-		virtual const Ref<IndexBuffer>& GetIndexBuffer() const override
-		{
-			return mIndexBuffer;
-		};
+		virtual const Ref<IndexBuffer>& GetIndexBuffer() const override { return mIndexBuffer; };
 
 	private:
 		uint32_t mRendererId;

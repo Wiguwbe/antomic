@@ -34,10 +34,8 @@ namespace Antomic
 	{
 		switch(api)
 		{
-		case RenderAPIDialect::NONE:
-			return "Null API";
-		case RenderAPIDialect::OPENGL:
-			return "OpenGL";
+			case RenderAPIDialect::NONE: return "Null API";
+			case RenderAPIDialect::OPENGL: return "OpenGL";
 		}
 
 		ANTOMIC_ASSERT(false, "RenderAPIDialect: Unknown api")
@@ -49,13 +47,13 @@ namespace Antomic
 		switch(api)
 		{
 #ifdef ANTOMIC_GL_RENDERER
-		case RenderAPIDialect::OPENGL:
-			ANTOMIC_INFO("Renderer: Using OpenGL renderer API");
-			return CreateScope<OpenGLRenderAPI>();
+			case RenderAPIDialect::OPENGL:
+				ANTOMIC_INFO("Renderer: Using OpenGL renderer API");
+				return CreateScope<OpenGLRenderAPI>();
 #endif
-		default:
-			ANTOMIC_INFO("Renderer: Using Null renderer API!");
-			return CreateScope<NullRenderAPI>();
+			default:
+				ANTOMIC_INFO("Renderer: Using Null renderer API!");
+				return CreateScope<NullRenderAPI>();
 		}
 	}
 

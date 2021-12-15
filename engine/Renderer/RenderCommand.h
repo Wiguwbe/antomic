@@ -33,10 +33,7 @@ namespace Antomic
 		{
 			Platform::GetRenderAPI()->SetClearColor(color);
 		}
-		inline static void Clear()
-		{
-			Platform::GetRenderAPI()->Clear();
-		}
+		inline static void Clear() { Platform::GetRenderAPI()->Clear(); }
 		inline static void DrawIndexed(const Ref<VertexArray> vertexArray)
 		{
 			Platform::GetRenderAPI()->DrawIndexed(vertexArray);

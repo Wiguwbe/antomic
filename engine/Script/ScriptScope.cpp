@@ -22,10 +22,7 @@ namespace Antomic
 		: mParent(parent)
 	{ }
 
-	ScriptScope::~ScriptScope()
-	{
-		CleanUp();
-	}
+	ScriptScope::~ScriptScope() { CleanUp(); }
 
 	Ref<ScriptObject> ScriptScope::GetName(const std::string name)
 	{
@@ -52,9 +49,6 @@ namespace Antomic
 		return scope;
 	}
 
-	Ref<ScriptScope> ScriptScope::NewScope()
-	{
-		return CreateRef<ScriptScope>(shared_from_this());
-	}
+	Ref<ScriptScope> ScriptScope::NewScope() { return CreateRef<ScriptScope>(shared_from_this()); }
 
 } // namespace Antomic

@@ -19,10 +19,7 @@
 
 namespace Antomic
 {
-	ScriptEngine::ScriptEngine()
-	{
-		mScope = CreateRef<ScriptScope>();
-	}
+	ScriptEngine::ScriptEngine() { mScope = CreateRef<ScriptScope>(); }
 
 	ScriptEngine::~ScriptEngine()
 	{
@@ -68,13 +65,11 @@ namespace Antomic
 			case Antomic::stmt_::StmtKind::kAugAssign: {
 				return CreateRef<None>();
 			}
-			case Antomic::stmt_::StmtKind::kBreak:
-				return CreateRef<None>();
+			case Antomic::stmt_::StmtKind::kBreak: return CreateRef<None>();
 			case Antomic::stmt_::StmtKind::kClassDef: {
 				return CreateRef<None>();
 			}
-			case Antomic::stmt_::StmtKind::kContinue:
-				return CreateRef<None>();
+			case Antomic::stmt_::StmtKind::kContinue: return CreateRef<None>();
 			case Antomic::stmt_::StmtKind::kDelete: {
 				return CreateRef<None>();
 			}
@@ -180,50 +175,23 @@ namespace Antomic
 		return CreateRef<None>();
 	}
 
-	Ref<ScriptObject> ScriptEngine::Eval(expr_context_t node)
-	{
-		return nullptr;
-	}
+	Ref<ScriptObject> ScriptEngine::Eval(expr_context_t node) { return nullptr; }
 
-	Ref<ScriptObject> ScriptEngine::Eval(boolop_t node)
-	{
-		return nullptr;
-	}
+	Ref<ScriptObject> ScriptEngine::Eval(boolop_t node) { return nullptr; }
 
-	Ref<ScriptObject> ScriptEngine::Eval(operator_t node)
-	{
-		return nullptr;
-	}
+	Ref<ScriptObject> ScriptEngine::Eval(operator_t node) { return nullptr; }
 
-	Ref<ScriptObject> ScriptEngine::Eval(unaryop_t node)
-	{
-		return nullptr;
-	}
+	Ref<ScriptObject> ScriptEngine::Eval(unaryop_t node) { return nullptr; }
 
-	Ref<ScriptObject> ScriptEngine::Eval(cmpop_t node)
-	{
-		return nullptr;
-	}
+	Ref<ScriptObject> ScriptEngine::Eval(cmpop_t node) { return nullptr; }
 
-	Ref<ScriptObject> ScriptEngine::Eval(excepthandler_t node)
-	{
-		return nullptr;
-	}
+	Ref<ScriptObject> ScriptEngine::Eval(excepthandler_t node) { return nullptr; }
 
-	Ref<ScriptObject> ScriptEngine::Eval(arguments_t node)
-	{
-		return nullptr;
-	}
+	Ref<ScriptObject> ScriptEngine::Eval(arguments_t node) { return nullptr; }
 
-	Ref<ScriptObject> ScriptEngine::Eval(arg_t node)
-	{
-		return nullptr;
-	}
+	Ref<ScriptObject> ScriptEngine::Eval(arg_t node) { return nullptr; }
 
-	Ref<ScriptObject> ScriptEngine::Eval(alias_t node)
-	{
-		return nullptr;
-	}
+	Ref<ScriptObject> ScriptEngine::Eval(alias_t node) { return nullptr; }
 
 	Ref<ScriptObject> ScriptEngine::Eval(const std::vector<Antomic::expr_t>& list)
 	{

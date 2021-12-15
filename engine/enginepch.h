@@ -15,35 +15,34 @@
 */
 #pragma once
 
+#include <algorithm>
+#include <any>
 #include <cstdint>
-#include <iostream>
 #include <fstream>
+#include <functional>
+#include <iostream>
 #include <memory>
 #include <utility>
-#include <algorithm>
-#include <functional>
-#include <any>
 
-#include <cstring>
-#include <string>
-#include <sstream>
 #include <array>
-#include <vector>
-#include <stack>
+#include <cstring>
 #include <map>
 #include <queue>
+#include <sstream>
+#include <stack>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 #include <filesystem>
 
 #ifdef ANTOMIC_CHRONO_SUPPORT
-#include <chrono>
+#	include <chrono>
 #endif
 
 #include <algorithm>
 #include <chrono>
 #include <iomanip>
-#include <thread>
 #include <mutex>
-
+#include <thread>

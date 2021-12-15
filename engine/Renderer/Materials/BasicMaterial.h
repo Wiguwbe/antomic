@@ -28,14 +28,8 @@ namespace Antomic
 
 	public:
 		virtual void Bind() const;
-		virtual void Unbind() const
-		{
-			mShader->Unbind();
-		}
-		virtual const Ref<Shader>& GetShader() const
-		{
-			return mShader;
-		};
+		virtual void Unbind() const { mShader->Unbind(); }
+		virtual const Ref<Shader>& GetShader() const { return mShader; };
 
 	private:
 		Ref<Shader> mShader;

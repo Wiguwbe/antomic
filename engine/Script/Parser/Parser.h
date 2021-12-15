@@ -115,15 +115,9 @@ namespace Antomic
 		expr_t TrySlice(expr_t first);
 
 	private:
-		inline Token ReadNextToken()
-		{
-			return mLexer->Read();
-		}
+		inline Token ReadNextToken() { return mLexer->Read(); }
 
-		inline Token PeekNextToken()
-		{
-			return mLexer->Peek();
-		}
+		inline Token PeekNextToken() { return mLexer->Peek(); }
 
 		inline void PushIdentation(uint8_t i)
 		{

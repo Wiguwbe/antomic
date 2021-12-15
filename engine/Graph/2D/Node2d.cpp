@@ -60,10 +60,7 @@ namespace Antomic
 		MakeDirty();
 	}
 
-	void Node2d::SetZOrder(int zorder)
-	{
-		mZOrder = zorder;
-	}
+	void Node2d::SetZOrder(int zorder) { mZOrder = zorder; }
 
 	void Node2d::UpdateSpatialInformation()
 	{

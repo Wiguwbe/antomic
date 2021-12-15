@@ -80,21 +80,21 @@ namespace Antomic
 
 							   switch(action)
 							   {
-							   case GLFW_PRESS: {
-								   KeyPressedEvent event(Input::ToKey(key), 0, 0);
-								   data.Handler(event);
-								   break;
-							   }
-							   case GLFW_RELEASE: {
-								   KeyReleasedEvent event(Input::ToKey(key), 0);
-								   data.Handler(event);
-								   break;
-							   }
-							   case GLFW_REPEAT: {
-								   KeyPressedEvent event(Input::ToKey(key), 0, 1);
-								   data.Handler(event);
-								   break;
-							   }
+								   case GLFW_PRESS: {
+									   KeyPressedEvent event(Input::ToKey(key), 0, 0);
+									   data.Handler(event);
+									   break;
+								   }
+								   case GLFW_RELEASE: {
+									   KeyReleasedEvent event(Input::ToKey(key), 0);
+									   data.Handler(event);
+									   break;
+								   }
+								   case GLFW_REPEAT: {
+									   KeyPressedEvent event(Input::ToKey(key), 0, 1);
+									   data.Handler(event);
+									   break;
+								   }
 							   }
 						   });
 
@@ -113,30 +113,24 @@ namespace Antomic
 
 				switch(button)
 				{
-				default:
-				case GLFW_MOUSE_BUTTON_LEFT:
-					aButton = MouseButton::Left;
-					break;
-				case GLFW_MOUSE_BUTTON_MIDDLE:
-					aButton = MouseButton::Middle;
-					break;
-				case GLFW_MOUSE_BUTTON_RIGHT:
-					aButton = MouseButton::Right;
-					break;
+					default:
+					case GLFW_MOUSE_BUTTON_LEFT: aButton = MouseButton::Left; break;
+					case GLFW_MOUSE_BUTTON_MIDDLE: aButton = MouseButton::Middle; break;
+					case GLFW_MOUSE_BUTTON_RIGHT: aButton = MouseButton::Right; break;
 				}
 
 				switch(action)
 				{
-				case GLFW_PRESS: {
-					MouseButtonPressedEvent event(aButton);
-					data.Handler(event);
-					break;
-				}
-				case GLFW_RELEASE: {
-					MouseButtonReleasedEvent event(aButton);
-					data.Handler(event);
-					break;
-				}
+					case GLFW_PRESS: {
+						MouseButtonPressedEvent event(aButton);
+						data.Handler(event);
+						break;
+					}
+					case GLFW_RELEASE: {
+						MouseButtonReleasedEvent event(aButton);
+						data.Handler(event);
+						break;
+					}
 				}
 			});
 
@@ -178,15 +172,9 @@ namespace Antomic
 		mData.Title = title;
 	}
 
-	void GLFWWindow::SwapBuffer()
-	{
-		glfwSwapBuffers(mWindow);
-	}
+	void GLFWWindow::SwapBuffer() { glfwSwapBuffers(mWindow); }
 
-	void GLFWWindow::ProcessEvents()
-	{
-		glfwPollEvents();
-	}
+	void GLFWWindow::ProcessEvents() { glfwPollEvents(); }
 
 	void GLFWWindow::ToggleFullscreen() { }
 

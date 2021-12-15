@@ -26,9 +26,6 @@ namespace Antomic
 		virtual ~None() override = default;
 
 	public:
-		virtual ScriptObjectType GetType()
-		{
-			return ScriptObjectType::None;
-		}
+		virtual ScriptObjectType GetType() { return ScriptObjectType::None; }
 	};
 } // namespace Antomic

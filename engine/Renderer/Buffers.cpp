@@ -89,11 +89,9 @@ namespace Antomic
 		switch(Platform::GetRenderAPIDialect())
 		{
 #ifdef ANTOMIC_GL_RENDERER
-		case RenderAPIDialect::OPENGL:
-			return CreateRef<OpenGLIndexBuffer>(data, size);
+			case RenderAPIDialect::OPENGL: return CreateRef<OpenGLIndexBuffer>(data, size);
 #endif
-		default:
-			return CreateRef<NullIndexBuffer>(data, size);
+			default: return CreateRef<NullIndexBuffer>(data, size);
 		}
 	}
 
@@ -106,11 +104,9 @@ namespace Antomic
 		switch(Platform::GetRenderAPIDialect())
 		{
 #ifdef ANTOMIC_GL_RENDERER
-		case RenderAPIDialect::OPENGL:
-			return CreateRef<OpenGLVertexBuffer>(data, size);
+			case RenderAPIDialect::OPENGL: return CreateRef<OpenGLVertexBuffer>(data, size);
 #endif
-		default:
-			return CreateRef<NullVertexBuffer>(data, size);
+			default: return CreateRef<NullVertexBuffer>(data, size);
 		}
 	}
 
@@ -123,11 +119,9 @@ namespace Antomic
 		switch(Platform::GetRenderAPIDialect())
 		{
 #ifdef ANTOMIC_GL_RENDERER
-		case RenderAPIDialect::OPENGL:
-			return CreateRef<OpenGLUniformBuffer>(layout, binding);
+			case RenderAPIDialect::OPENGL: return CreateRef<OpenGLUniformBuffer>(layout, binding);
 #endif
-		default:
-			return CreateRef<NullUniformBuffer>(layout, binding);
+			default: return CreateRef<NullUniformBuffer>(layout, binding);
 		}
 	}
 

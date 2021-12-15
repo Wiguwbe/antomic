@@ -28,11 +28,9 @@ namespace Antomic
 		switch(Platform::GetRenderAPIDialect())
 		{
 #ifdef ANTOMIC_GL_RENDERER
-		case RenderAPIDialect::OPENGL:
-			return CreateRef<OpenGLTexture>(width, height, data);
+			case RenderAPIDialect::OPENGL: return CreateRef<OpenGLTexture>(width, height, data);
 #endif
-		default:
-			return CreateRef<NullTexture>(width, height, data);
+			default: return CreateRef<NullTexture>(width, height, data);
 		}
 	}
 } // namespace Antomic

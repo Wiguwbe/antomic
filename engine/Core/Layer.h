@@ -31,22 +31,10 @@ namespace Antomic
 		virtual void Submit() { }
 		virtual void OnEvent(Event& e) { }
 
-		inline const void Disable()
-		{
-			mEnabled = false;
-		}
-		inline const void Enable()
-		{
-			mEnabled = true;
-		}
-		inline const bool& IsEnabled() const
-		{
-			return mEnabled;
-		}
-		inline const std::string& GetName() const
-		{
-			return mName;
-		}
+		inline const void Disable() { mEnabled = false; }
+		inline const void Enable() { mEnabled = true; }
+		inline const bool& IsEnabled() const { return mEnabled; }
+		inline const std::string& GetName() const { return mName; }
 
 	protected:
 		std::string mName;

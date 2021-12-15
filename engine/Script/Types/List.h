@@ -26,9 +26,6 @@ namespace Antomic
 		virtual ~List() override = default;
 
 	public:
-		virtual ScriptObjectType GetType()
-		{
-			return ScriptObjectType::List;
-		}
+		virtual ScriptObjectType GetType() { return ScriptObjectType::List; }
 	};
 } // namespace Antomic

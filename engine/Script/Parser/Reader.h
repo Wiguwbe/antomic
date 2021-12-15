@@ -43,17 +43,11 @@ namespace Antomic
 		{ }
 		virtual ~TextReader() = default;
 
-		virtual bool IsEOF() override
-		{
-			return mStream.peek() == EOF;
-		}
+		virtual bool IsEOF() override { return mStream.peek() == EOF; }
 		virtual char Peek() override;
 		virtual char Read() override;
 		virtual char Read(std::string& out) override;
-		virtual const std::string& GetFileName() const
-		{
-			return mName;
-		}
+		virtual const std::string& GetFileName() const { return mName; }
 
 	private:
 		std::stringstream mStream;
@@ -66,22 +60,13 @@ namespace Antomic
 		FileReader(const std::string& name)
 			: mStream(name)
 		{ }
-		virtual ~FileReader()
-		{
-			mStream.close();
-		}
+		virtual ~FileReader() { mStream.close(); }
 
-		virtual bool IsEOF() override
-		{
-			return mStream.peek() == EOF;
-		}
+		virtual bool IsEOF() override { return mStream.peek() == EOF; }
 		virtual char Peek() override;
 		virtual char Read() override;
 		virtual char Read(std::string& out) override;
-		virtual const std::string& GetFileName() const
-		{
-			return mName;
-		}
+		virtual const std::string& GetFileName() const { return mName; }
 
 	private:
 		std::ifstream mStream;

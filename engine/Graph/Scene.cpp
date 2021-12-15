@@ -65,10 +65,7 @@ namespace Antomic
 	}
 
 	// Serialization
-	void Scene::Serialize(nlohmann::json& json)
-	{
-		Node::Serialize(json["scene"]);
-	}
+	void Scene::Serialize(nlohmann::json& json) { Node::Serialize(json["scene"]); }
 
 	Ref<Scene> Scene::Deserialize(const nlohmann::json& json)
 	{

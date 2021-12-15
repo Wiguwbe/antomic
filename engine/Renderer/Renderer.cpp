@@ -57,10 +57,7 @@ namespace Antomic
 		Render2d::Shutdown();
 	}
 
-	const Ref<Scene>& Renderer::GetCurrentScene()
-	{
-		return mScene;
-	}
+	const Ref<Scene>& Renderer::GetCurrentScene() { return mScene; }
 
 	void Renderer::SetCurrentScene(const Ref<Scene>& scene)
 	{
@@ -135,12 +132,12 @@ namespace Antomic
 		mCameraBuffer->SetValue("m_proj", mProjectionMatrix);
 		switch(active->GetType())
 		{
-		case CameraType::ORTOGRAPHIC:
-			mCameraBuffer->SetValue("m_ortho", mProjectionMatrix);
-			return;
-		default:
-			mCameraBuffer->SetValue("m_ortho", OrthographicCamera::ProjectionMatrix(mViewport));
-			return;
+			case CameraType::ORTOGRAPHIC:
+				mCameraBuffer->SetValue("m_ortho", mProjectionMatrix);
+				return;
+			default:
+				mCameraBuffer->SetValue("m_ortho", OrthographicCamera::ProjectionMatrix(mViewport));
+				return;
 		}
 	}
 } // namespace Antomic

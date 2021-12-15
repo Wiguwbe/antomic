@@ -62,10 +62,7 @@ namespace Antomic
 		return c;
 	}
 
-	Ref<Reader> Reader::FromFile(const std::string& name)
-	{
-		return CreateRef<FileReader>(name);
-	}
+	Ref<Reader> Reader::FromFile(const std::string& name) { return CreateRef<FileReader>(name); }
 
 	Ref<Reader> Reader::FromString(const std::string& string, const std::string& name)
 	{

@@ -26,9 +26,6 @@ namespace Antomic
 		virtual ~Mat4() override = default;
 
 	public:
-		virtual ScriptObjectType GetType()
-		{
-			return ScriptObjectType::Mat4;
-		}
+		virtual ScriptObjectType GetType() { return ScriptObjectType::Mat4; }
 	};
 } // namespace Antomic

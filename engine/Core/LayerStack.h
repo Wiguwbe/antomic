@@ -35,14 +35,8 @@ namespace Antomic
 		void Submit();
 		void OnEvent(Event& e);
 
-		inline int Empty() const
-		{
-			return mStack.empty();
-		}
-		inline size_t Count() const
-		{
-			return mStack.size();
-		}
+		inline int Empty() const { return mStack.empty(); }
+		inline size_t Count() const { return mStack.size(); }
 
 	protected:
 		std::vector<Ref<Layer>> mStack;

@@ -228,24 +228,23 @@ namespace Antomic
 		mState.CurrentToken.Value += ReadNextChar();
 		switch(PeekNextChar())
 		{
-		case '=':
-			mState.CurrentToken.Value += ReadNextChar();
-			EndToken(TokenType::OpDivAssign);
-			break;
-		case '/':
-			mState.CurrentToken.Value += ReadNextChar();
-			if(PeekNextChar() == '=')
-			{
+			case '=':
 				mState.CurrentToken.Value += ReadNextChar();
-				EndToken(TokenType::OpFloorDivAssign);
-			}
-			else
-			{
-				EndToken(TokenType::OpFloorDiv);
-			}
-			break;
-		default:
-			EndToken(TokenType::OpDiv);
+				EndToken(TokenType::OpDivAssign);
+				break;
+			case '/':
+				mState.CurrentToken.Value += ReadNextChar();
+				if(PeekNextChar() == '=')
+				{
+					mState.CurrentToken.Value += ReadNextChar();
+					EndToken(TokenType::OpFloorDivAssign);
+				}
+				else
+				{
+					EndToken(TokenType::OpFloorDiv);
+				}
+				break;
+			default: EndToken(TokenType::OpDiv);
 		}
 	}
 
@@ -255,25 +254,23 @@ namespace Antomic
 		mState.CurrentToken.Value += ReadNextChar();
 		switch(PeekNextChar())
 		{
-		case '=':
-			mState.CurrentToken.Value += ReadNextChar();
-			EndToken(TokenType::OpMulAssign);
-			break;
-		case '*':
-			mState.CurrentToken.Value += ReadNextChar();
-			if(PeekNextChar() == '=')
-			{
+			case '=':
 				mState.CurrentToken.Value += ReadNextChar();
-				EndToken(TokenType::OpExpAssign);
-			}
-			else
-			{
-				EndToken(TokenType::OpExp);
-			}
-			break;
-		default:
-			EndToken(TokenType::OpMul);
-			break;
+				EndToken(TokenType::OpMulAssign);
+				break;
+			case '*':
+				mState.CurrentToken.Value += ReadNextChar();
+				if(PeekNextChar() == '=')
+				{
+					mState.CurrentToken.Value += ReadNextChar();
+					EndToken(TokenType::OpExpAssign);
+				}
+				else
+				{
+					EndToken(TokenType::OpExp);
+				}
+				break;
+			default: EndToken(TokenType::OpMul); break;
 		}
 	}
 
@@ -329,25 +326,23 @@ namespace Antomic
 		mState.CurrentToken.Value += ReadNextChar();
 		switch(PeekNextChar())
 		{
-		case '=':
-			mState.CurrentToken.Value += ReadNextChar();
-			EndToken(TokenType::OpGreatEqual);
-			break;
-		case '>':
-			mState.CurrentToken.Value += ReadNextChar();
-			if(PeekNextChar() == '=')
-			{
+			case '=':
 				mState.CurrentToken.Value += ReadNextChar();
-				EndToken(TokenType::OpShiftRightAssign);
-			}
-			else
-			{
-				EndToken(TokenType::OpShiftRight);
-			}
-			break;
-		default:
-			EndToken(TokenType::OpGreat);
-			break;
+				EndToken(TokenType::OpGreatEqual);
+				break;
+			case '>':
+				mState.CurrentToken.Value += ReadNextChar();
+				if(PeekNextChar() == '=')
+				{
+					mState.CurrentToken.Value += ReadNextChar();
+					EndToken(TokenType::OpShiftRightAssign);
+				}
+				else
+				{
+					EndToken(TokenType::OpShiftRight);
+				}
+				break;
+			default: EndToken(TokenType::OpGreat); break;
 		}
 	}
 
@@ -357,25 +352,23 @@ namespace Antomic
 		mState.CurrentToken.Value += ReadNextChar();
 		switch(PeekNextChar())
 		{
-		case '=':
-			mState.CurrentToken.Value += ReadNextChar();
-			EndToken(TokenType::OpLessEqual);
-			break;
-		case '<':
-			mState.CurrentToken.Value += ReadNextChar();
-			if(PeekNextChar() == '=')
-			{
+			case '=':
 				mState.CurrentToken.Value += ReadNextChar();
-				EndToken(TokenType::OpShiftLeftAssign);
-			}
-			else
-			{
-				EndToken(TokenType::OpShiftLeft);
-			}
-			break;
-		default:
-			EndToken(TokenType::OpLess);
-			break;
+				EndToken(TokenType::OpLessEqual);
+				break;
+			case '<':
+				mState.CurrentToken.Value += ReadNextChar();
+				if(PeekNextChar() == '=')
+				{
+					mState.CurrentToken.Value += ReadNextChar();
+					EndToken(TokenType::OpShiftLeftAssign);
+				}
+				else
+				{
+					EndToken(TokenType::OpShiftLeft);
+				}
+				break;
+			default: EndToken(TokenType::OpLess); break;
 		}
 	}
 
@@ -657,167 +650,112 @@ namespace Antomic
 
 			switch(c)
 			{
-			case '\\':
-				// Escape next new line
-				ReadNextChar();
-				if(PeekNextChar() != '\n')
-				{
-					StartToken(TokenType::Invalid);
-					return mState.CurrentToken;
-				}
-				mState.MultiLine = true;
-				ReadNextChar();
-				NextLine();
-				continue;
-			case '#':
-				ProcessComment();
-				return mState.CurrentToken;
-			case '\'':
-				ProcessString();
-				return mState.CurrentToken;
-			case '\"':
-				ProcessString();
-				return mState.CurrentToken;
-			case ' ':
-				// comming from a multiline string, spaces are ignored
-				if(mState.MultiLine || mState.CurrentColumn > 1)
-				{
+				case '\\':
+					// Escape next new line
+					ReadNextChar();
+					if(PeekNextChar() != '\n')
+					{
+						StartToken(TokenType::Invalid);
+						return mState.CurrentToken;
+					}
+					mState.MultiLine = true;
+					ReadNextChar();
+					NextLine();
+					continue;
+				case '#': ProcessComment(); return mState.CurrentToken;
+				case '\'': ProcessString(); return mState.CurrentToken;
+				case '\"': ProcessString(); return mState.CurrentToken;
+				case ' ':
+					// comming from a multiline string, spaces are ignored
+					if(mState.MultiLine || mState.CurrentColumn > 1)
+					{
+						while(PeekNextChar() == ' ' && !mReader->IsEOF())
+						{
+							ReadNextChar();
+						}
+						continue;
+					}
+
+					// Not a multiline string and we are in the beginning, spaces are indentation in python
+					StartToken(TokenType::Identation);
 					while(PeekNextChar() == ' ' && !mReader->IsEOF())
 					{
-						ReadNextChar();
+						mState.CurrentToken.Value += ReadNextChar();
 					}
-					continue;
-				}
 
-				// Not a multiline string and we are in the beginning, spaces are indentation in python
-				StartToken(TokenType::Identation);
-				while(PeekNextChar() == ' ' && !mReader->IsEOF())
-				{
-					mState.CurrentToken.Value += ReadNextChar();
-				}
-
-				// Empty spaces with no text, skip it
-				if(PeekNextChar() == '\n')
-				{
-					ReadNextChar();
-					NextLine();
-					NewToken();
-					continue;
-				}
-				return mState.CurrentToken;
-
-			case '\t':
-				// comming from a multiline string, tabs are ignored
-				if(mState.MultiLine || mState.CurrentColumn > 1)
-				{
-					while(PeekNextChar() == '\t' && !mReader->IsEOF())
+					// Empty spaces with no text, skip it
+					if(PeekNextChar() == '\n')
 					{
 						ReadNextChar();
+						NextLine();
+						NewToken();
+						continue;
 					}
-					continue;
-				}
-
-				// Not a multiline string, tabs are indentation in python
-				StartToken(TokenType::Identation);
-				while(PeekNextChar() == '\t' && !mReader->IsEOF())
-				{
-					mState.CurrentToken.Value += ReadNextChar();
-				}
-				// Empty spaces with no text, skip it
-				if(PeekNextChar() == '\n')
-				{
-					ReadNextChar();
-					NextLine();
-					NewToken();
-					continue;
-				}
-				return mState.CurrentToken;
-			case '\n':
-				mState.MultiLine = false;
-				if(mState.CurrentColumn > 1)
-				{
-					StartToken(TokenType::NewLine);
-					ReadNextChar();
-					NextLine();
 					return mState.CurrentToken;
-				}
-				ReadNextChar();
-				NextLine();
-				continue;
-			case '(':
-				ProcessOpenParenteses();
-				return mState.CurrentToken;
-			case ')':
-				ProcessCloseParenteses();
-				return mState.CurrentToken;
-			case '[':
-				ProcessOpenBrackets();
-				return mState.CurrentToken;
-			case ']':
-				ProcessCloseBrackets();
-				return mState.CurrentToken;
-			case '{':
-				ProcessOpenBraces();
-				return mState.CurrentToken;
-			case '}':
-				ProcessCloseBraces();
-				return mState.CurrentToken;
-			case '+':
-				ProcessAdd();
-				return mState.CurrentToken;
-			case '-':
-				ProcessSub();
-				return mState.CurrentToken;
-			case '/':
-				ProcessDiv();
-				return mState.CurrentToken;
-			case '*':
-				ProcessMul();
-				return mState.CurrentToken;
-			case '.':
-				ProcessPeriod();
-				return mState.CurrentToken;
-			case ',':
-				ProcessComma();
-				return mState.CurrentToken;
-			case ':':
-				ProcessColon();
-				return mState.CurrentToken;
-			case ';':
-				ProcessSemicolon();
-				return mState.CurrentToken;
-			case '%':
-				ProcessMod();
-				return mState.CurrentToken;
-			case '>':
-				ProcessGreatThen();
-				return mState.CurrentToken;
-			case '<':
-				ProcessLessThen();
-				return mState.CurrentToken;
-			case '=':
-				ProcessAssign();
-				return mState.CurrentToken;
-			case '!':
-				ProcessNotEqual();
-				return mState.CurrentToken;
-			case '^':
-				ProcessXor();
-				return mState.CurrentToken;
-			case '~':
-				ProcessNot();
-				return mState.CurrentToken;
-			case '&':
-				ProcessAnd();
-				return mState.CurrentToken;
-			case '|':
-				ProcessOr();
-				return mState.CurrentToken;
-			case 'f':
-				ProcessFormatedString();
-				return mState.CurrentToken;
-			default:
-				break;
+
+				case '\t':
+					// comming from a multiline string, tabs are ignored
+					if(mState.MultiLine || mState.CurrentColumn > 1)
+					{
+						while(PeekNextChar() == '\t' && !mReader->IsEOF())
+						{
+							ReadNextChar();
+						}
+						continue;
+					}
+
+					// Not a multiline string, tabs are indentation in python
+					StartToken(TokenType::Identation);
+					while(PeekNextChar() == '\t' && !mReader->IsEOF())
+					{
+						mState.CurrentToken.Value += ReadNextChar();
+					}
+					// Empty spaces with no text, skip it
+					if(PeekNextChar() == '\n')
+					{
+						ReadNextChar();
+						NextLine();
+						NewToken();
+						continue;
+					}
+					return mState.CurrentToken;
+				case '\n':
+					mState.MultiLine = false;
+					if(mState.CurrentColumn > 1)
+					{
+						StartToken(TokenType::NewLine);
+						ReadNextChar();
+						NextLine();
+						return mState.CurrentToken;
+					}
+					ReadNextChar();
+					NextLine();
+					continue;
+				case '(': ProcessOpenParenteses(); return mState.CurrentToken;
+				case ')': ProcessCloseParenteses(); return mState.CurrentToken;
+				case '[': ProcessOpenBrackets(); return mState.CurrentToken;
+				case ']': ProcessCloseBrackets(); return mState.CurrentToken;
+				case '{': ProcessOpenBraces(); return mState.CurrentToken;
+				case '}': ProcessCloseBraces(); return mState.CurrentToken;
+				case '+': ProcessAdd(); return mState.CurrentToken;
+				case '-': ProcessSub(); return mState.CurrentToken;
+				case '/': ProcessDiv(); return mState.CurrentToken;
+				case '*': ProcessMul(); return mState.CurrentToken;
+				case '.': ProcessPeriod(); return mState.CurrentToken;
+				case ',': ProcessComma(); return mState.CurrentToken;
+				case ':': ProcessColon(); return mState.CurrentToken;
+				case ';': ProcessSemicolon(); return mState.CurrentToken;
+				case '%': ProcessMod(); return mState.CurrentToken;
+				case '>': ProcessGreatThen(); return mState.CurrentToken;
+				case '<': ProcessLessThen(); return mState.CurrentToken;
+				case '=': ProcessAssign(); return mState.CurrentToken;
+				case '!': ProcessNotEqual(); return mState.CurrentToken;
+				case '^': ProcessXor(); return mState.CurrentToken;
+				case '~': ProcessNot(); return mState.CurrentToken;
+				case '&': ProcessAnd(); return mState.CurrentToken;
+				case '|': ProcessOr(); return mState.CurrentToken;
+				case 'f': ProcessFormatedString(); return mState.CurrentToken;
+				default: break;
 			}
 
 			if(c >= '0' && c <= '9')

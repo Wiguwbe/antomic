@@ -26,9 +26,6 @@ namespace Antomic
 		virtual ~Int4() override = default;
 
 	public:
-		virtual ScriptObjectType GetType()
-		{
-			return ScriptObjectType::Int4;
-		}
+		virtual ScriptObjectType GetType() { return ScriptObjectType::Int4; }
 	};
 } // namespace Antomic

@@ -26,9 +26,6 @@ namespace Antomic
 		virtual ~Dict() override = default;
 
 	public:
-		virtual ScriptObjectType GetType()
-		{
-			return ScriptObjectType::Dict;
-		}
+		virtual ScriptObjectType GetType() { return ScriptObjectType::Dict; }
 	};
 } // namespace Antomic

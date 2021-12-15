@@ -35,25 +35,16 @@ namespace Antomic
 
 		switch(button)
 		{
-		default:
-		case MouseButton::Left:
-			aButton = GLFW_MOUSE_BUTTON_LEFT;
-			break;
-		case MouseButton::Middle:
-			aButton = GLFW_MOUSE_BUTTON_MIDDLE;
-			break;
-		case MouseButton::Right:
-			aButton = GLFW_MOUSE_BUTTON_RIGHT;
-			break;
+			default:
+			case MouseButton::Left: aButton = GLFW_MOUSE_BUTTON_LEFT; break;
+			case MouseButton::Middle: aButton = GLFW_MOUSE_BUTTON_MIDDLE; break;
+			case MouseButton::Right: aButton = GLFW_MOUSE_BUTTON_RIGHT; break;
 		}
 
 		return glfwGetMouseButton(window, aButton) == GLFW_PRESS;
 	}
 
-	uint8_t InputGLFW::GetKeyModifiers()
-	{
-		return 0;
-	}
+	uint8_t InputGLFW::GetKeyModifiers() { return 0; }
 
 	glm::vec3 InputGLFW::GetMousePosition()
 	{

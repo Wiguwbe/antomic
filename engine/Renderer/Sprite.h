@@ -28,23 +28,11 @@ namespace Antomic
 		virtual ~Sprite() override { }
 
 	public:
-		virtual const DrawableType GetType() override
-		{
-			return DrawableType::SPRITE;
-		}
-		virtual void Draw() override
-		{
-			Render2d::DrawSprite(*this);
-		}
+		virtual const DrawableType GetType() override { return DrawableType::SPRITE; }
+		virtual void Draw() override { Render2d::DrawSprite(*this); }
 
-		inline const glm::vec4& GetSpriteColor() const
-		{
-			return mSpriteColor;
-		}
-		inline void SetSpriteColor(const glm::vec4& color)
-		{
-			mSpriteColor = color;
-		}
+		inline const glm::vec4& GetSpriteColor() const { return mSpriteColor; }
+		inline void SetSpriteColor(const glm::vec4& color) { mSpriteColor = color; }
 
 	private:
 		glm::vec4 mSpriteColor = glm::vec4(1.f, 1.f, 1.f, 1.f);

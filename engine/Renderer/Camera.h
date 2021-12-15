@@ -44,22 +44,10 @@ namespace Antomic
 		virtual ~Camera() = default;
 
 	public:
-		virtual CameraType GetType() const
-		{
-			return CameraType::NONE;
-		}
-		virtual const CameraFrustum GetFrustum() const
-		{
-			return {1.f, 1.f};
-		}
-		const glm::vec3& GetPosition() const
-		{
-			return mPosition;
-		}
-		void SetPosition(const glm::vec3& position)
-		{
-			mPosition = position;
-		}
+		virtual CameraType GetType() const { return CameraType::NONE; }
+		virtual const CameraFrustum GetFrustum() const { return {1.f, 1.f}; }
+		const glm::vec3& GetPosition() const { return mPosition; }
+		void SetPosition(const glm::vec3& position) { mPosition = position; }
 		virtual const glm::mat4 GetProjectionMatrix(const RendererViewport& viewport)
 		{
 			return glm::mat4(1.f);
@@ -80,10 +68,7 @@ namespace Antomic
 		virtual ~OrthographicCamera() = default;
 
 	public:
-		virtual CameraType GetType() const override
-		{
-			return CameraType::ORTOGRAPHIC;
-		}
+		virtual CameraType GetType() const override { return CameraType::ORTOGRAPHIC; }
 		virtual const glm::mat4 GetProjectionMatrix(const RendererViewport& viewport) override
 		{
 			return OrthographicCamera::GetProjectionMatrix(viewport);
@@ -114,18 +99,9 @@ namespace Antomic
 		virtual ~PerspetiveCamera() = default;
 
 	public:
-		virtual CameraType GetType() const override
-		{
-			return CameraType::PERSPECTIVE;
-		}
-		void SetFrustum(const CameraFrustum& frustum)
-		{
-			mFrustum = frustum;
-		}
-		float GetFoV() const
-		{
-			return mFoV;
-		}
+		virtual CameraType GetType() const override { return CameraType::PERSPECTIVE; }
+		void SetFrustum(const CameraFrustum& frustum) { mFrustum = frustum; }
+		float GetFoV() const { return mFoV; }
 		virtual const glm::mat4 GetProjectionMatrix(const RendererViewport& viewport) override
 		{
 			return PerspetiveCamera::ProjectionMatrix(mFoV, viewport, mFrustum);

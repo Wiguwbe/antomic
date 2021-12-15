@@ -28,14 +28,8 @@ namespace Antomic
 			, mMouseY(y)
 		{ }
 
-		float GetX() const
-		{
-			return mMouseX;
-		}
-		float GetY() const
-		{
-			return mMouseY;
-		}
+		float GetX() const { return mMouseX; }
+		float GetY() const { return mMouseY; }
 
 		std::string ToString() const override
 		{
@@ -58,14 +52,8 @@ namespace Antomic
 			, mYOffset(yOffset)
 		{ }
 
-		float GetXOffset() const
-		{
-			return mXOffset;
-		}
-		float GetYOffset() const
-		{
-			return mYOffset;
-		}
+		float GetXOffset() const { return mXOffset; }
+		float GetYOffset() const { return mYOffset; }
 
 		std::string ToString() const override
 		{
@@ -83,10 +71,7 @@ namespace Antomic
 	class MouseButtonEvent : public Event
 	{
 	public:
-		inline MouseButton::Enum GetMouseButton() const
-		{
-			return mButton;
-		}
+		inline MouseButton::Enum GetMouseButton() const { return mButton; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryMouseButton | EventCategoryInput)
 	protected:

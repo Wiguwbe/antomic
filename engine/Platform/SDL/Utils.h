@@ -20,9 +20,6 @@
 
 namespace Antomic
 {
-	inline uint32_t GetCurrentTime()
-	{
-		return SDL_GetTicks();
-	}
+	inline uint32_t GetCurrentTime() { return SDL_GetTicks(); }
 } // namespace Antomic
 #endif

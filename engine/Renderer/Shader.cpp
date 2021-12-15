@@ -28,28 +28,17 @@ namespace Antomic
 	{
 		switch(t)
 		{
-		case ShaderDataType::Float:
-			return 4;
-		case ShaderDataType::Vec2:
-			return 8;
-		case ShaderDataType::Vec3:
-			return 12;
-		case ShaderDataType::Vec4:
-			return 16;
-		case ShaderDataType::Mat3:
-			return 36;
-		case ShaderDataType::Mat4:
-			return 64;
-		case ShaderDataType::Int:
-			return 4;
-		case ShaderDataType::Int2:
-			return 8;
-		case ShaderDataType::Int3:
-			return 12;
-		case ShaderDataType::Int4:
-			return 16;
-		case ShaderDataType::Bool:
-			return 1;
+			case ShaderDataType::Float: return 4;
+			case ShaderDataType::Vec2: return 8;
+			case ShaderDataType::Vec3: return 12;
+			case ShaderDataType::Vec4: return 16;
+			case ShaderDataType::Mat3: return 36;
+			case ShaderDataType::Mat4: return 64;
+			case ShaderDataType::Int: return 4;
+			case ShaderDataType::Int2: return 8;
+			case ShaderDataType::Int3: return 12;
+			case ShaderDataType::Int4: return 16;
+			case ShaderDataType::Bool: return 1;
 		}
 
 		ANTOMIC_ASSERT(false, "ShaderDataType: Unknown data type")
@@ -60,28 +49,17 @@ namespace Antomic
 	{
 		switch(t)
 		{
-		case ShaderDataType::Float:
-			return 4;
-		case ShaderDataType::Vec2:
-			return 8;
-		case ShaderDataType::Vec3:
-			return 16;
-		case ShaderDataType::Vec4:
-			return 16;
-		case ShaderDataType::Mat3:
-			return 16;
-		case ShaderDataType::Mat4:
-			return 16;
-		case ShaderDataType::Int:
-			return 4;
-		case ShaderDataType::Int2:
-			return 8;
-		case ShaderDataType::Int3:
-			return 16;
-		case ShaderDataType::Int4:
-			return 16;
-		case ShaderDataType::Bool:
-			return 4;
+			case ShaderDataType::Float: return 4;
+			case ShaderDataType::Vec2: return 8;
+			case ShaderDataType::Vec3: return 16;
+			case ShaderDataType::Vec4: return 16;
+			case ShaderDataType::Mat3: return 16;
+			case ShaderDataType::Mat4: return 16;
+			case ShaderDataType::Int: return 4;
+			case ShaderDataType::Int2: return 8;
+			case ShaderDataType::Int3: return 16;
+			case ShaderDataType::Int4: return 16;
+			case ShaderDataType::Bool: return 4;
 		}
 
 		ANTOMIC_ASSERT(false, "ShaderDataType: Unknown data type")
@@ -123,12 +101,9 @@ namespace Antomic
 		switch(Platform::GetRenderAPIDialect())
 		{
 #ifdef ANTOMIC_GL_RENDERER
-		case RenderAPIDialect::OPENGL:
-			return CreateRef<OpenGLShader>(vertexSrc, pixelSrc);
+			case RenderAPIDialect::OPENGL: return CreateRef<OpenGLShader>(vertexSrc, pixelSrc);
 #endif
-		default:
-			return CreateRef<NullShader>(vertexSrc, pixelSrc);
-			;
+			default: return CreateRef<NullShader>(vertexSrc, pixelSrc); ;
 		}
 	}
 

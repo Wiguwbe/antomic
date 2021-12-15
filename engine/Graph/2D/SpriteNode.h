@@ -29,14 +29,8 @@ namespace Antomic
 
 	public:
 		// Object attributes
-		inline const glm::vec4& GetColor() const
-		{
-			return mSprite->GetSpriteColor();
-		}
-		inline void SetColor(const glm::vec4& color)
-		{
-			mSprite->SetSpriteColor(color);
-		}
+		inline const glm::vec4& GetColor() const { return mSprite->GetSpriteColor(); }
+		inline void SetColor(const glm::vec4& color) { mSprite->SetSpriteColor(color); }
 
 	public:
 		// Serialization
@@ -44,10 +38,7 @@ namespace Antomic
 		static Ref<SpriteNode> Deserialize(const nlohmann::json& json);
 
 	protected:
-		virtual const Ref<Drawable> GetDrawable() const override
-		{
-			return mSprite;
-		};
+		virtual const Ref<Drawable> GetDrawable() const override { return mSprite; };
 		virtual void CleanUp() override;
 
 	private:

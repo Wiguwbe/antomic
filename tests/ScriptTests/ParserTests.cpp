@@ -502,6 +502,18 @@ TEST(AntomicCoreTest, ParserTests)
 
 	TEST_EXPRESSION("color(0xf)", "Call(color,Args(15))");
 
+	TEST_EXPRESSION("a.attr.inner", "Attribute(inner,Attribute(attr,a))");
+	TEST_EXPRESSION("a.attr[4]", "Subscript(Attribute(attr,a),Index(4))");
+	TEST_EXPRESSION("a.foo(param)", "Call(Attribute(foo,a),Args(param))")
+
+	TEST_EXPRESSION("a[6][5]", "Subscript(Subscript(a,Index(6)),Index(5))");
+	TEST_EXPRESSION("a[0].attr", "Attribute(attr,Subscript(a,Index(0)))");
+	TEST_EXPRESSION("a['foo'](param)", "Call(Subscript(a,Index(\"foo\")),Args(param))");
+
+	TEST_EXPRESSION("foo(param).attr", "Attribute(attr,Call(foo,Args(param)))");
+	TEST_EXPRESSION("foo(param)(other)", "Call(Call(foo,Args(param)),Args(other))");
+	TEST_EXPRESSION("foo(param)[7]", "Subscript(Call(foo,Args(param)),Index(7))");
+
 	Antomic::Parser parser;
 	auto mod1 = parser.FromFile("tests/files/parser_test.py");
 

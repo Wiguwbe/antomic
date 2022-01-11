@@ -114,3 +114,10 @@ a = -1
 a = -(1+1)
 
 a = a == -1
+
+6 = 4 # weird but ok
+a[6] = 6
+b['hello'] = 7
+a[5][3] = 8
+a = ze(param).vinho
+a[5].attr[666]('ze')['hello'] = a.b.c('malucas')['vinho'].verde

@@ -1310,7 +1310,16 @@ namespace Antomic
 		TryToken(t, TokenType::SymbolParentesesOpen);
 		TryCallArgs(call->args);
 		TryToken(t, TokenType::SymbolParentesesClose);
-		return call;
+		t = PeekNextToken();
+		switch(t.Type) {
+			case TokenType::SymbolPeriod:
+				return TryAttribute(call);
+			case TokenType::SymbolBracketOpen:
+				return TrySubscript(call);
+			case TokenType::SymbolParentesesOpen:
+				return TryCall(call);
+			default: return call;
+		}
 	}
 
 	void Parser::TryCallArgs(std::vector<expr_t>& args)
@@ -1591,6 +1600,10 @@ namespace Antomic
 			case TokenType::OpShiftRightAssign:
 			case TokenType::OpExpAssign:
 				return Attribute(value, attr, expr_context_t::kStore, lineno, colno);
+			case TokenType::SymbolBracketOpen:
+				return TrySubscript(Attribute(value, attr, expr_context_t::kLoad, lineno, colno));
+			case TokenType::SymbolPeriod:
+				return TryAttribute(Attribute(value, attr, expr_context_t::kLoad, lineno, colno));
 			case TokenType::SymbolParentesesOpen:
 				return TryCall(Attribute(value, attr, expr_context_t::kLoad, lineno, colno));
 			default: return Attribute(value, attr, expr_context_t::kLoad, lineno, colno);
@@ -1609,8 +1622,26 @@ namespace Antomic
 		t = PeekNextToken();
 		switch(t.Type)
 		{
+			case TokenType::OpAssign:
+			case TokenType::OpAddAssign:
+			case TokenType::OpSubAssign:
+			case TokenType::OpMulAssign:
+			case TokenType::OpDivAssign:
+			case TokenType::OpFloorDivAssign:
+			case TokenType::OpModAssign:
+			case TokenType::OpAndAssign:
+			case TokenType::OpOrAssign:
+			case TokenType::OpXorAssign:
+			case TokenType::OpShiftLeftAssign:
+			case TokenType::OpShiftRightAssign:
+			case TokenType::OpExpAssign:
+				return Subscript(value, slice, expr_context_t::kStore, lineno, colno);
+			case TokenType::SymbolPeriod:
+				return TryAttribute(Subscript(value, slice, expr_context_t::kLoad, lineno, colno));
 			case TokenType::SymbolBracketOpen:
-				return TrySubscript(Subscript(value, slice, expr_context_t::kStore, lineno, colno));
+				return TrySubscript(Subscript(value, slice, expr_context_t::kLoad, lineno, colno));
+			case TokenType::SymbolParentesesOpen:
+				return TryCall(Subscript(value, slice, expr_context_t::kLoad, lineno, colno));
 			default: return Subscript(value, slice, expr_context_t::kLoad, lineno, colno);
 		}
 	}

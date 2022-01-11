@@ -205,8 +205,8 @@ TEST(AntomicCoreTest, LexerFromFileTests)
 {
     Antomic::Lexer lex("tests/files/lexer_test.py");
 
-    // # A commment
-    TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::Comment, "# A commment", 1, 1);
+    // # A commment (is now ignored)
+    //TEST_TOKEN_LC_VALUE(lex, Antomic::TokenType::Comment, "# A commment", 1, 1);
     TEST_TOKEN(lex, Antomic::TokenType::NewLine);
 
     // a = "a string"

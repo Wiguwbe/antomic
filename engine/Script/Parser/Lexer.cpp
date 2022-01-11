@@ -662,7 +662,7 @@ namespace Antomic
 					ReadNextChar();
 					NextLine();
 					continue;
-				case '#': ProcessComment(); return mState.CurrentToken;
+				case '#': ProcessComment(); return ParseNext();
 				case '\'': ProcessString(); return mState.CurrentToken;
 				case '\"': ProcessString(); return mState.CurrentToken;
 				case ' ':

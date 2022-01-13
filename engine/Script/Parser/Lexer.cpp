@@ -635,6 +635,11 @@ namespace Antomic
 		return mQueue.front();
 	}
 
+	void Lexer::Unread(Token t)
+	{
+		mQueue.push(t);
+	}
+
 	Token Lexer::ParseNext()
 	{
 		if(mReader->IsEOF())

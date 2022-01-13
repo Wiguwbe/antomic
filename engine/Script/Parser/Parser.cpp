@@ -146,6 +146,28 @@ static std::map<std::string, Antomic::kind_t> sTypesMap{
 		x.pop();                                                                                   \
 	}
 
+/* static */
+struct Operator {
+	Antomic::TokenType Type;
+	int Precedence;
+	uint32_t lineno;
+	uint32_t colno;
+
+	Operator()
+		: Type(Antomic::TokenType::Invalid)
+		, Precedence(-1)
+		, lineno(0)
+		, colno(0)
+	{ }
+
+	Operator(Antomic::Token token, int precedence)
+		: Type(token.Type)
+		, Precedence(precedence)
+		, lineno(token.Line)
+		, colno(token.Column)
+	{ }
+};
+
 namespace Antomic
 {
 	mod_t Parser::FromFile(const std::string& name)
@@ -830,12 +852,192 @@ namespace Antomic
 		return arg(identifier, kind_t::kObject, lineno, colno);
 	}
 
+	static expr_t DoUnary(Operator op, expr_t value)
+	{
+		unaryop_t uop;
+		switch(op.Type) {
+			case TokenType::OpUnaryAdd:
+				uop = unaryop_t::kUAdd;
+				break;
+			case TokenType::OpUnarySub:
+				uop = unaryop_t::kUSub;
+				break;
+			case TokenType::OpInv:
+				uop = unaryop_t::kInvert;
+				break;
+			case TokenType::KeywordNot:
+				uop = unaryop_t::kNot;
+				break;
+			default:
+				// ignore, shouldn't happen
+				return nullptr;
+		}
+		return UnaryOp(uop, value, op.lineno, op.colno);
+	}
+
+	static expr_t DoBinary(Operator op, expr_t l, expr_t r)
+	{
+		operator_t bop;
+		switch(op.Type) {
+			case TokenType::OpAdd: bop = operator_t::kAdd; break;
+			case TokenType::OpSub: bop = operator_t::kSub; break;
+			case TokenType::OpMul: bop = operator_t::kMult; break;
+			case TokenType::OpDiv: bop = operator_t::kDiv; break;
+			case TokenType::OpExp: bop = operator_t::kPow; break;
+			case TokenType::OpMod: bop = operator_t::kMod; break;
+			case TokenType::OpXor: bop = operator_t::kBitXor; break;
+			case TokenType::OpFloorDiv: bop = operator_t::kFloorDiv; break;
+			case TokenType::OpShiftLeft: bop = operator_t::kLShift; break;
+			case TokenType::OpShiftRight: bop = operator_t::kRShift; break;
+			case TokenType::OpAnd: bop = operator_t::kBitAnd; break;
+			case TokenType::OpOr: bop = operator_t::kBitOr; break;
+			default: return nullptr;
+		}
+		return BinOp(l, bop, r, op.lineno, op.colno);
+	}
+
+	static expr_t DoComparison(Operator op, expr_t l, expr_t r)
+	{
+		cmpop_t c;
+		switch(op.Type)
+		{
+			case TokenType::OpEqual: c = cmpop_t::kEq; break;
+			case TokenType::OpNotEqual: c = cmpop_t::kNotEq; break;
+			case TokenType::OpGreatEqual: c = cmpop_t::kGtE; break;
+			case TokenType::OpLessEqual: c = cmpop_t::kLtE; break;
+			case TokenType::OpGreat: c = cmpop_t::kGt; break;
+			case TokenType::OpLess: c = cmpop_t::kLt; break;
+			case TokenType::KeywordIs: c = cmpop_t::kIs; break;
+			case TokenType::KeywordIn: c = cmpop_t::kIn; break;
+			case TokenType::OpIsNot: c = cmpop_t::kIsNot; break;
+			case TokenType::OpNotIn: c = cmpop_t::kNotIn; break;
+			default: return nullptr;
+		}
+		return Compare(l, c, r, op.lineno, op.colno);
+	}
+
+	static expr_t DoBoolean(Operator op, expr_t l, expr_t r)
+	{
+		boolop_t bop;
+		switch(op.Type)
+		{
+			case TokenType::KeywordOr: bop = boolop_t::kOr; break;
+			case TokenType::KeywordAnd:bop = boolop_t::kAnd;break;
+			default: return nullptr;
+		}
+		return BoolOp(l,bop,r, op.lineno, op.colno);
+	}
+
+	static bool DoOperand(Operator op, std::stack<expr_t> *expressions)
+	{
+		if(op.Precedence == 12 || op.Precedence == 5) {
+			// unary, only one param
+			if(!expressions->size()) {
+				return false;
+			}
+			auto v = expressions->top();
+			expressions->pop();
+			// reuse
+			v = DoUnary(op, v);
+			if(v == nullptr) {
+				return false;
+			}
+			expressions->push(v);
+		} else {					
+			// binary
+			if(expressions->size()<2) {
+				return false;
+			}
+			// pop reverse order
+			auto r = expressions->top();
+			expressions->pop();
+			auto l = expressions->top();
+			expressions->pop();
+			if(op.Precedence == 6) {
+				// comparison
+				l = DoComparison(op, l, r);
+			} else if(op.Precedence < 5) {
+				// boolean
+				l = DoBoolean(op, l, r);
+			} else {
+				l = DoBinary(op, l, r);
+			}
+			if(l == nullptr) {
+				return false;
+			}
+			expressions->push(l);
+		}
+		return true;
+	}
+
+	static bool PushOperator(Operator op, std::stack<expr_t> *expressions, std::stack<Operator> *operators)
+	{
+		// some basic parsing checks
+		if(op.Type == TokenType::OpInv && op.Precedence != 12) {
+			// inverse is always unary (12)
+			return false;
+		}
+		// check if it's unary
+		if(op.Precedence == 12 || op.Precedence==5) {
+			// it's unary
+			if(op.Type == TokenType::OpAdd) {
+				op.Type = TokenType::OpUnaryAdd;
+			} else if(op.Type == TokenType::OpSub) {
+				op.Type = TokenType::OpUnarySub;
+			}
+			// else, keep it (OpInv or OpNot, already right type)
+		}
+
+		// now push onto the operators stack
+		while(!operators->empty()) {
+			auto t = operators->top();
+			if(t.Precedence >= op.Precedence) {
+				// build expression from `t`
+				if(!DoOperand(t, expressions)) {
+					return false;
+				}
+				operators->pop();
+			} else {
+				// bigger precedence
+				break;
+			}
+		}
+
+		operators->push(op);
+		return true;
+	}
+
+	static expr_t Merge(std::stack<expr_t> *exps, std::stack<Operator> *ops)
+	{
+		while(!ops->empty())
+		{
+			Operator op = ops->top();
+			ops->pop();
+			if(!DoOperand(op, exps)) {
+				return nullptr;
+			}
+		}
+
+		if(exps->size() != 1) {
+			// should be only 1 expression left (the complete one)
+			return nullptr;
+		}
+		// else
+		return exps->top();
+	}
+
 	expr_t Parser::TryExpression()
 	{
 		expr_t expr = nullptr;
+		std::stack<expr_t> expressions;
+		std::stack<Operator> operators;
+		Operator op;
+		expr_t ph = nullptr;	/* placeholder */
+		bool last_is_op = true;
 		for(;;)
 		{
 			auto t = PeekNextToken();
+			op = Operator();
 			switch(t.Type)
 			{
 				case TokenType::Identifier:
@@ -846,25 +1048,62 @@ namespace Antomic
 				case TokenType::SymbolParentesesOpen:
 				case TokenType::SymbolBracketOpen:
 				case TokenType::SymbolBraceOpen:
-					TryParsing(expr, nullptr, TryExpressionOperand);
+					/*
+					if(!last_is_op) {
+						something wrong here
+					}
+					*/
+					TryParsing(ph, nullptr, TryExpressionOperand);
+					expressions.push(ph);
 					break;
-				case TokenType::SymbolComma: TryParsing(expr, nullptr, TryTuple, expr); break;
+				case TokenType::SymbolComma:
+					/*
+					if(last_is_op) {
+						something wrong here
+					}
+					*/
+					if(expressions.empty()) {
+						expr = nullptr;
+					} else {
+						expr = Merge(&expressions, &operators);
+						if(expr == nullptr) {
+							UnexpectedToken(t, nullptr);
+						}
+					}
+					TryParsing(expr, nullptr, TryTuple, expr);
+					/*
+						TODO
+						should this return if outside parenthesis?
+						it doesn't make sense to keep parsing
+					*/
+					break;
+				case TokenType::KeywordLambda:
+					return TryLambda();
+				case TokenType::OpExp:
+					op.Precedence+=3;
 				case TokenType::OpInv:
 				case TokenType::OpAdd:
 				case TokenType::OpSub:
+					if(last_is_op) {
+						// it's unary
+						op.Precedence++;
+					} else {
+						op.Precedence--;
+					}
 				case TokenType::OpMul:
 				case TokenType::OpDiv:
-				case TokenType::OpExp:
 				case TokenType::OpMod:
-				case TokenType::OpXor:
 				case TokenType::OpFloorDiv:
+					op.Precedence++;
 				case TokenType::OpShiftLeft:
 				case TokenType::OpShiftRight:
+					op.Precedence++;
 				case TokenType::OpAnd:
+					op.Precedence++;
+				case TokenType::OpXor:
+					op.Precedence++;
 				case TokenType::OpOr:
-				case TokenType::KeywordAnd:
-				case TokenType::KeywordOr:
-				case TokenType::KeywordNot:
+					op.Precedence++;
 				case TokenType::OpEqual:
 				case TokenType::OpNotEqual:
 				case TokenType::OpGreatEqual:
@@ -872,16 +1111,57 @@ namespace Antomic
 				case TokenType::OpGreat:
 				case TokenType::OpLess:
 				case TokenType::KeywordIs:
+					/* check if is 'is not' */
+					if(t.Type == TokenType::KeywordIs) {
+						t = ReadNextToken();
+						auto n = PeekNextToken();
+						if(n.Type == TokenType::KeywordNot) {
+							op.Type = TokenType::OpIsNot;
+						} else {
+							// don't consume yet
+							UnreadToken(t);
+						}
+					}
 				case TokenType::KeywordIn:
-					TryParsing(expr, nullptr, TryExpressionOperator, expr);
-					continue;
-				case TokenType::KeywordLambda: return TryLambda();
+					op.Precedence++;
+				case TokenType::KeywordNot:
+					op.Precedence++;
+					/* check if is 'not in' */
+					if(t.Type == TokenType::KeywordNot) {
+						t = ReadNextToken();
+						auto n = PeekNextToken();
+						if(n.Type == TokenType::KeywordIn) {
+							op.Precedence++;
+							op.Type = TokenType::OpNotIn;
+						} else {
+							UnreadToken(t);
+						}
+					}
+				case TokenType::KeywordAnd:
+					op.Precedence++;
+				case TokenType::KeywordOr:
+					op.Precedence += 4;
+					break;
 				default:
-					if(!expr)
+					if(expressions.empty())
 					{
 						UnexpectedToken(t, nullptr);
 					}
-					return expr;
+					return Merge(&expressions, &operators);
+			}
+			// check if it's an operand (by the precedence being set)
+			if(op.Precedence != -1) {
+				if(op.Type == TokenType::Invalid)
+					op.Type = t.Type;
+				op.lineno = t.Line;
+				op.colno = t.Column;
+				if(!PushOperator(op, &expressions, &operators)) {
+					UnexpectedToken(t, nullptr);
+				}
+				ReadNextToken();
+				last_is_op = true;
+			} else {
+				last_is_op = false;
 			}
 		}
 		return nullptr;
@@ -1810,37 +2090,15 @@ namespace Antomic
 		for(;;)
 		{
 			auto t = PeekNextToken();
-			switch(t.Type)
-			{
+			switch(t.Type) {
 				case TokenType::SymbolBracketClose:
 					MustHave(index, t, nullptr);
 					return Index(index, index->lineno, index->colno);
-				case TokenType::Identifier: {
-					MustNotHave(index, t, nullptr);
-					TryIdentifier(t, identifier);
-					index = Name(identifier, expr_context_t::kLoad, t.Line, t.Column);
-					continue;
-				}
-				case TokenType::OpSub:
-				case TokenType::OpAdd: {
-					ReadNextToken();
-					signal = t.Value;
-					continue;
-				}
-				case TokenType::NumberInteger:
-				case TokenType::NumberFloat:
-				case TokenType::NumberHex:
-				case TokenType::String:
-					MustNotHave(index, t, nullptr);
-					TryParsing(index, nullptr, TryConstant, signal);
-					continue;
-				case TokenType::SymbolColon: return TrySlice(index);
-				case TokenType::SymbolComma:
-					MustHave(index, t, nullptr);
-					ReadNextToken();
-					TryParsing(index, nullptr, TryTuple, index);
-					return Index(index, t.Line, t.Column);
-				default: UnexpectedToken(t, nullptr);
+				case TokenType::SymbolColon:
+					return TrySlice(index);
+				default:
+					/* full on expression */
+					TryParsing(index, nullptr, TryExpression);
 			}
 		}
 
@@ -1873,25 +2131,13 @@ namespace Antomic
 					ReadNextToken();
 					colon++;
 					continue;
-				case TokenType::OpSub:
-				case TokenType::OpAdd: {
-					ReadNextToken();
-					signal = t.Value;
-					continue;
-				}
-				case TokenType::NumberInteger: {
-					if(colon == 1)
-					{
-						TryParsing(upper, nullptr, TryConstant, signal);
-						continue;
+				default:
+					if(colon == 1) {
+						TryParsing(upper, nullptr, TryExpression);
 					}
-					if(colon == 2)
-					{
-						TryParsing(step, nullptr, TryConstant, signal);
-						continue;
+					if(colon == 2) {
+						TryParsing(step, nullptr, TryExpression);
 					}
-				}
-				default: UnexpectedToken(t, nullptr);
 			}
 		}
 		return nullptr;

@@ -121,3 +121,11 @@ b['hello'] = 7
 a[5][3] = 8
 a = ze(param).vinho
 a[5].attr[666]('ze')['hello'] = a.b.c('malucas')['vinho'].verde
+
+b[b(1,2,3)]
+a[foo(1,2,3):bar(666)]
+
+a = 1 not in [1,2,3]
+a = -b
+
+a = a+b*c

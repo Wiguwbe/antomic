@@ -108,6 +108,13 @@ namespace Antomic
 		SymbolBracketClose,
 		SymbolParentesesOpen,
 		SymbolParentesesClose,
+
+		/* abstract, not returned by lexer */
+		OpNotIn,
+		OpIsNot,
+		OpUnaryAdd,
+		OpUnarySub,
+		/* `OpInv` is unary as well */
 	};
 
 	struct Token
@@ -168,6 +175,7 @@ namespace Antomic
 
 		Token Read();
 		Token Peek();
+		void Unread(Token);
 
 	private:
 		Token ParseNext();

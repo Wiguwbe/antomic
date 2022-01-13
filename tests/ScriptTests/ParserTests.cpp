@@ -514,6 +514,9 @@ TEST(AntomicCoreTest, ParserTests)
 	TEST_EXPRESSION("foo(param)(other)", "Call(Call(foo,Args(param)),Args(other))");
 	TEST_EXPRESSION("foo(param)[7]", "Subscript(Call(foo,Args(param)),Index(7))");
 
+	/* precedence */
+	TEST_EXPRESSION("a+b*c", "BinOp(a,+,BinOp(b,*,c))");
+
 	Antomic::Parser parser;
 	auto mod1 = parser.FromFile("tests/files/parser_test.py");
 

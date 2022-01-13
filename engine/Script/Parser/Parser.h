@@ -119,6 +119,8 @@ namespace Antomic
 
 		inline Token PeekNextToken() { return mLexer->Peek(); }
 
+		inline void UnreadToken(Token t) { mLexer->Unread(t); }
+
 		inline void PushIdentation(uint8_t i)
 		{
 			if(mState.IdentationStack.empty())

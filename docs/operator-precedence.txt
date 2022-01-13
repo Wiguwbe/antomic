@@ -1,0 +1,63 @@
+# operators and precedence
+
+_from higher to lower_
+
+`**`
+	(14)
+	exponentiation
+
+`+`, `-`, `~`
+	(13)
+	unary operators
+
+`*`, `/`, `//`, `%`
+	(12)
+	multiplication (and related)
+
+`+`, `-`
+	(11)
+	infix addition/subtraction
+
+`<<`, `>>`
+	(10)
+	shifts
+
+`&`
+	(9)
+	bitwise AND
+
+`^`
+	(8)
+	bitwise XOR
+
+`|`
+	(7)
+	bitwise OR
+
+`in`, `not in`, `is`, `is not`, `<`, `<=`, `>`, `>=`, `!=`, `==`
+	(6)
+	comparisons
+
+`not`
+	(5)
+	boolean NOT
+
+`and`
+	(4)
+	boolean AND
+
+`or`
+	(3)
+	boolean OR
+
+`if-else`
+	(2)
+	ternary-like expression (not implemented)
+
+`lambda`
+	(1)
+	implementation uses other case
+
+`:=`
+	(0)
+	assignment expression (not implemented)
